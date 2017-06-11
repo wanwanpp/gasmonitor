@@ -23,20 +23,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .anyRequest().authenticated() //4
-                .and()
-                .formLogin()
-                .loginPage("/login")
-                .failureUrl("/login?error")
-                .permitAll() //5
-                .and()
-                .logout().permitAll(); //6
-//        设置在iframe中显示内容
-        http
-                .headers()
-                .frameOptions()
-                .sameOrigin();
+        //        设置在iframe中显示内容
+        http.headers().frameOptions().sameOrigin()
+                .and().authorizeRequests().anyRequest().authenticated() //4
+                .and().formLogin().loginPage("/login").failureUrl("/login?error").permitAll() //5
+                .and().logout().logoutUrl("/logout").logoutSuccessUrl("/login").permitAll(); //6
+
     }
 
     //用户认证
