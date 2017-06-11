@@ -1,0 +1,1 @@
+package com.gasmonitor.dao;import com.gasmonitor.entity.Tenant;import org.springframework.data.jpa.repository.JpaRepository;/** * Created by saplmm on 2017/6/10. */public interface TenantRepository extends JpaRepository<Tenant, Long> {    }

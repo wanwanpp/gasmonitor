@@ -1,1 +1,0 @@
-hello ftl:${name}

@@ -1,0 +1,1 @@
+package com.gasmonitor.dao;import com.gasmonitor.entity.User;import org.springframework.data.jpa.repository.JpaRepository;/** * Created by saplmm on 2017/6/10. */public interface UserRepository extends JpaRepository<User, Long> {    User findByUsername(String name);}
