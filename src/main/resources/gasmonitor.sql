@@ -1,4 +1,4 @@
-CREATE DATABASE gasmonitor;
+﻿CREATE DATABASE gasmonitor;
 #所有客户，其中system,admin为初始化用户，其tenant_id =‘0000000000’
 # 表示
 CREATE TABLE user (
@@ -64,11 +64,14 @@ CREATE TABLE device (
   phone       VARCHAR(40)  NOT NULL, #watcher's phone
   created     DATE,
   status      INT          NOT NULL, #running =1 ,stop=0
-  parent      VARCHAR(16), #parent id of  device
+  parent      VARCHAR(32), #parent id of  device
   specication INT(11)      NOT NULL,
   siteId      INT(11),
+  tenantId    INT(11),
   #warning threshold
 
+ 
+ 
   PRIMARY KEY (id)
 )
   ENGINE = myisam
