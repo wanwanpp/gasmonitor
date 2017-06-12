@@ -42,6 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         log.info("进入到configure函数，开始认证...");
 //        auth.userDetailsService(customUserService());
         auth.inMemoryAuthentication().withUser("user").password("user").roles("USER");
+        auth.inMemoryAuthentication().withUser("wyf").password("wyf").roles("ADMIN");
         auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
     }
 
