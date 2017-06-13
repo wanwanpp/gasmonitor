@@ -1,0 +1,1 @@
+package com.gasmonitor.vo;/** * Created by saplmm on 2017/6/2. * 浏览器向服务器发送的 WebSocket 消息接收类 */public class RequestMessage {    private String name;    public String getName() {        return name;    }    public void setName(String name) {        this.name = name;    }}
