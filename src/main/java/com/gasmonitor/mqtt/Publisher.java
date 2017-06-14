@@ -7,7 +7,8 @@ import org.fusesource.mqtt.client.QoS;
 
 /**
  * Created by 王萍 on 2017/5/22 0022.
- */
+ * 向apollo服务器发送消息的网关模拟器
+ * */
 public class Publisher {
 
     public static void main(String[] args) throws Exception {

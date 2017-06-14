@@ -115,6 +115,7 @@ public class MqttListener extends Observable implements MqttConnectionCycle, App
             public void onDisconnected() {
                 // 监听到断开连接
                 logger.info("disconnected");
+                // TODO: 2017/6/14 0014 加入断开连接邮件通知功能
             }
 
             public void onFailure(Throwable value) {
@@ -140,13 +141,13 @@ public class MqttListener extends Observable implements MqttConnectionCycle, App
                 List<Sitewhere.Model.Measurement> measurementList = consume.getMeasurementList();
 
                 String string = TABLENAME + "," +
-                        "id=" + consume.getHardwareId() + "," +
-                        "stime=" + measurementList.get(5).getMeasurementValue() + " " +    //不能写成time，因为是Influxdb占用的字段
+                        "hardware=" + consume.getHardwareId() + "," +
+                        "pointTime=" + measurementList.get(5).getMeasurementValue() + " " +    //不能写成time，因为是Influxdb占用的字段
                         "pressure=" + measurementList.get(0).getMeasurementValue() + "," +
-                        "temper=" + measurementList.get(1).getMeasurementValue() + "," +
-                        "sflow=" + measurementList.get(2).getMeasurementValue() + "," +
-                        "wflow=" + measurementList.get(3).getMeasurementValue() + "," +
-                        "aflow=" + measurementList.get(4).getMeasurementValue();
+                        "temperature=" + measurementList.get(1).getMeasurementValue() + "," +
+                        "standardFlow=" + measurementList.get(2).getMeasurementValue() + "," +
+                        "workFlow=" + measurementList.get(3).getMeasurementValue() + "," +
+                        "sumFlow=" + measurementList.get(4).getMeasurementValue();
 
                 //写入数据库
                 // TODO: 2017/6/13 0013 使用批量写入
