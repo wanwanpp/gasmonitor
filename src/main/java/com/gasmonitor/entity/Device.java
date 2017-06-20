@@ -1,0 +1,1 @@
+//package com.gasmonitor.entity;////import javax.persistence.Entity;/////**// * Created by saplmm on 2017/6/18.// *///////@Entity//public class Device {////    //parent//    //type logic//    ////    private Long id;//}
