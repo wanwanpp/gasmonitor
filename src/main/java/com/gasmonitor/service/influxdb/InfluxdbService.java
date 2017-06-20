@@ -1,9 +1,5 @@
 package com.gasmonitor.service.influxdb;
 
-import org.influxdb.InfluxDB;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,14 +8,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class InfluxdbService {
 
-    private static final Logger LOGGER;
+//    private static final Logger LOGGER;
 
-    @Autowired
-    private InfluxDB influxDB;
-
-    static {
-        LOGGER = LoggerFactory.getLogger(InfluxdbService.class);
-    }
-
+//    @Autowired
+//    private InfluxDB influxDB;
+//
+//    static {
+//        LOGGER = LoggerFactory.getLogger(InfluxdbService.class);
+//    }
 
 }
