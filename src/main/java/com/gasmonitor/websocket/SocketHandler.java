@@ -17,6 +17,9 @@ public class SocketHandler implements WebSocketHandler {
 	private static final Logger logger;
 	public static List<WebSocketSession> sessions;
 
+//	@Autowired
+//    private InfluxDB influxDB;
+
 	static{
 		sessions = new LinkedList<WebSocketSession>();
 		logger = LoggerFactory.getLogger(SocketHandler.class);
@@ -26,6 +29,7 @@ public class SocketHandler implements WebSocketHandler {
 	public void afterConnectionEstablished(WebSocketSession session)
 			throws Exception {
 		logger.info("成功建立socket连接");
+//		logger.info(influxDB.toString());
 		sessions.add(session);
 
 	}
