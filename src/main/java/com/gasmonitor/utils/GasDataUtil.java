@@ -1,5 +1,6 @@
 package com.gasmonitor.utils;
 
+import com.gasmonitor.protobuf.GasMsg;
 import com.gasmonitor.service.protobuf.Sitewhere;
 
 import java.io.ByteArrayInputStream;
@@ -23,7 +24,7 @@ public class GasDataUtil {
         //随机数
         Random random = new Random();
         //模拟设备号
-        long id=1;
+        long id = 1;
 
         //构造数据容器
 //        GasMsg.GasDataBox.Builder boxBuilder = GasMsg.GasDataBox.newBuilder();
@@ -89,10 +90,10 @@ public class GasDataUtil {
      * @param bytes
      * @return
      */
-    public Sitewhere.Model.DeviceMeasurements consume(byte[] bytes) {
+    public GasMsg.GasData consume(byte[] bytes) {
         ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
         try {
-            return Sitewhere.Model.DeviceMeasurements.parseFrom(bis);
+            return GasMsg.GasData.parseFrom(bis);
         } catch (IOException e) {
             e.printStackTrace();
         }
