@@ -22,6 +22,7 @@ public class MailServiceImpl implements MailService {
 					                       String from) {
 		this.javaMailSender = javaMailSender;
 		this.from = from;
+
 	}
 
 	@Override
