@@ -41,9 +41,6 @@ layui.use(['layer', 'element'], function () {
             } else { //不存在 iframe
                 //显示加载层
                 layer.load();
-                setTimeout(function () {
-                    layer.closeAll('loading');
-                }, 300);
                 //拼接iframe
                 var iframe = '<iframe';
                 iframe += ' src="' + src + '" data-id="' + id + '" data-tabindex="' + tabindex + '"';
@@ -51,6 +48,7 @@ layui.use(['layer', 'element'], function () {
                 iframe += '></iframe>';
                 //顶部切换卡新增一个卡片
                 element.tabAdd(tabfilter, {title: title, content: iframe, id: id});
+                layer.closeAll('loading');
             }
 
             //切换到指定索引的卡片
