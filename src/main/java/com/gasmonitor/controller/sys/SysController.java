@@ -1,0 +1,1 @@
+package com.gasmonitor.controller.sys;import org.springframework.stereotype.Controller;import org.springframework.web.bind.annotation.RequestMapping;/** * Created by saplmm on 2017/6/23. */@Controller@RequestMapping(value = "sys")public class SysController {    @RequestMapping(value = "setting")    public String setting() {        return "sys/setting";    }}
