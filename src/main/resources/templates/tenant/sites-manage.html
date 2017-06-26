@@ -9,13 +9,97 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="format-detection" content="telephone=no"/>
-  <!--<link rel="stylesheet" href="/layui/css/layui.css" media="all"/>
+  <link rel="stylesheet" href="/layui/css/layui.css" media="all"/>
+  <link rel="stylesheet" href="/css/main.css" media="all"/>
+  <!--
   <link rel="stylesheet" href="/css/me.css" media="all"/>-->
+  <style>
+    body { margin: 10px; }
+  </style>
 
 </head>
 <body class="childrenBody">
-  <p>站点管理（站点设备管理）【点了站点管理以后：左边站点列表；右边上地图，右边下站点详细信息（不点击的时候右边地图显示全部；点击列表中某一个站点，地图只显示该站点，右边下部显示详情且可以编辑）】</p>
-  <p>（站点详情编辑）地图上拖动修改位置，只显示一个，站点列表搜索功能</p>
-  <p>列表中每个站点后面，有个“显示设备”按钮（点击以后跳转到【设备管理】，且就是当前点击站点作为搜索条件，该站点下的所有设备列表）</p>
+  <!-- Start: 顶部文字描述 -->
+  <blockquote class="layui-elem-quote">
+    <ol>
+      <li>站点管理（站点设备管理）【点了站点管理以后：左边站点列表；右边上地图，右边下站点详细信息（不点击的时候右边地图显示全部；点击列表中某一个站点，地图只显示该站点，右边下部显示详情且可以编辑）】</li>
+      <li>（站点详情编辑）地图上拖动修改位置，只显示一个，站点列表搜索功能</li>
+      <li>列表中每个站点后面，有个“显示设备”按钮（点击以后跳转到【设备管理】，且就是当前点击站点作为搜索条件，该站点下的所有设备列表）</li>
+    </ol>
+  </blockquote>
+  <!-- End  : 顶部文字描述 -->
+  <!-- Start： 左右布局 -->
+  <div class="row">
+    <div class="sysNotice col">
+      <blockquote class="layui-elem-quote title">更新日志</blockquote>
+      <div class="layui-elem-quote layui-quote-nm">
+        <h3># 1.0.9_rls （发行版） - 2017-03-01</h3>
+        <p>* checkbox复选框原始风格支持不显示文字（之前会默认显示：勾选）</p>
+        <p>* 进度条超出100%情况下的自动处理</p>
+        <p>* 修复Tab选项卡在出现下拉按钮时，点击最后的几个选项卡未能正常切换的bug</p>
+        <p>* 修复select组件搜索选择时会先显示之前的值再替换新的值的不良体验</p>
+        <p>* 修复默认进度条0%时，文本出现太过于左侧的问题</p>
+        <br/>
+        <p># 1.0.9</p>
+        <p>* 新增“折叠面板”页面元素及相关事件监听</p>
+        <p>* select组件增加搜索匹配功能，通过参数 lay-search 开启</p>
+        <p>* checkbox组件增加原始风格样式，通过设置 lay-skin="primary" 开启（跟系统自带的类似样貌）</p>
+        <p>* 升级 layer弹层组件到 3.0.2 （ layer3.0.2更新日志 ）</p>
+        <p>* 表单元素增加属性 lay-ignore ,设置后，将不会对该标签进行美化渲染，即保留系统风格</p>
+        <p>* 开关增加两种状态的自定义文本，通过参数 lay-text="ON|OFF" 开启</p>
+        <p>* 修复Tab选项卡嵌套的Tab没有对应的内容结构时，切换到了父级内容的bug</p>
+        <p>* 修复Tab选项卡容器中使用下拉框时，被溢出隐藏的问题</p>
+        <p>* 修复Tab选项卡溢满情况下，点击展开按钮，再在外部添加一个选项卡出现异常的bug</p>
+        <p>* Tab选项卡部分UI细节优化</p>
+        <p>* Tab选项卡的tabAdd增加id参数，用于在删除和切换时，以id作为匹配媒介</p>
+      </div>
+    </div>
+    <div class="sysNotice col">
+      <blockquote class="layui-elem-quote title">系统基本参数</blockquote>
+      <table class="layui-table">
+        <colgroup>
+          <col width="150"></col>
+        </colgroup>
+        <tbody>
+        <tr>
+          <td>当前版本</td>
+          <td class="version"></td>
+        </tr>
+        <tr>
+          <td>开发作者</td>
+          <td class="author"></td>
+        </tr>
+        <tr>
+          <td>网站首页</td>
+          <td class="homePage"></td>
+        </tr>
+        <tr>
+          <td>服务器环境</td>
+          <td class="server"></td>
+        </tr>
+        <tr>
+          <td>数据库版本</td>
+          <td class="dataBase"></td>
+        </tr>
+        <tr>
+          <td>最大上传限制</td>
+          <td class="maxUpload"></td>
+        </tr>
+        <tr>
+          <td>当前用户权限</td>
+          <td class="userRights"></td>
+        </tr>
+        </tbody>
+      </table>
+      <blockquote class="layui-elem-quote title">最新文章<i class="iconfont icon-new1"></i></blockquote>
+      <table class="layui-table" lay-skin="line">
+        <colgroup>
+          <col width="110"></col>
+        </colgroup>
+        <tbody class="hot_news"></tbody>
+      </table>
+    </div>
+  </div>
+  <!-- End  ： 左右布局 -->
 </body>
 </html>
