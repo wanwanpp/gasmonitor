@@ -52,7 +52,7 @@ layui.use(['layer', 'element'], function () {
             }
 
             //切换到指定索引的卡片
-            element.tabChange(tabfilter, tabindex);
+            element.tabChange(tabfilter, id);
         }
     });
 
