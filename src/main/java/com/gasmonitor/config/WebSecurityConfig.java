@@ -1,5 +1,6 @@
 package com.gasmonitor.config;
 
+import org.aspectj.weaver.ast.And;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -25,10 +26,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         //        设置在iframe中显示内容
         http.headers().frameOptions().sameOrigin()
+                .and().authorizeRequests().antMatchers("/test/**").permitAll()
                 .and().authorizeRequests().anyRequest().authenticated() //4
                 .and().formLogin().loginPage("/login").failureUrl("/login?error").permitAll() //5
-                .and().logout().logoutUrl("/logout").logoutSuccessUrl("/login").permitAll(); //6
-
+                .and().logout().logoutUrl("/logout").logoutSuccessUrl("/login").permitAll();
     }
 
     //用户认证
