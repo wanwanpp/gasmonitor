@@ -1,0 +1,1 @@
+package com.gasmonitor.dao;import com.gasmonitor.entity.Device;import org.springframework.data.jpa.repository.JpaRepository;import java.util.List;/** * Created by saplmm on 2017/6/26. */public interface DeviceRepository extends JpaRepository<Device, Long> {    List<Device> findBySiteId(Long siteId);}
