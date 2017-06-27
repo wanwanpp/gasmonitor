@@ -1,0 +1,1 @@
+package com.gasmonitor.utils;import org.springframework.data.domain.PageRequest;/** * Created by saplmm on 2017/6/27. */public class PageUtils {    //    得到pageRquitet    public static PageRequest pageRequest(int pageNumber, int pagzSize) {        return new PageRequest(pageNumber - 1, pagzSize, null);    }}
