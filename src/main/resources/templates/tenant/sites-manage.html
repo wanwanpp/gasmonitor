@@ -1,114 +1,140 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8"/>
-  <title>租户 - 站点管理</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1"/>
   <meta name="renderer" content="webkit"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="format-detection" content="telephone=no"/>
+
+  <title>租户 - 站点管理</title>
+
   <link rel="stylesheet" href="/layui/css/layui.css" media="all"/>
   <link rel="stylesheet" href="/css/main.css" media="all"/>
   <!--
   <link rel="stylesheet" href="/css/me.css" media="all"/>-->
   <style>
-    body { margin: 10px; }
+    body { margin: 10px; overflow-y: scroll; }
+    table tbody.hot_news tr td.align-right { text-align:right; }
   </style>
+  <!-- Start: 百度地图 css -->
+  <style type="text/css">
+    body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+  </style>
+  <!-- End  : 百度地图 css -->
 
 </head>
-<body class="childrenBody">
-  <!-- Start: 顶部文字描述 -->
-  <blockquote class="layui-elem-quote">
-    <ol>
-      <li>站点管理（站点设备管理）【点了站点管理以后：左边站点列表；右边上地图，右边下站点详细信息（不点击的时候右边地图显示全部；点击列表中某一个站点，地图只显示该站点，右边下部显示详情且可以编辑）】</li>
-      <li>（站点详情编辑）地图上拖动修改位置，只显示一个，站点列表搜索功能</li>
-      <li>列表中每个站点后面，有个“显示设备”按钮（点击以后跳转到【设备管理】，且就是当前点击站点作为搜索条件，该站点下的所有设备列表）</li>
-    </ol>
-  </blockquote>
-  <!-- End  : 顶部文字描述 -->
-  <!-- Start： 左右布局 -->
-  <div class="row left-right-layout">
-    <div class="sysNotice col left-list">
-      <blockquote class="layui-elem-quote title">站点列表</blockquote>
-      <table class="layui-table" lay-skin="line">
-        <colgroup>
-          <col width="110"></col>
-        </colgroup>
-        <tbody class="hot_news">
-        <tr>
-          <td align="left">css3用transition实现边框动画效果</td>
-          <td>2017-04-14</td>
-        </tr>
-        <tr>
-          <td align="left">自定义的模块名称可以包含/吗</td>
-          <td>2017-04-14</td>
-        </tr>
-        <tr>
-          <td align="left">layui.tree如何ajax加载二级菜单</td>
-          <td>2017-04-14</td>
-        </tr>
-        <tr>
-          <td align="left">layui.upload如何带参数？像jq的data:{}那样</td>
-          <td>2017-04-14</td>
-        </tr>
-        <tr>
-          <td align="left">表单元素长度应该怎么调整才美观</td>
-          <td>2017-04-14</td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="sysNotice col right-details">
-      <blockquote class="layui-elem-quote title">站点地图<i class="iconfont icon-new1"></i></blockquote>
-      <table class="layui-table" lay-skin="line">
-        <colgroup>
-          <col width="110"></col>
-        </colgroup>
-        <div class="layui-elem-quote layui-quote-nm">
-          <h3>站点地图</h3>
+  <body class="childrenBody">
+    <!-- Start: 顶部文字描述 -->
+    <!--<blockquote class="layui-elem-quote">
+      <ol>
+        <li>站点管理（站点设备管理）【点了站点管理以后：左边站点列表；右边上地图，右边下站点详细信息（不点击的时候右边地图显示全部；点击列表中某一个站点，地图只显示该站点，右边下部显示详情且可以编辑）】</li>
+        <li>（站点详情编辑）地图上拖动修改位置，只显示一个，站点列表搜索功能</li>
+        <li>列表中每个站点后面，有个“显示设备”按钮（点击以后跳转到【设备管理】，且就是当前点击站点作为搜索条件，该站点下的所有设备列表）</li>
+      </ol>
+    </blockquote>-->
+    <!-- End  : 顶部文字描述 -->
+    <!-- Start： 左右布局 -->
+    <div class="row left-right-layout">
+      <div class="sysNotice col left-list">
+        <blockquote class="layui-elem-quote title">站点列表</blockquote>
+        <table class="layui-table" lay-skin="line">
+          <colgroup>
+            <col width="110"></col>
+          </colgroup>
+          <tbody class="hot_news">
+          <tr>
+            <td align="left">站点 1</td>
+            <td class="align-right">
+              <button class="layui-btn layui-btn-normal">查看设备</button>
+            </td>
+          </tr>
+          <tr>
+            <td align="left">站点 2</td>
+            <td class="align-right">
+              <button class="layui-btn layui-btn-normal">查看设备</button>
+            </td>
+          </tr>
+          <tr>
+            <td align="left">站点 3</td>
+            <td class="align-right">
+              <button class="layui-btn layui-btn-normal">查看设备</button>
+            </td>
+          </tr>
+          <tr>
+            <td align="left">站点 4</td>
+            <td class="align-right">
+              <button class="layui-btn layui-btn-normal">查看设备</button>
+            </td>
+          </tr>
+          <tr>
+            <td align="left">站点 5</td>
+            <td class="align-right">
+              <button class="layui-btn layui-btn-normal">查看设备</button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="sysNotice col right-details">
+        <blockquote class="layui-elem-quote title">站点地图<i class="iconfont icon-new1"></i></blockquote>
+        <table class="layui-table" lay-skin="line">
+          <colgroup>
+            <col width="110"></col>
+          </colgroup>
+          <div class="layui-elem-quote layui-quote-nm" style="min-height: 300px; max-height: 300px; height: 100%;">
+            <div id="allmap"></div>
 
-        </div>
-      </table>
-      <blockquote class="layui-elem-quote title">站点详情</blockquote>
-      <table class="layui-table">
-        <colgroup>
-          <col width="150"></col>
-        </colgroup>
-        <tbody>
-        <tr>
-          <td>当前版本</td>
-          <td class="version">v1.0.0</td>
-        </tr>
-        <tr>
-          <td>开发作者</td>
-          <td class="author">请叫我马哥</td>
-        </tr>
-        <tr>
-          <td>网站首页</td>
-          <td class="homePage">page/index.html</td>
-        </tr>
-        <tr>
-          <td>服务器环境</td>
-          <td class="server">windows</td>
-        </tr>
-        <tr>
-          <td>数据库版本</td>
-          <td class="dataBase">8.00.2039</td>
-        </tr>
-        <tr>
-          <td>最大上传限制</td>
-          <td class="maxUpload">2M</td>
-        </tr>
-        <tr>
-          <td>当前用户权限</td>
-          <td class="userRights">总管理员</td>
-        </tr>
-        </tbody>
-      </table>
+          </div>
+        </table>
+        <blockquote class="layui-elem-quote title">站点详情</blockquote>
+        <table class="layui-table">
+          <colgroup>
+            <col width="150"></col>
+          </colgroup>
+          <tbody>
+          <tr>
+            <td>当前版本</td>
+            <td class="version">v1.0.0</td>
+          </tr>
+          <tr>
+            <td>开发作者</td>
+            <td class="author">请叫我马哥</td>
+          </tr>
+          <tr>
+            <td>网站首页</td>
+            <td class="homePage">page/index.html</td>
+          </tr>
+          <tr>
+            <td>服务器环境</td>
+            <td class="server">windows</td>
+          </tr>
+          <tr>
+            <td>数据库版本</td>
+            <td class="dataBase">8.00.2039</td>
+          </tr>
+          <tr>
+            <td>最大上传限制</td>
+            <td class="maxUpload">2M</td>
+          </tr>
+          <tr>
+            <td>当前用户权限</td>
+            <td class="userRights">总管理员</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-  </div>
-  <!-- End  ： 左右布局 -->
-</body>
+    <!-- End  ： 左右布局 -->
+  </body>
 </html>
+<!-- Start: 百度地图 js -->
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&amp;ak=PWlgUxoilAgQ4zLjB6MIGMvAGKsG5G4X"></script>
+<script type="text/javascript">
+  // 百度地图API功能
+  var map = new BMap.Map("allmap");  // 创建Map实例
+  map.centerAndZoom("成都", 15);      // 初始化地图,用城市名设置地图中心点
+</script>
+<!-- End  : 百度地图 js -->
