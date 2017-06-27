@@ -1,1 +1,1 @@
-package com.gasmonitor.dao;import com.gasmonitor.entity.Site;import org.springframework.data.jpa.repository.JpaRepository;/** * Created by saplmm on 2017/6/26. */public interface SiteRepository extends JpaRepository<Site, Long> {//    List<Device> findBySiteId(Long sitId);}
+package com.gasmonitor.dao;import com.gasmonitor.entity.Site;import org.springframework.data.jpa.repository.JpaRepository;/** * Created by saplmm on 2017/6/26. */public interface SiteRepository extends JpaRepository<Site, Long> {    Site findById(Long sitId);}
