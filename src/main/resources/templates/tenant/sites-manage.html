@@ -302,11 +302,19 @@
     //
     setTimeout(function() {
       var pointChengDu2 = new BMap.Point(104.06, 30.65);
-      var marker2 = new BMap.Marker(pointChengDu2);
-      map.addOverlay(marker2);            //增加点
-      marker2.setAnimation(BMAP_ANIMATION_DROP); //跳动的动画
+      // var marker2 = new BMap.Marker(pointChengDu2);
+      var vectorMarker = new BMap.Marker(pointChengDu2, {
+        // 指定Marker的icon属性为Symbol
+        icon: new BMap.Symbol(BMap_Symbol_SHAPE_POINT, {
+          scale: 1,//图标缩放大小
+          fillColor: "#009999",//填充颜色
+          fillOpacity: 0.8//填充透明度
+        })
+      });
+      map.addOverlay(vectorMarker);            //增加点
+      vectorMarker.setAnimation(BMAP_ANIMATION_DROP); //跳动的动画
       setTimeout(function() {
-        marker2.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+        vectorMarker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
       }, 1000);
     }, 1000);
   })();
