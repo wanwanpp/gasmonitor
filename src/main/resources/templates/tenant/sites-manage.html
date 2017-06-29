@@ -311,6 +311,28 @@
     }, 1000);
   })();
   // End  : 添加覆盖物 点
+
+  // Start: 点的可拖拽和不可拖拽
+  (function() {
+    var pointChengDu3 = new BMap.Point(104.04, 30.61);
+    var marker = new BMap.Marker(pointChengDu3);// 创建标注
+    map.addOverlay(marker);             // 将标注添加到地图中
+    marker.disableDragging();           // 不可拖拽
+    marker.enableDragging();           // 可拖拽
+    // 拖拽后获取 marker 信息
+    marker.addEventListener("dragend", getAttr);
+    function getAttr(){
+      var p = marker.getPosition();       //获取marker的位置
+      alert("marker的位置是" + p.lng + "," + p.lat);
+    }
+  })();
+  // End  : 点的可拖拽和不可拖拽
+
+  // Start: 点聚合
+  (function() {
+    
+  })();
+  // End  : 点聚合
 </script>
 <!-- End  : 百度地图 js -->
 <!-- Start: 与服务器交互 ajax -->
