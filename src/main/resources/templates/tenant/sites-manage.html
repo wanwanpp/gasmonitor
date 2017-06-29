@@ -295,7 +295,8 @@
 
   // Start: 添加覆盖物 点
   (function() {
-    var marker = new BMap.Marker(pointChengDu);
+    var myIcon = new BMap.Icon("http://www.iconpng.com/png/pittogrammi/93.png", new BMap.Size(64,64));
+    var marker = new BMap.Marker(pointChengDu, {icon: myIcon});
     map.addOverlay(marker);            //增加点
     marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
     //
