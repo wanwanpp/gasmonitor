@@ -33,7 +33,11 @@ public class AjaxResult<T> {
 
     public AjaxResult(List<T> data) {
         this.data = data;
-        this.setTotal(data.size());
+        if (data == null) {
+            this.setTotal(0);
+        } else {
+            this.setTotal(data.size());
+        }
         this.setPage(1);
         this.setTotalPage(1);
     }
