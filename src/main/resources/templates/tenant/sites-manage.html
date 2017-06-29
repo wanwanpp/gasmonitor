@@ -164,7 +164,7 @@
           <colgroup>
             <col width="110"></col>
           </colgroup>
-          <div class="layui-elem-quote layui-quote-nm" style="min-height: 300px; max-height: 300px; height: 100%;">
+          <div class="layui-elem-quote layui-quote-nm" style="min-height: 400px; max-height: 400px; height: 100%;">
             <div id="allmap"></div>
 
           </div>
@@ -293,15 +293,18 @@
   })();*/
   // End  : 添加定位相关控件
 
+  // markers 数组
+  var markersArr = [];
   // Start: 添加覆盖物 点
   (function() {
     var myIcon = new BMap.Icon("http://www.iconpng.com/png/pittogrammi/93.png", new BMap.Size(64,64));
     var marker = new BMap.Marker(pointChengDu, {icon: myIcon});
     map.addOverlay(marker);            //增加点
+    markersArr.push(marker);
     marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
     //
     setTimeout(function() {
-      var pointChengDu2 = new BMap.Point(104.06, 30.65);
+      var pointChengDu2 = new BMap.Point(104.11, 30.71);
       // var marker2 = new BMap.Marker(pointChengDu2);
       var vectorMarker = new BMap.Marker(pointChengDu2, {
         // 指定Marker的icon属性为Symbol
@@ -312,6 +315,7 @@
         })
       });
       map.addOverlay(vectorMarker);            //增加点
+      markersArr.push(vectorMarker);
       vectorMarker.setAnimation(BMAP_ANIMATION_DROP); //跳动的动画
       setTimeout(function() {
         vectorMarker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
@@ -325,6 +329,7 @@
     var pointChengDu3 = new BMap.Point(104.04, 30.61);
     var marker = new BMap.Marker(pointChengDu3);// 创建标注
     map.addOverlay(marker);             // 将标注添加到地图中
+    markersArr.push(marker);
     marker.disableDragging();           // 不可拖拽
     marker.enableDragging();           // 可拖拽
     // 拖拽后获取 marker 信息
@@ -336,6 +341,36 @@
   })();
   // End  : 点的可拖拽和不可拖拽
 
+  // Start: 添加弹窗
+  (function() {
+    if(markersArr) {
+      markersArr.forEach(function(marker, markerIndex) {
+        var content = ['marker ', markerIndex].join('');
+        console.log(content);
+        //
+        addClickHandler(content, marker);
+      });
+    }
+    // functions
+    var opts = {
+      width : 250,     // 信息窗口宽度
+      height: 80,     // 信息窗口高度
+      title : "信息窗口" , // 信息窗口标题
+      enableMessage:true//设置允许信息窗发送短息
+    };
+    function addClickHandler(content, marker){
+      marker.addEventListener("click",function(e){
+        openInfo(content,e)}
+      );
+    }
+    function openInfo(content, e){
+      var p = e.target;
+      var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
+      var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象
+      map.openInfoWindow(infoWindow,point); //开启信息窗口
+    }
+  })();
+  // End  : 添加弹窗
 
 </script>
 <!-- End  : 百度地图 js -->
