@@ -2,6 +2,7 @@ package com.gasmonitor.vo;
 
 import org.springframework.data.domain.Page;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,6 +18,18 @@ public class AjaxResult<T> {
 
     public AjaxResult() {
     }
+
+    public AjaxResult(T data) {
+        this.data = new ArrayList<T>();
+        if (data != null) {
+            this.data.add(data);
+        }
+
+        this.setTotal(this.data.size());
+        this.setPage(1);
+        this.setTotalPage(1);
+    }
+
 
     public AjaxResult(List<T> data) {
         this.data = data;

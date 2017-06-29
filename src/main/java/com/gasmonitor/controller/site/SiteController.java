@@ -39,7 +39,7 @@ public class SiteController {
 
     @RequestMapping(value = "/ajax/update", method = RequestMethod.POST)
     @ResponseBody
-    public Site listStie(Long id, String name, Double longitude, Double latitude) {
+    public Site update(Long id, String name, Double longitude, Double latitude) {
         Site site = siteRepository.findOne(id);
         if (site == null) {
             return null;
@@ -58,4 +58,16 @@ public class SiteController {
         return siteRepository.save(site);
     }
 
+
+    //    通过Id查询一个站点的信息
+    @RequestMapping(value = "/ajax/get")
+    @ResponseBody
+    public AjaxResult<Site> get(Long id) {
+        if (id == null) {
+            return null;
+        } else {
+            Site site = siteRepository.getOne(id);
+            return new AjaxResult<Site>(site);
+        }
+    }
 }
