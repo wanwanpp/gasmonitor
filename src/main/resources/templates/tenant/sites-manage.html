@@ -1,105 +1,320 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8"/>
-  <title>租户 - 站点管理</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1"/>
   <meta name="renderer" content="webkit"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="format-detection" content="telephone=no"/>
+
+  <title>租户 - 站点管理</title>
+
   <link rel="stylesheet" href="/layui/css/layui.css" media="all"/>
   <link rel="stylesheet" href="/css/main.css" media="all"/>
   <!--
   <link rel="stylesheet" href="/css/me.css" media="all"/>-->
   <style>
-    body { margin: 10px; }
+    body { margin: 10px; overflow-y: scroll; }
+    table tbody.hot_news tr td.align-right { text-align:right; }
   </style>
+  <!-- Start: 百度地图 css -->
+  <style type="text/css">
+    body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+  </style>
+  <!-- End  : 百度地图 css -->
+  <!-- Start: layui search css -->
+  <style>
+    .component .layui-input {
+      height: 30px;
+      line-height: 30px;
+      padding-left: 12px;
+      background-color: #424652;
+      border: none 0;
+      color: #fff;
+      font-size: 12px;
+      border-radius: 0;
+    }
+    .component { width: 260px; margin-top: 0; border-radius: 0; }
+  </style>
+  <!-- End  : layui search css -->
+
 
 </head>
-<body class="childrenBody">
-  <!-- Start: 顶部文字描述 -->
-  <blockquote class="layui-elem-quote">
-    <ol>
-      <li>站点管理（站点设备管理）【点了站点管理以后：左边站点列表；右边上地图，右边下站点详细信息（不点击的时候右边地图显示全部；点击列表中某一个站点，地图只显示该站点，右边下部显示详情且可以编辑）】</li>
-      <li>（站点详情编辑）地图上拖动修改位置，只显示一个，站点列表搜索功能</li>
-      <li>列表中每个站点后面，有个“显示设备”按钮（点击以后跳转到【设备管理】，且就是当前点击站点作为搜索条件，该站点下的所有设备列表）</li>
-    </ol>
-  </blockquote>
-  <!-- End  : 顶部文字描述 -->
-  <!-- Start： 左右布局 -->
-  <div class="row">
-    <div class="sysNotice col">
-      <blockquote class="layui-elem-quote title">更新日志</blockquote>
-      <div class="layui-elem-quote layui-quote-nm">
-        <h3># 1.0.9_rls （发行版） - 2017-03-01</h3>
-        <p>* checkbox复选框原始风格支持不显示文字（之前会默认显示：勾选）</p>
-        <p>* 进度条超出100%情况下的自动处理</p>
-        <p>* 修复Tab选项卡在出现下拉按钮时，点击最后的几个选项卡未能正常切换的bug</p>
-        <p>* 修复select组件搜索选择时会先显示之前的值再替换新的值的不良体验</p>
-        <p>* 修复默认进度条0%时，文本出现太过于左侧的问题</p>
-        <br/>
-        <p># 1.0.9</p>
-        <p>* 新增“折叠面板”页面元素及相关事件监听</p>
-        <p>* select组件增加搜索匹配功能，通过参数 lay-search 开启</p>
-        <p>* checkbox组件增加原始风格样式，通过设置 lay-skin="primary" 开启（跟系统自带的类似样貌）</p>
-        <p>* 升级 layer弹层组件到 3.0.2 （ layer3.0.2更新日志 ）</p>
-        <p>* 表单元素增加属性 lay-ignore ,设置后，将不会对该标签进行美化渲染，即保留系统风格</p>
-        <p>* 开关增加两种状态的自定义文本，通过参数 lay-text="ON|OFF" 开启</p>
-        <p>* 修复Tab选项卡嵌套的Tab没有对应的内容结构时，切换到了父级内容的bug</p>
-        <p>* 修复Tab选项卡容器中使用下拉框时，被溢出隐藏的问题</p>
-        <p>* 修复Tab选项卡溢满情况下，点击展开按钮，再在外部添加一个选项卡出现异常的bug</p>
-        <p>* Tab选项卡部分UI细节优化</p>
-        <p>* Tab选项卡的tabAdd增加id参数，用于在删除和切换时，以id作为匹配媒介</p>
+  <body class="childrenBody">
+    <!-- Start: 顶部文字描述 -->
+    <!--<blockquote class="layui-elem-quote">
+      <ol>
+        <li>站点管理（站点设备管理）【点了站点管理以后：左边站点列表；右边上地图，右边下站点详细信息（不点击的时候右边地图显示全部；点击列表中某一个站点，地图只显示该站点，右边下部显示详情且可以编辑）】</li>
+        <li>（站点详情编辑）地图上拖动修改位置，只显示一个，站点列表搜索功能</li>
+        <li>列表中每个站点后面，有个“显示设备”按钮（点击以后跳转到【设备管理】，且就是当前点击站点作为搜索条件，该站点下的所有设备列表）</li>
+      </ol>
+    </blockquote>-->
+    <!-- End  : 顶部文字描述 -->
+    <!-- Start： 左右布局 -->
+    <div class="row left-right-layout">
+      <div class="sysNotice col left-list">
+        <blockquote class="layui-elem-quote title">站点列表</blockquote>
+        <!-- Start: 搜索 -->
+        <div class="layui-form component">
+          <select lay-search="" lay-filter="component">
+            <option value="">搜索组件或模块</option>
+            <option value="element/color.html">color 颜色</option>
+            <option value="element/icon.html">iconfont 字体图标</option>
+            <option value="element/button.html">button 按钮</option>
+            <option value="element/form.html">form 表单组</option>
+            <option value="element/form.html#input">input 输入框</option>
+            <option value="element/form.html#select">select 下拉选择框</option>
+            <option value="element/form.html#checkbox">checkbox 复选框</option>
+            <option value="element/form.html#switch">switch 开关</option>
+            <option value="element/form.html#radio">radio 单选框</option>
+            <option value="element/form.html#textarea">textarea 文本域</option>
+            <option value="element/nav.html">nav 导航菜单</option>
+            <option value="element/nav.html#breadcrumb">breadcrumb 面包屑</option>
+            <option value="element/tab.html">tabs 选项卡</option>
+            <option value="element/table.html">table 表格</option>
+            <option value="element/progress.html">progress 进度条</option>
+            <option value="element/collapse.html">collapse 折叠面板/手风琴</option>
+            <option value="element/auxiliar.html#blockquote">blockquote 引用块</option>
+            <option value="element/auxiliar.html#fieldset">fieldset 字段集</option>
+            <option value="modules/layer.html">layer 弹出层/弹窗综合</option>
+            <option value="modules/layim.html">layim 即时通讯/聊天</option>
+            <option value="modules/laydate.html">laydate 日期时间选择器</option>
+            <option value="modules/laypage.html">laypage 分页</option>
+            <option value="modules/laytpl.html">laytpl 模板引擎</option>
+            <option value="modules/form.html">form 表单模块</option>
+            <option value="modules/element.html">element 常用元素操作</option>
+            <option value="modules/layedit.html">layedit 富文本编辑器</option>
+            <option value="modules/upload.html">upload 文件/图片上传</option>
+            <option value="modules/tree.html">tree 树形菜单</option>
+            <option value="modules/util.html">util 工具集</option>
+            <option value="modules/flow.html">flow 信息流/图片懒加载</option>
+            <option value="modules/code.html">code 代码修饰</option>
+          </select><div class="layui-unselect layui-form-select"><div class="layui-select-title"><input type="text" placeholder="搜索组件或模块" value="" class="layui-input layui-unselect" /><i class="layui-edge"></i></div><dl class="layui-anim layui-anim-upbit"><dd lay-value="element/color.html" class="">color 颜色</dd><dd lay-value="element/icon.html" class="">iconfont 字体图标</dd><dd lay-value="element/button.html" class="">button 按钮</dd><dd lay-value="element/form.html" class="">form 表单组</dd><dd lay-value="element/form.html#input" class="">input 输入框</dd><dd lay-value="element/form.html#select" class="">select 下拉选择框</dd><dd lay-value="element/form.html#checkbox" class="">checkbox 复选框</dd><dd lay-value="element/form.html#switch" class="">switch 开关</dd><dd lay-value="element/form.html#radio" class="">radio 单选框</dd><dd lay-value="element/form.html#textarea" class="">textarea 文本域</dd><dd lay-value="element/nav.html" class="">nav 导航菜单</dd><dd lay-value="element/nav.html#breadcrumb" class="">breadcrumb 面包屑</dd><dd lay-value="element/tab.html" class="">tabs 选项卡</dd><dd lay-value="element/table.html" class="">table 表格</dd><dd lay-value="element/progress.html" class="">progress 进度条</dd><dd lay-value="element/collapse.html" class="">collapse 折叠面板/手风琴</dd><dd lay-value="element/auxiliar.html#blockquote" class="">blockquote 引用块</dd><dd lay-value="element/auxiliar.html#fieldset" class="">fieldset 字段集</dd><dd lay-value="modules/layer.html" class="">layer 弹出层/弹窗综合</dd><dd lay-value="modules/layim.html" class="">layim 即时通讯/聊天</dd><dd lay-value="modules/laydate.html" class="">laydate 日期时间选择器</dd><dd lay-value="modules/laypage.html" class="">laypage 分页</dd><dd lay-value="modules/laytpl.html" class="">laytpl 模板引擎</dd><dd lay-value="modules/form.html" class="">form 表单模块</dd><dd lay-value="modules/element.html" class="">element 常用元素操作</dd><dd lay-value="modules/layedit.html" class="">layedit 富文本编辑器</dd><dd lay-value="modules/upload.html" class="">upload 文件/图片上传</dd><dd lay-value="modules/tree.html" class="">tree 树形菜单</dd><dd lay-value="modules/util.html" class="">util 工具集</dd><dd lay-value="modules/flow.html" class="">flow 信息流/图片懒加载</dd><dd lay-value="modules/code.html" class="">code 代码修饰</dd></dl></div>
+        </div>
+        <!-- End  : 搜索 -->
+        <table class="layui-table" lay-skin="line">
+          <colgroup>
+            <col width="110">
+
+            </col>
+          </colgroup>
+          <tbody class="hot_news">
+          <tr>
+            <td align="left">站点 1</td>
+            <td class="align-right">
+              <button class="layui-btn layui-btn-normal">查看设备</button>
+            </td>
+          </tr>
+          <tr>
+            <td align="left">站点 2</td>
+            <td class="align-right">
+              <button class="layui-btn layui-btn-normal">查看设备</button>
+            </td>
+          </tr>
+          <tr>
+            <td align="left">站点 3</td>
+            <td class="align-right">
+              <button class="layui-btn layui-btn-normal">查看设备</button>
+            </td>
+          </tr>
+          <tr>
+            <td align="left">站点 4</td>
+            <td class="align-right">
+              <button class="layui-btn layui-btn-normal">查看设备</button>
+            </td>
+          </tr>
+          <tr>
+            <td align="left">站点 5</td>
+            <td class="align-right">
+              <button class="layui-btn layui-btn-normal">查看设备</button>
+            </td>
+          </tr>
+          <tr>
+            <td align="left">站点 6</td>
+            <td class="align-right">
+              <button class="layui-btn layui-btn-normal">查看设备</button>
+            </td>
+          </tr>
+          <tr>
+            <td align="left">站点 7</td>
+            <td class="align-right">
+              <button class="layui-btn layui-btn-normal">查看设备</button>
+            </td>
+          </tr>
+          <tr>
+            <td align="left">站点 8</td>
+            <td class="align-right">
+              <button class="layui-btn layui-btn-normal">查看设备</button>
+            </td>
+          </tr>
+          <tr>
+            <td align="left">站点 9</td>
+            <td class="align-right">
+              <button class="layui-btn layui-btn-normal">查看设备</button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="sysNotice col right-details">
+        <blockquote class="layui-elem-quote title">站点地图<i class="iconfont icon-new1"></i></blockquote>
+        <table class="layui-table" lay-skin="line">
+          <colgroup>
+            <col width="110"></col>
+          </colgroup>
+          <div class="layui-elem-quote layui-quote-nm" style="min-height: 300px; max-height: 300px; height: 100%;">
+            <div id="allmap"></div>
+
+          </div>
+        </table>
+        <blockquote class="layui-elem-quote title">站点详情</blockquote>
+        <table class="layui-table">
+          <colgroup>
+            <col width="150"></col>
+          </colgroup>
+          <tbody>
+          <tr>
+            <td>当前版本</td>
+            <td class="version">v1.0.0</td>
+          </tr>
+          <tr>
+            <td>开发作者</td>
+            <td class="author">请叫我马哥</td>
+          </tr>
+          <tr>
+            <td>网站首页</td>
+            <td class="homePage">page/index.html</td>
+          </tr>
+          <tr>
+            <td>服务器环境</td>
+            <td class="server">windows</td>
+          </tr>
+          <tr>
+            <td>数据库版本</td>
+            <td class="dataBase">8.00.2039</td>
+          </tr>
+          <tr>
+            <td>最大上传限制</td>
+            <td class="maxUpload">2M</td>
+          </tr>
+          <tr>
+            <td>当前用户权限</td>
+            <td class="userRights">总管理员</td>
+          </tr>
+          </tbody>
+        </table>
       </div>
     </div>
-    <div class="sysNotice col">
-      <blockquote class="layui-elem-quote title">系统基本参数</blockquote>
-      <table class="layui-table">
-        <colgroup>
-          <col width="150"></col>
-        </colgroup>
-        <tbody>
-        <tr>
-          <td>当前版本</td>
-          <td class="version"></td>
-        </tr>
-        <tr>
-          <td>开发作者</td>
-          <td class="author"></td>
-        </tr>
-        <tr>
-          <td>网站首页</td>
-          <td class="homePage"></td>
-        </tr>
-        <tr>
-          <td>服务器环境</td>
-          <td class="server"></td>
-        </tr>
-        <tr>
-          <td>数据库版本</td>
-          <td class="dataBase"></td>
-        </tr>
-        <tr>
-          <td>最大上传限制</td>
-          <td class="maxUpload"></td>
-        </tr>
-        <tr>
-          <td>当前用户权限</td>
-          <td class="userRights"></td>
-        </tr>
-        </tbody>
-      </table>
-      <blockquote class="layui-elem-quote title">最新文章<i class="iconfont icon-new1"></i></blockquote>
-      <table class="layui-table" lay-skin="line">
-        <colgroup>
-          <col width="110"></col>
-        </colgroup>
-        <tbody class="hot_news"></tbody>
-      </table>
-    </div>
-  </div>
-  <!-- End  ： 左右布局 -->
-</body>
+    <!-- End  ： 左右布局 -->
+  </body>
 </html>
+<!-- Start: 百度地图 js -->
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&amp;ak=PWlgUxoilAgQ4zLjB6MIGMvAGKsG5G4X"></script>
+<script type="text/javascript">
+  // 百度地图API功能
+  var map = new BMap.Map("allmap");  // 创建Map实例
+  var pointChengDu = new BMap.Point(104.072, 30.663);
+  // map.centerAndZoom("成都", 12);      // 初始化地图,用城市名设置地图中心点
+  map.centerAndZoom(pointChengDu, 12);      // 初始化地图,用城市名设置地图中心点
+  map.enableScrollWheelZoom(true);  // 启用缩放
+
+  // Start: 添加控件和比例尺
+  (function() {
+    var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_TOP_LEFT});// 左上角，添加比例尺
+    var top_left_navigation = new BMap.NavigationControl();  //左上角，添加默认缩放平移控件
+    // var top_right_navigation = new BMap.NavigationControl({anchor: BMAP_ANCHOR_TOP_RIGHT, type: BMAP_NAVIGATION_CONTROL_SMALL}); //右上角，仅包含平移和缩放按钮
+    /*缩放控件type有四种类型:
+     BMAP_NAVIGATION_CONTROL_SMALL：仅包含平移和缩放按钮；BMAP_NAVIGATION_CONTROL_PAN:仅包含平移按钮；BMAP_NAVIGATION_CONTROL_ZOOM：仅包含缩放按钮*/
+
+    //添加控件和比例尺
+    function add_control(){
+      map.addControl(top_left_control);
+      map.addControl(top_left_navigation);
+      // map.addControl(top_right_navigation);
+    }
+
+    // 执行添加
+    add_control();
+  })();
+  // End  : 添加控件和比例尺
+
+  // Start: 添加地图类型和缩略图
+  (function() {
+    // var mapType1 = new BMap.MapTypeControl({mapTypes: [BMAP_NORMAL_MAP,BMAP_HYBRID_MAP]});
+    var mapType2 = new BMap.MapTypeControl({anchor: BMAP_ANCHOR_TOP_RIGHT});
+
+    var overView = new BMap.OverviewMapControl();
+    var overViewOpen = new BMap.OverviewMapControl({isOpen:true, anchor: BMAP_ANCHOR_BOTTOM_RIGHT});
+    //添加地图类型和缩略图
+    function add_control(){
+      // map.addControl(mapType1);          //2D图，卫星图
+      map.addControl(mapType2);          //左上角，默认地图控件
+      map.setCurrentCity("成都");        //由于有3D图，需要设置城市哦
+      map.addControl(overView);          //添加默认缩略地图控件
+      map.addControl(overViewOpen);      //右下角，打开
+    }
+
+    // 执行添加 function
+    add_control();
+  })();
+  // End  : 添加地图类型和缩略图
+
+  // Start: 添加定位相关控件
+  /*(function() {
+    // 添加带有定位的导航控件
+    var navigationControl = new BMap.NavigationControl({
+      // 靠左上角位置
+      anchor: BMAP_ANCHOR_TOP_LEFT,
+      // LARGE类型
+      type: BMAP_NAVIGATION_CONTROL_LARGE,
+      // 启用显示定位
+      enableGeolocation: true
+    });
+    map.addControl(navigationControl);
+    // 添加定位控件
+    var geolocationControl = new BMap.GeolocationControl();
+    geolocationControl.addEventListener("locationSuccess", function(e){
+      // 定位成功事件
+      var address = '';
+      address += e.addressComponent.province;
+      address += e.addressComponent.city;
+      address += e.addressComponent.district;
+      address += e.addressComponent.street;
+      address += e.addressComponent.streetNumber;
+      alert("当前定位地址为：" + address);
+    });
+    geolocationControl.addEventListener("locationError",function(e){
+      // 定位失败事件
+      alert(e.message);
+    });
+    map.addControl(geolocationControl);
+  })();*/
+  // End  : 添加定位相关控件
+
+  // Start: 添加覆盖物 点
+  (function() {
+    var myIcon = new BMap.Icon("http://www.iconpng.com/png/pittogrammi/93.png", new BMap.Size(64,64));
+    var marker = new BMap.Marker(pointChengDu, {icon: myIcon});
+    map.addOverlay(marker);            //增加点
+    marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+    //
+    setTimeout(function() {
+      var pointChengDu2 = new BMap.Point(104.06, 30.65);
+      var marker2 = new BMap.Marker(pointChengDu2);
+      map.addOverlay(marker2);            //增加点
+      marker2.setAnimation(BMAP_ANIMATION_DROP); //跳动的动画
+      setTimeout(function() {
+        marker2.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+      }, 1000);
+    }, 1000);
+  })();
+  // End  : 添加覆盖物 点
+</script>
+<!-- End  : 百度地图 js -->
+<!-- Start: 与服务器交互 ajax -->
+<script>
+
+</script>
+<!-- End  : 与服务器交互 ajax -->
