@@ -374,8 +374,42 @@
 
 </script>
 <!-- End  : 百度地图 js -->
+
+<script type="text/javascript" src="/layui/layui.js"></script>
+
 <!-- Start: 与服务器交互 ajax -->
 <script>
+  (function() {
+    layui.use(['laytpl', 'jquery', 'layer'], function() {
+      var laytpl = layui.laytpl;
+      var $ = layui.jquery;
+      var getUrl = "/site/ajax/list";
+      var layer = layui.layer;
 
+      //第一次加载数据
+      searchList();
+
+      function searchList(currPage) {
+        console.log("开始查询站点 list 的信息 ...");
+        layer.load();   // loading
+        $.get(
+                getUrl,
+                {"currPage": currPage || 1},
+                function (data) {
+                  console.log("查询到的站点 list 信息:" + JSON.stringify(data));
+                  var total = data.total;
+                  var page = data.page;
+                  var totalPage = data.totalPage;
+                  var sitesDataArr = data.data;
+                  console.log(['[sites-manage searchList]total: ', total].join(''));
+                  console.log(['[sites-manage searchList]page: ', page].join(''));
+                  console.log(['[sites-manage searchList]totalPage: ', totalPage].join(''));
+                  console.log(['[sites-manage searchList]sitesDataArr: ', JSON.stringify(sitesDataArr)].join(''));
+                },
+                "json"
+        );
+      }
+    });
+  })();
 </script>
 <!-- End  : 与服务器交互 ajax -->
