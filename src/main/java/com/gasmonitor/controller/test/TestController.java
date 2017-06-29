@@ -3,17 +3,20 @@ package com.gasmonitor.controller.test;
 import com.gasmonitor.dao.DeviceRepository;
 import com.gasmonitor.dao.TenantRepository;
 import com.gasmonitor.entity.Device;
+import com.gasmonitor.entity.Site;
 import com.gasmonitor.entity.Tenant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by saplmm on 2017/6/26.
@@ -51,6 +54,20 @@ public class TestController {
         device.setTokenId("tokendId");
         device.setStatus(1);
         return deviceRepository.save(device);
+    }
+
+    @RequestMapping(value = "/device/get/{id}")
+    public Object getDevice(@PathVariable(value = "id") long id) {
+        Device device = deviceRepository.findOne(id);
+        logger.info("查询到id{}的device{}", id, device);
+        if (device == null) {
+            return null;
+        } else {
+            Set<Site> sites = device.getSiteSet();
+            logger.info("查询到id{}的device{}的sites{}", id, device, sites);
+            return sites;
+        }
+
     }
 
     //暂时设置为get方便测试

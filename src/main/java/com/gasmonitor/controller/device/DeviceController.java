@@ -39,5 +39,4 @@ public class DeviceController {
         logger.debug("通过站点{}查询到的所有设备的信息{}", siteId, devices);
         return new AjaxResult<Device>(devices);
     }
-
 }
