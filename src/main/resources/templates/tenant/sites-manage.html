@@ -215,8 +215,90 @@
 <script type="text/javascript">
   // 百度地图API功能
   var map = new BMap.Map("allmap");  // 创建Map实例
-  map.centerAndZoom("成都", 12);      // 初始化地图,用城市名设置地图中心点
+  var pointChengDu = new BMap.Point(104.072, 30.663);
+  // map.centerAndZoom("成都", 12);      // 初始化地图,用城市名设置地图中心点
+  map.centerAndZoom(pointChengDu, 12);      // 初始化地图,用城市名设置地图中心点
   map.enableScrollWheelZoom(true);  // 启用缩放
+
+  // Start: 添加控件和比例尺
+  (function() {
+    var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_TOP_LEFT});// 左上角，添加比例尺
+    var top_left_navigation = new BMap.NavigationControl();  //左上角，添加默认缩放平移控件
+    // var top_right_navigation = new BMap.NavigationControl({anchor: BMAP_ANCHOR_TOP_RIGHT, type: BMAP_NAVIGATION_CONTROL_SMALL}); //右上角，仅包含平移和缩放按钮
+    /*缩放控件type有四种类型:
+     BMAP_NAVIGATION_CONTROL_SMALL：仅包含平移和缩放按钮；BMAP_NAVIGATION_CONTROL_PAN:仅包含平移按钮；BMAP_NAVIGATION_CONTROL_ZOOM：仅包含缩放按钮*/
+
+    //添加控件和比例尺
+    function add_control(){
+      map.addControl(top_left_control);
+      map.addControl(top_left_navigation);
+      // map.addControl(top_right_navigation);
+    }
+
+    // 执行添加
+    add_control();
+  })();
+  // End  : 添加控件和比例尺
+
+  // Start: 添加地图类型和缩略图
+  (function() {
+    // var mapType1 = new BMap.MapTypeControl({mapTypes: [BMAP_NORMAL_MAP,BMAP_HYBRID_MAP]});
+    var mapType2 = new BMap.MapTypeControl({anchor: BMAP_ANCHOR_TOP_RIGHT});
+
+    var overView = new BMap.OverviewMapControl();
+    var overViewOpen = new BMap.OverviewMapControl({isOpen:true, anchor: BMAP_ANCHOR_BOTTOM_RIGHT});
+    //添加地图类型和缩略图
+    function add_control(){
+      // map.addControl(mapType1);          //2D图，卫星图
+      map.addControl(mapType2);          //左上角，默认地图控件
+      map.setCurrentCity("成都");        //由于有3D图，需要设置城市哦
+      map.addControl(overView);          //添加默认缩略地图控件
+      map.addControl(overViewOpen);      //右下角，打开
+    }
+
+    // 执行添加 function
+    add_control();
+  })();
+  // End  : 添加地图类型和缩略图
+
+  // Start: 添加定位相关控件
+  /*(function() {
+    // 添加带有定位的导航控件
+    var navigationControl = new BMap.NavigationControl({
+      // 靠左上角位置
+      anchor: BMAP_ANCHOR_TOP_LEFT,
+      // LARGE类型
+      type: BMAP_NAVIGATION_CONTROL_LARGE,
+      // 启用显示定位
+      enableGeolocation: true
+    });
+    map.addControl(navigationControl);
+    // 添加定位控件
+    var geolocationControl = new BMap.GeolocationControl();
+    geolocationControl.addEventListener("locationSuccess", function(e){
+      // 定位成功事件
+      var address = '';
+      address += e.addressComponent.province;
+      address += e.addressComponent.city;
+      address += e.addressComponent.district;
+      address += e.addressComponent.street;
+      address += e.addressComponent.streetNumber;
+      alert("当前定位地址为：" + address);
+    });
+    geolocationControl.addEventListener("locationError",function(e){
+      // 定位失败事件
+      alert(e.message);
+    });
+    map.addControl(geolocationControl);
+  })();*/
+  // End  : 添加定位相关控件
+
+  // Start: 添加覆盖物 点
+  (function() {
+    var marker = new BMap.Marker(pointChengDu);
+    map.addOverlay(marker);            //增加点
+  })();
+  // End  : 添加覆盖物 点
 </script>
 <!-- End  : 百度地图 js -->
 <!-- Start: 与服务器交互 ajax -->
