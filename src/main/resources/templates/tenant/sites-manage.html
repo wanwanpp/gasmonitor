@@ -297,6 +297,17 @@
   (function() {
     var marker = new BMap.Marker(pointChengDu);
     map.addOverlay(marker);            //增加点
+    marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+    //
+    setTimeout(function() {
+      var pointChengDu2 = new BMap.Point(104.06, 30.65);
+      var marker2 = new BMap.Marker(pointChengDu2);
+      map.addOverlay(marker2);            //增加点
+      marker2.setAnimation(BMAP_ANIMATION_DROP); //跳动的动画
+      setTimeout(function() {
+        marker2.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+      }, 1000);
+    }, 1000);
   })();
   // End  : 添加覆盖物 点
 </script>
