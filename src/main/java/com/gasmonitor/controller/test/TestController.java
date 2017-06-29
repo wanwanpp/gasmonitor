@@ -60,14 +60,11 @@ public class TestController {
     public Object getDevice(@PathVariable(value = "id") long id) {
         Device device = deviceRepository.findOne(id);
         logger.info("查询到id{}的device{}", id, device);
-        if (device == null) {
-            return null;
-        } else {
+        if (device != null) {
             Set<Site> sites = device.getSiteSet();
             logger.info("查询到id{}的device{}的sites{}", id, device, sites);
-            return sites;
         }
-
+        return device;
     }
 
     //暂时设置为get方便测试
