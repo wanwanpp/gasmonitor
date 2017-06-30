@@ -416,7 +416,7 @@
                   console.log(['[sites-manage searchList]totalPage: ', totalPage].join(''));
                   console.log(['[sites-manage searchList]sitesDataArr: ', JSON.stringify(sitesDataArr)].join(''));
                   // Start:
-                  laytpl(sitesList.innerHTML).render(data, function (html) {
+                  laytpl(sitesList.innerHTML).render(sitesDataArr, function (html) {
                     sitesListTableView.innerHTML = html;
                     layer.closeAll('loading');   //关闭所有的loading
                   });
