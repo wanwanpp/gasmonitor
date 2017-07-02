@@ -334,6 +334,9 @@
       //第一次加载数据
       searchList();
 
+      // 站点 marker map
+      var sitesId2MarkerMap = {};
+
       function searchList(currPage) {
         console.log("开始查询站点 list 的信息 ...");
         layer.load();   // loading
@@ -364,6 +367,7 @@
                       var marker = new BMap.Marker(pointChengDu4);// 创建标注
                       map.addOverlay(marker);             // 将标注添加到地图中
                       markersArr.push(marker);
+                      sitesId2MarkerMap[siteDataItem.id] = marker;
                     });
                   }
                   // End  : 站点在地图上增加 marker
