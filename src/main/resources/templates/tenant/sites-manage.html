@@ -319,7 +319,7 @@
   </table>
 </script>
 <script id="layerContent_tpl" type="text/html">
-  <div style="width: 100%; text-align: center; margin: 10px;">{{d}}</div>
+  <div style="width: 96%; text-align: center; margin: 10px auto;">{{d}}</div>
 </script>
 <script>
   //  <![data[
@@ -350,12 +350,23 @@
                   console.log(['[sites-manage searchList]page: ', page].join(''));
                   console.log(['[sites-manage searchList]totalPage: ', totalPage].join(''));
                   console.log(['[sites-manage searchList]sitesDataArr: ', JSON.stringify(sitesDataArr)].join(''));
-                  // Start:
+                  // Start: 站点列表刷新
                   laytpl(sitesList.innerHTML).render(sitesDataArr, function (html) {
                     sitesListTableView.innerHTML = html;
                     layer.closeAll('loading');   //关闭所有的loading
                   });
-                  // End  :
+                  // End  : 站点列表刷新
+
+                  // Start: 站点在地图上增加 marker
+                  if(sitesDataArr && sitesDataArr.length && sitesDataArr.length > 0) {
+                    sitesDataArr.forEach(function(siteDataItem, siteDataIndex) {
+                      var pointChengDu4 = new BMap.Point(pointChengDu.lng + siteDataItem.longitude / 1000, pointChengDu.lat + siteDataItem.latitude / 1000);
+                      var marker = new BMap.Marker(pointChengDu4);// 创建标注
+                      map.addOverlay(marker);             // 将标注添加到地图中
+                      markersArr.push(marker);
+                    });
+                  }
+                  // End  : 站点在地图上增加 marker
                 },
                 "json"
         );
