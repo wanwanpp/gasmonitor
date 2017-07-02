@@ -309,9 +309,9 @@
     <tbody class="hot_news">
     {{# layui.each(d, function(siteDataIndex, siteDataItem){ }}
     <tr>
-      <td align="left">[id: {{siteDataItem.id}}] | [name: {{siteDataItem.name}}] | [longitude: {{siteDataItem.longitude}}] | [latitude: {{siteDataItem.latitude}}] | [parent: {{siteDataItem.parent}}]</td>
+      <td align="left">[name: {{siteDataItem.name}}] | [longitude: {{siteDataItem.longitude}}] | [latitude: {{siteDataItem.latitude}}] | [parent: {{siteDataItem.parent}}]</td>
       <td class="align-right">
-        <button class="layui-btn layui-btn-normal">查看设备</button>
+        <button class="layui-btn layui-btn-normal view-devices-by-site-id" data-id="{{siteDataItem.id}}">查看设备</button>
       </td>
     </tr>
     {{# }); }}
@@ -372,6 +372,9 @@
     </tbody>
   </table>
 </script>
+<script id="viewDevicesBySiteId_tpl" type="text/html">
+  <div style="width: 100%; text-align: center; margin-top: 20px;">siteId: {{d.siteId}}</div>
+</script>
 <script>
   //  <![data[
 
@@ -411,6 +414,37 @@
                 "json"
         );
       }
+
+      // Start: 【查看设备】按钮被点击
+      $(document).on('click', '.view-devices-by-site-id', function() {
+        var thisBtn = $(this);
+        var siteId = thisBtn.data('id');
+        //
+        laytpl(viewDevicesBySiteId_tpl.innerHTML).render({siteId: siteId}, function(html) {
+          layer.open({
+            type: 1
+            , title: '根据站点查询设备'
+            , area: ['400px', '300px']
+            , shadeClose: true //开启遮罩关闭
+            , maxmin: true
+            , content: html || ['siteId: ', siteId].join('')
+            , btn: ['取消', '提交']
+            , yes: function (index, layero) {
+              alert('点击了按钮 yes');
+              //按钮【按钮一】的回调
+              layer.close(index);
+              // alert("点击了按钮1");
+            }
+            , btn2: function (index, layero) {
+              alert("点击了按钮 2");
+              //按钮【按钮二】的回调
+              //return false 开启该代码可禁止点击该按钮关闭
+            }
+            ,
+          });
+        });
+      });
+      // End  : 【查看设备】按钮被点击
     });
   })();
 
