@@ -126,6 +126,7 @@
     <!-- End  ： 左右布局 -->
   </body>
 </html>
+<script type="text/javascript" src="/layui/layui.js"></script>
 <!-- Start: 百度地图 js -->
 <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&amp;ak=PWlgUxoilAgQ4zLjB6MIGMvAGKsG5G4X"></script>
 <script type="text/javascript">
@@ -134,6 +135,12 @@
 
   // 百度地图API功能
   var map = new BMap.Map("allmap");  // 创建Map实例
+  // Start: SitesManageGlobal 中存储需要跨作用域使用的 map
+  if(!layui.SitesManageGlobal) {
+      layui.SitesManageGlobal = {};
+  }
+  layui.SitesManageGlobal['map'] = map;
+  // End  : SitesManageGlobal 中存储需要跨作用域使用的 map
   var pointChengDu = new BMap.Point(104.072, 30.663);
   // map.centerAndZoom("成都", 12);      // 初始化地图,用城市名设置地图中心点
   map.centerAndZoom(pointChengDu, 12);      // 初始化地图,用城市名设置地图中心点
@@ -296,8 +303,6 @@
 </script>
 <!-- End  : 百度地图 js -->
 
-<script type="text/javascript" src="/layui/layui.js"></script>
-
 <!-- Start: 与服务器交互 ajax -->
 <script id="sitesList" type="text/html">
   <table class="layui-table" lay-skin="line">
@@ -366,8 +371,31 @@
                       var pointChengDu4 = new BMap.Point(pointChengDu.lng + siteDataItem.longitude / 1000, pointChengDu.lat + siteDataItem.latitude / 1000);
                       var marker = new BMap.Marker(pointChengDu4);// 创建标注
                       map.addOverlay(marker);             // 将标注添加到地图中
+                      // 记录 marker
                       markersArr.push(marker);
                       sitesId2MarkerMap[siteDataItem.id] = marker;
+                      // Start: marker 点击后的弹出层
+                        addClickHandler(['[站点 id ： ', siteDataItem.id, '][站点 name ： ', siteDataItem.name, '][站点经度： ',
+                            siteDataItem.longitude, '][站点纬度： ', siteDataItem.latitude, ']'].join(''), marker);
+                        // functions
+                        var opts = {
+                            width : 250,     // 信息窗口宽度
+                            height: 80,     // 信息窗口高度
+                            title : "信息窗口" , // 信息窗口标题
+                            enableMessage:true//设置允许信息窗发送短息
+                        };
+                        function addClickHandler(content, marker) {
+                            marker.addEventListener("click",function(e){
+                                openInfo(content,e)}
+                            );
+                        }
+                        function openInfo(content, e){
+                            var p = e.target;
+                            var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat + 0.007);
+                            var infoWindow = new BMap.InfoWindow(content, opts);  // 创建信息窗口对象
+                            layui.SitesManageGlobal['map'].openInfoWindow(infoWindow, point); //开启信息窗口
+                        }
+                      // End  : marker 点击后的弹出层
                     });
                   }
                   // End  : 站点在地图上增加 marker
