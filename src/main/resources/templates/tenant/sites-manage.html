@@ -308,72 +308,18 @@
     </colgroup>
     <tbody class="hot_news">
     {{# layui.each(d, function(siteDataIndex, siteDataItem){ }}
-    <tr>
-      <td align="left">[name: {{siteDataItem.name}}] | [longitude: {{siteDataItem.longitude}}] | [latitude: {{siteDataItem.latitude}}] | [parent: {{siteDataItem.parent}}]</td>
+    <tr class="site-table-tr" data-id="{{siteDataItem.id}}" data-name="{{siteDataItem.name}}" data-longitude="{{siteDataItem.longitude}}" data-latitude="{{siteDataItem.latitude}}">
+      <td align="left">{{siteDataItem.name}}</td>
       <td class="align-right">
         <button class="layui-btn layui-btn-normal view-devices-by-site-id" data-id="{{siteDataItem.id}}">查看设备</button>
       </td>
     </tr>
     {{# }); }}
-    <tr>
-      <td align="left">站点 1</td>
-      <td class="align-right">
-        <button class="layui-btn layui-btn-normal">查看设备</button>
-      </td>
-    </tr>
-    <tr>
-      <td align="left">站点 2</td>
-      <td class="align-right">
-        <button class="layui-btn layui-btn-normal">查看设备</button>
-      </td>
-    </tr>
-    <tr>
-      <td align="left">站点 3</td>
-      <td class="align-right">
-        <button class="layui-btn layui-btn-normal">查看设备</button>
-      </td>
-    </tr>
-    <tr>
-      <td align="left">站点 4</td>
-      <td class="align-right">
-        <button class="layui-btn layui-btn-normal">查看设备</button>
-      </td>
-    </tr>
-    <tr>
-      <td align="left">站点 5</td>
-      <td class="align-right">
-        <button class="layui-btn layui-btn-normal">查看设备</button>
-      </td>
-    </tr>
-    <tr>
-      <td align="left">站点 6</td>
-      <td class="align-right">
-        <button class="layui-btn layui-btn-normal">查看设备</button>
-      </td>
-    </tr>
-    <tr>
-      <td align="left">站点 7</td>
-      <td class="align-right">
-        <button class="layui-btn layui-btn-normal">查看设备</button>
-      </td>
-    </tr>
-    <tr>
-      <td align="left">站点 8</td>
-      <td class="align-right">
-        <button class="layui-btn layui-btn-normal">查看设备</button>
-      </td>
-    </tr>
-    <tr>
-      <td align="left">站点 9</td>
-      <td class="align-right">
-        <button class="layui-btn layui-btn-normal">查看设备</button>
-      </td>
-    </tr>
     </tbody>
   </table>
 </script>
-<script id="viewDevicesBySiteId_tpl" type="text/html">
-  <div style="width: 100%; text-align: center; margin-top: 20px;">siteId: {{d.siteId}}</div>
+<script id="layerContent_tpl" type="text/html">
+  <div style="width: 100%; text-align: center; margin: 10px;">{{d}}</div>
 </script>
 <script>
   //  <![data[
@@ -415,19 +361,16 @@
         );
       }
 
-      // Start: 【查看设备】按钮被点击
-      $(document).on('click', '.view-devices-by-site-id', function() {
-        var thisBtn = $(this);
-        var siteId = thisBtn.data('id');
-        //
-        laytpl(viewDevicesBySiteId_tpl.innerHTML).render({siteId: siteId}, function(html) {
+      // Start: 展示 layerContent_tpl 于 layer 中
+      function showLayerContentTplInLayer(title, content) {
+        laytpl(layerContent_tpl.innerHTML).render(content, function(html) {
           layer.open({
             type: 1
-            , title: '根据站点查询设备'
+            , title: title
             , area: ['400px', '300px']
             , shadeClose: true //开启遮罩关闭
             , maxmin: true
-            , content: html || ['siteId: ', siteId].join('')
+            , content: html
             , btn: ['取消', '提交']
             , yes: function (index, layero) {
               alert('点击了按钮 yes');
@@ -443,8 +386,29 @@
             ,
           });
         });
+      }
+      // End  : 展示 layerContent_tpl 于 layer 中
+
+      // Start: 【查看设备】按钮被点击
+      $(document).on('click', '.view-devices-by-site-id', function() {
+        var thisBtn = $(this);
+        var siteId = thisBtn.data('id');
+        //
+        showLayerContentTplInLayer('根据站点查询设备', ['siteId: ', siteId].join(''))
       });
       // End  : 【查看设备】按钮被点击
+
+      // Start: [站点列表]中某站点被点击
+      $(document).on('click', '.site-table-tr', function() {
+        var thisTr = $(this);
+        var siteId = thisTr.data('id');
+        var siteName = thisTr.data('name');
+        var siteLongitude = thisTr.data('longitude');
+        var siteLatitude = thisTr.data('latitude');
+        //
+        showLayerContentTplInLayer('站点信息', ['[siteId: ', siteId, '][siteName: ', siteName, '][siteLongitude: ', siteLongitude, '][siteLatitude: ', siteLatitude, ']'].join(''))
+      });
+      // Start: [站点列表]中某站点被点击
     });
   })();
 
