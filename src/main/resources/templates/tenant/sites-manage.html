@@ -307,6 +307,14 @@
       </col>
     </colgroup>
     <tbody class="hot_news">
+    {{# layui.each(d, function(siteDataIndex, siteDataItem){ }}
+    <tr>
+      <td align="left">[id: {{siteDataItem.id}}] | [name: {{siteDataItem.name}}] | [longitude: {{siteDataItem.longitude}}] | [latitude: {{siteDataItem.latitude}}] | [parent: {{siteDataItem.parent}}]</td>
+      <td class="align-right">
+        <button class="layui-btn layui-btn-normal">查看设备</button>
+      </td>
+    </tr>
+    {{# }); }}
     <tr>
       <td align="left">站点 1</td>
       <td class="align-right">
