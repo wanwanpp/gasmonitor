@@ -9,13 +9,382 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="format-detection" content="telephone=no"/>
-  <!--<link rel="stylesheet" href="/layui/css/layui.css" media="all"/>
+  <link rel="stylesheet" href="/layui/css/layui.css" media="all"/>
+  <link rel="stylesheet" href="/css/main.css" media="all"/>
+  <!--
   <link rel="stylesheet" href="/css/me.css" media="all"/>-->
-
+  <style>
+    body { margin: 10px; overflow-y: scroll; }
+    table tbody.hot_news tr td.align-right { text-align:right; }
+  </style>
+  <!-- Start: layui search css -->
+  <style>
+    .component .layui-input {
+      height: 30px;
+      line-height: 30px;
+      padding-left: 12px;
+      background-color: #424652;
+      border: none 0;
+      color: #fff;
+      font-size: 12px;
+      border-radius: 0;
+    }
+    .component { width: 260px; margin-top: 0; border-radius: 0; }
+  </style>
+  <!-- End  : layui search css -->
+  <!-- Start: sites list css -->
+  <style>
+    .site-tr-selected { background-color: #FFFFCC; font-weight: bold; font-style: italic; color: #333; }
+    .site-tr-selected .layui-btn { font-weight: normal; font-style: normal; }
+  </style>
+  <!-- End  : sites list css -->
 </head>
 <body class="childrenBody">
-  <p>租户 - 设备管理。右部，左侧设备列表（需先搜索选择以指定站点，设备列表才能列出该站点下所有设备）。</p>
+  <!-- Start: 顶部文字描述 -->
+  <!--<p>租户 - 设备管理。右部，左侧设备列表（需先搜索选择以指定站点，设备列表才能列出该站点下所有设备）。</p>
   <p>右部右侧，1. 地图：设备 GIS ；2. 折线图：已勾选设备的折线图（根据服务器返回的数据）； 3. 列表：2 中折线图使用数据的列表展示形式。</p>
-  <p>站点只有地图、详情；设备有地图、曲线图、数据列表</p>
+  <p>站点只有地图、详情；设备有地图、曲线图、数据列表</p>-->
+  <!-- End  : 顶部文字描述 -->
+  <!-- Start： 左右布局 -->
+  <div class="row left-right-layout">
+    <div class="sysNotice col left-list">
+      <blockquote class="layui-elem-quote title">设备列表</blockquote>
+      <!-- Start: 搜索 -->
+      <div class="layui-form component">
+        <select lay-search lay-filter="component">
+          <option value="">搜索设备</option>
+          <option value="javascript:void(0);">设备 1</option>
+          <option value="javascript:void(0);">设备 2</option>
+          <option value="javascript:void(0);">设备 3</option>
+          <option value="javascript:void(0);">设备 4</option>
+          <option value="javascript:void(0);">设备 5</option>
+          <option value="javascript:void(0);">设备 6</option>
+          <option value="javascript:void(0);">设备 7</option>
+          <option value="javascript:void(0);">设备 8</option>
+          <option value="javascript:void(0);">设备 9</option>
+        </select>
+      </div>
+      <!-- End  : 搜索 -->
+      <div id="sitesListTableView"></div>
+    </div>
+    <div class="sysNotice col right-details">
+      <blockquote class="layui-elem-quote title">设备曲线<i class="iconfont icon-new1"></i></blockquote>
+      <table class="layui-table" lay-skin="line">
+        <colgroup>
+          <col width="110"></col>
+        </colgroup>
+        <div class="layui-elem-quote layui-quote-nm" style="min-height: 400px; max-height: 400px; height: 100%;">
+          <!--<div id="allmap"></div>-->
+          <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+          <div id="main" style="width: 100%; height:400px;"></div>
+
+        </div>
+      </table>
+      <blockquote class="layui-elem-quote title">设备详情</blockquote>
+      <table class="layui-table">
+        <colgroup>
+          <col width="150"></col>
+        </colgroup>
+        <thead>
+        <tr>
+          <th>时间</th>
+          <th>名称</th>
+          <th>工况流量</th>
+          <th>标况流量</th>
+          <th>温度</th>
+          <th>压力</th>
+          <th>累计流量</th>
+        </tr>
+        </thead>
+        <tbody id="siteDetailInfo">
+        <!--<tr>
+          <td>数据加载中，请稍候 。。。</td>
+        </tr>-->
+        <tr>
+          <td>2010-12-03 21:40:28</td>
+          <td>801 东风锻造厂</td>
+          <td>0</td>
+          <td>149.02</td>
+          <td>16.15</td>
+          <td>356.4</td>
+          <td>449710.44</td>
+        </tr>
+        <tr>
+          <td>2010-12-03 21:38:27</td>
+          <td>801 东风锻造厂</td>
+          <td>0</td>
+          <td>161.22</td>
+          <td>16.15</td>
+          <td>355.66</td>
+          <td>449705.44</td>
+        </tr>
+        <tr>
+          <td>2010-12-03 21:36:26</td>
+          <td>801 东风锻造厂</td>
+          <td>0</td>
+          <td>147.72</td>
+          <td>16.14</td>
+          <td>356.4</td>
+          <td>449700.03</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- End  ： 左右布局 -->
 </body>
 </html>
+<!-- Start: echarts -->
+<script src="/js/echarts.min.js"></script>
+<script>
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
+
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: 'ECharts 入门示例'
+        },
+        tooltip: {},
+        legend: {
+            data:['销量']
+        },
+        xAxis: {
+            data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+        },
+        yAxis: {},
+        series: [{
+            name: '销量',
+            type: 'bar',
+            data: [5, 20, 36, 10, 10, 20]
+        }]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+<!-- End  : echarts -->
+<script type="text/javascript" src="/layui/layui.js"></script>
+<!-- Start: 与服务器交互 ajax -->
+<script id="sitesList" type="text/html">
+  <table class="layui-table" lay-skin="line">
+    <colgroup>
+      <col width="110">
+
+      </col>
+    </colgroup>
+    <tbody class="hot_news">
+    {{# layui.each(d, function(siteDataIndex, siteDataItem){ }}
+    <tr class="site-table-tr" data-id="{{siteDataItem.id}}" data-name="{{siteDataItem.name}}" data-longitude="{{siteDataItem.longitude}}" data-latitude="{{siteDataItem.latitude}}" data-parent="{{siteDataItem.parent}}">
+      <td align="left">{{siteDataItem.name}}</td>
+      <td class="align-right">
+        <button class="layui-btn layui-btn-normal view-devices-by-site-id" data-id="{{siteDataItem.id}}">查看设备</button>
+      </td>
+    </tr>
+    {{# }); }}
+    <tr>
+      <td style="text-align: left;">设备 1</td>
+    </tr>
+    <tr>
+      <td style="text-align: left;">设备 2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left;">设备 3</td>
+    </tr>
+    </tbody>
+  </table>
+</script>
+<script id="layerContent_tpl" type="text/html">
+  <div style="width: 96%; text-align: center; margin: 10px auto;">{{d}}</div>
+</script>
+<script id="siteDetailInfo_tpl" type="text/html">
+  <tr>
+    <td>站点 ID</td>
+    <td>{{d.siteId}}</td>
+  </tr>
+  <tr>
+    <td>站点名字</td>
+    <td>{{d.siteName}}</td>
+  </tr>
+  <tr>
+    <td>经度</td>
+    <td>{{d.siteLongitude}}</td>
+  </tr>
+  <tr>
+    <td>纬度</td>
+    <td>{{d.siteLatitude}}</td>
+  </tr>
+  <tr>
+    <td>父站点</td>
+    <td>{{d.siteParent}}</td>
+  </tr>
+</script>
+<script>
+    //  <![data[
+
+    (function() {
+        layui.use(['laytpl', 'jquery', 'layer', 'form'], function() {
+            var laytpl = layui.laytpl;
+            var $ = layui.jquery;
+            var getUrl = "/device/ajax/list";
+            var layer = layui.layer;
+            var form = layui.form();
+
+            //第一次加载数据
+            searchList();
+
+            // 站点 marker map
+            var sitesId2MarkerMap = {};
+
+            function searchList(currPage) {
+                console.log("开始查询站点 list 的信息 ...");
+                layer.load();   // loading
+                $.get(
+                    getUrl,
+                    {"currPage": currPage || 1},
+                    function (data) {
+                        console.log("查询到的站点 list 信息:" + JSON.stringify(data));
+                        var total = data.total;
+                        var page = data.page;
+                        var totalPage = data.totalPage;
+                        var sitesDataArr = data.data;
+                        console.log(['[sites-manage searchList]total: ', total].join(''));
+                        console.log(['[sites-manage searchList]page: ', page].join(''));
+                        console.log(['[sites-manage searchList]totalPage: ', totalPage].join(''));
+                        console.log(['[sites-manage searchList]sitesDataArr: ', JSON.stringify(sitesDataArr)].join(''));
+                        // Start: 站点列表刷新
+                        laytpl(sitesList.innerHTML).render(sitesDataArr, function (html) {
+                            sitesListTableView.innerHTML = html;
+                            layer.closeAll('loading');   //关闭所有的loading
+                        });
+                        // End  : 站点列表刷新
+
+                        // Start: 站点在地图上增加 marker
+                        if(sitesDataArr && sitesDataArr.length && sitesDataArr.length > 0) {
+                            sitesDataArr.forEach(function(siteDataItem, siteDataIndex) {
+                                var pointChengDu4 = new BMap.Point(pointChengDu.lng + siteDataItem.longitude / 1000, pointChengDu.lat + siteDataItem.latitude / 1000);
+                                var marker = new BMap.Marker(pointChengDu4);// 创建标注
+                                map.addOverlay(marker);             // 将标注添加到地图中
+                                // 记录 marker
+                                markersArr.push(marker);
+                                sitesId2MarkerMap[siteDataItem.id] = marker;
+                                // Start: marker 点击后的弹出层
+                                addClickHandler(['[站点 id ： ', siteDataItem.id, '][站点 name ： ', siteDataItem.name, '][站点经度： ',
+                                    siteDataItem.longitude, '][站点纬度： ', siteDataItem.latitude, ']'].join(''), marker);
+                                // functions
+                                var opts = {
+                                    width : 250,     // 信息窗口宽度
+                                    height: 80,     // 信息窗口高度
+                                    title : "信息窗口" , // 信息窗口标题
+                                    enableMessage:true//设置允许信息窗发送短息
+                                };
+                                function addClickHandler(content, marker) {
+                                    marker.addEventListener("click",function(e){
+                                        openInfo(content,e)}
+                                    );
+                                }
+                                function openInfo(content, e){
+                                    var p = e.target;
+                                    var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat + 0.009);
+                                    var infoWindow = new BMap.InfoWindow(content, opts);  // 创建信息窗口对象
+                                    layui.SitesManageGlobal['map'].openInfoWindow(infoWindow, point); //开启信息窗口
+                                }
+                                // End  : marker 点击后的弹出层
+                            });
+                        }
+                        // End  : 站点在地图上增加 marker
+                        // Start: 触发第一个站点的 click
+                        $('.site-table-tr:first').click();
+                        // End  : 触发第一个站点的 click
+                    },
+                    "json"
+                );
+            }
+
+            // Start: 展示 layerContent_tpl 于 layer 中
+            function showLayerContentTplInLayer(title, content) {
+                laytpl(layerContent_tpl.innerHTML).render(content, function(html) {
+                    layer.open({
+                        type: 1
+                        , title: title
+                        , area: ['400px', '300px']
+                        , shadeClose: true //开启遮罩关闭
+                        , maxmin: true
+                        , content: html
+                        , btn: ['取消', '提交']
+                        , yes: function (index, layero) {
+                            alert('点击了按钮 yes');
+                            //按钮【按钮一】的回调
+                            layer.close(index);
+                            // alert("点击了按钮1");
+                        }
+                        , btn2: function (index, layero) {
+                            alert("点击了按钮 2");
+                            //按钮【按钮二】的回调
+                            //return false 开启该代码可禁止点击该按钮关闭
+                        }
+                        ,
+                    });
+                });
+            }
+            // End  : 展示 layerContent_tpl 于 layer 中
+
+            // Start: 【查看设备】按钮被点击
+            $(document).on('click', '.view-devices-by-site-id', function() {
+                var thisBtn = $(this);
+                var siteId = thisBtn.data('id');
+                //
+                showLayerContentTplInLayer('根据站点查询设备', ['siteId: ', siteId].join(''))
+            });
+            // End  : 【查看设备】按钮被点击
+
+            // Start: [站点列表]中某站点被点击
+            $(document).on('click', '.site-table-tr', function() {
+                var thisTr = $(this);
+                var siteId = thisTr.data('id');
+                var siteName = thisTr.data('name');
+                var siteLongitude = thisTr.data('longitude');
+                var siteLatitude = thisTr.data('latitude');
+                var siteParent = thisTr.data('parent');
+                // Start: 被选中的 tr addClass 以区分
+                var siteTrSelectedClassStr = 'site-tr-selected';
+                $('.site-table-tr').removeClass(siteTrSelectedClassStr);
+                thisTr.addClass(siteTrSelectedClassStr);
+                // End  : 被选中的 tr addClass 以区分
+                //
+              /*showLayerContentTplInLayer('站点信息', ['[siteId: ', siteId, '][siteName: ',
+               siteName, '][siteLongitude: ', siteLongitude, '][siteLatitude: ', siteLatitude, ']'].join(''));*/
+                console.log(['站点信息[siteId: ', siteId, '][siteName: ', siteName, '][siteLongitude: ',
+                    siteLongitude, '][siteLatitude: ', siteLatitude, ']'].join(''));
+                // Start: 从 sitesId2MarkerMap 中得到对应 marker 并展示（1. 表格中展示详情； 2. marker focus 调整地图到 marker ； 3. marker 弹跳）
+                var trMarker = sitesId2MarkerMap[siteId];
+                // 其他 marker 停止动画，当前选中 marker 开始动画
+                markersArr.forEach(function (markerItem) {
+                    markerItem.setAnimation(null);
+                });
+                trMarker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+                // 移动到 trMarker 为中心的点
+                var trMarkerPosition = trMarker.getPosition();
+                layui.SitesManageGlobal['map'].panTo(new BMap.Point(trMarkerPosition.lng, trMarkerPosition.lat));
+                // layui.SitesManageGlobal['map'].panTo(new BMap.Point(siteLongitude, siteLatitude));
+                // End  : 从 sitesId2MarkerMap 中得到对应 marker 并展示（1. 表格中展示详情； 2. marker focus 调整地图到 marker ； 3. marker 弹跳）
+                // Start: 展示站点详情于表格中
+                var siteDetailInfoData = {
+                    siteId: siteId,
+                    siteName: siteName,
+                    siteLongitude: siteLongitude,
+                    siteLatitude: siteLatitude,
+                    siteParent: siteParent
+                };
+                laytpl(siteDetailInfo_tpl.innerHTML).render(siteDetailInfoData, function (html) {
+                    siteDetailInfo.innerHTML = html;
+                });
+                // End  : 展示站点详情于表格中
+            });
+            // Start: [站点列表]中某站点被点击
+        });
+    })();
+
+    //]]>
+</script>
+<!-- End  : 与服务器交互 ajax -->
