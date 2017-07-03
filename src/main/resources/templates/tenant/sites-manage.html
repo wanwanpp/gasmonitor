@@ -90,7 +90,7 @@
           <colgroup>
             <col width="150"></col>
           </colgroup>
-          <tbody>
+          <tbody id="siteDetailInfo">
           <tr>
             <td>站点 ID</td>
             <td>1</td>
@@ -305,7 +305,7 @@
     </colgroup>
     <tbody class="hot_news">
     {{# layui.each(d, function(siteDataIndex, siteDataItem){ }}
-    <tr class="site-table-tr" data-id="{{siteDataItem.id}}" data-name="{{siteDataItem.name}}" data-longitude="{{siteDataItem.longitude}}" data-latitude="{{siteDataItem.latitude}}">
+    <tr class="site-table-tr" data-id="{{siteDataItem.id}}" data-name="{{siteDataItem.name}}" data-longitude="{{siteDataItem.longitude}}" data-latitude="{{siteDataItem.latitude}}" data-parent="{{siteDataItem.parent}}">
       <td align="left">{{siteDataItem.name}}</td>
       <td class="align-right">
         <button class="layui-btn layui-btn-normal view-devices-by-site-id" data-id="{{siteDataItem.id}}">查看设备</button>
@@ -317,6 +317,28 @@
 </script>
 <script id="layerContent_tpl" type="text/html">
   <div style="width: 96%; text-align: center; margin: 10px auto;">{{d}}</div>
+</script>
+<script id="siteDetailInfo_tpl" type="text/html">
+  <tr>
+    <td>站点 ID</td>
+    <td>{{d.siteId}}</td>
+  </tr>
+  <tr>
+    <td>站点名字</td>
+    <td>{{d.siteName}}</td>
+  </tr>
+  <tr>
+    <td>经度</td>
+    <td>{{d.siteLongitude}}</td>
+  </tr>
+  <tr>
+    <td>纬度</td>
+    <td>{{d.siteLatitude}}</td>
+  </tr>
+  <tr>
+    <td>父站点</td>
+    <td>{{d.siteParent}}</td>
+  </tr>
 </script>
 <script>
   //  <![data[
@@ -435,29 +457,41 @@
 
       // Start: [站点列表]中某站点被点击
       $(document).on('click', '.site-table-tr', function() {
-        var thisTr = $(this);
-        var siteId = thisTr.data('id');
-        var siteName = thisTr.data('name');
-        var siteLongitude = thisTr.data('longitude');
-        var siteLatitude = thisTr.data('latitude');
-        //
-        /*showLayerContentTplInLayer('站点信息', ['[siteId: ', siteId, '][siteName: ',
+          var thisTr = $(this);
+          var siteId = thisTr.data('id');
+          var siteName = thisTr.data('name');
+          var siteLongitude = thisTr.data('longitude');
+          var siteLatitude = thisTr.data('latitude');
+          var siteParent = thisTr.data('parent');
+          //
+          /*showLayerContentTplInLayer('站点信息', ['[siteId: ', siteId, '][siteName: ',
             siteName, '][siteLongitude: ', siteLongitude, '][siteLatitude: ', siteLatitude, ']'].join(''));*/
-        console.log(['站点信息[siteId: ', siteId, '][siteName: ', siteName, '][siteLongitude: ',
+          console.log(['站点信息[siteId: ', siteId, '][siteName: ', siteName, '][siteLongitude: ',
             siteLongitude, '][siteLatitude: ', siteLatitude, ']'].join(''));
-        // Start: 从 sitesId2MarkerMap 中得到对应 marker 并展示（1. 表格中展示详情； 2. marker focus 调整地图到 marker ； 3. marker 弹跳）
-        var trMarker = sitesId2MarkerMap[siteId];
-        // 其他 marker 停止动画，当前选中 marker 开始动画
-        markersArr.forEach(function (markerItem) {
-            markerItem.setAnimation(null);
-        });
-        trMarker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
-        // 移动到 trMarker 为中心的点
+          // Start: 从 sitesId2MarkerMap 中得到对应 marker 并展示（1. 表格中展示详情； 2. marker focus 调整地图到 marker ； 3. marker 弹跳）
+          var trMarker = sitesId2MarkerMap[siteId];
+          // 其他 marker 停止动画，当前选中 marker 开始动画
+          markersArr.forEach(function (markerItem) {
+              markerItem.setAnimation(null);
+          });
+          trMarker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+          // 移动到 trMarker 为中心的点
           var trMarkerPosition = trMarker.getPosition();
-        layui.SitesManageGlobal['map'].panTo(new BMap.Point(trMarkerPosition.lng, trMarkerPosition.lat));
+          layui.SitesManageGlobal['map'].panTo(new BMap.Point(trMarkerPosition.lng, trMarkerPosition.lat));
           // layui.SitesManageGlobal['map'].panTo(new BMap.Point(siteLongitude, siteLatitude));
-        // End  : 从 sitesId2MarkerMap 中得到对应 marker 并展示（1. 表格中展示详情； 2. marker focus 调整地图到 marker ； 3. marker 弹跳）
-
+          // End  : 从 sitesId2MarkerMap 中得到对应 marker 并展示（1. 表格中展示详情； 2. marker focus 调整地图到 marker ； 3. marker 弹跳）
+          // Start: 展示站点详情于表格中
+          var siteDetailInfoData = {
+              siteId: siteId,
+              siteName: siteName,
+              siteLongitude: siteLongitude,
+              siteLatitude: siteLatitude,
+              siteParent: siteParent
+          };
+          laytpl(siteDetailInfo_tpl.innerHTML).render(siteDetailInfoData, function (html) {
+              siteDetailInfo.innerHTML = html;
+          });
+          // End  : 展示站点详情于表格中
       });
       // Start: [站点列表]中某站点被点击
     });
