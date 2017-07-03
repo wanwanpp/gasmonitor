@@ -92,32 +92,24 @@
           </colgroup>
           <tbody>
           <tr>
-            <td>当前版本</td>
-            <td class="version">v1.0.0</td>
+            <td>站点 ID</td>
+            <td>1</td>
           </tr>
           <tr>
-            <td>开发作者</td>
-            <td class="author">请叫我马哥</td>
+            <td>站点名字</td>
+            <td>站点 1</td>
           </tr>
           <tr>
-            <td>网站首页</td>
-            <td class="homePage">page/index.html</td>
+            <td>经度</td>
+            <td>经度</td>
           </tr>
           <tr>
-            <td>服务器环境</td>
-            <td class="server">windows</td>
+            <td>纬度</td>
+            <td>纬度</td>
           </tr>
           <tr>
-            <td>数据库版本</td>
-            <td class="dataBase">8.00.2039</td>
-          </tr>
-          <tr>
-            <td>最大上传限制</td>
-            <td class="maxUpload">2M</td>
-          </tr>
-          <tr>
-            <td>当前用户权限</td>
-            <td class="userRights">总管理员</td>
+            <td>父站点</td>
+            <td>1</td>
           </tr>
           </tbody>
         </table>
@@ -449,7 +441,16 @@
         var siteLongitude = thisTr.data('longitude');
         var siteLatitude = thisTr.data('latitude');
         //
-        showLayerContentTplInLayer('站点信息', ['[siteId: ', siteId, '][siteName: ', siteName, '][siteLongitude: ', siteLongitude, '][siteLatitude: ', siteLatitude, ']'].join(''))
+        showLayerContentTplInLayer('站点信息', ['[siteId: ', siteId, '][siteName: ',
+            siteName, '][siteLongitude: ', siteLongitude, '][siteLatitude: ', siteLatitude, ']'].join(''));
+        // Start: 从 sitesId2MarkerMap 中得到对应 marker 并展示（1. 表格中展示详情； 2. marker focus 调整地图到 marker ； 3. marker 弹跳）
+        var trMarker = sitesId2MarkerMap[siteId];
+        markersArr.forEach(function (markerItem) {
+            markerItem.setAnimation(null);
+        });
+        trMarker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+        // End  : 从 sitesId2MarkerMap 中得到对应 marker 并展示（1. 表格中展示详情； 2. marker focus 调整地图到 marker ； 3. marker 弹跳）
+
       });
       // Start: [站点列表]中某站点被点击
     });
