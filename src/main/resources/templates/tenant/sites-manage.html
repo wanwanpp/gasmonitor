@@ -92,24 +92,7 @@
           </colgroup>
           <tbody id="siteDetailInfo">
           <tr>
-            <td>站点 ID</td>
-            <td>1</td>
-          </tr>
-          <tr>
-            <td>站点名字</td>
-            <td>站点 1</td>
-          </tr>
-          <tr>
-            <td>经度</td>
-            <td>经度</td>
-          </tr>
-          <tr>
-            <td>纬度</td>
-            <td>纬度</td>
-          </tr>
-          <tr>
-            <td>父站点</td>
-            <td>1</td>
+            <td>数据加载中，请稍候 。。。</td>
           </tr>
           </tbody>
         </table>
@@ -214,7 +197,7 @@
   // markers 数组
   var markersArr = [];
   // Start: 添加覆盖物 点
-  (function() {
+  /*(function() {
     var myIcon = new BMap.Icon("/img/location36_32.png", new BMap.Size(32, 32));
     var marker = new BMap.Marker(pointChengDu, {icon: myIcon});
     map.addOverlay(marker);            //增加点
@@ -239,11 +222,11 @@
         vectorMarker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
       }, 1000);
     }, 1000);
-  })();
+  })();*/
   // End  : 添加覆盖物 点
 
   // Start: 点的可拖拽和不可拖拽
-  (function() {
+  /*(function() {
     var pointChengDu3 = new BMap.Point(104.04, 30.61);
     var marker = new BMap.Marker(pointChengDu3);// 创建标注
     map.addOverlay(marker);             // 将标注添加到地图中
@@ -256,7 +239,7 @@
       var p = marker.getPosition();       //获取marker的位置
       alert("marker的位置是" + p.lng + "," + p.lat);
     }
-  })();
+  })();*/
   // End  : 点的可拖拽和不可拖拽
 
   // Start: 添加弹窗
@@ -363,56 +346,59 @@
                 getUrl,
                 {"currPage": currPage || 1},
                 function (data) {
-                  console.log("查询到的站点 list 信息:" + JSON.stringify(data));
-                  var total = data.total;
-                  var page = data.page;
-                  var totalPage = data.totalPage;
-                  var sitesDataArr = data.data;
-                  console.log(['[sites-manage searchList]total: ', total].join(''));
-                  console.log(['[sites-manage searchList]page: ', page].join(''));
-                  console.log(['[sites-manage searchList]totalPage: ', totalPage].join(''));
-                  console.log(['[sites-manage searchList]sitesDataArr: ', JSON.stringify(sitesDataArr)].join(''));
-                  // Start: 站点列表刷新
-                  laytpl(sitesList.innerHTML).render(sitesDataArr, function (html) {
-                    sitesListTableView.innerHTML = html;
-                    layer.closeAll('loading');   //关闭所有的loading
-                  });
-                  // End  : 站点列表刷新
-
-                  // Start: 站点在地图上增加 marker
-                  if(sitesDataArr && sitesDataArr.length && sitesDataArr.length > 0) {
-                    sitesDataArr.forEach(function(siteDataItem, siteDataIndex) {
-                      var pointChengDu4 = new BMap.Point(pointChengDu.lng + siteDataItem.longitude / 1000, pointChengDu.lat + siteDataItem.latitude / 1000);
-                      var marker = new BMap.Marker(pointChengDu4);// 创建标注
-                      map.addOverlay(marker);             // 将标注添加到地图中
-                      // 记录 marker
-                      markersArr.push(marker);
-                      sitesId2MarkerMap[siteDataItem.id] = marker;
-                      // Start: marker 点击后的弹出层
-                        addClickHandler(['[站点 id ： ', siteDataItem.id, '][站点 name ： ', siteDataItem.name, '][站点经度： ',
-                            siteDataItem.longitude, '][站点纬度： ', siteDataItem.latitude, ']'].join(''), marker);
-                        // functions
-                        var opts = {
-                            width : 250,     // 信息窗口宽度
-                            height: 80,     // 信息窗口高度
-                            title : "信息窗口" , // 信息窗口标题
-                            enableMessage:true//设置允许信息窗发送短息
-                        };
-                        function addClickHandler(content, marker) {
-                            marker.addEventListener("click",function(e){
-                                openInfo(content,e)}
-                            );
-                        }
-                        function openInfo(content, e){
-                            var p = e.target;
-                            var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat + 0.007);
-                            var infoWindow = new BMap.InfoWindow(content, opts);  // 创建信息窗口对象
-                            layui.SitesManageGlobal['map'].openInfoWindow(infoWindow, point); //开启信息窗口
-                        }
-                      // End  : marker 点击后的弹出层
+                    console.log("查询到的站点 list 信息:" + JSON.stringify(data));
+                    var total = data.total;
+                    var page = data.page;
+                    var totalPage = data.totalPage;
+                    var sitesDataArr = data.data;
+                    console.log(['[sites-manage searchList]total: ', total].join(''));
+                    console.log(['[sites-manage searchList]page: ', page].join(''));
+                    console.log(['[sites-manage searchList]totalPage: ', totalPage].join(''));
+                    console.log(['[sites-manage searchList]sitesDataArr: ', JSON.stringify(sitesDataArr)].join(''));
+                    // Start: 站点列表刷新
+                    laytpl(sitesList.innerHTML).render(sitesDataArr, function (html) {
+                      sitesListTableView.innerHTML = html;
+                      layer.closeAll('loading');   //关闭所有的loading
                     });
-                  }
-                  // End  : 站点在地图上增加 marker
+                    // End  : 站点列表刷新
+
+                    // Start: 站点在地图上增加 marker
+                    if(sitesDataArr && sitesDataArr.length && sitesDataArr.length > 0) {
+                      sitesDataArr.forEach(function(siteDataItem, siteDataIndex) {
+                        var pointChengDu4 = new BMap.Point(pointChengDu.lng + siteDataItem.longitude / 1000, pointChengDu.lat + siteDataItem.latitude / 1000);
+                        var marker = new BMap.Marker(pointChengDu4);// 创建标注
+                        map.addOverlay(marker);             // 将标注添加到地图中
+                        // 记录 marker
+                        markersArr.push(marker);
+                        sitesId2MarkerMap[siteDataItem.id] = marker;
+                        // Start: marker 点击后的弹出层
+                          addClickHandler(['[站点 id ： ', siteDataItem.id, '][站点 name ： ', siteDataItem.name, '][站点经度： ',
+                              siteDataItem.longitude, '][站点纬度： ', siteDataItem.latitude, ']'].join(''), marker);
+                          // functions
+                          var opts = {
+                              width : 250,     // 信息窗口宽度
+                              height: 80,     // 信息窗口高度
+                              title : "信息窗口" , // 信息窗口标题
+                              enableMessage:true//设置允许信息窗发送短息
+                          };
+                          function addClickHandler(content, marker) {
+                              marker.addEventListener("click",function(e){
+                                  openInfo(content,e)}
+                              );
+                          }
+                          function openInfo(content, e){
+                              var p = e.target;
+                              var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat + 0.009);
+                              var infoWindow = new BMap.InfoWindow(content, opts);  // 创建信息窗口对象
+                              layui.SitesManageGlobal['map'].openInfoWindow(infoWindow, point); //开启信息窗口
+                          }
+                        // End  : marker 点击后的弹出层
+                      });
+                    }
+                    // End  : 站点在地图上增加 marker
+                    // Start: 触发第一个站点的 click
+                    $('.site-table-tr:first').click();
+                    // End  : 触发第一个站点的 click
                 },
                 "json"
         );
@@ -463,6 +449,11 @@
           var siteLongitude = thisTr.data('longitude');
           var siteLatitude = thisTr.data('latitude');
           var siteParent = thisTr.data('parent');
+          // Start: 被选中的 tr addClass 以区分
+          var siteTrSelectedClassStr = 'site-tr-selected';
+          $('.site-table-tr').removeClass(siteTrSelectedClassStr);
+          thisTr.addClass(siteTrSelectedClassStr);
+          // End  : 被选中的 tr addClass 以区分
           //
           /*showLayerContentTplInLayer('站点信息', ['[siteId: ', siteId, '][siteName: ',
             siteName, '][siteLongitude: ', siteLongitude, '][siteLatitude: ', siteLatitude, ']'].join(''));*/
