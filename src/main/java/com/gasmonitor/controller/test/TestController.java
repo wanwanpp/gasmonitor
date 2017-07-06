@@ -74,4 +74,11 @@ public class TestController {
         tenantRepository.save(tenant);
         return null;
     }
+
+    @RequestMapping(value = "/configs")
+
+    public Object config() {
+        return null;
+    }
+
 }
