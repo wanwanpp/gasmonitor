@@ -27,10 +27,9 @@
     </button>
   </div>
   <div class="layui-inline">
-    <a class="layui-btn audit_btn"><i class="layui-icon">&#xe618;</i>审核文章</a>
-  </div>
-  <div class="layui-inline">
-    <a class="layui-btn layui-btn-danger batchDel"><i class="layui-icon">&#xe640;</i>批量删除</a>
+    <a class="layui-btn layui-btn-danger batchDel" disabled="true">
+      <i class="layui-icon">&#xe640;</i>批量删除
+    </a>
   </div>
 </blockquote>
 
@@ -54,7 +53,6 @@
         <th>电话</th>
         <th>浏览权限</th>
         <th>创建时间</th>
-        <th>是否展示</th>
         <th>操作</th>
       </tr>
       </thead>
@@ -62,7 +60,7 @@
       <tbody class="news_content">
       {{# layui.each(d.data, function(index, item){ }}
       <tr>
-        <td></td>
+        <td>{{index}}</td>
         <td>{{item.name}}</td>
         <td>{{item.address}}</td>
         <td>{{item.mobile}}</td>
@@ -72,8 +70,6 @@
           <button class="layui-btn layui-btn-mini tenant_edit">
             <i class="layui-icon">&#xe64c;</i>详情
           </button>
-        </td>
-        <td>
           <a class="layui-btn layui-btn-mini tenant_edit"><i class="layui-icon">&#xe642;</i> 编辑</a>
           <a class="layui-btn layui-btn-danger layui-btn-mini tenant_del" data-id="'+data[i].newsId+'">
             <i class="layui-icon">&#xe640;</i> 删除</a>
@@ -109,6 +105,23 @@
         <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入电话" class="layui-input"/>
       </div>
     </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">地址</label>
+      <div class="layui-input-block">
+        <input type="text" name="address" lay-verify="title" autocomplete="off" placeholder="请输入地址"
+               class="layui-input"/>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">公司名称</label>
+      <div class="layui-input-block">
+        <input type="text" name="company" lay-verify="title" autocomplete="off" placeholder="请输入地址"
+               class="layui-input"/>
+      </div>
+    </div>
+
   </form>
 </div>
 </html>
