@@ -24,6 +24,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         //        设置在iframe中显示内容
+        http.csrf().disable();
         http.headers().frameOptions().sameOrigin()
                 .and().authorizeRequests().antMatchers("/test/**").permitAll()
                 .and().authorizeRequests().anyRequest().authenticated() //4
