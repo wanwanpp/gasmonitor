@@ -47,7 +47,7 @@
   <!-- End  : sites list css -->
   <!-- Start: UI edit sites css -->
   <style>
-    .pandaroid-layui_elem_quote_title-btn { position: absolute; right: 4px; top: 4px; }
+    .pandaroid-layui_elem_quote_title-btn-container { position: absolute; right: 4px; top: 4px; }
   </style>
   <!-- End  : UI edit sites css -->
 
@@ -87,7 +87,9 @@
       <div class="sysNotice col right-details">
         <blockquote class="layui-elem-quote title">
           站点地图<i class="iconfont icon-new1"></i>
-          <button class="layui-btn pandaroid-layui_elem_quote_title-btn">点击编辑当前选中站点位置（在地图中拖动）</button>
+          <div class="pandaroid-layui_elem_quote_title-btn-container">
+            <button class="layui-btn">点击编辑当前选中站点位置（在地图中拖动）</button>
+          </div>
         </blockquote>
         <table class="layui-table" lay-skin="line">
           <colgroup>
@@ -100,7 +102,13 @@
         </table>
         <blockquote class="layui-elem-quote title">
           站点详情
-          <button class="layui-btn pandaroid-layui_elem_quote_title-btn">点击编辑当前选中站点详情</button>
+          <div class="pandaroid-layui_elem_quote_title-btn-container">
+            <button id="click-2-edit-site-info-btn" class="layui-btn">编辑当前站点详情</button>
+            <div id="submit-or-cancel-edit-site-info-btn-container">
+              <button id="submit-edited-site-info-btn" class="layui-btn layui-btn-normal">提交站点详情编辑结果</button>
+              <button id="cancel-edited-site-info-btn" class="layui-btn layui-btn-warm">取消站点详情编辑结果</button>
+            </div>
+          </div>
         </blockquote>
         <table class="layui-table">
           <colgroup>
@@ -553,3 +561,39 @@
     });
 </script>
 <!-- End  : layui 表单相关 -->
+
+<!-- Start: 编辑站点详情（table） -->
+<script>
+    (function() {
+        layui.use(['jquery'], function() {
+            var $ = layui.jquery;
+            // hide ： 【提交】或【取消】按钮组
+            var submitOrCancelEditSiteInfoBtnContainer = $('#submit-or-cancel-edit-site-info-btn-container');
+            submitOrCancelEditSiteInfoBtnContainer.hide();
+            // 【编辑站点详情】按钮被点击后
+            var click2EditSiteInfoBtnIdStr = '#click-2-edit-site-info-btn';
+            var click2EditSiteInfoBtn = $(click2EditSiteInfoBtnIdStr);
+            // fadeIn 和 fadeOut 的速度
+            var fadeSpeedStr = 'normal'
+            $(document).on('click', click2EditSiteInfoBtnIdStr, function() {
+                // 隐藏【编辑】按钮
+                click2EditSiteInfoBtn.fadeOut(fadeSpeedStr, function() {
+                    // 显示【提交】或【取消】按钮组
+                    submitOrCancelEditSiteInfoBtnContainer.fadeIn(fadeSpeedStr);
+                });
+            });
+            // 【提交】或【取消】按钮被点击以后
+            function hideSubmitOrCancelAndShowEditBtn() {
+                submitOrCancelEditSiteInfoBtnContainer.fadeOut(fadeSpeedStr, function() {
+                    click2EditSiteInfoBtn.fadeIn(fadeSpeedStr);
+                });
+            }
+            $(document).on('click', '#submit-edited-site-info-btn', function() {
+                hideSubmitOrCancelAndShowEditBtn();
+            }).on('click', '#cancel-edited-site-info-btn', function() {
+                hideSubmitOrCancelAndShowEditBtn();
+            });
+        });
+    })();
+</script>
+<!-- End  : 编辑站点详情（table） -->
