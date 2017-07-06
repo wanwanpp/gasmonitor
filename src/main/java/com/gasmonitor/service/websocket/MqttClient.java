@@ -19,7 +19,6 @@ public class MqttClient implements CommandLineRunner {
     @Autowired
     public WsClientPoolApi wsClientPoolApi;
 
-
     @Override
     public void run(String... strings) throws Exception {
         log.info("开始执行myqqClient.run()...");

@@ -53,6 +53,7 @@ public class WsClientPool implements WsClientPoolApi {
 
     @Override
     public boolean sendMonitorData(MonitorData data) {
+        log.info("sendMonitorData：{}", data);
         for (Iterator<String> iterator = clients.keySet().iterator(); iterator.hasNext(); ) {
             String key = iterator.next();
             Set<String> stations = clients.get(key);
