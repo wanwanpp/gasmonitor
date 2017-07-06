@@ -379,34 +379,9 @@
                 thisTr.addClass(siteTrSelectedClassStr);
                 // End  : 被选中的 tr addClass 以区分
                 //
-              /*showLayerContentTplInLayer('站点信息', ['[siteId: ', siteId, '][siteName: ',
-               siteName, '][siteLongitude: ', siteLongitude, '][siteLatitude: ', siteLatitude, ']'].join(''));*/
                 console.log(['站点信息[siteId: ', siteId, '][siteName: ', siteName, '][siteLongitude: ',
                     siteLongitude, '][siteLatitude: ', siteLatitude, ']'].join(''));
-                // Start: 从 sitesId2MarkerMap 中得到对应 marker 并展示（1. 表格中展示详情； 2. marker focus 调整地图到 marker ； 3. marker 弹跳）
-                var trMarker = sitesId2MarkerMap[siteId];
-                // 其他 marker 停止动画，当前选中 marker 开始动画
-                markersArr.forEach(function (markerItem) {
-                    markerItem.setAnimation(null);
-                });
-                trMarker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
-                // 移动到 trMarker 为中心的点
-                var trMarkerPosition = trMarker.getPosition();
-                layui.SitesManageGlobal['map'].panTo(new BMap.Point(trMarkerPosition.lng, trMarkerPosition.lat));
-                // layui.SitesManageGlobal['map'].panTo(new BMap.Point(siteLongitude, siteLatitude));
-                // End  : 从 sitesId2MarkerMap 中得到对应 marker 并展示（1. 表格中展示详情； 2. marker focus 调整地图到 marker ； 3. marker 弹跳）
-                // Start: 展示站点详情于表格中
-                var siteDetailInfoData = {
-                    siteId: siteId,
-                    siteName: siteName,
-                    siteLongitude: siteLongitude,
-                    siteLatitude: siteLatitude,
-                    siteParent: siteParent
-                };
-                laytpl(siteDetailInfo_tpl.innerHTML).render(siteDetailInfoData, function (html) {
-                    siteDetailInfo.innerHTML = html;
-                });
-                // End  : 展示站点详情于表格中
+
             });
             // Start: [站点列表]中某站点被点击
         });
@@ -415,3 +390,27 @@
     //]]>
 </script>
 <!-- End  : 与服务器交互 ajax -->
+
+<!-- Start: sockjs 接收服务器持续推送并处理 -->
+<script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
+<script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
+<script>
+    (function() {
+        layui.use(['jquery'], function() {
+            var $ = layui.jquery;
+            // sockjs stomp
+            var sock = new SockJS("/endpointChat");
+            var stomp = Stomp.over(sock);
+            stomp.connect('guest', 'guest', function (frame) {
+                stomp.subscribe("/user/queue/notifications", handleNotifications);
+                // set station
+                stomp.send("/setStations", {}, "s1");
+            });
+            // 收到消息的处理
+            function handleNotifications(message) {
+                console.log(["[handleNotifications]received: ", message.body].join(''));
+            }
+        });
+    })();
+</script>
+<!-- End  : sockjs 接收服务器持续推送并处理 -->
