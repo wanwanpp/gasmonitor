@@ -313,7 +313,7 @@
     <td>{{d.siteId}}</td>
   </tr>
   <tr>
-    <td>站点名字</td>
+    <td>站点名称</td>
     <td>{{d.siteName}}</td>
   </tr>
   <tr>
@@ -371,7 +371,8 @@
                     // Start: 站点在地图上增加 marker
                     if(sitesDataArr && sitesDataArr.length && sitesDataArr.length > 0) {
                       sitesDataArr.forEach(function(siteDataItem, siteDataIndex) {
-                        var pointChengDu4 = new BMap.Point(pointChengDu.lng + siteDataItem.longitude / 1000, pointChengDu.lat + siteDataItem.latitude / 1000);
+                        // var pointChengDu4 = new BMap.Point(pointChengDu.lng + siteDataItem.longitude / 1000, pointChengDu.lat + siteDataItem.latitude / 1000);
+                        var pointChengDu4 = new BMap.Point(siteDataItem.longitude, siteDataItem.latitude);
                         var marker = new BMap.Marker(pointChengDu4);// 创建标注
                         map.addOverlay(marker);             // 将标注添加到地图中
                         // 记录 marker
