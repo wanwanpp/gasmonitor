@@ -623,11 +623,23 @@
             }
             $(document).on('click', '#submit-edited-site-info-btn', function() {
                 // 提交，先显示遮罩菊花，同时 ajax 请求服务器，若回复成功，才隐藏【提交】和【取消】
-                hideSubmitOrCancelAndShowEditBtn();
-                // 恢复表单不可编辑状态
-                SiteInfoEditManager.disableSiteInfoTableFormEdit();
-                // 用服务器返回的数据刷新表单
-                SiteInfoEditManager.reloadSiteInfo2Table();
+                layer.load();   // loading
+                $.post(
+                    '/site/ajax/update',
+                    {id: 1, name: 'site_1_sdfaa_p', longitude: 104.074, latitude: 30.762},
+                    function(data) {
+                        console.log('[post: /site/ajax/update] callback data: ', data);
+                        // 切换【提交】【取消】按钮和【提交按钮】
+                        hideSubmitOrCancelAndShowEditBtn();
+                        // 恢复表单不可编辑状态
+                        SiteInfoEditManager.disableSiteInfoTableFormEdit();
+                        // 用服务器返回的数据刷新表单
+                        SiteInfoEditManager.reloadSiteInfo2Table();
+                        // 隐藏遮罩菊花
+                        layer.closeAll('loading');   //关闭所有的loading
+                    },
+                    "json"
+                );
             }).on('click', '#cancel-edited-site-info-btn', function() {
                 hideSubmitOrCancelAndShowEditBtn();
                 // 取消，先恢复表单不可编辑状态
