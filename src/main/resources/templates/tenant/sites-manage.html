@@ -575,12 +575,45 @@
             var click2EditSiteInfoBtn = $(click2EditSiteInfoBtnIdStr);
             // fadeIn 和 fadeOut 的速度
             var fadeSpeedStr = 'normal'
+            // 表单数据处理对象
+            var SiteInfoEditManager = {
+                // 保存表单数据，【取消】后可以恢复
+                saveSiteInfo: function() {
+                    console.log('[saveSiteInfo]保存表单数据，【取消】后可以恢复');
+
+                },
+                // load 【function saveSiteInfo】保存的数据
+                loadSavedSiteInfo: function() {
+                    console.log('[loadSavedSiteInfo]load 【function saveSiteInfo】保存的数据');
+
+                },
+                // 激活站点详情表单可编辑
+                enableSiteInfoTableFormEdit: function() {
+                    console.log('[enableSiteInfoTableFormEdit]激活站点详情表单可编辑');
+
+                },
+                // 恢复表单不可编辑状态
+                disableSiteInfoTableFormEdit: function() {
+                    console.log('[disableSiteInfoTableFormEdit]恢复站点详情表单不可编辑');
+
+                },
+                // 刷新表单
+                reloadSiteInfo2Table: function() {
+                    console.log('[reloadSiteInfo2Table]刷新表单');
+
+                }
+            };
+            // 【编辑】按钮被点击
             $(document).on('click', click2EditSiteInfoBtnIdStr, function() {
                 // 隐藏【编辑】按钮
                 click2EditSiteInfoBtn.fadeOut(fadeSpeedStr, function() {
                     // 显示【提交】或【取消】按钮组
                     submitOrCancelEditSiteInfoBtnContainer.fadeIn(fadeSpeedStr);
                 });
+                // 保存表单数据，【取消】后可以恢复
+                SiteInfoEditManager.saveSiteInfo();
+                // 激活站点详情表单可编辑
+                SiteInfoEditManager.enableSiteInfoTableFormEdit();
             });
             // 【提交】或【取消】按钮被点击以后
             function hideSubmitOrCancelAndShowEditBtn() {
@@ -589,9 +622,19 @@
                 });
             }
             $(document).on('click', '#submit-edited-site-info-btn', function() {
+                // 提交，先显示遮罩菊花，同时 ajax 请求服务器，若回复成功，才隐藏【提交】和【取消】
                 hideSubmitOrCancelAndShowEditBtn();
+                // 恢复表单不可编辑状态
+                SiteInfoEditManager.disableSiteInfoTableFormEdit();
+                // 用服务器返回的数据刷新表单
+                SiteInfoEditManager.reloadSiteInfo2Table();
             }).on('click', '#cancel-edited-site-info-btn', function() {
                 hideSubmitOrCancelAndShowEditBtn();
+                // 取消，先恢复表单不可编辑状态
+                SiteInfoEditManager.disableSiteInfoTableFormEdit();
+                // 用客户端保存的数据刷新表单
+                var savedSiteInfo = SiteInfoEditManager.loadSavedSiteInfo();
+                SiteInfoEditManager.reloadSiteInfo2Table(savedSiteInfo);
             });
         });
     })();
