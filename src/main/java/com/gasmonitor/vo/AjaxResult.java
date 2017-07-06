@@ -10,6 +10,13 @@ import java.util.List;
  */
 public class AjaxResult<T> {
     public static Integer PAGE_SIZE = 2;
+    public final static int CODE_ERROR = -1;
+    public final static int CODE_SUCC = 1;
+    public final static String MSG_ERROR = "失败";
+    public final static String MSG_SUCC = "成功";
+
+    private int code;
+    private String msg;
     private long total;
     private int page;
     private long totalPage;
@@ -17,14 +24,16 @@ public class AjaxResult<T> {
 
 
     public AjaxResult() {
+        this.setCode(CODE_SUCC);
+        this.setMsg(MSG_SUCC);
     }
 
     public AjaxResult(T data) {
+        this();
         this.data = new ArrayList<T>();
         if (data != null) {
             this.data.add(data);
         }
-
         this.setTotal(this.data.size());
         this.setPage(1);
         this.setTotalPage(1);
@@ -32,6 +41,7 @@ public class AjaxResult<T> {
 
 
     public AjaxResult(List<T> data) {
+        this();
         this.data = data;
         if (data == null) {
             this.setTotal(0);
@@ -59,6 +69,23 @@ public class AjaxResult<T> {
         r.setTotal(page.getTotalElements());
         return r;
     }
+
+    //返回一个默认的错误信息
+    public static AjaxResult ErrorAjaxResult() {
+        AjaxResult a = new AjaxResult();
+        a.setCode(CODE_ERROR);
+        a.setMsg(MSG_ERROR);
+        return a;
+    }
+
+    //返回一个默认的成功信息
+    public static AjaxResult SuccAjaxResult() {
+        AjaxResult a = new AjaxResult();
+        a.setCode(CODE_SUCC);
+        a.setMsg(MSG_SUCC);
+        return a;
+    }
+
 
     @Override
     public String toString() {
@@ -102,4 +129,19 @@ public class AjaxResult<T> {
         this.totalPage = totalPage;
     }
 
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
 }
