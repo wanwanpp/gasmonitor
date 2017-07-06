@@ -7,7 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Date;
@@ -34,16 +36,16 @@ public class DeviceController {
     }
 
     //ajax 获取设备信息的列表
-    @RequestMapping(value = "/ajax/list")
+    @RequestMapping(value = "/ajax/list/{siteId}")
     @ResponseBody
-    public AjaxResult<Device> ajaxList(Long siteId) {
+    public AjaxResult<Device> ajaxList(@PathVariable("siteId") Long siteId) {
         List<Device> devices = deviceRepository.findBySiteId(siteId);
         logger.debug("通过站点{}查询到的所有设备的信息{}", siteId, devices);
         return new AjaxResult<Device>(devices);
     }
 
     //ajax 增加一个设备
-    @RequestMapping(value = "/ajax/add")
+    @RequestMapping(value = "/ajax/add", method = RequestMethod.POST)
     @ResponseBody
     public AjaxResult<Device> ajaxAddDevice(String name, Integer logic, Long siteId, String phone, Integer status, Long parent) {
         //新生成的设备
