@@ -78,6 +78,13 @@ public class AjaxResult<T> {
         return a;
     }
 
+    public static AjaxResult ErrorAjaxResult(String msg) {
+        AjaxResult a = new AjaxResult();
+        a.setCode(CODE_ERROR);
+        a.setMsg(msg);
+        return a;
+    }
+
     //返回一个默认的成功信息
     public static AjaxResult SuccAjaxResult() {
         AjaxResult a = new AjaxResult();

@@ -9,7 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -42,6 +44,47 @@ public class TenantController {
         Tenant ret = tenantRepository.save(tenant);
         return new AjaxResult<>(ret);
     }
+
+    @RequestMapping(value = "/ajax/remove")
+    @ResponseBody
+    public AjaxResult<Tenant> ajaxRemove(Long id) {
+        if (id == null) {
+            return AjaxResult.ErrorAjaxResult();
+        }
+        tenantRepository.delete(id);
+        return AjaxResult.SuccAjaxResult();
+    }
+
+    @RequestMapping(value = "/ajax/update", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxResult<Tenant> ajaxUpdate(Long id, String name, String mobile, String address, String company) {
+        if (id == null) {
+            return AjaxResult.ErrorAjaxResult("没有找到记录");
+        }
+
+        Tenant ret = tenantRepository.findOne(id);
+        if (ret == null) {
+            return AjaxResult.ErrorAjaxResult();
+        }
+        if (!StringUtils.isEmpty(name)) {
+            ret.setName(name);
+        }
+
+        if (!StringUtils.isEmpty(mobile)) {
+            ret.setMobile(mobile);
+        }
+
+        if (!StringUtils.isEmpty(address)) {
+        }
+        if (!StringUtils.isEmpty(company)) {
+            ret.setCompany(company);
+        }
+        tenantRepository.save(ret);
+
+        //保存成功，返回结果
+        return new AjaxResult<>(ret);
+    }
+
 
     //查询租户的列表
     @RequestMapping(value = "/list")
