@@ -57,44 +57,68 @@
   <div class="layui-side layui-bg-black">
     <div class="layui-side-scroll">
       <ul class="layui-nav layui-nav-tree" lay-filter="left-nav" style="border-radius: 0;">
-        <li class="layui-nav-item layui-nav-itemed">
-          <a href="javascript:;" data-url="/sys/setting" data-id="0">
-            系统管理
-          </a>
-        </li>
+        <!-- Start: 整理后的左侧菜单 -->
         <li class="layui-nav-item">
           <a href="javascript:;">
-            租户管理
+            公司
           </a>
           <dl class="layui-nav-child">
             <dd>
-              <a href="javascript:;" data-url="/tenant/list" data-id="1">
-                租户
+              <a href="javascript:;" data-url="/sys/setting" data-id="1" title="租户的人数，系统性能参数等">
+                系统概述
               </a>
             </dd>
             <dd>
-              <a href="javascript:;" data-url="http://cn.bing.com/" data-id="2">
-                设备
+              <a href="javascript:;" data-url="/tenant/list" data-id="2" title="管理租户，增删改查">
+                租户管理
               </a>
             </dd>
           </dl>
         </li>
+        <li class="layui-nav-item">
+          <a href="javascript:;">
+            租户
+          </a>
+          <dl class="layui-nav-child">
+            <dd>
+              <a href="javascript:;" data-url="/tenant/info" data-id="3">
+                租户详细信息
+              </a>
+            </dd>
+            <dd>
+              <a href="javascript:;" data-url="/tenant/sites-manage" data-id="4">
+                站点管理
+              </a>
+            </dd>
+            <dd>
+              <a href="javascript:;" data-url="/tenant/devices-manage" data-id="5">
+                设备管理
+              </a>
+            </dd>
+            <dd>
+              <a href="javascript:;" data-url="/tenant/settings" data-id="6">
+                设置
+              </a>
+            </dd>
+          </dl>
+        </li>
+        <!-- End  : 整理后的左侧菜单 -->
 
         <!-- Start: 公司部分 -->
-        <li class="layui-nav-item">
+        <!--<li class="layui-nav-item">
           <a href="javascript:;" data-url="/company/tenant" data-id="5">
             公司 - 租户管理
           </a>
-        </li>
+        </li>-->
         <!-- End  : 公司部分 -->
 
         <!-- Start: 租户部分 -->
-        <li class="layui-nav-item">
+        <!--<li class="layui-nav-item">
           <a href="javascript:;" data-url="/tenant/sites-manage" data-id="6">
             租户 - 站点管理
           </a>
-        </li>
-        <li class="layui-nav-item">
+        </li>-->
+        <!--<li class="layui-nav-item">
           <a href="javascript:;" data-id="6">
             租户 - 站点设备管理
           </a>
@@ -111,22 +135,22 @@
             </dd>
 
           </dl>
-        </li>
-        <li class="layui-nav-item">
+        </li>-->
+        <!--<li class="layui-nav-item">
           <a href="javascript:;" data-url="/tenant/devices-manage" data-id="7">
             租户 - 设备管理
           </a>
-        </li>
-        <li class="layui-nav-item">
+        </li>-->
+        <!--<li class="layui-nav-item">
           <a href="javascript:;" data-url="/tenant/statistics-statements" data-id="8">
             租户 - 统计报表
           </a>
-        </li>
-        <li class="layui-nav-item">
+        </li>-->
+        <!--<li class="layui-nav-item">
           <a href="javascript:;" data-url="/tenant/settings" data-id="9">
             租户 - 设置
           </a>
-        </li>
+        </li>-->
         <!-- End  : 租户部分 -->
 
       </ul>
