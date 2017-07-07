@@ -45,7 +45,11 @@
     .site-tr-selected .layui-btn { font-weight: normal; font-style: normal; }
   </style>
   <!-- End  : sites list css -->
-
+  <!-- Start: UI edit sites css -->
+  <style>
+    .pandaroid-layui_elem_quote_title-btn-container { position: absolute; right: 4px; top: 4px; }
+  </style>
+  <!-- End  : UI edit sites css -->
 
 </head>
   <body class="childrenBody">
@@ -81,7 +85,12 @@
         <div id="sitesListTableView"></div>
       </div>
       <div class="sysNotice col right-details">
-        <blockquote class="layui-elem-quote title">站点地图<i class="iconfont icon-new1"></i></blockquote>
+        <blockquote class="layui-elem-quote title">
+          站点地图<i class="iconfont icon-new1"></i>
+          <div class="pandaroid-layui_elem_quote_title-btn-container">
+            <button class="layui-btn">点击编辑当前选中站点位置（在地图中拖动）</button>
+          </div>
+        </blockquote>
         <table class="layui-table" lay-skin="line">
           <colgroup>
             <col width="110"></col>
@@ -91,7 +100,16 @@
 
           </div>
         </table>
-        <blockquote class="layui-elem-quote title">站点详情</blockquote>
+        <blockquote class="layui-elem-quote title">
+          站点详情
+          <div class="pandaroid-layui_elem_quote_title-btn-container">
+            <button id="click-2-edit-site-info-btn" class="layui-btn">编辑当前站点详情</button>
+            <div id="submit-or-cancel-edit-site-info-btn-container">
+              <button id="submit-edited-site-info-btn" class="layui-btn layui-btn-normal">提交站点详情编辑结果</button>
+              <button id="cancel-edited-site-info-btn" class="layui-btn layui-btn-warm">取消站点详情编辑结果</button>
+            </div>
+          </div>
+        </blockquote>
         <table class="layui-table">
           <colgroup>
             <col width="150"></col>
@@ -313,7 +331,7 @@
     <td>{{d.siteId}}</td>
   </tr>
   <tr>
-    <td>站点名字</td>
+    <td>站点名称</td>
     <td>{{d.siteName}}</td>
   </tr>
   <tr>
@@ -324,10 +342,10 @@
     <td>纬度</td>
     <td>{{d.siteLatitude}}</td>
   </tr>
-  <tr>
+  <!--<tr>
     <td>父站点</td>
     <td>{{d.siteParent}}</td>
-  </tr>
+  </tr>-->
 </script>
 <script>
   //  <![data[
@@ -371,7 +389,8 @@
                     // Start: 站点在地图上增加 marker
                     if(sitesDataArr && sitesDataArr.length && sitesDataArr.length > 0) {
                       sitesDataArr.forEach(function(siteDataItem, siteDataIndex) {
-                        var pointChengDu4 = new BMap.Point(pointChengDu.lng + siteDataItem.longitude / 1000, pointChengDu.lat + siteDataItem.latitude / 1000);
+                        // var pointChengDu4 = new BMap.Point(pointChengDu.lng + siteDataItem.longitude / 1000, pointChengDu.lat + siteDataItem.latitude / 1000);
+                        var pointChengDu4 = new BMap.Point(siteDataItem.longitude, siteDataItem.latitude);
                         var marker = new BMap.Marker(pointChengDu4);// 创建标注
                         map.addOverlay(marker);             // 将标注添加到地图中
                         // 记录 marker
@@ -542,3 +561,94 @@
     });
 </script>
 <!-- End  : layui 表单相关 -->
+
+<!-- Start: 编辑站点详情（table） -->
+<script>
+    (function() {
+        layui.use(['jquery'], function() {
+            var $ = layui.jquery;
+            // hide ： 【提交】或【取消】按钮组
+            var submitOrCancelEditSiteInfoBtnContainer = $('#submit-or-cancel-edit-site-info-btn-container');
+            submitOrCancelEditSiteInfoBtnContainer.hide();
+            // 【编辑站点详情】按钮被点击后
+            var click2EditSiteInfoBtnIdStr = '#click-2-edit-site-info-btn';
+            var click2EditSiteInfoBtn = $(click2EditSiteInfoBtnIdStr);
+            // fadeIn 和 fadeOut 的速度
+            var fadeSpeedStr = 'normal'
+            // 表单数据处理对象
+            var SiteInfoEditManager = {
+                // 保存表单数据，【取消】后可以恢复
+                saveSiteInfo: function() {
+                    console.log('[saveSiteInfo]保存表单数据，【取消】后可以恢复');
+
+                },
+                // load 【function saveSiteInfo】保存的数据
+                loadSavedSiteInfo: function() {
+                    console.log('[loadSavedSiteInfo]load 【function saveSiteInfo】保存的数据');
+
+                },
+                // 激活站点详情表单可编辑
+                enableSiteInfoTableFormEdit: function() {
+                    console.log('[enableSiteInfoTableFormEdit]激活站点详情表单可编辑');
+
+                },
+                // 恢复表单不可编辑状态
+                disableSiteInfoTableFormEdit: function() {
+                    console.log('[disableSiteInfoTableFormEdit]恢复站点详情表单不可编辑');
+
+                },
+                // 刷新表单
+                reloadSiteInfo2Table: function() {
+                    console.log('[reloadSiteInfo2Table]刷新表单');
+
+                }
+            };
+            // 【编辑】按钮被点击
+            $(document).on('click', click2EditSiteInfoBtnIdStr, function() {
+                // 隐藏【编辑】按钮
+                click2EditSiteInfoBtn.fadeOut(fadeSpeedStr, function() {
+                    // 显示【提交】或【取消】按钮组
+                    submitOrCancelEditSiteInfoBtnContainer.fadeIn(fadeSpeedStr);
+                });
+                // 保存表单数据，【取消】后可以恢复
+                SiteInfoEditManager.saveSiteInfo();
+                // 激活站点详情表单可编辑
+                SiteInfoEditManager.enableSiteInfoTableFormEdit();
+            });
+            // 【提交】或【取消】按钮被点击以后
+            function hideSubmitOrCancelAndShowEditBtn() {
+                submitOrCancelEditSiteInfoBtnContainer.fadeOut(fadeSpeedStr, function() {
+                    click2EditSiteInfoBtn.fadeIn(fadeSpeedStr);
+                });
+            }
+            $(document).on('click', '#submit-edited-site-info-btn', function() {
+                // 提交，先显示遮罩菊花，同时 ajax 请求服务器，若回复成功，才隐藏【提交】和【取消】
+                layer.load();   // loading
+                $.post(
+                    '/site/ajax/update',
+                    {id: 1, name: 'site_1_sdfaa_p', longitude: 104.074, latitude: 30.762},
+                    function(data) {
+                        console.log('[post: /site/ajax/update] callback data: ', data);
+                        // 切换【提交】【取消】按钮和【提交按钮】
+                        hideSubmitOrCancelAndShowEditBtn();
+                        // 恢复表单不可编辑状态
+                        SiteInfoEditManager.disableSiteInfoTableFormEdit();
+                        // 用服务器返回的数据刷新表单
+                        SiteInfoEditManager.reloadSiteInfo2Table();
+                        // 隐藏遮罩菊花
+                        layer.closeAll('loading');   //关闭所有的loading
+                    },
+                    "json"
+                );
+            }).on('click', '#cancel-edited-site-info-btn', function() {
+                hideSubmitOrCancelAndShowEditBtn();
+                // 取消，先恢复表单不可编辑状态
+                SiteInfoEditManager.disableSiteInfoTableFormEdit();
+                // 用客户端保存的数据刷新表单
+                var savedSiteInfo = SiteInfoEditManager.loadSavedSiteInfo();
+                SiteInfoEditManager.reloadSiteInfo2Table(savedSiteInfo);
+            });
+        });
+    })();
+</script>
+<!-- End  : 编辑站点详情（table） -->

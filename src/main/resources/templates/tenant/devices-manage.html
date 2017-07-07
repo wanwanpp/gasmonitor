@@ -137,99 +137,137 @@
 <!-- Start: echarts -->
 <script src="/js/echarts.min.js"></script>
 <script>
-    // 基于准备好的dom，初始化echarts实例
-    var myChart = echarts.init(document.getElementById('main'));
+    (function() {
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
 
-    // 指定图表的配置项和数据
-    var option = {
-        title: {
-            text: '堆叠区域图 demo'
-        },
-        tooltip : {
-            trigger: 'axis',
-            axisPointer: {
-                type: 'cross',
-                label: {
-                    backgroundColor: '#6a7985'
-                }
-            }
-        },
-        legend: {
-            data:['今日压力','历史压力','demo 1','demo 2','demo 3']
-        },
-        toolbox: {
-            feature: {
-                saveAsImage: {}
-            }
-        },
-        grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '3%',
-            containLabel: true
-        },
-        xAxis : [
-            {
-                type : 'category',
-                boundaryGap : false,
-                data : ['0:00','1:00','2:00','3:00','4:00','5:00','6:00','7:00','8:00','9:00','10:00','11:00','12:00',
-                    '13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','0:00']
-            }
-        ],
-        yAxis : [
-            {
-                type : 'value'
-            }
-        ],
-        series : [
-            {
-                name:'今日压力',
-                type:'line',
-                stack: '总量',
-                areaStyle: {normal: {}},
-                data:[120, 132, 101, 134, 90, 230, 210, 132, 101, 134, 90, 230, 210, 132, 101, 134, 90, 230, 210, 132, 101, 134, 90, 230, 210]
+        // 指定图表的配置项和数据
+        var option = {
+            title: {
+                text: '设备监测曲线图',
+                subtext: '[设备或站点名]'
             },
-            {
-                name:'历史压力',
-                type:'line',
-                stack: '总量',
-                areaStyle: {normal: {}},
-                data:[220, 182, 191, 234, 290, 330, 310, 182, 191, 234, 290, 330, 310, 182, 191, 234, 290, 330, 310, 182, 191, 234, 290, 330, 310]
-            },
-            {
-                name:'demo 1',
-                type:'line',
-                stack: '总量',
-                areaStyle: {normal: {}},
-                data:[150, 232, 201, 154, 190, 330, 410, 232, 201, 154, 190, 330, 410, 232, 201, 154, 190, 330, 410, 232, 201, 154, 190, 330, 410]
-            },
-            {
-                name:'demo 2',
-                type:'line',
-                stack: '总量',
-                areaStyle: {normal: {}},
-                data:[320, 332, 301, 334, 390, 330, 320, 332, 301, 334, 390, 330, 320, 332, 301, 334, 390, 330, 320, 332, 301, 334, 390, 330, 320]
-            },
-            {
-                name:'demo 3',
-                type:'line',
-                stack: '总量',
-                label: {
-                    normal: {
-                        show: true,
-                        position: 'top'
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    label: {
+                        backgroundColor: '#6a7985'
                     }
+                }
+            },
+            legend: {
+                data:['今日压力', '历史压力']
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    dataZoom: {
+                        yAxisIndex: 'none'
+                    },
+                    dataView: {readOnly: false},
+                    // magicType: {type: ['line', 'bar']},
+                    restore: {},
+                    saveAsImage: {}
+                }
+            },
+            dataZoom: {
+                show: false,
+                start: 0,
+                end: 100
+            },
+            grid: {
+                left: '0%',
+                right: '6%',
+                bottom: '0%',
+                top: 75,
+                containLabel: true
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    name: '时间',
+                    boundaryGap: false,
+                    data: (function (){
+                        var now = new Date();
+                        var res = [];
+                        var len = 10;
+                        while (len--) {
+                            res.unshift(now.toLocaleTimeString().replace(/^\D*/,''));
+                            now = new Date(now - 2000);
+                        }
+                        return res;
+                    })()
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    scale: true,
+                    name: '压力值',
+                    nameGap: 8,
+                    min: 0,
+                    boundaryGap: [0.2, 0.2]
+                }
+            ],
+            series: [
+                {
+                    name:'今日压力',
+                    type:'line',
+                    areaStyle: {normal: {}},
+                    data:(function (){
+                        var res = [];
+                        var len = 10;
+                        while (len--) {
+                            res.push(Math.round(Math.random() * 1000));
+                        }
+                        return res;
+                    })()
                 },
-                areaStyle: {normal: {}},
-                data:[820, 932, 901, 934, 1290, 1330, 1320, 932, 901, 934, 1290, 1330, 1320, 932, 901, 934, 1290, 1330, 1320, 932, 901, 934, 1290, 1330, 1320]
-            }
-        ]
-    };
+                {
+                    name:'历史压力',
+                    type:'line',
+                    areaStyle: {normal: {}},
+                    data:(function (){
+                        var res = [];
+                        var len = 0;
+                        while (len < 10) {
+                            res.push((Math.random()*1000 + 5).toFixed(1) - 0);
+                            len++;
+                        }
+                        return res;
+                    })()
+                }
+            ]
+        };
 
-    // 使用刚指定的配置项和数据显示图表。
-    myChart.setOption(option);
+        setInterval(function (){
+            var axisData = (new Date()).toLocaleTimeString().replace(/^\D*/,'');
+
+            var data0 = option.series[0].data;
+            var data1 = option.series[1].data;
+            data0.shift();
+            data0.push(Math.round(Math.random() * 1000));
+            data1.shift();
+            data1.push((Math.random() * 1000 + 5).toFixed(1) - 0);
+
+            option.xAxis[0].data.shift();
+            option.xAxis[0].data.push(axisData);
+
+            myChart.setOption(option);
+        }, 3000);
+    })();
 </script>
 <!-- End  : echarts -->
+
+<!-- Start: echarts 动态数据 -->
+<script>
+    (function() {
+
+    })();
+</script>
+<!-- End  : echarts 动态数据 -->
+
 <script type="text/javascript" src="/layui/layui.js"></script>
 <!-- Start: 与服务器交互 ajax -->
 <script id="sitesList" type="text/html">
@@ -243,20 +281,8 @@
     {{# layui.each(d, function(siteDataIndex, siteDataItem){ }}
     <tr class="site-table-tr" data-id="{{siteDataItem.id}}" data-name="{{siteDataItem.name}}" data-longitude="{{siteDataItem.longitude}}" data-latitude="{{siteDataItem.latitude}}" data-parent="{{siteDataItem.parent}}">
       <td align="left">{{siteDataItem.name}}</td>
-      <td class="align-right">
-        <button class="layui-btn layui-btn-normal view-devices-by-site-id" data-id="{{siteDataItem.id}}">查看设备</button>
-      </td>
     </tr>
     {{# }); }}
-    <tr>
-      <td style="text-align: left;">设备 1</td>
-    </tr>
-    <tr>
-      <td style="text-align: left;">设备 2</td>
-    </tr>
-    <tr>
-      <td style="text-align: left;">设备 3</td>
-    </tr>
     </tbody>
   </table>
 </script>
@@ -292,7 +318,6 @@
         layui.use(['laytpl', 'jquery', 'layer', 'form'], function() {
             var laytpl = layui.laytpl;
             var $ = layui.jquery;
-            var getUrl = "/device/ajax/list";
             var layer = layui.layer;
             var form = layui.form();
 
@@ -306,7 +331,7 @@
                 console.log("开始查询站点 list 的信息 ...");
                 layer.load();   // loading
                 $.get(
-                    getUrl,
+                    ["/device/ajax/list/", 999].join(''),
                     {"currPage": currPage || 1},
                     function (data) {
                         console.log("查询到的站点 list 信息:" + JSON.stringify(data));
@@ -328,34 +353,8 @@
                         // Start: 站点在地图上增加 marker
                         if(sitesDataArr && sitesDataArr.length && sitesDataArr.length > 0) {
                             sitesDataArr.forEach(function(siteDataItem, siteDataIndex) {
-                                var pointChengDu4 = new BMap.Point(pointChengDu.lng + siteDataItem.longitude / 1000, pointChengDu.lat + siteDataItem.latitude / 1000);
-                                var marker = new BMap.Marker(pointChengDu4);// 创建标注
-                                map.addOverlay(marker);             // 将标注添加到地图中
-                                // 记录 marker
-                                markersArr.push(marker);
-                                sitesId2MarkerMap[siteDataItem.id] = marker;
-                                // Start: marker 点击后的弹出层
-                                addClickHandler(['[站点 id ： ', siteDataItem.id, '][站点 name ： ', siteDataItem.name, '][站点经度： ',
-                                    siteDataItem.longitude, '][站点纬度： ', siteDataItem.latitude, ']'].join(''), marker);
-                                // functions
-                                var opts = {
-                                    width : 250,     // 信息窗口宽度
-                                    height: 80,     // 信息窗口高度
-                                    title : "信息窗口" , // 信息窗口标题
-                                    enableMessage:true//设置允许信息窗发送短息
-                                };
-                                function addClickHandler(content, marker) {
-                                    marker.addEventListener("click",function(e){
-                                        openInfo(content,e)}
-                                    );
-                                }
-                                function openInfo(content, e){
-                                    var p = e.target;
-                                    var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat + 0.009);
-                                    var infoWindow = new BMap.InfoWindow(content, opts);  // 创建信息窗口对象
-                                    layui.SitesManageGlobal['map'].openInfoWindow(infoWindow, point); //开启信息窗口
-                                }
-                                // End  : marker 点击后的弹出层
+                                console.log(['[siteDataIndex: ', siteDataIndex, '] siteDataItem: '].join(''));
+                                console.log(siteDataItem);
                             });
                         }
                         // End  : 站点在地图上增加 marker
@@ -418,34 +417,9 @@
                 thisTr.addClass(siteTrSelectedClassStr);
                 // End  : 被选中的 tr addClass 以区分
                 //
-              /*showLayerContentTplInLayer('站点信息', ['[siteId: ', siteId, '][siteName: ',
-               siteName, '][siteLongitude: ', siteLongitude, '][siteLatitude: ', siteLatitude, ']'].join(''));*/
                 console.log(['站点信息[siteId: ', siteId, '][siteName: ', siteName, '][siteLongitude: ',
                     siteLongitude, '][siteLatitude: ', siteLatitude, ']'].join(''));
-                // Start: 从 sitesId2MarkerMap 中得到对应 marker 并展示（1. 表格中展示详情； 2. marker focus 调整地图到 marker ； 3. marker 弹跳）
-                var trMarker = sitesId2MarkerMap[siteId];
-                // 其他 marker 停止动画，当前选中 marker 开始动画
-                markersArr.forEach(function (markerItem) {
-                    markerItem.setAnimation(null);
-                });
-                trMarker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
-                // 移动到 trMarker 为中心的点
-                var trMarkerPosition = trMarker.getPosition();
-                layui.SitesManageGlobal['map'].panTo(new BMap.Point(trMarkerPosition.lng, trMarkerPosition.lat));
-                // layui.SitesManageGlobal['map'].panTo(new BMap.Point(siteLongitude, siteLatitude));
-                // End  : 从 sitesId2MarkerMap 中得到对应 marker 并展示（1. 表格中展示详情； 2. marker focus 调整地图到 marker ； 3. marker 弹跳）
-                // Start: 展示站点详情于表格中
-                var siteDetailInfoData = {
-                    siteId: siteId,
-                    siteName: siteName,
-                    siteLongitude: siteLongitude,
-                    siteLatitude: siteLatitude,
-                    siteParent: siteParent
-                };
-                laytpl(siteDetailInfo_tpl.innerHTML).render(siteDetailInfoData, function (html) {
-                    siteDetailInfo.innerHTML = html;
-                });
-                // End  : 展示站点详情于表格中
+
             });
             // Start: [站点列表]中某站点被点击
         });
@@ -454,3 +428,27 @@
     //]]>
 </script>
 <!-- End  : 与服务器交互 ajax -->
+
+<!-- Start: sockjs 接收服务器持续推送并处理 -->
+<script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
+<script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
+<script>
+    (function() {
+        layui.use(['jquery'], function() {
+            var $ = layui.jquery;
+            // sockjs stomp
+            var sock = new SockJS("/endpointChat");
+            var stomp = Stomp.over(sock);
+            stomp.connect('guest', 'guest', function (frame) {
+                stomp.subscribe("/user/queue/notifications", handleNotifications);
+                // set station
+                stomp.send("/setStations", {}, "s1");
+            });
+            // 收到消息的处理
+            function handleNotifications(message) {
+                console.log(["[handleNotifications]received: ", message.body].join(''));
+            }
+        });
+    })();
+</script>
+<!-- End  : sockjs 接收服务器持续推送并处理 -->
