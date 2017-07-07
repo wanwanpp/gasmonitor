@@ -118,6 +118,7 @@
         <thymeleaf-layout-dialect.version>2.0.0</thymeleaf-layout-dialect.version>
     </properties>
 
+    <!--spring boot插件-->
     <build>
         <plugins>
             <plugin>
@@ -126,5 +127,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 /**
  * @author Roger
  */
-@Service
+//@Service
 public class HazelCastClient implements CommandLineRunner {
     private final static Logger logger = LoggerFactory.getLogger(HazelCastClient.class);
 
