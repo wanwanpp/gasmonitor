@@ -67,12 +67,23 @@
         <td></td>
         <td>{{item.create_date}}</td>
         <td>
-          <button class="layui-btn layui-btn-mini tenant_edit">
+          <span id="source{{item.id}}"
+                data-id="{{item.id}}"
+                data-address="{{item.address}}"
+                data-create_date="{{item.create_date}}"
+                data-name="{{item.name}}"
+                data-mobile="{{item.mobile}}"
+
+                style="display: none"></span>
+          <button class="layui-btn layui-btn-mini tenant_edit" data-sourceid="{{item.id}}">
             <i class="layui-icon">&#xe64c;</i>详情
           </button>
-          <a class="layui-btn layui-btn-mini tenant_edit"><i class="layui-icon">&#xe642;</i> 编辑</a>
-          <a class="layui-btn layui-btn-danger layui-btn-mini tenant_del" data-id="'+data[i].newsId+'">
-            <i class="layui-icon">&#xe640;</i> 删除</a>
+          <button class="layui-btn layui-btn-mini tenant_edit" data-sourceid="{{item.id}}">
+            <i class="layui-icon">&#xe642;</i>编辑
+          </button>
+          <button class="layui-btn layui-btn-danger layui-btn-mini tenant_del" data-sourceid="{{item.id}}">
+            <i class="layui-icon">&#xe640;</i>删除
+          </button>
         </td>
       </tr>
       {{# }); }}
@@ -95,21 +106,24 @@
     <div class="layui-form-item">
       <label class="layui-form-label">名称</label>
       <div class="layui-input-block">
-        <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入名称" class="layui-input"/>
+        <input id="eidt_layer_name" type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入名称"
+               class="layui-input"/>
       </div>
     </div>
 
     <div class="layui-form-item">
       <label class="layui-form-label">电话号码</label>
       <div class="layui-input-block">
-        <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入电话" class="layui-input"/>
+        <input id="eidt_layer_mobile" type="text" name="mobile" lay-verify="title" autocomplete="off"
+               placeholder="请输入电话" class="layui-input"/>
       </div>
     </div>
 
     <div class="layui-form-item">
       <label class="layui-form-label">地址</label>
       <div class="layui-input-block">
-        <input type="text" name="address" lay-verify="title" autocomplete="off" placeholder="请输入地址"
+        <input id="eidt_layer_address" type="text" name="address" lay-verify="title" autocomplete="off"
+               placeholder="请输入地址"
                class="layui-input"/>
       </div>
     </div>
@@ -117,7 +131,8 @@
     <div class="layui-form-item">
       <label class="layui-form-label">公司名称</label>
       <div class="layui-input-block">
-        <input type="text" name="company" lay-verify="title" autocomplete="off" placeholder="请输入地址"
+        <input id="eidt_layer_company" type="text" name="company" lay-verify="title" autocomplete="off"
+               placeholder="请输入公司"
                class="layui-input"/>
       </div>
     </div>
