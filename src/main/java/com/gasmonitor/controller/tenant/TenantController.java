@@ -28,11 +28,19 @@ public class TenantController {
         return "tenant/info";
     }
 
-
     //编辑租户的信息
     @RequestMapping(value = "/edit")
     public String edit() {
         return "tenant/edit";
+    }
+
+
+    //增加租户
+    @RequestMapping(value = "/ajax/new")
+    @ResponseBody
+    public AjaxResult<Tenant> ajaxNew(Tenant tenant) {
+        Tenant ret = tenantRepository.save(tenant);
+        return new AjaxResult<>(ret);
     }
 
     //查询租户的列表
