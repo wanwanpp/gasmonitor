@@ -59,5 +59,5 @@ layui.use(['layer', 'element'], function () {
     /**
      * 初始化点击侧边栏第一个导航
      */
-    nav.find('li').eq(0).click();
+    nav.find('li a[data-url]').eq(0).click();
 });
