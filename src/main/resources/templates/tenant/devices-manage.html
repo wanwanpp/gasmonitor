@@ -134,133 +134,145 @@
   <!-- End  ： 左右布局 -->
 </body>
 </html>
+<script type="text/javascript" src="/layui/layui.js"></script>
 <!-- Start: echarts -->
 <script src="/js/echarts.min.js"></script>
 <script>
     (function() {
-        // 基于准备好的dom，初始化echarts实例
-        var myChart = echarts.init(document.getElementById('main'));
+        layui.use(['jquery'], function() {
+            var $ = layui.jquery;
 
-        // 指定图表的配置项和数据
-        var option = {
-            title: {
-                text: '设备监测曲线图',
-                subtext: '[设备或站点名]'
-            },
-            tooltip: {
-                trigger: 'axis',
-                axisPointer: {
-                    type: 'cross',
-                    label: {
-                        backgroundColor: '#6a7985'
-                    }
-                }
-            },
-            legend: {
-                data:['今日压力', '历史压力']
-            },
-            toolbox: {
-                show: true,
-                feature: {
-                    dataZoom: {
-                        yAxisIndex: 'none'
-                    },
-                    dataView: {readOnly: false},
-                    // magicType: {type: ['line', 'bar']},
-                    restore: {},
-                    saveAsImage: {}
-                }
-            },
-            dataZoom: {
-                show: false,
-                start: 0,
-                end: 100
-            },
-            grid: {
-                left: '0%',
-                right: '6%',
-                bottom: '0%',
-                top: 75,
-                containLabel: true
-            },
-            xAxis: [
-                {
-                    type: 'category',
-                    name: '时间',
-                    boundaryGap: false,
-                    data: (function (){
-                        var now = new Date();
-                        var res = [];
-                        var len = 10;
-                        while (len--) {
-                            res.unshift(now.toLocaleTimeString().replace(/^\D*/,''));
-                            now = new Date(now - 2000);
-                        }
-                        return res;
-                    })()
-                }
-            ],
-            yAxis: [
-                {
-                    type: 'value',
-                    scale: true,
-                    name: '压力值',
-                    nameGap: 8,
-                    min: 0,
-                    boundaryGap: [0.2, 0.2]
-                }
-            ],
-            series: [
-                {
-                    name:'今日压力',
-                    type:'line',
-                    areaStyle: {normal: {}},
-                    data:(function (){
-                        var res = [];
-                        var len = 10;
-                        while (len--) {
-                            res.push(Math.round(Math.random() * 1000));
-                        }
-                        return res;
-                    })()
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('main'));
+
+            // 指定图表的配置项和数据
+            var option = {
+                title: {
+                    text: '设备监测曲线图',
+                    subtext: '[设备或站点名]'
                 },
-                {
-                    name:'历史压力',
-                    type:'line',
-                    areaStyle: {normal: {}},
-                    data:(function (){
-                        var res = [];
-                        var len = 0;
-                        while (len < 10) {
-                            res.push((Math.random()*1000 + 5).toFixed(1) - 0);
-                            len++;
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross',
+                        label: {
+                            backgroundColor: '#6a7985'
                         }
-                        return res;
-                    })()
-                }
-            ]
-        };
+                    }
+                },
+                legend: {
+                    data:['今日压力', '历史压力']
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        dataZoom: {
+                            yAxisIndex: 'none'
+                        },
+                        dataView: {readOnly: false},
+                        // magicType: {type: ['line', 'bar']},
+                        restore: {},
+                        saveAsImage: {}
+                    }
+                },
+                dataZoom: {
+                    show: false,
+                    start: 0,
+                    end: 100
+                },
+                grid: {
+                    left: '0%',
+                    right: '6%',
+                    bottom: '0%',
+                    top: 75,
+                    containLabel: true
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        name: '时间',
+                        boundaryGap: false,
+                        data: (function (){
+                            var now = new Date();
+                            var res = [];
+                            var len = 10;
+                            while (len--) {
+                                res.unshift(now.toLocaleTimeString().replace(/^\D*/,''));
+                                now = new Date(now - 2000);
+                            }
+                            return res;
+                        })()
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value',
+                        scale: true,
+                        name: '压力值',
+                        nameGap: 8,
+                        min: 0,
+                        boundaryGap: [0.2, 0.2]
+                    }
+                ],
+                series: [
+                    {
+                        name:'今日压力',
+                        type:'line',
+                        areaStyle: {normal: {}},
+                        data:(function (){
+                            var res = [];
+                            var len = 10;
+                            while (len--) {
+                                res.push(Math.round(Math.random() * 1000));
+                            }
+                            return res;
+                        })()
+                    },
+                    {
+                        name:'历史压力',
+                        type:'line',
+                        areaStyle: {normal: {}},
+                        data:(function (){
+                            var res = [];
+                            var len = 0;
+                            while (len < 10) {
+                                res.push((Math.random()*1000 + 5).toFixed(1) - 0);
+                                len++;
+                            }
+                            return res;
+                        })()
+                    }
+                ]
+            };
 
-        setInterval(function (){
-            renderUpdatedData2Charts();
-        }, 3000);
+            // 测试 demo ： 定时刷新
+            /*setInterval(function (){
+                renderUpdatedData2Charts();
+            }, 3000);*/
+            // 实际： 监听事件进行刷新
+            $(document).on('GM_EVENT_handleNotifications', '', function(event, data) {
+                console.log('[documentEvent GM_EVENT_handleNotifications] data: ');
+                console.log(data);
+                renderUpdatedData2Charts();
+            });
 
-        // render function
-        function renderUpdatedData2Charts() {
-            var axisData = (new Date()).toLocaleTimeString().replace(/^\D*/,'');
+            // render function
+            function renderUpdatedData2Charts() {
+                var axisData = (new Date()).toLocaleTimeString().replace(/^\D*/,'');
 
-            var data0 = option.series[0].data;
-            var data1 = option.series[1].data;
-            data0.shift();
-            data0.push(Math.round(Math.random() * 1000));
-            data1.shift();
-            data1.push((Math.random() * 1000 + 5).toFixed(1) - 0);
+                var data0 = option.series[0].data;
+                var data1 = option.series[1].data;
+                data0.shift();
+                data0.push(Math.round(Math.random() * 1000));
+                data1.shift();
+                data1.push((Math.random() * 1000 + 5).toFixed(1) - 0);
 
-            option.xAxis[0].data.shift();
-            option.xAxis[0].data.push(axisData);
+                option.xAxis[0].data.shift();
+                option.xAxis[0].data.push(axisData);
 
-            myChart.setOption(option);
-        }
+                myChart.setOption(option);
+            }
+        });
     })();
 </script>
 <!-- End  : echarts -->
@@ -273,7 +285,6 @@
 </script>
 <!-- End  : echarts 动态数据 -->
 
-<script type="text/javascript" src="/layui/layui.js"></script>
 <!-- Start: 与服务器交互 ajax -->
 <script id="sitesList" type="text/html">
   <table class="layui-table" lay-skin="line">
@@ -452,6 +463,7 @@
             // 收到消息的处理
             function handleNotifications(message) {
                 console.log(["[handleNotifications]received: ", message.body].join(''));
+                $(document).trigger('GM_EVENT_handleNotifications', message.body);
             }
         });
     })();
