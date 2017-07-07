@@ -49,9 +49,9 @@
       <tr>
         <th><input type="checkbox" name="" lay-skin="primary" lay-filter="allChoose" id="allChoose"/></th>
         <th style="text-align:left;">姓名</th>
+        <th>公司</th>
         <th>地址</th>
         <th>电话</th>
-        <th>浏览权限</th>
         <th>创建时间</th>
         <th>操作</th>
       </tr>
@@ -62,19 +62,20 @@
       <tr>
         <td>{{index}}</td>
         <td>{{item.name}}</td>
+        <td>{{item.company}}</td>
         <td>{{item.address}}</td>
         <td>{{item.mobile}}</td>
-        <td></td>
         <td>{{item.create_date}}</td>
         <td>
           <span id="source{{item.id}}"
                 data-id="{{item.id}}"
                 data-address="{{item.address}}"
+                data-company="{{item.company}}"
                 data-create_date="{{item.create_date}}"
                 data-name="{{item.name}}"
                 data-mobile="{{item.mobile}}"
-
-                style="display: none"></span>
+                style="display: none">
+          </span>
           <button class="layui-btn layui-btn-mini tenant_edit" data-sourceid="{{item.id}}">
             <i class="layui-icon">&#xe64c;</i>详情
           </button>

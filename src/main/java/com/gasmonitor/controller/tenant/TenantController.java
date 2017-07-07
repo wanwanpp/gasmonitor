@@ -58,6 +58,7 @@ public class TenantController {
     @RequestMapping(value = "/ajax/update", method = RequestMethod.POST)
     @ResponseBody
     public AjaxResult<Tenant> ajaxUpdate(Long id, String name, String mobile, String address, String company) {
+        logger.info("更新租户的信息id:{},name:{},mobile:{},address:{},company:{}");
         if (id == null) {
             return AjaxResult.ErrorAjaxResult("没有找到记录");
         }
@@ -75,6 +76,7 @@ public class TenantController {
         }
 
         if (!StringUtils.isEmpty(address)) {
+            ret.setAddress(address);
         }
         if (!StringUtils.isEmpty(company)) {
             ret.setCompany(company);
