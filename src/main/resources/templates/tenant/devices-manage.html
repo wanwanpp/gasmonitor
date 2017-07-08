@@ -139,8 +139,9 @@
 <script src="/js/echarts.min.js"></script>
 <script>
     (function() {
-        layui.use(['jquery'], function() {
+        layui.use(['jquery', 'oneSocket'], function() {
             var $ = layui.jquery;
+            var oneSocket = layui.oneSocket;
 
             // 基于准备好的dom，初始化echarts实例
             var myChart = echarts.init(document.getElementById('main'));
@@ -250,8 +251,9 @@
                 renderUpdatedData2Charts();
             }, 3000);*/
             // 实际： 监听事件进行刷新
-            $(document).on('GM_EVENT_handleNotifications', '', function(event, data) {
-                console.log('[documentEvent GM_EVENT_handleNotifications] data: ');
+            var oneSocketEvent = oneSocket.EVENT;
+            $(document).on(oneSocketEvent.GM_EVENT_handleNotifications, '', function(event, data) {
+                console.log(['[documentEvent oneSocketEvent ', oneSocketEvent.GM_EVENT_handleNotifications, '] data: '].join(''));
                 console.log(data);
                 renderUpdatedData2Charts(JSON.parse(data));
             });
@@ -452,7 +454,7 @@
 <script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
 <script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
 <script>
-    (function() {
+    /*(function() {
         layui.use(['jquery'], function() {
             var $ = layui.jquery;
             // sockjs stomp
@@ -469,6 +471,16 @@
                 $(document).trigger('GM_EVENT_handleNotifications', message.body);
             }
         });
-    })();
+    })();*/
 </script>
 <!-- End  : sockjs 接收服务器持续推送并处理 -->
+
+<!-- Start: layui.define 定义模块 -->
+<script>
+    (function() {
+        layui.use('oneSocket', function() {
+            layui.oneSocket(SockJS, Stomp);
+        });
+    })();
+</script>
+<!-- End  : layui.define 定义模块 -->
