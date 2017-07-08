@@ -2,16 +2,16 @@ package com.gasmonitor.controller.site;
 
 import com.gasmonitor.dao.SiteRepository;
 import com.gasmonitor.entity.Site;
+import com.gasmonitor.utils.PageUtils;
 import com.gasmonitor.vo.AjaxResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.rmi.CORBA.Tie;
 import java.security.Principal;
 
 /**
@@ -42,12 +42,11 @@ public class SiteController {
     //    通过租户信息和站点名字 查询站点
     @RequestMapping(value = "/ajax/list")
     @ResponseBody
-    public AjaxResult<Site> listStie(String siteName, Principal principal) {
+    public AjaxResult<Site> listStie(@RequestParam(defaultValue = "") String searchKey, Integer currPage, Principal principal) {
         logger.info("开始查询站点列表:principal.getName() --> {}", principal.getName());
-        AjaxResult<Site> data = new AjaxResult<>(siteRepository.findAll());
+        AjaxResult<Site> data = AjaxResult.NewAjaxResult(siteRepository.findByNameContaining(searchKey, PageUtils.p(currPage)));
         return data;
     }
-
 
     @RequestMapping(value = "/ajax/new", method = RequestMethod.POST)
     @ResponseBody
