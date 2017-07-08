@@ -50,6 +50,15 @@
     .pandaroid-layui_elem_quote_title-btn-container { position: absolute; right: 4px; top: 4px; }
   </style>
   <!-- End  : UI edit sites css -->
+  <!-- Start: site edit 站点编辑 css -->
+  <style>
+    .layui-table td.site-edit-td { padding: 0; }
+    .site-edit-td .site-edit-inputs { display: none; }
+    .site-edit-td.site-editing .site-edit-inputs { padding-left: 15px; border-radius: 0; display: block; }
+    .site-edit-td .site-edit-labels { margin: 7px 15px -7px; }
+    .site-edit-td.site-editing .site-edit-labels { display: none; }
+  </style>
+  <!-- End  : site edit 站点编辑 css -->
 
 </head>
   <body class="childrenBody">
@@ -332,15 +341,30 @@
   </tr>
   <tr>
     <td>站点名称</td>
-    <td>{{d.siteName}}</td>
+    <td class="site-edit-td">
+      <div class="layui-input-block" style="margin-left: 0;">
+        <div class="site-edit-labels">{{d.siteName}}</div>
+        <input type="text" name="siteName" autocomplete="off" placeholder="{{d.siteName}}" class="layui-input site-edit-inputs">
+      </div>
+    </td>
   </tr>
   <tr>
     <td>经度</td>
-    <td>{{d.siteLongitude}}</td>
+    <td class="site-edit-td">
+      <div class="layui-input-block" style="margin-left: 0;">
+        <div class="site-edit-labels">{{d.siteLongitude}}</div>
+        <input type="text" name="siteLongitude" autocomplete="off" placeholder="{{d.siteLongitude}}" class="layui-input site-edit-inputs">
+      </div>
+    </td>
   </tr>
   <tr>
     <td>纬度</td>
-    <td>{{d.siteLatitude}}</td>
+    <td class="site-edit-td">
+      <div class="layui-input-block" style="margin-left: 0;">
+        <div class="site-edit-labels">{{d.siteLatitude}}</div>
+        <input type="text" name="siteLatitude" autocomplete="off" placeholder="{{d.siteLatitude}}" class="layui-input site-edit-inputs">
+      </div>
+    </td>
   </tr>
   <!--<tr>
     <td>父站点</td>
@@ -553,12 +577,16 @@
                 // 激活站点详情表单可编辑
                 enableSiteInfoTableFormEdit: function() {
                     console.log('[enableSiteInfoTableFormEdit]激活站点详情表单可编辑');
-
+                    // $('.site-edit-labels').hide();
+                    $('.site-edit-td').addClass('site-editing');
+                    // $('.site-edit-inputs').show();
                 },
                 // 恢复表单不可编辑状态
                 disableSiteInfoTableFormEdit: function() {
                     console.log('[disableSiteInfoTableFormEdit]恢复站点详情表单不可编辑');
-
+                    // $('.site-edit-inputs').hide();
+                    $('.site-edit-td').removeClass('site-editing');
+                    // $('.site-edit-labels').show();
                 },
                 // 刷新表单
                 reloadSiteInfo2Table: function() {
