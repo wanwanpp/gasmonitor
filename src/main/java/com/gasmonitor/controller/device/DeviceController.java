@@ -6,11 +6,9 @@ import com.gasmonitor.vo.AjaxResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
@@ -36,9 +34,11 @@ public class DeviceController {
     }
 
     //ajax 获取设备信息的列表
-    @RequestMapping(value = "/ajax/list/{siteId}")
+    @RequestMapping(value = "/ajax/list")
     @ResponseBody
-    public AjaxResult<Device> ajaxList(@PathVariable("siteId") Long siteId) {
+    public AjaxResult<Device> ajaxList(@RequestParam(value = "siteId", defaultValue = "0") Long siteId,
+                                       @RequestParam(value = "searchKey", defaultValue = "") String searchKey,
+                                       Integer currPage) {
         List<Device> devices = deviceRepository.findBySiteId(siteId);
         logger.debug("通过站点{}查询到的所有设备的信息{}", siteId, devices);
         return new AjaxResult<Device>(devices);
@@ -101,5 +101,11 @@ public class DeviceController {
         Device retDevie = deviceRepository.save(device);
         return new AjaxResult<>(retDevie);
     }
+
+    @RequestMapping(value = "/devices-manage")
+    public String devicesManage() {
+        return "device/devices-manage";
+    }
+
 
 }

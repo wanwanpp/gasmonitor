@@ -58,6 +58,7 @@ public class TenantController {
     @RequestMapping(value = "/ajax/update", method = RequestMethod.POST)
     @ResponseBody
     public AjaxResult<Tenant> ajaxUpdate(Long id, String name, String mobile, String address, String company) {
+        logger.info("更新租户的信息id:{},name:{},mobile:{},address:{},company:{}");
         if (id == null) {
             return AjaxResult.ErrorAjaxResult("没有找到记录");
         }
@@ -75,6 +76,7 @@ public class TenantController {
         }
 
         if (!StringUtils.isEmpty(address)) {
+            ret.setAddress(address);
         }
         if (!StringUtils.isEmpty(company)) {
             ret.setCompany(company);
@@ -102,15 +104,7 @@ public class TenantController {
     }
 
     // Start: 20170625 这里好像是对租户的增删改查？租户的菜单跳转暂时也先放这里吧
-    @RequestMapping(value = "/sites-manage")
-    public String sitesManage() {
-        return "tenant/sites-manage";
-    }
 
-    @RequestMapping(value = "/devices-manage")
-    public String devicesManage() {
-        return "tenant/devices-manage";
-    }
 
     @RequestMapping(value = "/statistics-statements")
     public String statisticsStatements() {
