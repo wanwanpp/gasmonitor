@@ -1,14 +1,19 @@
 package com.gasmonitor.controller.device;
 
 import com.gasmonitor.dao.DeviceRepository;
+import com.gasmonitor.dao.SiteRepository;
 import com.gasmonitor.entity.Device;
+import com.gasmonitor.entity.Site;
 import com.gasmonitor.vo.AjaxResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Date;
 import java.util.List;
@@ -27,9 +32,15 @@ public class DeviceController {
     @Autowired
     private DeviceRepository deviceRepository;
 
+    @Autowired
+    private SiteRepository siteRepository;
+
     //设备管理列表 界面
     @RequestMapping(value = "/list")
-    public String deviceList() {
+    public String deviceList(ModelMap modelMap) {
+        List<Site> sites = siteRepository.findAll();
+        logger.info("寻找到所有的站点信息:{}", sites);
+        modelMap.addAttribute("sites", sites);
         return "/device/list";
     }
 
