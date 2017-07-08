@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -48,15 +49,24 @@ public class SiteController {
     }
 
 
+    @RequestMapping(value = "/ajax/new", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxResult ajaxNew(Site site) {
+        site.setId(null);
+        siteRepository.save(site);
+        return AjaxResult.SuccAjaxResult();
+    }
+
     @RequestMapping(value = "/ajax/update", method = RequestMethod.POST)
     @ResponseBody
-    public Site update(Long id, String name, Double longitude, Double latitude) {
+    public AjaxResult update(Long id, String name, Double longitude, Double latitude, Integer deviceLimit) {
+        logger.info("开始更新站点的信息id:{},name:{}", id, name);
         Site site = siteRepository.findOne(id);
         if (site == null) {
-            return null;
+            return AjaxResult.ErrorAjaxResult();
         }
 
-        if (name != null && !name.equals("")) {
+        if (!StringUtils.isEmpty(name)) {
             site.setName(name);
         }
         if (longitude != null && longitude != 0) {
@@ -66,7 +76,21 @@ public class SiteController {
         if (latitude != null && latitude != 0) {
             site.setLatitude(latitude);
         }
-        return siteRepository.save(site);
+
+        if (deviceLimit != null) {
+            site.setDeviceLimit(deviceLimit);
+        }
+
+        //保存站点信息
+        siteRepository.save(site);
+        return AjaxResult.SuccAjaxResult();
+    }
+
+    @RequestMapping(value = "/ajax/remove", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxResult remove(Long id) {
+        siteRepository.delete(id);
+        return AjaxResult.SuccAjaxResult();
     }
 
 
