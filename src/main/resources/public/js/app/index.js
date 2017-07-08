@@ -61,3 +61,11 @@ layui.use(['layer', 'element'], function () {
      */
     nav.find('li a[data-url]').eq(0).click();
 });
+
+// Start: 测试 oneSocket
+(function() {
+    layui.use('oneSocket', function() {
+        layui.oneSocket();
+    });
+})();
+// End  : 测试 oneSocket
