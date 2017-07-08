@@ -102,4 +102,10 @@ public class DeviceController {
         return new AjaxResult<>(retDevie);
     }
 
+    @RequestMapping(value = "/devices-manage")
+    public String devicesManage() {
+        return "device/devices-manage";
+    }
+
+
 }

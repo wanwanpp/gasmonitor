@@ -104,15 +104,7 @@ public class TenantController {
     }
 
     // Start: 20170625 这里好像是对租户的增删改查？租户的菜单跳转暂时也先放这里吧
-    @RequestMapping(value = "/sites-manage")
-    public String sitesManage() {
-        return "tenant/sites-manage";
-    }
 
-    @RequestMapping(value = "/devices-manage")
-    public String devicesManage() {
-        return "tenant/devices-manage";
-    }
 
     @RequestMapping(value = "/statistics-statements")
     public String statisticsStatements() {

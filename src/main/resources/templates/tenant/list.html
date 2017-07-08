@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8"/>
-  <title>文章列表--layui后台管理模板</title>
+  <title>租户列表</title>
   <meta name="renderer" content="webkit"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
@@ -49,10 +49,9 @@
       <tr>
         <th><input type="checkbox" name="" lay-skin="primary" lay-filter="allChoose" id="allChoose"/></th>
         <th style="text-align:left;">姓名</th>
-        <th>公司</th>
-        <th>地址</th>
-        <th>电话</th>
-        <th>创建时间</th>
+        <th>经度</th>
+        <th>纬度</th>
+        <th>父节点</th>
         <th>操作</th>
       </tr>
       </thead>
@@ -62,18 +61,16 @@
       <tr>
         <td>{{index}}</td>
         <td>{{item.name}}</td>
-        <td>{{item.company}}</td>
-        <td>{{item.address}}</td>
-        <td>{{item.mobile}}</td>
-        <td>{{item.create_date}}</td>
+        <td>{{item.longitude}}</td>
+        <td>{{item.latitude}}</td>
+        <td>{{item.parent}}</td>
         <td>
           <span id="source{{item.id}}"
                 data-id="{{item.id}}"
-                data-address="{{item.address}}"
-                data-company="{{item.company}}"
-                data-create_date="{{item.create_date}}"
                 data-name="{{item.name}}"
-                data-mobile="{{item.mobile}}"
+                data-longitude="{{item.longitude}}"
+                data-latitude="{{item.latitude}}"
+                data-parent="{{item.parent}}"
                 style="display: none">
           </span>
           <button class="layui-btn layui-btn-mini tenant_edit" data-sourceid="{{item.id}}">
@@ -99,45 +96,102 @@
 <div id="pageView" style="float: right;"></div>
 
 <script type="text/javascript" src="/layui/layui.js"></script>
-<script type="text/javascript" src="/js/app/tenant/list.js"></script>
+<script type="text/javascript">
+  layui.use(['laytpl', 'jquery', 'layer', 'laypage'], function () {
+            console.log("开始执行渲染模板");
+            var laytpl = layui.laytpl;
+            var $ = layui.jquery;
+            var getUrl = "/site/ajax/list";
+            var addUrl = "/tenant/ajax/new"
+            var editUrl = '/tenant/ajax/update';
+            var rmUrl = '/tenant/ajax/remove';
+            var layer = layui.layer;
+            var laypage = layui.laypage;
+
+            //第一次加载数据
+            searchList();
+
+
+            //添加一个租户
+            $(".newsAdd_btn").on('click', function () {
+              console.log("添加一个用户.弹出编辑框");
+              showEditLayer(true);
+            });
+
+            $(".search_btn").on('click', function () {
+              console.log("点击了搜索按钮，开始搜索");
+              searchList();
+            })
+
+            function initClickEvent() {
+              $("#h").on('click', function () {
+                alert("哈哈哈");
+              });
+              //为按钮设置事件
+              $(".tenant_edit").on('click', function () {
+                var that = this;
+                showEditLayer(false, $(that).data("sourceid"));
+              });
+
+              $(".tenant_del").on('click', function () {
+                console.log("开始删除租户的信息");
+                var sourceId = $(this).data("sourceid");
+                layer.confirm('确定删除？', {
+                  btn: ['确定', '取消'] //按钮
+                }, function () {
+                  $.post(rmUrl
+                          , {
+                            "id": sourceId,
+                          }
+                          , function (data) {
+                            console.log("删除数据成功：" + JSON.stringify(data));
+                            if (data.code) {
+                              searchList();
+                              layer.msg('删除数据成功', {icon: 1, time: 1000,});
+                            }
+                          }
+                  );
+                }, function () {
+
+                });
+              });
+
+            }
+
+            //显示编辑弹出层
+            function searchList(currPage) {
+              console.log("开始查询租户list的信息...");
+              layer.load();   //loading
+              $.get(
+                      getUrl,
+                      {"currPage": currPage || 1, "searchKey": $(".search_input").val()},
+                      function (data) {
+                        console.log("查询到的玩家的list信息:" + JSON.stringify(data));
+                        laytpl(slist.innerHTML).render(data, function (html) {
+                          tableview.innerHTML = html;
+                          initClickEvent();   //渲染之后才能初始化按钮的信息，不然没有作用
+                          //分页
+                          laypage({
+                            cont: 'pageView'
+                            , pages: data.totalPage
+                            , skip: true
+                            , curr: currPage || 1 //当前页,
+                            , jump: function (obj, first) {
+                              if (!first) {
+                                searchList(obj.curr)
+                              }
+                            }
+                          });
+                          layer.closeAll('loading');   //关闭所有的loading
+                        });
+                      },
+                      "json"
+              );
+            }
+          }
+  )
+  ;
+
+</script>
 </body>
-
-<div id="layer_tenant_edit" style="display: none;padding: 15px;">
-  <form class="layui-form" action="">
-    <div class="layui-form-item">
-      <label class="layui-form-label">名称</label>
-      <div class="layui-input-block">
-        <input id="eidt_layer_name" type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入名称"
-               class="layui-input"/>
-      </div>
-    </div>
-
-    <div class="layui-form-item">
-      <label class="layui-form-label">电话号码</label>
-      <div class="layui-input-block">
-        <input id="eidt_layer_mobile" type="text" name="mobile" lay-verify="title" autocomplete="off"
-               placeholder="请输入电话" class="layui-input"/>
-      </div>
-    </div>
-
-    <div class="layui-form-item">
-      <label class="layui-form-label">地址</label>
-      <div class="layui-input-block">
-        <input id="eidt_layer_address" type="text" name="address" lay-verify="title" autocomplete="off"
-               placeholder="请输入地址"
-               class="layui-input"/>
-      </div>
-    </div>
-
-    <div class="layui-form-item">
-      <label class="layui-form-label">公司名称</label>
-      <div class="layui-input-block">
-        <input id="eidt_layer_company" type="text" name="company" lay-verify="title" autocomplete="off"
-               placeholder="请输入公司"
-               class="layui-input"/>
-      </div>
-    </div>
-
-  </form>
-</div>
 </html>
