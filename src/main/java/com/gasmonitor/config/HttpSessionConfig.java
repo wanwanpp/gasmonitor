@@ -1,0 +1,1 @@
+package com.gasmonitor.config;import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;/** * Created by saplmm on 2017/7/10. */@EnableRedisHttpSessionpublic class HttpSessionConfig {}
