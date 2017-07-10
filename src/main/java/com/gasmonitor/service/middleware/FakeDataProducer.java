@@ -1,7 +1,6 @@
 package com.gasmonitor.service.middleware;
 
 import com.gasmonitor.service.middleware.api.WsClientPoolApi;
-import com.gasmonitor.vo.MonitorData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +10,9 @@ import org.springframework.stereotype.Service;
 /**
  * Created by saplmm on 2017/6/12.
  */
-//mqtt 的client暂时不需要了
-//@Service
-public class MqttClient implements CommandLineRunner {
-    Logger log = LoggerFactory.getLogger(MqttClient.class);
+@Service
+public class FakeDataProducer implements CommandLineRunner {
+    Logger log = LoggerFactory.getLogger(FakeDataProducer.class);
 
     @Autowired
     public WsClientPoolApi wsClientPoolApi;

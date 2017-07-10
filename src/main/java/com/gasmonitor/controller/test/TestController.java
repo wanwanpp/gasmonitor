@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -95,5 +96,12 @@ public class TestController {
         IMap<String, String> map = hazelcastInstance.getMap("tenant");
         map.clear();
         return map;
+    }
+
+
+    @RequestMapping
+    public Object testSession(HttpSession session) {
+        logger.info("session:{}", session);
+        return session;
     }
 }
