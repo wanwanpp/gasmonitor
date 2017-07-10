@@ -62,7 +62,7 @@ public class HazelCastClient implements CommandLineRunner {
         //开始初始化
         List<Tenant> tenants = tenantRepository.findAll();
         for (Tenant user : tenants) {
-            List<Device> devices = deviceRepository.findAll();
+            List<Device> devices = deviceRepository.findByTenantId(user.getId());
             for (Device d : devices) {
                 if (d.getLogic() == null && d.getHardwareId() != null) {    //逻辑设备不需要放进去
                     map.set(d.getHardwareId(), user.getId() + "");
