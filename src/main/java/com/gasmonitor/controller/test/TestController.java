@@ -110,8 +110,6 @@ public class TestController {
             logger.info("key:{}---->value:{}", key, session.getAttribute(key));
         }
         logger.info("principal.getName():{}", principal.getName());
-
-
         return session.getId();
     }
 }
