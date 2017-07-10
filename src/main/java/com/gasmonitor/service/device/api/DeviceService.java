@@ -1,0 +1,1 @@
+package com.gasmonitor.service.device.api;import com.gasmonitor.entity.Device;/** * Created by saplmm on 2017/7/10. */public interface DeviceService {    public Device addDevice(Device device, long tenantId);}

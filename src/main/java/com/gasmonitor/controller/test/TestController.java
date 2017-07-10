@@ -5,6 +5,8 @@ import com.gasmonitor.dao.TenantRepository;
 import com.gasmonitor.entity.Device;
 import com.gasmonitor.entity.Site;
 import com.gasmonitor.entity.Tenant;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,8 @@ public class TestController {
 
     @Autowired
     private TenantRepository tenantRepository;
+    @Autowired
+    private HazelcastInstance hazelcastInstance;
 
     @RequestMapping(value = "/device/list")
     public Object findDevice() {
@@ -76,9 +80,20 @@ public class TestController {
     }
 
     @RequestMapping(value = "/configs")
-
     public Object config() {
         return null;
     }
 
+
+    @RequestMapping(value = "hz/showmap")
+    public Object showHazelcastmap() {
+        return hazelcastInstance.getMap("tenant");
+    }
+
+    @RequestMapping(value = "hz/clearwmap")
+    public Object clearwmapHazelcastmap() {
+        IMap<String, String> map = hazelcastInstance.getMap("tenant");
+        map.clear();
+        return map;
+    }
 }
