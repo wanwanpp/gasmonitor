@@ -1,0 +1,1 @@
+package com.gasmonitor.service.middleware;import org.springframework.stereotype.Service;/** * Created by saplmm on 2017/7/10. */@Servicepublic class HazelCastService {}

@@ -4,6 +4,7 @@ import com.gasmonitor.dao.DeviceRepository;
 import com.gasmonitor.dao.SiteRepository;
 import com.gasmonitor.entity.Device;
 import com.gasmonitor.entity.Site;
+import com.gasmonitor.service.device.api.DeviceService;
 import com.gasmonitor.vo.AjaxResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,8 @@ public class DeviceController {
 
     @Autowired
     private DeviceRepository deviceRepository;
-
+    @Autowired
+    private DeviceService deviceService;
     @Autowired
     private SiteRepository siteRepository;
 
@@ -69,9 +71,8 @@ public class DeviceController {
         device.setPhone(phone);
         device.setStatus(status);
         device.setParent(phone);
-        logger.info("创建新的设备:{}", device);
-        Device ret = deviceRepository.save(device);
-        return new AjaxResult<>(ret);
+        device = deviceService.addDevice(device, 1);
+        return new AjaxResult<>(device);
     }
 
 
