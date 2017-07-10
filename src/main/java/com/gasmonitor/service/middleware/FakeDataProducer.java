@@ -31,7 +31,7 @@ public class FakeDataProducer implements CommandLineRunner {
                 GasHazelcast hazelcastEvent = new GasHazelcast();
                 hazelcastEvent.setTenantId("test tenantId");
                 GasEvent gasEvent = new GasEvent();
-                gasEvent.setHardwareId("test hardwareId");
+                gasEvent.setHardwareId("s2");
                 gasEvent.setPointtime(222222);
                 gasEvent.setPressure(33333);
                 gasEvent.setRunning(44444);
