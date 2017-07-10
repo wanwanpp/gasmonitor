@@ -64,8 +64,11 @@ layui.use(['layer', 'element'], function () {
 
 // Start: 测试 oneSocket
 (function() {
-    layui.use('oneSocket', function() {
-        layui.oneSocket();
+    layui.use(['jquery', 'oneSocket'], function() {
+        var $ = layui.jquery;
+        $(function() {
+            layui.oneSocket(SockJS, Stomp);
+        });
     });
 })();
 // End  : 测试 oneSocket
