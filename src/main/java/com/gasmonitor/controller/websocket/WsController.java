@@ -1,6 +1,6 @@
 package com.gasmonitor.controller.websocket;
 
-import com.gasmonitor.service.websocket.api.WsClientPoolApi;
+import com.gasmonitor.service.middleware.api.WsClientPoolApi;
 import com.gasmonitor.vo.RequestMessage;
 import com.gasmonitor.vo.ResponseMessage;
 import org.slf4j.Logger;

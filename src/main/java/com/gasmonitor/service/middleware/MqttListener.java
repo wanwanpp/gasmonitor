@@ -1,8 +1,8 @@
-package com.gasmonitor.service.websocket;
+package com.gasmonitor.service.middleware;
 
 import com.gasmonitor.protobuf.GasMsg;
 import com.gasmonitor.service.websocket.api.MqttConnection;
-import com.gasmonitor.service.websocket.api.WsClientPoolApi;
+import com.gasmonitor.service.middleware.api.WsClientPoolApi;
 import com.gasmonitor.utils.GasDataUtil;
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.UTF8Buffer;
@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Service;
 
 import java.net.URISyntaxException;
 
@@ -22,7 +21,9 @@ import java.net.URISyntaxException;
  * Created by saplmm on 2017/6/12.
  */
 
+//mqtt的服务 暂时不需要了
 //@Service
+
 public class MqttListener implements CommandLineRunner {
 
     @Autowired
