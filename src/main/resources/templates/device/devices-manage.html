@@ -280,17 +280,17 @@
 
       // render function
       function renderUpdatedData2Charts(jData) {
-        // var axisData = (new Date()).toLocaleTimeString().replace(/^\D*/,'');
-        var axisData = jData.timeStr;
+        var axisData = (new Date()).toLocaleTimeString().replace(/^\D*/,'');
+        // var axisData = jData.timeStr;
 
         var data0 = option.series[0].data;
         var data1 = option.series[1].data;
         data0.shift();
-        // data0.push(Math.round(Math.random() * 1000));
-        data0.push(jData.data0);
+        data0.push(Math.round(Math.random() * 1000));
+        // data0.push(jData.data0);
         data1.shift();
-        // data1.push((Math.random() * 1000 + 5).toFixed(1) - 0);
-        data1.push(jData.data1);
+        data1.push((Math.random() * 1000 + 5).toFixed(1) - 0);
+        // data1.push(jData.data1);
 
         option.xAxis[0].data.shift();
         option.xAxis[0].data.push(axisData);
