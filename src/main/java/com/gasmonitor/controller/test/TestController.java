@@ -99,7 +99,7 @@ public class TestController {
     }
 
 
-    @RequestMapping
+    @RequestMapping(value = "session")
     public Object testSession(HttpSession session) {
         logger.info("session:{}", session);
         return session;
