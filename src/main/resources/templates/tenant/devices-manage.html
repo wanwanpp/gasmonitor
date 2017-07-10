@@ -40,98 +40,98 @@
   <!-- End  : sites list css -->
 </head>
 <body class="childrenBody">
-  <!-- Start: 顶部文字描述 -->
-  <!--<p>租户 - 设备管理。右部，左侧设备列表（需先搜索选择以指定站点，设备列表才能列出该站点下所有设备）。</p>
-  <p>右部右侧，1. 地图：设备 GIS ；2. 折线图：已勾选设备的折线图（根据服务器返回的数据）； 3. 列表：2 中折线图使用数据的列表展示形式。</p>
-  <p>站点只有地图、详情；设备有地图、曲线图、数据列表</p>-->
-  <!-- End  : 顶部文字描述 -->
-  <!-- Start： 左右布局 -->
-  <div class="row left-right-layout">
-    <div class="sysNotice col left-list">
-      <blockquote class="layui-elem-quote title">设备列表</blockquote>
-      <!-- Start: 搜索 -->
-      <div class="layui-form component">
-        <select lay-search lay-filter="component">
-          <option value="">搜索设备</option>
-          <option value="javascript:void(0);">设备 1</option>
-          <option value="javascript:void(0);">设备 2</option>
-          <option value="javascript:void(0);">设备 3</option>
-          <option value="javascript:void(0);">设备 4</option>
-          <option value="javascript:void(0);">设备 5</option>
-          <option value="javascript:void(0);">设备 6</option>
-          <option value="javascript:void(0);">设备 7</option>
-          <option value="javascript:void(0);">设备 8</option>
-          <option value="javascript:void(0);">设备 9</option>
-        </select>
-      </div>
-      <!-- End  : 搜索 -->
-      <div id="sitesListTableView"></div>
+<!-- Start: 顶部文字描述 -->
+<!--<p>租户 - 设备管理。右部，左侧设备列表（需先搜索选择以指定站点，设备列表才能列出该站点下所有设备）。</p>
+<p>右部右侧，1. 地图：设备 GIS ；2. 折线图：已勾选设备的折线图（根据服务器返回的数据）； 3. 列表：2 中折线图使用数据的列表展示形式。</p>
+<p>站点只有地图、详情；设备有地图、曲线图、数据列表</p>-->
+<!-- End  : 顶部文字描述 -->
+<!-- Start： 左右布局 -->
+<div class="row left-right-layout">
+  <div class="sysNotice col left-list">
+    <blockquote class="layui-elem-quote title">设备列表</blockquote>
+    <!-- Start: 搜索 -->
+    <div class="layui-form component">
+      <select lay-search lay-filter="component">
+        <option value="">搜索设备</option>
+        <option value="javascript:void(0);">设备 1</option>
+        <option value="javascript:void(0);">设备 2</option>
+        <option value="javascript:void(0);">设备 3</option>
+        <option value="javascript:void(0);">设备 4</option>
+        <option value="javascript:void(0);">设备 5</option>
+        <option value="javascript:void(0);">设备 6</option>
+        <option value="javascript:void(0);">设备 7</option>
+        <option value="javascript:void(0);">设备 8</option>
+        <option value="javascript:void(0);">设备 9</option>
+      </select>
     </div>
-    <div class="sysNotice col right-details">
-      <blockquote class="layui-elem-quote title">设备曲线<i class="iconfont icon-new1"></i></blockquote>
-      <table class="layui-table" lay-skin="line">
-        <colgroup>
-          <col width="110"></col>
-        </colgroup>
-        <div class="layui-elem-quote layui-quote-nm" style="min-height: 400px; max-height: 400px; height: 100%;">
-          <!--<div id="allmap"></div>-->
-          <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
-          <div id="main" style="width: 100%; height:400px;"></div>
-
-        </div>
-      </table>
-      <blockquote class="layui-elem-quote title">设备详情</blockquote>
-      <table class="layui-table">
-        <colgroup>
-          <col width="150"></col>
-        </colgroup>
-        <thead>
-        <tr>
-          <th>时间</th>
-          <th>名称</th>
-          <th>工况流量</th>
-          <th>标况流量</th>
-          <th>温度</th>
-          <th>压力</th>
-          <th>累计流量</th>
-        </tr>
-        </thead>
-        <tbody id="siteDetailInfo">
-        <!--<tr>
-          <td>数据加载中，请稍候 。。。</td>
-        </tr>-->
-        <tr>
-          <td>2010-12-03 21:40:28</td>
-          <td>801 东风锻造厂</td>
-          <td>0</td>
-          <td>149.02</td>
-          <td>16.15</td>
-          <td>356.4</td>
-          <td>449710.44</td>
-        </tr>
-        <tr>
-          <td>2010-12-03 21:38:27</td>
-          <td>801 东风锻造厂</td>
-          <td>0</td>
-          <td>161.22</td>
-          <td>16.15</td>
-          <td>355.66</td>
-          <td>449705.44</td>
-        </tr>
-        <tr>
-          <td>2010-12-03 21:36:26</td>
-          <td>801 东风锻造厂</td>
-          <td>0</td>
-          <td>147.72</td>
-          <td>16.14</td>
-          <td>356.4</td>
-          <td>449700.03</td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
+    <!-- End  : 搜索 -->
+    <div id="sitesListTableView"></div>
   </div>
-  <!-- End  ： 左右布局 -->
+  <div class="sysNotice col right-details">
+    <blockquote class="layui-elem-quote title">设备曲线<i class="iconfont icon-new1"></i></blockquote>
+    <table class="layui-table" lay-skin="line">
+      <colgroup>
+        <col width="110"></col>
+      </colgroup>
+      <div class="layui-elem-quote layui-quote-nm" style="min-height: 400px; max-height: 400px; height: 100%;">
+        <!--<div id="allmap"></div>-->
+        <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+        <div id="main" style="width: 100%; height:400px;"></div>
+
+      </div>
+    </table>
+    <blockquote class="layui-elem-quote title">设备详情</blockquote>
+    <table class="layui-table">
+      <colgroup>
+        <col width="150"></col>
+      </colgroup>
+      <thead>
+      <tr>
+        <th>时间</th>
+        <th>名称</th>
+        <th>工况流量</th>
+        <th>标况流量</th>
+        <th>温度</th>
+        <th>压力</th>
+        <th>累计流量</th>
+      </tr>
+      </thead>
+      <tbody id="siteDetailInfo">
+      <!--<tr>
+        <td>数据加载中，请稍候 。。。</td>
+      </tr>-->
+      <tr>
+        <td>2010-12-03 21:40:28</td>
+        <td>801 东风锻造厂</td>
+        <td>0</td>
+        <td>149.02</td>
+        <td>16.15</td>
+        <td>356.4</td>
+        <td>449710.44</td>
+      </tr>
+      <tr>
+        <td>2010-12-03 21:38:27</td>
+        <td>801 东风锻造厂</td>
+        <td>0</td>
+        <td>161.22</td>
+        <td>16.15</td>
+        <td>355.66</td>
+        <td>449705.44</td>
+      </tr>
+      <tr>
+        <td>2010-12-03 21:36:26</td>
+        <td>801 东风锻造厂</td>
+        <td>0</td>
+        <td>147.72</td>
+        <td>16.14</td>
+        <td>356.4</td>
+        <td>449700.03</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- End  ： 左右布局 -->
 </body>
 </html>
 <script type="text/javascript" src="/layui/layui.js"></script>
@@ -247,9 +247,9 @@
             };
 
             // 测试 demo ： 定时刷新
-            /*setInterval(function (){
-                renderUpdatedData2Charts();
-            }, 3000);*/
+          /*setInterval(function (){
+           renderUpdatedData2Charts();
+           }, 3000);*/
             // 实际： 监听事件进行刷新
             var oneSocketEvent = oneSocket.EVENT;
             $(document).on(oneSocketEvent.GM_EVENT_handleNotifications, '', function(event, data) {
@@ -454,24 +454,24 @@
 <script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
 <script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
 <script>
-    /*(function() {
-        layui.use(['jquery'], function() {
-            var $ = layui.jquery;
-            // sockjs stomp
-            var sock = new SockJS("/endpointChat");
-            var stomp = Stomp.over(sock);
-            stomp.connect('guest', 'guest', function (frame) {
-                stomp.subscribe("/user/queue/notifications", handleNotifications);
-                // set station
-                stomp.send("/setStations", {}, "s1");
-            });
-            // 收到消息的处理
-            function handleNotifications(message) {
-                console.log(["[handleNotifications]received: ", message.body].join(''));
-                $(document).trigger('GM_EVENT_handleNotifications', message.body);
-            }
-        });
-    })();*/
+  /*(function() {
+   layui.use(['jquery'], function() {
+   var $ = layui.jquery;
+   // sockjs stomp
+   var sock = new SockJS("/endpointChat");
+   var stomp = Stomp.over(sock);
+   stomp.connect('guest', 'guest', function (frame) {
+   stomp.subscribe("/user/queue/notifications", handleNotifications);
+   // set station
+   stomp.send("/setStations", {}, "s1");
+   });
+   // 收到消息的处理
+   function handleNotifications(message) {
+   console.log(["[handleNotifications]received: ", message.body].join(''));
+   $(document).trigger('GM_EVENT_handleNotifications', message.body);
+   }
+   });
+   })();*/
 </script>
 <!-- End  : sockjs 接收服务器持续推送并处理 -->
 
