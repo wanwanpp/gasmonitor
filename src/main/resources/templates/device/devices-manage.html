@@ -487,6 +487,7 @@
         stomp.subscribe("/user/queue/notifications", handleNotifications);
         // set station
         stomp.send("/setStations", {}, "s1");
+          stomp.send("/setStations", {}, "s2");
       });
       // 收到消息的处理
       function handleNotifications(message) {
