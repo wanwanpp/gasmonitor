@@ -25,8 +25,7 @@ public class MqttClient implements CommandLineRunner {
         for (int i = 0; i < 100000; i++) {
             try {
                 Thread.sleep(10000);
-                MonitorData msg = new MonitorData("s1", "msg...");
-                wsClientPoolApi.sendMonitorData(msg);
+                wsClientPoolApi.sendMonitorData("测试数据...");
             } catch (Exception e) {
             }
         }
