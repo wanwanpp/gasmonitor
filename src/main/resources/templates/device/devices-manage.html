@@ -141,7 +141,6 @@
     (function() {
         layui.use(['jquery', 'oneSocket'], function() {
             var $ = layui.jquery;
-            var oneSocket = layui.oneSocket;
 
             // 基于准备好的dom，初始化echarts实例
             var myChart = echarts.init(document.getElementById('main'));
@@ -251,26 +250,34 @@
            renderUpdatedData2Charts();
            }, 3000);*/
             // 实际： 监听事件进行刷新
-            var oneSocketEvent = oneSocket.EVENT;
-            $(document).on(oneSocketEvent.GM_EVENT_handleNotifications, '', function(event, data) {
-                console.log(['[documentEvent oneSocketEvent ', oneSocketEvent.GM_EVENT_handleNotifications, '] data: '].join(''));
-                console.log(data);
-                renderUpdatedData2Charts(JSON.parse(data));
+            $(function() {
+                var oneSocket = layui.oneSocket(/*SockJS, Stomp*/);
+                var oneSocketEvent = oneSocket.EVENT;
+                oneSocket.addHandler(function(data) {
+                    console.log(['[documentEvent oneSocketEvent ', oneSocketEvent.GM_EVENT_handleNotifications, '] data: '].join(''));
+                    console.log(data);
+                    renderUpdatedData2Charts(JSON.parse(data));
+                });
+                /*$(oneSocket.EventEmitter).on(oneSocketEvent.GM_EVENT_handleNotifications, '', function(event, data) {
+                    console.log(['[documentEvent oneSocketEvent ', oneSocketEvent.GM_EVENT_handleNotifications, '] data: '].join(''));
+                    console.log(data);
+                    renderUpdatedData2Charts(JSON.parse(data));
+                });*/
             });
 
             // render function
             function renderUpdatedData2Charts(jData) {
-                // var axisData = (new Date()).toLocaleTimeString().replace(/^\D*/,'');
-                var axisData = jData.timeStr;
+                var axisData = (new Date()).toLocaleTimeString().replace(/^\D*/,'');
+                // var axisData = jData.timeStr;
 
                 var data0 = option.series[0].data;
                 var data1 = option.series[1].data;
                 data0.shift();
-                // data0.push(Math.round(Math.random() * 1000));
-                data0.push(jData.data0);
+                data0.push(Math.round(Math.random() * 1000));
+                // data0.push(jData.data0);
                 data1.shift();
-                // data1.push((Math.random() * 1000 + 5).toFixed(1) - 0);
-                data1.push(jData.data1);
+                data1.push((Math.random() * 1000 + 5).toFixed(1) - 0);
+                // data1.push(jData.data1);
 
                 option.xAxis[0].data.shift();
                 option.xAxis[0].data.push(axisData);
@@ -352,8 +359,8 @@
                 console.log("开始查询站点 list 的信息 ...");
                 layer.load();   // loading
                 $.get(
-                    ["/device/ajax/list/", 999].join(''),
-                    {"currPage": currPage || 1},
+                    "/device/ajax/list/",
+                    {"currPage": currPage || 1, siteId: 999},
                     function (data) {
                         console.log("查询到的站点 list 信息:" + JSON.stringify(data));
                         var total = data.total;
@@ -451,8 +458,8 @@
 <!-- End  : 与服务器交互 ajax -->
 
 <!-- Start: sockjs 接收服务器持续推送并处理 -->
-<script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
-<script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
+<!--<script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
+<script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>-->
 <script>
   /*(function() {
    layui.use(['jquery'], function() {
@@ -476,11 +483,14 @@
 <!-- End  : sockjs 接收服务器持续推送并处理 -->
 
 <!-- Start: layui.define 定义模块 -->
-<script>
+<!--<script>
     (function() {
-        layui.use('oneSocket', function() {
-            layui.oneSocket(SockJS, Stomp);
+        layui.use(['jquery', 'oneSocket'], function() {
+            var $ = layui.jquery;
+            $(function() {
+                layui.oneSocket(/*SockJS, Stomp*/);
+            });
         });
     })();
-</script>
+</script>-->
 <!-- End  : layui.define 定义模块 -->
