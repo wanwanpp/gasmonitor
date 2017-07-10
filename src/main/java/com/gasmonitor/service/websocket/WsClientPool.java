@@ -59,6 +59,8 @@ public class WsClientPool implements WsClientPoolApi {
         for (Iterator<String> iterator = clients.keySet().iterator(); iterator.hasNext(); ) {
             String key = iterator.next();
             Set<String> stations = clients.get(key);
+            log.info("[WsClientPool.sendMonitorData]data.getGasEvent().getHardwareId(): {}", data.getGasEvent().getHardwareId());
+            log.info("[WsClientPool.sendMonitorData]stations.contains(data.getGasEvent().getHardwareId()): {}", stations.contains(data.getGasEvent().getHardwareId()));
             if (stations.contains(data.getGasEvent().getHardwareId())) {
                 template.convertAndSendToUser(key, "/queue/notifications", data);
                 log.info("给用户{}发送data{}...", key, data);
@@ -72,7 +74,8 @@ public class WsClientPool implements WsClientPoolApi {
         log.info("sendMonitorData-->GasHazelcast：{},tenantId:{}", data.toString(), data.getTenantId());
         MonitorData monitorData = new MonitorData();
         monitorData.setGasEvent(data.getGasEvent());
-        this.sendMonitorData(new MonitorData());
+        // this.sendMonitorData(new MonitorData());
+        this.sendMonitorData(monitorData);
         return false;
     }
 
