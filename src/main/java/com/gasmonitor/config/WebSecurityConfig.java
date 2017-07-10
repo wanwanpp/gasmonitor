@@ -1,12 +1,18 @@
 package com.gasmonitor.config;
 
+import com.gasmonitor.service.login.LoginSuccHandler;
+import com.gasmonitor.service.security.CustomUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
  * Created by saplmm on 2017/6/10.
@@ -16,10 +22,16 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     Logger log = LoggerFactory.getLogger(WebSecurityConfig.class);
 
-//    @Bean
-//    UserDetailsService customUserService() {
-//        return new CustomUserService();
-//    }
+    @Value("${server.salt}")
+    private String salt;
+
+    @Autowired
+    private LoginSuccHandler loginSuccHandler;
+
+    @Bean
+    UserDetailsService customUserService() {
+        return new CustomUserService();
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -28,7 +40,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.headers().frameOptions().sameOrigin()
                 .and().authorizeRequests().antMatchers("/test/**").permitAll()
                 .and().authorizeRequests().anyRequest().authenticated() //4
-                .and().formLogin().loginPage("/login").failureUrl("/login?error").permitAll() //5
+                .and().formLogin().loginPage("/login").failureUrl("/login?error").successHandler(loginSuccHandler).permitAll() //5
                 .and().logout().logoutUrl("/logout").logoutSuccessUrl("/login").permitAll();
     }
 
@@ -41,11 +53,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .authoritiesByUsernameQuery("select username,role from roles where username = ?");
 
         log.info("进入到configure函数，开始认证...");
-//        auth.userDetailsService(customUserService());
-        auth.inMemoryAuthentication().withUser("user").password("user").roles("USER");
-        auth.inMemoryAuthentication().withUser("wyf").password("wyf").roles("ADMIN");
-        auth.inMemoryAuthentication().withUser("wisely").password("wisely").roles("ADMIN");
-        auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
+        auth.userDetailsService(customUserService());
+        //下边的方法 可以用于增加用户的md5摘要
+//        auth.userDetailsService(customUserService()).passwordEncoder(new PasswordEncoder() {
+//            @Override
+//            public String encode(CharSequence rawPassword) {
+//               new  Md5PasswordEncoder().encodePassword()
+//                return null;
+//            }
+//
+//            @Override
+//            public boolean matches(CharSequence rawPassword, String encodedPassword) {
+//                return false;
+//            }
+//        });
+//        auth.inMemoryAuthentication().withUser("user").password("user").roles("USER");
+//        auth.inMemoryAuthentication().withUser("wyf").password("wyf").roles("ADMIN");
+//        auth.inMemoryAuthentication().withUser("wisely").password("wisely").roles("ADMIN");
+//        auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
     }
 
     @Override
