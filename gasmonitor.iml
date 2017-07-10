@@ -17,6 +17,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava:13.0.1" level="project" />
+    <orderEntry type="library" name="Maven: com.hazelcast:hazelcast:3.7.7" level="project" />
+    <orderEntry type="library" name="Maven: com.hazelcast:hazelcast-spring:3.7.7" level="project" />
+    <orderEntry type="library" name="Maven: com.hazelcast:hazelcast-client:3.5.1" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter:1.5.3.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot:1.5.3.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-core:4.3.8.RELEASE" level="project" />
