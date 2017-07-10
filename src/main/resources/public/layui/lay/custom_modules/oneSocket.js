@@ -15,7 +15,8 @@ layui.define(['jquery'], function(exports) {
             console.log('【oneSocket】父元素已经初始化了 oneSocket');
             // 本页面的 layui.oneSocket 继承父页面的
             layui.oneSocket = window.parent.layui.oneSocket;
-            return ;
+            // layui.oneSocket.EventEmitter = window.parent.document;
+            return layui.oneSocket;
         }
         // 3. 初始化 oneSocket 的 socket 连接
         // 3.0.5 处理 oneSocket 初始化 error 的 Function
@@ -47,11 +48,24 @@ layui.define(['jquery'], function(exports) {
             }, 5000);
         });
         // 收到消息的处理
+        // layui.oneSocket.EventEmitter = $(document);
+        var handlerFuncArr = [];
         function handleNotifications(message) {
             console.log(["【oneSocket】[handleNotifications]received: ", message.body].join(''));
-            $(document).trigger('GM_EVENT_handleNotifications', message.body);
+            // layui.oneSocket.EventEmitter.trigger(layui.oneSocket.EVENT.GM_EVENT_handleNotifications, message.body);
+            if(handlerFuncArr && handlerFuncArr.length > 0) {
+                handlerFuncArr.forEach(function (itemHandlerFunc) {
+                    itemHandlerFunc(message.body);
+                });
+            }
         }
 
+        //
+        layui.oneSocket.addHandler = function(handlerFunc) {
+            handlerFuncArr.push(handlerFunc);
+        }
+
+        return layui.oneSocket;
     });
     // 4. 定义 oneSocket 的事件
     layui.oneSocket.EVENT = {
