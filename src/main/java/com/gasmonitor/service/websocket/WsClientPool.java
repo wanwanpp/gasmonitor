@@ -1,7 +1,8 @@
 package com.gasmonitor.service.websocket;
 
+import com.gasmonitor.entity.GasHazelcast;
 import com.gasmonitor.protobuf.GasMsg;
-import com.gasmonitor.service.websocket.api.WsClientPoolApi;
+import com.gasmonitor.service.middleware.api.WsClientPoolApi;
 import com.gasmonitor.vo.MonitorData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import java.util.*;
  * Created by saplmm on 2017/6/13.
  * websocket 连接池
  */
+
 @Service
 public class WsClientPool implements WsClientPoolApi {
     private Logger log = LoggerFactory.getLogger(WsClientPool.class);
@@ -63,6 +65,12 @@ public class WsClientPool implements WsClientPoolApi {
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean sendMonitorData(GasHazelcast data) {
+        log.info("sendMonitorData-->GasHazelcast：{}", data.toString());
+        return false;
     }
 
     //目前使用的是这个函数，直接发送json数据给浏览器
