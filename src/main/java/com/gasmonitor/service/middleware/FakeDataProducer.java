@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 /**
  * Created by saplmm on 2017/6/12.
  */
-@Service
+//@Service
 public class FakeDataProducer implements CommandLineRunner {
     Logger log = LoggerFactory.getLogger(FakeDataProducer.class);
 

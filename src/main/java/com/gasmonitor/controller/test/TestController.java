@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
+import java.security.Principal;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
 
@@ -98,10 +100,16 @@ public class TestController {
         return map;
     }
 
-
     @RequestMapping(value = "session")
-    public Object testSession(HttpSession session) {
+    public Object testSession(HttpSession session, Principal principal) {
         logger.info("session:{}", session);
-        return session;
+        logger.info("session:{}", session.getId());
+        Enumeration<String> names = session.getAttributeNames();
+        while (names.hasMoreElements()) {
+            String key = names.nextElement();
+            logger.info("key:{}---->value:{}", key, session.getAttribute(key));
+        }
+        logger.info("principal.getName():{}", principal.getName());
+        return session.getId();
     }
 }

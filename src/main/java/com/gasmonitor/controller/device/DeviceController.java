@@ -4,6 +4,7 @@ import com.gasmonitor.dao.DeviceRepository;
 import com.gasmonitor.dao.SiteRepository;
 import com.gasmonitor.entity.Device;
 import com.gasmonitor.entity.Site;
+import com.gasmonitor.entity.Tenant;
 import com.gasmonitor.service.device.api.DeviceService;
 import com.gasmonitor.vo.AjaxResult;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
 
@@ -60,7 +62,7 @@ public class DeviceController {
     //ajax 增加一个设备
     @RequestMapping(value = "/ajax/add", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxResult<Device> ajaxAddDevice(String name, Integer logic, Long siteId, String phone, Integer status, Long parent) {
+    public AjaxResult<Device> ajaxAddDevice(String name, Integer logic, Long siteId, String phone, Integer status, Long parent, HttpSession session) {
         //新生成的设备
         Device device = new Device();
         device.setCreated(new Date());
@@ -71,7 +73,7 @@ public class DeviceController {
         device.setPhone(phone);
         device.setStatus(status);
         device.setParent(phone);
-        device = deviceService.addDevice(device, 1);
+        device = deviceService.addDevice(device, ((Tenant) session.getAttribute("user")).getId());
         return new AjaxResult<>(device);
     }
 
