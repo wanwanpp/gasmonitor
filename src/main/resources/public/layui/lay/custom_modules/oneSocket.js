@@ -43,9 +43,9 @@ layui.define(['jquery'], function(exports) {
             stomp.subscribe("/user/queue/notifications", handleNotifications);
             // set station
             stomp.send("/setStations", {}, "s1");
-            setTimeout(function () {
+            /*setTimeout(function () {
                 stomp.send("/setStations", {}, "s2");
-            }, 5000);
+            }, 5000);*/
         });
         // 收到消息的处理
         // layui.oneSocket.EventEmitter = $(document);
