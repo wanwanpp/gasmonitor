@@ -208,6 +208,10 @@
              console.log(data);
              renderUpdatedData2Charts(JSON.parse(data));
              });*/
+            // 最后，固定 echarts 容器宽度，并指定父容器滚动
+            var deviceEchartsContainerEle = $('#device-echarts-container');
+            deviceEchartsContainerEle.css('width', deviceEchartsContainerEle.width());
+            deviceEchartsContainerEle.parent().css('overflow-x', 'auto');
         });
     });
 })();
