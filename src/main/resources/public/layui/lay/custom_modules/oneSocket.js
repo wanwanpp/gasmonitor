@@ -42,7 +42,7 @@ layui.define(['jquery'], function(exports) {
         stomp.connect('guest', 'guest', function (frame) {
             stomp.subscribe("/user/queue/notifications", handleNotifications);
             // set station
-            stomp.send("/setStations", {}, "s1");
+            // stomp.send("/setStations", {}, "s1");
             /*setTimeout(function () {
                 stomp.send("/setStations", {}, "s2");
             }, 5000);*/
@@ -60,16 +60,22 @@ layui.define(['jquery'], function(exports) {
             }
         }
 
-        //
+        // Start: oneSocket 对外暴露的接口
+        // 收到 socket 推送后的回调处理
         layui.oneSocket.addHandler = function(handlerFunc) {
             handlerFuncArr.push(handlerFunc);
-        }
+        };
+        // 订阅主题处理
+        layui.oneSocket.setStation = function(stationName) {
+            stomp.send("/setStations", {}, stationName);
+        };
+        // End  : oneSocket 对外暴露的接口
 
         return layui.oneSocket;
     });
     // 4. 定义 oneSocket 的事件
-    layui.oneSocket.EVENT = {
+    /*layui.oneSocket.EVENT = {
         GM_EVENT_handleNotifications: 'GM_EVENT_handleNotifications'
-    };
+    };*/
 
 });

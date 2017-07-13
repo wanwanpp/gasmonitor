@@ -129,7 +129,7 @@
             var oneSocket = layui.oneSocket(/*SockJS, Stomp*/);
             var oneSocketEvent = oneSocket.EVENT;
             oneSocket.addHandler(function(data) {
-                console.log(['[documentEvent oneSocketEvent ', oneSocketEvent.GM_EVENT_handleNotifications, '] data: '].join(''));
+                console.log('[documentEvent oneSocketEvent] data: ');
                 console.log(data);
                 var jData = JSON.parse(data);
                 console.log('[documentEvent oneSocketEvent] jData: ');
@@ -142,6 +142,7 @@
                 renderUpdatedData2Charts(myChartsArr[2], optionsArr[2], jDataGasEvent.hardwareId, 'standard', jDataGasEvent.standard, jDataGasEvent.summary);
                 renderUpdatedData2Charts(myChartsArr[3], optionsArr[3], jDataGasEvent.hardwareId, 'running', jDataGasEvent.running, jDataGasEvent.summary);
             });
+            oneSocket.setStation('s1');
             /*$(oneSocket.EventEmitter).on(oneSocketEvent.GM_EVENT_handleNotifications, '', function(event, data) {
              console.log(['[documentEvent oneSocketEvent ', oneSocketEvent.GM_EVENT_handleNotifications, '] data: '].join(''));
              console.log(data);
