@@ -74,20 +74,22 @@
                     name:'今日压力',
                     type:'line',
                     areaStyle: {normal: {}},
-                    data:(function (){
+                    data: []
+                    /*data:(function (){
                         var res = [];
                         var len = 10;
                         while (len--) {
                             res.push(Math.round(Math.random() * 1000));
                         }
                         return res;
-                    })()
+                    })()*/
                 },
                 {
                     name:'历史压力',
                     type:'line',
                     areaStyle: {normal: {}},
-                    data:(function (){
+                    data: []
+                    /*data:(function (){
                         var res = [];
                         var len = 0;
                         while (len < 10) {
@@ -95,7 +97,7 @@
                             len++;
                         }
                         return res;
-                    })()
+                    })()*/
                 }
             ]
         };
@@ -152,6 +154,17 @@
 
         // render function
         function renderUpdatedData2Charts(myChart2Render, myChart2RenderOption, jDataHardwareId, jDataTitle, jDataFieldVal, jDataSummaryVal) {
+            if(!myChart2Render || !myChart2RenderOption || !jDataHardwareId || !jDataTitle || (!jDataFieldVal && jDataFieldVal !== 0) || (!jDataSummaryVal && jDataSummaryVal !== 0)) {
+                console.error('[renderUpdatedData2Charts] 参数检查有误：');
+                console.info(['[renderUpdatedData2Charts] myChart2Render: ',        myChart2Render      ].join(''));
+                console.info(['[renderUpdatedData2Charts] myChart2RenderOption: ',  myChart2RenderOption].join(''));
+                console.info(['[renderUpdatedData2Charts] jDataHardwareId: ',       jDataHardwareId     ].join(''));
+                console.info(['[renderUpdatedData2Charts] jDataTitle: ',            jDataTitle          ].join(''));
+                console.info(['[renderUpdatedData2Charts] jDataFieldVal: ',         jDataFieldVal       ].join(''));
+                console.info(['[renderUpdatedData2Charts] jDataSummaryVal: ',       jDataSummaryVal     ].join(''));
+                return ;
+            }
+
             var axisData = (new Date()).toLocaleTimeString().replace(/^\D*/,'');
             // var axisData = jData.timeStr;
 
@@ -160,11 +173,15 @@
             var data0 = myChart2RenderOption.series[0].data;
             var data1 = myChart2RenderOption.series[1].data;
 
-            data0.shift();
+            if(data0.length >= 10) {
+                data0.shift();
+            }
             // data0.push(Math.round(Math.random() * 1000));
             data0.push(jDataFieldVal);
 
-            data1.shift();
+            if(data1.length >= 10) {
+                data1.shift();
+            }
             // data1.push((Math.random() * 1000 + 5).toFixed(1) - 0);
             data1.push(jDataSummaryVal);
 
