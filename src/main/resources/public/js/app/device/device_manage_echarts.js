@@ -1,10 +1,10 @@
 (function() {
     // Start: 所有被本模块调用的函数定义在此
-    function genOption() {
+    function genOption(hardwareId, subTitle) {
         var option = {
             title: {
-                text: '设备监测曲线图',
-                subtext: '[设备或站点名]'
+                text: subTitle,
+                subtext: ['[', hardwareId, ']'].join('')
             },
             tooltip: {
                 trigger: 'axis',
@@ -16,7 +16,7 @@
                 }
             },
             legend: {
-                data:['今日压力', '历史压力']
+                data:[subTitle, 'summary']
             },
             toolbox: {
                 show: true,
@@ -63,7 +63,7 @@
                 {
                     type: 'value',
                     scale: true,
-                    name: '压力值',
+                    name: [subTitle, '值'].join(''),
                     nameGap: 8,
                     min: 0,
                     boundaryGap: [0.2, 0.2]
@@ -71,7 +71,7 @@
             ],
             series: [
                 {
-                    name:'今日压力',
+                    name: subTitle,
                     type:'line',
                     areaStyle: {normal: {}},
                     data: []
@@ -85,7 +85,7 @@
                     })()*/
                 },
                 {
-                    name:'历史压力',
+                    name:'summary',
                     type:'line',
                     areaStyle: {normal: {}},
                     data: []
@@ -104,9 +104,61 @@
 
         return option;
     }
+    // render function
+    function renderUpdatedData2Charts(myChart2Render, myChart2RenderOption, jDataHardwareId, jDataFieldVal, jDataSummaryVal) {
+        if(!myChart2Render || !myChart2RenderOption || !jDataHardwareId || (!jDataFieldVal && jDataFieldVal !== 0) || (!jDataSummaryVal && jDataSummaryVal !== 0)) {
+            console.error('[renderUpdatedData2Charts] 参数检查有误：');
+            console.info(['[renderUpdatedData2Charts] myChart2Render: ',        myChart2Render      ].join(''));
+            console.info(['[renderUpdatedData2Charts] myChart2RenderOption: ',  myChart2RenderOption].join(''));
+            console.info(['[renderUpdatedData2Charts] jDataHardwareId: ',       jDataHardwareId     ].join(''));
+            console.info(['[renderUpdatedData2Charts] jDataFieldVal: ',         jDataFieldVal       ].join(''));
+            console.info(['[renderUpdatedData2Charts] jDataSummaryVal: ',       jDataSummaryVal     ].join(''));
+            return ;
+        }
+
+        var axisData = (new Date()).toLocaleTimeString().replace(/^\D*/,'');
+        // var axisData = jData.timeStr;
+
+        myChart2RenderOption.title.subtext = ['[', jDataHardwareId, ']'].join('');
+
+        var data0 = myChart2RenderOption.series[0].data;
+        var data1 = myChart2RenderOption.series[1].data;
+
+        if(data0.length >= 10) {
+            data0.shift();
+        }
+        // data0.push(Math.round(Math.random() * 1000));
+        data0.push(jDataFieldVal);
+
+        if(data1.length >= 10) {
+            data1.shift();
+        }
+        // data1.push((Math.random() * 1000 + 5).toFixed(1) - 0);
+        data1.push(jDataSummaryVal);
+
+        myChart2RenderOption.xAxis[0].data.shift();
+        myChart2RenderOption.xAxis[0].data.push(axisData);
+
+        myChart2Render.setOption(myChart2RenderOption);
+    }
+    // init function
+    function renderInitData2Charts(myChart2Render, myChart2RenderOption) {
+        if(!myChart2Render || !myChart2RenderOption) {
+            console.error('[renderUpdatedData2Charts] 参数检查有误：');
+            console.info(['[renderUpdatedData2Charts] myChart2Render: ',        myChart2Render      ].join(''));
+            console.info(['[renderUpdatedData2Charts] myChart2RenderOption: ',  myChart2RenderOption].join(''));
+            return ;
+        }
+
+        myChart2Render.setOption(myChart2RenderOption);
+    }
     // End  : 所有被本模块调用的函数定义在此
     layui.use(['jquery', 'oneSocket'], function() {
         var $ = layui.jquery;
+        var hardwareId = 's1';
+
+        // 4 个折线图每个的 title
+        var subTitlesArr = ['温度', '压力', 'standard', 'running'];
 
         // 基于准备好的dom，初始化echarts实例
         var myChart0 = echarts.init(document.getElementById('echarts-0'));
@@ -115,11 +167,12 @@
         var myChart3 = echarts.init(document.getElementById('echarts-3'));
         var myChartsArr = [myChart0, myChart1, myChart2, myChart3];
 
+
         // 指定图表的配置项和数据
-        var option0 = genOption();
-        var option1 = genOption();
-        var option2 = genOption();
-        var option3 = genOption();
+        var option0 = genOption(hardwareId, subTitlesArr[0]);
+        var option1 = genOption(hardwareId, subTitlesArr[1]);
+        var option2 = genOption(hardwareId, subTitlesArr[2]);
+        var option3 = genOption(hardwareId, subTitlesArr[3]);
         var optionsArr = [option0, option1, option2, option3];
 
         // 测试 demo ： 定时刷新
@@ -128,8 +181,13 @@
          }, 3000);*/
         // 实际： 监听事件进行刷新
         $(function() {
+            renderInitData2Charts(myChartsArr[0], optionsArr[0]);
+            renderInitData2Charts(myChartsArr[1], optionsArr[1]);
+            renderInitData2Charts(myChartsArr[2], optionsArr[2]);
+            renderInitData2Charts(myChartsArr[3], optionsArr[3]);
+
             var oneSocket = layui.oneSocket(/*SockJS, Stomp*/);
-            var oneSocketEvent = oneSocket.EVENT;
+            // var oneSocketEvent = oneSocket.EVENT;
             oneSocket.addHandler(function(data) {
                 console.log('[documentEvent oneSocketEvent] data: ');
                 console.log(data);
@@ -139,56 +197,17 @@
                 /*myChartsArr.forEach(function(myChartItem) {
                  renderUpdatedData2Charts(myChartItem, jData);
                  });*/
-                renderUpdatedData2Charts(myChartsArr[0], optionsArr[0], jDataGasEvent.hardwareId, '温度', jDataGasEvent.temperature, jDataGasEvent.summary);
-                renderUpdatedData2Charts(myChartsArr[1], optionsArr[1], jDataGasEvent.hardwareId, '压力', jDataGasEvent.pressure, jDataGasEvent.summary);
-                renderUpdatedData2Charts(myChartsArr[2], optionsArr[2], jDataGasEvent.hardwareId, 'standard', jDataGasEvent.standard, jDataGasEvent.summary);
-                renderUpdatedData2Charts(myChartsArr[3], optionsArr[3], jDataGasEvent.hardwareId, 'running', jDataGasEvent.running, jDataGasEvent.summary);
+                renderUpdatedData2Charts(myChartsArr[0], optionsArr[0], jDataGasEvent.hardwareId, jDataGasEvent.temperature,   jDataGasEvent.summary);
+                renderUpdatedData2Charts(myChartsArr[1], optionsArr[1], jDataGasEvent.hardwareId, jDataGasEvent.pressure,      jDataGasEvent.summary);
+                renderUpdatedData2Charts(myChartsArr[2], optionsArr[2], jDataGasEvent.hardwareId, jDataGasEvent.standard,      jDataGasEvent.summary);
+                renderUpdatedData2Charts(myChartsArr[3], optionsArr[3], jDataGasEvent.hardwareId, jDataGasEvent.running,       jDataGasEvent.summary);
             });
-            oneSocket.setStation('s1');
+            oneSocket.setStation(hardwareId);
             /*$(oneSocket.EventEmitter).on(oneSocketEvent.GM_EVENT_handleNotifications, '', function(event, data) {
              console.log(['[documentEvent oneSocketEvent ', oneSocketEvent.GM_EVENT_handleNotifications, '] data: '].join(''));
              console.log(data);
              renderUpdatedData2Charts(JSON.parse(data));
              });*/
         });
-
-        // render function
-        function renderUpdatedData2Charts(myChart2Render, myChart2RenderOption, jDataHardwareId, jDataTitle, jDataFieldVal, jDataSummaryVal) {
-            if(!myChart2Render || !myChart2RenderOption || !jDataHardwareId || !jDataTitle || (!jDataFieldVal && jDataFieldVal !== 0) || (!jDataSummaryVal && jDataSummaryVal !== 0)) {
-                console.error('[renderUpdatedData2Charts] 参数检查有误：');
-                console.info(['[renderUpdatedData2Charts] myChart2Render: ',        myChart2Render      ].join(''));
-                console.info(['[renderUpdatedData2Charts] myChart2RenderOption: ',  myChart2RenderOption].join(''));
-                console.info(['[renderUpdatedData2Charts] jDataHardwareId: ',       jDataHardwareId     ].join(''));
-                console.info(['[renderUpdatedData2Charts] jDataTitle: ',            jDataTitle          ].join(''));
-                console.info(['[renderUpdatedData2Charts] jDataFieldVal: ',         jDataFieldVal       ].join(''));
-                console.info(['[renderUpdatedData2Charts] jDataSummaryVal: ',       jDataSummaryVal     ].join(''));
-                return ;
-            }
-
-            var axisData = (new Date()).toLocaleTimeString().replace(/^\D*/,'');
-            // var axisData = jData.timeStr;
-
-            myChart2RenderOption.title.subtext = ['[', jDataHardwareId, ' - ', jDataTitle, ']'].join('');
-
-            var data0 = myChart2RenderOption.series[0].data;
-            var data1 = myChart2RenderOption.series[1].data;
-
-            if(data0.length >= 10) {
-                data0.shift();
-            }
-            // data0.push(Math.round(Math.random() * 1000));
-            data0.push(jDataFieldVal);
-
-            if(data1.length >= 10) {
-                data1.shift();
-            }
-            // data1.push((Math.random() * 1000 + 5).toFixed(1) - 0);
-            data1.push(jDataSummaryVal);
-
-            myChart2RenderOption.xAxis[0].data.shift();
-            myChart2RenderOption.xAxis[0].data.push(axisData);
-
-            myChart2Render.setOption(myChart2RenderOption);
-        }
     });
 })();
