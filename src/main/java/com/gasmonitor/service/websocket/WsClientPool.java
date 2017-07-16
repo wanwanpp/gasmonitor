@@ -20,6 +20,8 @@ import java.util.*;
 @Service
 public class WsClientPool implements WsClientPoolApi {
     private Logger log = LoggerFactory.getLogger(WsClientPool.class);
+
+
     private static final Map<String, Set<String>> clients = new HashMap<String, Set<String>>();
 
     @Autowired
@@ -61,10 +63,10 @@ public class WsClientPool implements WsClientPoolApi {
             Set<String> stations = clients.get(key);
             log.info("[WsClientPool.sendMonitorData]data.getGasEvent().getHardwareId(): {}", data.getGasEvent().getHardwareId());
             log.info("[WsClientPool.sendMonitorData]stations.contains(data.getGasEvent().getHardwareId()): {}", stations.contains(data.getGasEvent().getHardwareId()));
-            if (stations.contains(data.getGasEvent().getHardwareId())) {
-                template.convertAndSendToUser(key, "/queue/notifications", data);
-                log.info("给用户{}发送data{}...", key, data);
-            }
+//            if (stations.contains(data.getGasEvent().getHardwareId())) {
+            template.convertAndSendToUser(key, "/queue/notifications", data);
+            log.info("给用户{}发送data{}...", key, data);
+//            }
         }
         return true;
     }
@@ -103,4 +105,9 @@ public class WsClientPool implements WsClientPoolApi {
             }
         }
     }
+
+    public static Map<String, Set<String>> getClients() {
+        return clients;
+    }
+
 }

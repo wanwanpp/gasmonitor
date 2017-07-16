@@ -5,12 +5,12 @@ import com.gasmonitor.dao.TenantRepository;
 import com.gasmonitor.entity.Device;
 import com.gasmonitor.entity.Site;
 import com.gasmonitor.entity.Tenant;
+import com.gasmonitor.service.websocket.WsClientPool;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -122,5 +122,8 @@ public class TestController {
         return session.getId();
     }
 
-
+    @RequestMapping(value = "ws/wsClient")
+    public Object wsClient() {
+        return WsClientPool.getClients();
+    }
 }
