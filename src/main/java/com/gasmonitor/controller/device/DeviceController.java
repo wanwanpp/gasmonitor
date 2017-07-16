@@ -4,18 +4,15 @@ import com.gasmonitor.dao.DeviceRepository;
 import com.gasmonitor.dao.SiteRepository;
 import com.gasmonitor.entity.Device;
 import com.gasmonitor.entity.Site;
-import com.gasmonitor.entity.Tenant;
 import com.gasmonitor.service.device.api.DeviceService;
+import com.gasmonitor.utils.SessionUtils;
 import com.gasmonitor.vo.AjaxResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
@@ -30,7 +27,7 @@ import java.util.List;
 @RequestMapping(value = "/device")
 public class DeviceController {
 
-    private final Logger logger = LoggerFactory.getLogger(DeviceController.class);
+    private final Logger log = LoggerFactory.getLogger(DeviceController.class);
 
     @Autowired
     private DeviceRepository deviceRepository;
@@ -43,7 +40,7 @@ public class DeviceController {
     @RequestMapping(value = "/list")
     public String deviceList(ModelMap modelMap) {
         List<Site> sites = siteRepository.findAll();
-        logger.info("寻找到所有的站点信息:{}", sites);
+        log.info("寻找到所有的站点信息:{}", sites);
         modelMap.addAttribute("sites", sites);
         return "/device/list";
     }
@@ -55,25 +52,16 @@ public class DeviceController {
                                        @RequestParam(value = "searchKey", defaultValue = "") String searchKey,
                                        Integer currPage) {
         List<Device> devices = deviceRepository.findBySiteId(siteId);
-        logger.debug("通过站点{}查询到的所有设备的信息{}", siteId, devices);
+        log.debug("通过站点{}查询到的所有设备的信息{}", siteId, devices);
         return new AjaxResult<Device>(devices);
     }
 
     //ajax 增加一个设备
-    @RequestMapping(value = "/ajax/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/ajax/new", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxResult<Device> ajaxAddDevice(String name, Integer logic, Long siteId, String phone, Integer status, Long parent, HttpSession session) {
+    public AjaxResult<Device> ajaxAddDevice(Device device, HttpSession session) {
         //新生成的设备
-        Device device = new Device();
-        device.setCreated(new Date());
-        device.setTokenId("");
-        device.setName(name);
-        device.setLogic(logic);
-        device.setSiteId(siteId);
-        device.setPhone(phone);
-        device.setStatus(status);
-        device.setParent(phone);
-        device = deviceService.addDevice(device, ((Tenant) session.getAttribute("user")).getId());
+        device = deviceService.addDevice(device, SessionUtils.getTanat(session).getId());
         return new AjaxResult<>(device);
     }
 
@@ -110,7 +98,7 @@ public class DeviceController {
         device.setPhone(phone);
         device.setStatus(status);
         device.setParent(phone);
-        logger.info("创建新的设备:{}", device);
+        log.info("创建新的设备:{}", device);
 
         Device retDevie = deviceRepository.save(device);
         return new AjaxResult<>(retDevie);

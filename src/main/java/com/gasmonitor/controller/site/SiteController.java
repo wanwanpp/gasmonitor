@@ -2,16 +2,23 @@ package com.gasmonitor.controller.site;
 
 import com.gasmonitor.dao.SiteRepository;
 import com.gasmonitor.entity.Site;
+import com.gasmonitor.entity.Tenant;
 import com.gasmonitor.utils.PageUtils;
+import com.gasmonitor.utils.SessionUtils;
 import com.gasmonitor.vo.AjaxResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.rmi.CORBA.Tie;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.security.Principal;
 
 /**
@@ -42,17 +49,33 @@ public class SiteController {
     //    通过租户信息和站点名字 查询站点
     @RequestMapping(value = "/ajax/list")
     @ResponseBody
-    public AjaxResult<Site> listStie(@RequestParam(defaultValue = "") String searchKey, Integer currPage, Principal principal) {
+    public AjaxResult<Site> listStie(@RequestParam(defaultValue = "") String searchKey, Integer currPage, HttpSession session, Principal principal) {
         logger.info("开始查询站点列表:principal.getName() --> {}", principal.getName());
-        AjaxResult<Site> data = AjaxResult.NewAjaxResult(siteRepository.findByNameContaining(searchKey, PageUtils.p(currPage)));
+        AjaxResult<Site> data;
+        Tenant tenant = SessionUtils.getTanat(session);
+        if (tenant != null) {
+            data = AjaxResult.NewAjaxResult(siteRepository.findByTenantIdAndNameContaining(tenant.getId(), searchKey, PageUtils.p(currPage)));
+        } else {
+            data = AjaxResult.SuccAjaxResult();
+        }
         return data;
     }
 
     @RequestMapping(value = "/ajax/new", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxResult ajaxNew(Site site) {
-        site.setId(null);
-        siteRepository.save(site);
+    public AjaxResult ajaxNew(Site site, HttpServletRequest request, HttpSession session) {
+        Tenant user = SessionUtils.getTanat(session);
+        if (user == null) {
+            try {
+                request.logout();
+            } catch (ServletException e) {
+                e.printStackTrace();
+            }
+        } else {
+            site.setId(null);
+            site.setTenantId(((Tenant) session.getAttribute("tenant")).getId());
+            siteRepository.save(site);
+        }
         return AjaxResult.SuccAjaxResult();
     }
 
