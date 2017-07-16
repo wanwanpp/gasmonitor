@@ -219,7 +219,7 @@
                 layer.load();   // loading
                 $.get(
                     "/device/ajax/list/",
-                    {"currPage": currPage || 1, siteId: 999},
+                    {"currPage": currPage || 1, siteId: 1},
                     function (data) {
                         console.log("查询到的站点 list 信息:" + JSON.stringify(data));
                         var total = data.total;

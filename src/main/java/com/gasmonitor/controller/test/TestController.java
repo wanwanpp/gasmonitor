@@ -10,6 +10,7 @@ import com.hazelcast.core.IMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,6 +48,14 @@ public class TestController {
         logger.info("测试，找到的devices:{}", devices);
         return devices;
     }
+
+
+    @RequestMapping(value = "device/dao")
+    public Object deviceDao() {
+        List<Device> devices = deviceRepository.findByTenantId((long) 1);
+        return devices;
+    }
+
 
     @RequestMapping(value = "/device/save")
     public Object saveDevice() {
@@ -112,4 +121,6 @@ public class TestController {
         logger.info("principal.getName():{}", principal.getName());
         return session.getId();
     }
+
+
 }
