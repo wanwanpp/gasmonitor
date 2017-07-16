@@ -245,7 +245,7 @@
             renderInitData2Charts(myChartsArr[3], optionsArr[3]);
 
             // var oneSocketEvent = oneSocket.EVENT;
-            oneSocket.addHandler(function(data) {
+            oneSocket.setHandler(oneSocket.Event.GAS_EVENT, function(data) {
                 console.log('[documentEvent oneSocketEvent] data: ');
                 console.log(data);
                 var jData = JSON.parse(data);
@@ -254,6 +254,12 @@
                 /*myChartsArr.forEach(function(myChartItem) {
                  renderUpdatedData2Charts(myChartItem, jData);
                  });*/
+                // Start: 判断 hardwareId 相符，才进行刷新
+                console.info(['[documentEvent oneSocketEvent][hardwareId: ', hardwareId, '][jDataGasEvent.hardwareId: ', jDataGasEvent.hardwareId, '] 不相等？： ', hardwareId != jDataGasEvent.hardwareId].join(''));
+                if(hardwareId != jDataGasEvent.hardwareId) {
+                    return ;
+                }
+                // End  : 判断 hardwareId 相符，才进行刷新
                 renderUpdatedData2Charts(myChartsArr[0], optionsArr[0], jDataGasEvent.hardwareId, jDataGasEvent.temperature,   jDataGasEvent.summary);
                 renderUpdatedData2Charts(myChartsArr[1], optionsArr[1], jDataGasEvent.hardwareId, jDataGasEvent.pressure,      jDataGasEvent.summary);
                 renderUpdatedData2Charts(myChartsArr[2], optionsArr[2], jDataGasEvent.hardwareId, jDataGasEvent.standard,      jDataGasEvent.summary);
