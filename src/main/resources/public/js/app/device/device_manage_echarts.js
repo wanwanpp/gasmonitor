@@ -18,7 +18,7 @@
                 }
             },
             legend: {
-                data:[subTitle, 'summary']
+                data:[subTitle/*, 'summary'*/]
             },
             toolbox: {
                 show: true,
@@ -85,13 +85,13 @@
                         }
                         return res;
                     })()*/
-                },
+                }/*,
                 {
                     name:'summary',
                     type:'line',
                     areaStyle: {normal: {}},
                     data: []
-                    /*data:(function (){
+                    /!*data:(function (){
                         var res = [];
                         var len = 0;
                         while (len < 10) {
@@ -99,8 +99,8 @@
                             len++;
                         }
                         return res;
-                    })()*/
-                }
+                    })()*!/
+                }*/
             ]
         };
 
@@ -124,7 +124,7 @@
         myChart2RenderOption.title.subtext = ['[', jDataHardwareId, ']'].join('');
 
         var data0 = myChart2RenderOption.series[0].data;
-        var data1 = myChart2RenderOption.series[1].data;
+        // var data1 = myChart2RenderOption.series[1].data;
 
         if(data0.length >= 10) {
             data0.shift();
@@ -132,11 +132,11 @@
         // data0.push(Math.round(Math.random() * 1000));
         data0.push(jDataFieldVal);
 
-        if(data1.length >= 10) {
+        /*if(data1.length >= 10) {
             data1.shift();
         }
         // data1.push((Math.random() * 1000 + 5).toFixed(1) - 0);
-        data1.push(jDataSummaryVal);
+        data1.push(jDataSummaryVal);*/
 
         myChart2RenderOption.xAxis[0].data.shift();
         myChart2RenderOption.xAxis[0].data.push(axisData);
