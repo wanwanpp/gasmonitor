@@ -161,171 +161,180 @@
 
 <script type="text/javascript" src="/layui/layui.js"></script>
 <script type="text/javascript">
-  layui.use(['laytpl', 'jquery', 'layer', 'laypage', 'form', 'jquery'], function () {
-    console.log("开始执行渲染模板");
-    var laytpl = layui.laytpl;
-    var $ = layui.jquery;
-    var getUrl = "/device/ajax/list";
-    var addUrl = "/device/ajax/new"
-    var editUrl = '/device/ajax/update';
-    var rmUrl = '/device/ajax/remove';
-    var layer = layui.layer;
-    var laypage = layui.laypage;
-    var form = layui.form();
-    var $ = layui.jquery;
-    var newTenant = true;//是否新增
+    layui.use(['laytpl', 'jquery', 'layer', 'laypage', 'form', 'jquery'], function () {
+        console.log("开始执行渲染模板");
+        var laytpl = layui.laytpl;
+        var $ = layui.jquery;
+        var getUrl = "/device/ajax/list";
+        var addUrl = "/device/ajax/new"
+        var editUrl = '/device/ajax/update';
+        var rmUrl = '/device/ajax/remove';
+        var layer = layui.layer;
+        var laypage = layui.laypage;
+        var form = layui.form();
+        var $ = layui.jquery;
+        var newTenant = true;//是否新增
 
-    laytpl.deviceTypeDes = function (t) {
-      if (t == 1) {
-        return '逻辑设备';
-      } else if (t == 2) {
-        return '物理设备';
-      } else {
-        return '未知设备';
-      }
+        laytpl.deviceTypeDes = function (t) {
+            if (t == 1) {
+                return '逻辑设备';
+            } else if (t == 2) {
+                return '物理设备';
+            } else {
+                return '未知设备';
+            }
 
-    }
+        }
 
-    //监听提交
-    form.on('submit', function (data) {
-      console.log("点击了提交按钮 field:" + JSON.stringify(data.field));
-      $.post(
-              newTenant ? addUrl : editUrl
-              , data.field
-              , function (data) {
-                console.log("保存数据结束：" + JSON.stringify(data));
-                if (data.code) {
-                  layer.alert("保存数据成功");
-                  searchList();
-                }
-              }
-      );
-      return false;
-    });
-
-    //第一次加载数据
-    searchList();
-
-    //添加一个租户
-    $(".newsAdd_btn").on('click', function () {
-      console.log("添加一个用户.弹出编辑框");
-      newTenant = true
-      showEditLayer();
-    });
-
-    $(".search_btn").on('click', function () {
-      console.log("点击了搜索按钮，开始搜索");
-      searchList();
-    })
-
-    function initClickEvent() {
-      $("#h").on('click', function () {
-        console.log("点击了提交...");
-      });
-      //为按钮设置事件
-      $(".tenant_edit").on('click', function () {
-        var that = this;
-        newTenant = false;
-        showEditLayer($(that).data("sourceid"));
-      });
-
-      $(".tenant_del").on('click', function () {
-        console.log("开始删除租户的信息");
-        var sourceId = $(this).data("sourceid");
-        layer.confirm('确定删除？', {
-          btn: ['确定', '取消'] //按钮
-        }, function () {
-          $.post(rmUrl
-                  , {
-                    "id": sourceId,
-                  }
-                  , function (data) {
-                    console.log("删除数据成功：" + JSON.stringify(data));
+        //监听提交
+        form.on('submit', function (data) {
+            console.log("点击了提交按钮 field:" + JSON.stringify(data.field));
+            $.post(
+                newTenant ? addUrl : editUrl
+                , data.field
+                , function (data) {
+                    console.log("保存数据结束：" + JSON.stringify(data));
                     if (data.code) {
-                      searchList();
-                      layer.msg('删除数据成功', {icon: 1, time: 1000,});
+                        layer.alert("保存数据成功");
+                        searchList();
                     }
-                  }
-          );
-        }, function () {
-
+                }
+            );
+            return false;
         });
-      });
 
-    }
+        //第一次加载数据
+        searchList();
 
-    //显示编辑弹出层
-    function searchList(currPage) {
-      console.log("开始查询租户list的信息...");
-      layer.load();   //loading
-      $.get(
-              getUrl,
-              {
-                "siteId": $("#search_select_site").val(),
-                "currPage": currPage || 1,
-                "searchKey": $(".search_input").val()
-              },
-              function (data) {
-                console.log("查询到的玩家的list信息:" + JSON.stringify(data));
-                laytpl(slist.innerHTML).render(data, function (html) {
-                  tableview.innerHTML = html;
-                  initClickEvent();   //渲染之后才能初始化按钮的信息，不然没有作用
-                  //分页
-                  laypage({
-                    cont: 'pageView'
-                    , pages: data.totalPage
-                    , skip: true
-                    , curr: currPage || 1 //当前页,
-                    , jump: function (obj, first) {
-                      if (!first) {
-                        searchList(obj.curr)
-                      }
-                    }
-                  });
-                  layer.closeAll('loading');   //关闭所有的loading
+        //添加一个租户
+        $(".newsAdd_btn").on('click', function () {
+            console.log("添加一个用户.弹出编辑框");
+            newTenant = true
+            showEditLayer();
+        });
+
+        $(".search_btn").on('click', function () {
+            console.log("点击了搜索按钮，开始搜索");
+            searchList();
+        })
+
+        function initClickEvent() {
+            $("#h").on('click', function () {
+                console.log("点击了提交...");
+            });
+            //为按钮设置事件
+            $(".tenant_edit").on('click', function () {
+                var that = this;
+                newTenant = false;
+                showEditLayer($(that).data("sourceid"));
+            });
+
+            $(".tenant_del").on('click', function () {
+                console.log("开始删除租户的信息");
+                var sourceId = $(this).data("sourceid");
+                layer.confirm('确定删除？', {
+                    btn: ['确定', '取消'] //按钮
+                }, function () {
+                    $.post(rmUrl
+                        , {
+                            "id": sourceId,
+                        }
+                        , function (data) {
+                            console.log("删除数据成功：" + JSON.stringify(data));
+                            if (data.code) {
+                                searchList();
+                                layer.msg('删除数据成功', {icon: 1, time: 1000,});
+                            }
+                        }
+                    );
+                }, function () {
+
                 });
-              },
-              "json"
-      );
-    }
+            });
 
-    //显示编辑弹出层
-    function showEditLayer(sourceId) {
-      console.log("开始编辑租户的信息:sourceId" + sourceId);
-      layer.open({
-                type: 1
-                , title: '编辑租户'
-                , area: ['400px', '400px']
-                , shadeClose: true //开启遮罩关闭
-                , maxmin: true
-                , content: $('#layer_tenant_edit') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-                , btn: ['取消', '提交']
-                , success: function (layero, index) {
-                  console.log("打开编辑窗口成功，是否新增？" + newTenant)
-                  if (newTenant) {
-                    //这里填充值
-                    $("#form_btn_reset").click();
-                    return;//如果是新增加用户，直接返回，不用天充值
-                  }
-                  //这里填充值
+        }
 
-                  $("#eidt_layer_name").val($("#source" + sourceId).data("name"));
-                  $("#eidt_layer_siteId").val($("#source" + sourceId).data("siteId"));
-                  $("#eidt_layer_hardwareId").val($("#source" + sourceId).data("hardwareid"));
-                  $("#eidt_layer_phone").val($("#source" + sourceId).data("phone"));
-                }
-                , yes: function (index, layero) {
-                  layer.close(index);
-                }
-                , btn2: function (index, layero) {
-                  $("#form_btn_submit").click();
-                  layer.close(index);
+        //显示编辑弹出层
+        function searchList(currPage) {
+            console.log("开始查询租户list的信息...");
+            layer.load();   //loading
+            $.get(
+                getUrl,
+                {
+                    "siteId": $("#search_select_site").val(),
+                    "currPage": currPage || 1,
+                    "searchKey": $(".search_input").val()
                 },
-              }
-      );
-    }
-  })
-  ;
+                function (data) {
+                    console.log("查询到的玩家的list信息:" + JSON.stringify(data));
+                    laytpl(slist.innerHTML).render(data, function (html) {
+                        tableview.innerHTML = html;
+                        initClickEvent();   //渲染之后才能初始化按钮的信息，不然没有作用
+                        //分页
+                        laypage({
+                            cont: 'pageView'
+                            , pages: data.totalPage
+                            , skip: true
+                            , curr: currPage || 1 //当前页,
+                            , jump: function (obj, first) {
+                                if (!first) {
+                                    searchList(obj.curr)
+                                }
+                            }
+                        });
+                        layer.closeAll('loading');   //关闭所有的loading
+                    });
+                },
+                "json"
+            );
+        }
+
+        //显示编辑弹出层
+        function showEditLayer(sourceId) {
+            console.log("开始编辑租户的信息:sourceId" + sourceId);
+            layer.open({
+                    type: 1
+                    , title: '编辑租户'
+                    , area: ['400px', '400px']
+                    , shadeClose: true //开启遮罩关闭
+                    , maxmin: true
+                    , content: $('#layer_tenant_edit') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                    , btn: ['取消', '提交']
+                    , success: function (layero, index) {
+                        console.log("打开编辑窗口成功，是否新增？" + newTenant)
+                        if (newTenant) {
+                            //这里填充值
+                            $("#form_btn_reset").click();
+                            return;//如果是新增加用户，直接返回，不用天充值
+                        }
+
+                        //这里填充值
+                        var sourceIdSelector = "#source" + sourceId;
+                        $("#eidt_layer_name").val($(sourceIdSelector).data("name"));
+                        $("#eidt_layer_siteId").val($(sourceIdSelector).data("siteId"));
+                        $("#eidt_layer_hardwareId").val($(sourceIdSelector).data("hardwareid"));
+                        $("#eidt_layer_phone").val($(sourceIdSelector).data("phone"));
+                        // Start: 逻辑设备 radio
+                        var inputNameLogicElements = $('input[name="logic"]');
+                        // inputNameLogicElements.removeAttr('checked');
+                        // 根据属性刷新 radio
+                        var logic = $(sourceIdSelector).data("logic");
+                        inputNameLogicElements.filter(['[value=', logic, ']'].join('')).next('div.layui-unselect.layui-form-radio').click();
+                        // form.render('radio');
+                        // End  : 逻辑设备 radio
+                    }
+                    , yes: function (index, layero) {
+                        layer.close(index);
+                    }
+                    , btn2: function (index, layero) {
+                        $("#form_btn_submit").click();
+                        layer.close(index);
+                    },
+                }
+            );
+        }
+    })
+    ;
 
 </script>
 </html>
