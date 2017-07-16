@@ -16,8 +16,8 @@ public class HttpSessionConfig {
     @Bean
     public MapSessionRepository sessionRepository() {
         MapSessionRepository session = new MapSessionRepository();
-//        session.setDefaultMaxInactiveInterval(60 * 60); //设置session超时时间
-        session.setDefaultMaxInactiveInterval(20); //设置session超时时间
+        session.setDefaultMaxInactiveInterval(60 * 60 * 8); //设置session超时时间
+//        session.setDefaultMaxInactiveInterval(20); //设置session超时时间
         return session;
     }
 }
