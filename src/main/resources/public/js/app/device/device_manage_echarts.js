@@ -306,7 +306,6 @@
             console.log(['设备信息[deviceId: ', deviceId, '][hardwareId: ', hardwareId, '][tokenId: ', tokenId, '][deviceName: ', deviceName, '][logic: ', logic,
                 '][watcher: ', watcher, '][phone: ', phone, '][created: ', created, '][status: ', status, '][parent: ', parent, '][siteId: ', siteId, ']'].join(''));
             // Start: 根据用户的点击，清空折线图，然后重新 setStationId
-            debugger;
             refreshECharts(hardwareId);
             // End  : 根据用户的点击，清空折线图，然后重新 setStationId
         });
