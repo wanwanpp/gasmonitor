@@ -42,10 +42,9 @@ public class WsClientPool implements WsClientPoolApi {
         Set<String> statios = clients.get(client);
         if (statios == null) {
             statios = new HashSet<String>();
-            statios.add(station);
             clients.put(client, statios);
         }
-
+        statios.add(station);
         //打印所有的信息
         log.info("所有的站点信息:{}", clients);
     }
