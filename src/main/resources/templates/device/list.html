@@ -310,18 +310,29 @@
 
                         //这里填充值
                         var sourceIdSelector = "#source" + sourceId;
+                        var siteIdVal = $(sourceIdSelector).data("siteid");
                         $("#eidt_layer_name").val($(sourceIdSelector).data("name"));
-                        $("#eidt_layer_siteId").val($(sourceIdSelector).data("siteId"));
+                        $("#eidt_layer_siteId").val(siteIdVal);
                         $("#eidt_layer_hardwareId").val($(sourceIdSelector).data("hardwareid"));
                         $("#eidt_layer_phone").val($(sourceIdSelector).data("phone"));
                         // Start: 逻辑设备 radio
                         var inputNameLogicElements = $('input[name="logic"]');
                         // inputNameLogicElements.removeAttr('checked');
                         // 根据属性刷新 radio
-                        var logic = $(sourceIdSelector).data("logic");
-                        inputNameLogicElements.filter(['[value=', logic, ']'].join('')).next('div.layui-unselect.layui-form-radio').click();
+                        var logic = $(sourceIdSelector).data("logic");  // logic 数据
+                        inputNameLogicElements.filter(['[value=', logic, ']'].join('')).next('div.layui-unselect.layui-form-radio').click();  // 直接触发 click
                         // form.render('radio');
                         // End  : 逻辑设备 radio
+                        // Start: 站点 select
+                        var layuiThisClass = 'layui-this';  // 下拉选框中显示被选中的 item
+                        var divLayuiFormSelect = $('#eidt_layer_siteId').next('div.layui-unselect.layui-form-select');  // 下面下拉选框和 input 显示值的公共父元素
+                        var dlLayuiAnimUpbit = divLayuiFormSelect.children('dl.layui-anim.layui-anim-upbit'); // 下拉选框置空和重新高亮显示被选中的 layuiThisClass 的公共父元素
+                        dlLayuiAnimUpbit.children('dd').removeClass(layuiThisClass);  // 高亮置空
+                        var ddLayValueSiteId = dlLayuiAnimUpbit.children(['dd[lay-value=', siteIdVal, ']'].join('')); // 选中相应元素，高亮
+                        ddLayValueSiteId.addClass(layuiThisClass);  // 高亮 class layuiThisClass
+                        var ddLayValueSiteIdText = ddLayValueSiteId.text(); // 获取到高亮 class item 的 text （具体显示的站点）
+                        divLayuiFormSelect.find('div.layui-select-title input.layui-input.layui-unselect').val(ddLayValueSiteIdText); // input 框填充具体站点 text
+                        // End  : 站点 select
                     }
                     , yes: function (index, layero) {
                         layer.close(index);
