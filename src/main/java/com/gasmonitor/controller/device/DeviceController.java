@@ -52,7 +52,7 @@ public class DeviceController {
                                        @RequestParam(value = "searchKey", defaultValue = "") String searchKey,
                                        Integer currPage) {
         List<Device> devices = deviceRepository.findBySiteId(siteId);
-        log.debug("通过站点{}查询到的所有设备的信息{}", siteId, devices);
+        log.info("通过站点{}查询到的所有设备的信息{}", siteId, devices);
         return new AjaxResult<Device>(devices);
     }
 
