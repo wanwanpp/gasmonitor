@@ -50,20 +50,48 @@ layui.define(['jquery'], function(exports) {
         // 收到消息的处理
         // layui.oneSocket.EventEmitter = $(document);
         var handlerFuncArr = [];
+        layui.oneSocket.Event = {DEFAULT: 'default', GAS_EVENT: 'gasEvent'};
+        function parseOneSocketEvent(messageBody) {
+            if(!messageBody) {
+                console.error(['[oneSocket.parseOneSocketEvent] messageBody invalid : ', messageBody].join(''));
+                return ;
+            }
+            return layui.oneSocket.Event.GAS_EVENT;
+        }
         function handleNotifications(message) {
             console.log(["【oneSocket】[handleNotifications]received: ", message.body].join(''));
             // layui.oneSocket.EventEmitter.trigger(layui.oneSocket.EVENT.GM_EVENT_handleNotifications, message.body);
+            var oneSocketEvent = parseOneSocketEvent(message.body);
             if(handlerFuncArr && handlerFuncArr.length > 0) {
-                handlerFuncArr.forEach(function (itemHandlerFunc) {
-                    itemHandlerFunc(message.body);
+                handlerFuncArr.forEach(function (itemEventHandlerFuncObj) {
+                    if(oneSocketEvent == itemEventHandlerFuncObj.event) {
+                        var handlerFunc = itemEventHandlerFuncObj.handlerFunc;
+                        handlerFunc(message.body);
+                    }
                 });
             }
         }
 
         // Start: oneSocket 对外暴露的接口
         // 收到 socket 推送后的回调处理
+        layui.oneSocket.setHandler = function(oneSocketEvent, handlerFunc) {
+            var newHandlerFuncArr = [];
+            handlerFuncArr.forEach(function(itemEventHandlerFuncObj) {
+                var itemEventHandlerFuncObjEvent = itemEventHandlerFuncObj.event;
+                if(itemEventHandlerFuncObjEvent != oneSocketEvent) {
+                    newHandlerFuncArr.push(itemEventHandlerFuncObj);
+                }
+            });
+            newHandlerFuncArr.push({event: oneSocketEvent, handlerFunc: handlerFunc});
+            handlerFuncArr = newHandlerFuncArr;
+        };
+        // 收到 socket 推送后的回调处理
         layui.oneSocket.addHandler = function(handlerFunc) {
-            handlerFuncArr.push(handlerFunc);
+            handlerFuncArr.push({event: layui.oneSocket.Event.DEFAULT, handlerFunc: handlerFunc});
+        };
+        // 清空回调处理（暂时这样处理，因为现在只有一个折线图的 handler ，之后会对 handlerFuncArr 中的 handlerFunc 对应事件，如 gasEvent 等）
+        layui.oneSocket.clearHandlers = function() {
+            handlerFuncArr = [];
         };
         // 订阅主题处理
         layui.oneSocket.setStation = function(stationName) {
