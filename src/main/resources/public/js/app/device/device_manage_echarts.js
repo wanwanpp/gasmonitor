@@ -1,5 +1,5 @@
 (function() {
-    var $, oneSocket, laytpl, layer;
+    var $, oneSocket, laytpl, layer, tools;
 
     // Start: 所有被本模块调用的函数定义在此
     function genOption(hardwareId, subTitle) {
@@ -178,7 +178,15 @@
                 // End  : 设备列表刷新
 
                 // Start: 触发第一个设备的 click
-                $('.device-table-tr:first').click();
+                var urlHardwareId = tools.getQueryString('hardwareId');
+                var deviceTableTr;
+                if(urlHardwareId) {
+                    deviceTableTr = $(['.device-table-tr[data-hardware-id=', urlHardwareId,']'].join(''));
+                }
+                if(!deviceTableTr) {
+                    deviceTableTr = $('.device-table-tr:first')
+                }
+                deviceTableTr.click();
                 // End  : 触发第一个设备的 click
             },
             "json"
@@ -278,12 +286,13 @@
         });
     }
     // End  : 所有被本模块调用的函数定义在此
-    layui.use(['jquery', 'oneSocket', 'laytpl', 'layer', 'form'], function() {
+    layui.use(['jquery', 'oneSocket', 'laytpl', 'layer', 'form', 'tools'], function() {
         $ = layui.jquery;
         oneSocket = layui.oneSocket(/*SockJS, Stomp*/);
         laytpl = layui.laytpl;
         layer = layui.layer;
         var form = layui.form();
+        tools = layui.tools;
 
         //第一次加载数据
         searchList();
