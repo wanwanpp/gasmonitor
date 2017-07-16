@@ -85,7 +85,7 @@
                 data-created="{{item.created}}"
                 style="display: none">
           </span>
-          <button class="layui-btn layui-btn-mini tenant-detail" data-sourceid="{{item.id}}">
+          <button class="layui-btn layui-btn-mini device-detail" data-sourceid="{{item.id}}">
             <i class="layui-icon">&#xe64c;</i>详情
           </button>
           <button class="layui-btn layui-btn-mini tenant_edit" data-sourceid="{{item.id}}">
@@ -229,7 +229,7 @@
                 showEditLayer($(that).data("sourceid"));
             });
             // 详情按钮被点击
-            $(document).on('click', '.tenant-detail', function() {
+            $(document).on('click', '.device-detail', function() {
                 var sourceId = $(this).data('sourceid');
                 //
                 var sourceIdSelector = "#source" + sourceId;
