@@ -65,7 +65,7 @@
       </select>
     </div>
     <!-- End  : 搜索 -->
-    <div id="sitesListTableView"></div>
+    <div id="devicesListTableView"></div>
   </div>
   <div class="sysNotice col right-details">
     <blockquote class="layui-elem-quote title">设备曲线<i class="iconfont icon-new1"></i></blockquote>
@@ -145,19 +145,10 @@
 <script type="text/javascript" src="/layui/layui.js"></script>
 <!-- Start: echarts -->
 <script src="/js/echarts.min.js"></script>
-<script src="/js/app/device/device_manage_echarts.js"></script>
 <!-- End  : echarts -->
 
-<!-- Start: echarts 动态数据 -->
-<script>
-    (function() {
-
-    })();
-</script>
-<!-- End  : echarts 动态数据 -->
-
-<!-- Start: 与服务器交互 ajax -->
-<script id="sitesList" type="text/html">
+<!-- Start: layui template 模板 -->
+<script id="devicesList" type="text/html">
   <table class="layui-table" lay-skin="line">
     <colgroup>
       <col width="110">
@@ -165,9 +156,11 @@
       </col>
     </colgroup>
     <tbody class="hot_news">
-    {{# layui.each(d, function(siteDataIndex, siteDataItem){ }}
-    <tr class="site-table-tr" data-id="{{siteDataItem.id}}" data-name="{{siteDataItem.name}}" data-longitude="{{siteDataItem.longitude}}" data-latitude="{{siteDataItem.latitude}}" data-parent="{{siteDataItem.parent}}">
-      <td align="left">{{siteDataItem.name}}</td>
+    {{# layui.each(d, function(deviceDataIndex, deviceDataItem){ }}
+      <tr class="device-table-tr" data-id="{{deviceDataItem.id}}" data-hardware-id="{{deviceDataItem.hardwareId}}" data-token-id="{{deviceDataItem.tokenId}}" data-name="{{deviceDataItem.name}}"
+        data-logic="{{deviceDataItem.logic}}" data-watcher="{{deviceDataItem.watcher}}" data-phone="{{deviceDataItem.phone}}" data-created="{{deviceDataItem.created}}"
+        data-status="{{deviceDataItem.status}}" data-parent="{{deviceDataItem.parent}}" data-site-id="{{deviceDataItem.siteId}}">
+      <td align="left">【{{deviceDataItem.hardwareId}}】{{deviceDataItem.name}}</td>
     </tr>
     {{# }); }}
     </tbody>
@@ -176,180 +169,5 @@
 <script id="layerContent_tpl" type="text/html">
   <div style="width: 96%; text-align: center; margin: 10px auto;">{{d}}</div>
 </script>
-<script id="siteDetailInfo_tpl" type="text/html">
-  <tr>
-    <td>站点 ID</td>
-    <td>{{d.siteId}}</td>
-  </tr>
-  <tr>
-    <td>站点名字</td>
-    <td>{{d.siteName}}</td>
-  </tr>
-  <tr>
-    <td>经度</td>
-    <td>{{d.siteLongitude}}</td>
-  </tr>
-  <tr>
-    <td>纬度</td>
-    <td>{{d.siteLatitude}}</td>
-  </tr>
-  <tr>
-    <td>父站点</td>
-    <td>{{d.siteParent}}</td>
-  </tr>
-</script>
-<script>
-    //  <![data[
-
-    (function() {
-        layui.use(['laytpl', 'jquery', 'layer', 'form'], function() {
-            var laytpl = layui.laytpl;
-            var $ = layui.jquery;
-            var layer = layui.layer;
-            var form = layui.form();
-
-            //第一次加载数据
-            searchList();
-
-            // 站点 marker map
-            var sitesId2MarkerMap = {};
-
-            function searchList(currPage) {
-                console.log("开始查询站点 list 的信息 ...");
-                layer.load();   // loading
-                $.get(
-                    "/device/ajax/list/",
-                    {"currPage": currPage || 1, siteId: 1},
-                    function (data) {
-                        console.log("查询到的站点 list 信息:" + JSON.stringify(data));
-                        var total = data.total;
-                        var page = data.page;
-                        var totalPage = data.totalPage;
-                        var sitesDataArr = data.data;
-                        console.log(['[sites-manage searchList]total: ', total].join(''));
-                        console.log(['[sites-manage searchList]page: ', page].join(''));
-                        console.log(['[sites-manage searchList]totalPage: ', totalPage].join(''));
-                        console.log(['[sites-manage searchList]sitesDataArr: ', JSON.stringify(sitesDataArr)].join(''));
-                        // Start: 站点列表刷新
-                        laytpl(sitesList.innerHTML).render(sitesDataArr, function (html) {
-                            sitesListTableView.innerHTML = html;
-                            layer.closeAll('loading');   //关闭所有的loading
-                        });
-                        // End  : 站点列表刷新
-
-                        // Start: 站点在地图上增加 marker
-                        if(sitesDataArr && sitesDataArr.length && sitesDataArr.length > 0) {
-                            sitesDataArr.forEach(function(siteDataItem, siteDataIndex) {
-                                console.log(['[siteDataIndex: ', siteDataIndex, '] siteDataItem: '].join(''));
-                                console.log(siteDataItem);
-                            });
-                        }
-                        // End  : 站点在地图上增加 marker
-                        // Start: 触发第一个站点的 click
-                        $('.site-table-tr:first').click();
-                        // End  : 触发第一个站点的 click
-                    },
-                    "json"
-                );
-            }
-
-            // Start: 展示 layerContent_tpl 于 layer 中
-            function showLayerContentTplInLayer(title, content) {
-                laytpl(layerContent_tpl.innerHTML).render(content, function(html) {
-                    layer.open({
-                        type: 1
-                        , title: title
-                        , area: ['400px', '300px']
-                        , shadeClose: true //开启遮罩关闭
-                        , maxmin: true
-                        , content: html
-                        , btn: ['取消', '提交']
-                        , yes: function (index, layero) {
-                            alert('点击了按钮 yes');
-                            //按钮【按钮一】的回调
-                            layer.close(index);
-                            // alert("点击了按钮1");
-                        }
-                        , btn2: function (index, layero) {
-                            alert("点击了按钮 2");
-                            //按钮【按钮二】的回调
-                            //return false 开启该代码可禁止点击该按钮关闭
-                        }
-                        ,
-                    });
-                });
-            }
-            // End  : 展示 layerContent_tpl 于 layer 中
-
-            // Start: 【查看设备】按钮被点击
-            $(document).on('click', '.view-devices-by-site-id', function() {
-                var thisBtn = $(this);
-                var siteId = thisBtn.data('id');
-                //
-                showLayerContentTplInLayer('根据站点查询设备', ['siteId: ', siteId].join(''))
-            });
-            // End  : 【查看设备】按钮被点击
-
-            // Start: [站点列表]中某站点被点击
-            $(document).on('click', '.site-table-tr', function() {
-                var thisTr = $(this);
-                var siteId = thisTr.data('id');
-                var siteName = thisTr.data('name');
-                var siteLongitude = thisTr.data('longitude');
-                var siteLatitude = thisTr.data('latitude');
-                var siteParent = thisTr.data('parent');
-                // Start: 被选中的 tr addClass 以区分
-                var siteTrSelectedClassStr = 'site-tr-selected';
-                $('.site-table-tr').removeClass(siteTrSelectedClassStr);
-                thisTr.addClass(siteTrSelectedClassStr);
-                // End  : 被选中的 tr addClass 以区分
-                //
-                console.log(['站点信息[siteId: ', siteId, '][siteName: ', siteName, '][siteLongitude: ',
-                    siteLongitude, '][siteLatitude: ', siteLatitude, ']'].join(''));
-
-            });
-            // Start: [站点列表]中某站点被点击
-        });
-    })();
-
-    //]]>
-</script>
-<!-- End  : 与服务器交互 ajax -->
-
-<!-- Start: sockjs 接收服务器持续推送并处理 -->
-<!--<script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
-<script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>-->
-<script>
-  /*(function() {
-   layui.use(['jquery'], function() {
-   var $ = layui.jquery;
-   // sockjs stomp
-   var sock = new SockJS("/endpointChat");
-   var stomp = Stomp.over(sock);
-   stomp.connect('guest', 'guest', function (frame) {
-   stomp.subscribe("/user/queue/notifications", handleNotifications);
-   // set station
-   stomp.send("/setStations", {}, "s1");
-   });
-   // 收到消息的处理
-   function handleNotifications(message) {
-   console.log(["[handleNotifications]received: ", message.body].join(''));
-   $(document).trigger('GM_EVENT_handleNotifications', message.body);
-   }
-   });
-   })();*/
-</script>
-<!-- End  : sockjs 接收服务器持续推送并处理 -->
-
-<!-- Start: layui.define 定义模块 -->
-<!--<script>
-    (function() {
-        layui.use(['jquery', 'oneSocket'], function() {
-            var $ = layui.jquery;
-            $(function() {
-                layui.oneSocket(/*SockJS, Stomp*/);
-            });
-        });
-    })();
-</script>-->
-<!-- End  : layui.define 定义模块 -->
+<!-- End  : layui template 模板 -->
+<script src="/js/app/device/device_manage_echarts.js"></script>

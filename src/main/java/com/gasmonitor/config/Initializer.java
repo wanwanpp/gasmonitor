@@ -1,0 +1,1 @@
+package com.gasmonitor.config;import org.springframework.session.web.context.AbstractHttpSessionApplicationInitializer;/** * Created by saplmm on 2017/7/17. * 通过继承AbstractHttpSessionApplicationInitializer类， * 我们确保了springSessionRepositoryFilter在springSecurityFilterChain之前调用。 */public class Initializer extends AbstractHttpSessionApplicationInitializer {}

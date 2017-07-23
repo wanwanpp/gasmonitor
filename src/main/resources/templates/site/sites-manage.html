@@ -375,11 +375,12 @@
   //  <![data[
 
   (function() {
-    layui.use(['laytpl', 'jquery', 'layer'], function() {
+    layui.use(['laytpl', 'jquery', 'layer', 'tools'], function() {
       var laytpl = layui.laytpl;
       var $ = layui.jquery;
       var getUrl = "/site/ajax/list";
       var layer = layui.layer;
+      var tools = layui.tools;
 
       //第一次加载数据
       searchList();
@@ -446,7 +447,15 @@
                     }
                     // End  : 站点在地图上增加 marker
                     // Start: 触发第一个站点的 click
-                    $('.site-table-tr:first').click();
+                    var urlSiteId = tools.getQueryString('siteId');
+                    var siteTableTr;
+                    if(urlSiteId) {
+                        siteTableTr = $(['.site-table-tr[data-id=', urlSiteId,']'].join(''));
+                    }
+                    if(!siteTableTr) {
+                        siteTableTr = $('.site-table-tr:first')
+                    }
+                    siteTableTr.click();
                     // End  : 触发第一个站点的 click
                 },
                 "json"

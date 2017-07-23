@@ -20,6 +20,8 @@ import java.util.*;
 @Service
 public class WsClientPool implements WsClientPoolApi {
     private Logger log = LoggerFactory.getLogger(WsClientPool.class);
+
+
     private static final Map<String, Set<String>> clients = new HashMap<String, Set<String>>();
 
     @Autowired
@@ -40,10 +42,9 @@ public class WsClientPool implements WsClientPoolApi {
         Set<String> statios = clients.get(client);
         if (statios == null) {
             statios = new HashSet<String>();
-            statios.add(station);
             clients.put(client, statios);
         }
-
+        statios.add(station);
         //打印所有的信息
         log.info("所有的站点信息:{}", clients);
     }
@@ -103,4 +104,9 @@ public class WsClientPool implements WsClientPoolApi {
             }
         }
     }
+
+    public static Map<String, Set<String>> getClients() {
+        return clients;
+    }
+
 }

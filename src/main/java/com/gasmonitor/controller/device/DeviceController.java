@@ -42,7 +42,7 @@ public class DeviceController {
         List<Site> sites = siteRepository.findAll();
         log.info("寻找到所有的站点信息:{}", sites);
         modelMap.addAttribute("sites", sites);
-        return "/device/list";
+        return "device/list";
     }
 
     //ajax 获取设备信息的列表
