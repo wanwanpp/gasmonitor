@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
@@ -10,10 +12,24 @@
   <title>首页 - cms后台模板</title>
   <link rel="stylesheet" href="layui/css/layui.css"/>
 </head>
-<style>
-
-</style>
 <body>
+
+
+<div>
+  Logged in user: <span sec:authentication="name"></span> |
+  Roles: <span sec:authentication="principal.authorities"></span>
+</div>
+
+<div sec:authorize="isAuthenticated()">
+  This content is only shown to authenticated users.
+</div>
+<div sec:authorize="hasRole('ROLE_ADMIN')">
+  This content is only shown to administrators.
+</div>
+<div sec:authorize="hasRole('ROLE_USER')">
+  This content is only shown to users.
+</div>
+
 <!-- 布局容器 -->
 <div class="layui-layout layui-layout-admin">
   <!-- 头部 -->
@@ -43,7 +59,7 @@
               </a>
             </dd>
             <dd>
-              <a href="javascript:;">
+              <a th:href="@{/logout}">
                 退出登录
               </a>
             </dd>
@@ -68,7 +84,7 @@
                 系统概述
               </a>
             </dd>
-            <dd>
+            <dd sec:authorize="hasRole('ROLE_ADMIN')">
               <a href="javascript:;" data-url="/tenant/list" data-id="2" title="管理租户，增删改查">
                 租户管理
               </a>
@@ -96,7 +112,7 @@
               </a>
             </dd>
 
-            <dd>
+            <dd sec:authorize="hasRole('ROLE_TENANT_ADMIN')">
               <a href="javascript:;" data-url="/device/list" data-id="6">
                 设备管理(列表)
               </a>
@@ -191,5 +207,7 @@
 <script type="text/javascript">
 
 </script>
+
 </body>
 </html>
+

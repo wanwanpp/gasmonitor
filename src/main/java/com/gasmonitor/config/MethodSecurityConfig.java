@@ -1,0 +1,1 @@
+package com.gasmonitor.config;import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;/** * Created by saplmm on 2017/7/23. */@EnableGlobalMethodSecurity(securedEnabled = true)public class MethodSecurityConfig {    }
