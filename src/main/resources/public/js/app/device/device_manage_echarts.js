@@ -190,7 +190,6 @@
                 // End  : 触发第一个设备的 click
 
                 // Start: 测试渲染树
-                debugger;
                 layui.tree({
                     elem: '#devicesTreeList' //指定元素
                     ,target: '_blank' //是否新选项卡打开（比如节点返回href才有效）
