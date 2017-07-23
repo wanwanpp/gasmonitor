@@ -14,22 +14,6 @@
 </head>
 <body>
 
-
-<div>
-  Logged in user: <span sec:authentication="name"></span> |
-  Roles: <span sec:authentication="principal.authorities"></span>
-</div>
-
-<div sec:authorize="isAuthenticated()">
-  This content is only shown to authenticated users.
-</div>
-<div sec:authorize="hasRole('ROLE_ADMIN')">
-  This content is only shown to administrators.
-</div>
-<div sec:authorize="hasRole('ROLE_USER')">
-  This content is only shown to users.
-</div>
-
 <!-- 布局容器 -->
 <div class="layui-layout layui-layout-admin">
   <!-- 头部 -->
@@ -45,7 +29,7 @@
         </li>
         <li class="layui-nav-item">
           <a href="javascript:;">
-            admin
+            <span sec:authentication="name"></span> | <span sec:authentication="principal.authorities"></span>
           </a>
           <dl class="layui-nav-child">
             <dd>
@@ -74,7 +58,7 @@
     <div class="layui-side-scroll">
       <ul class="layui-nav layui-nav-tree" lay-filter="left-nav" style="border-radius: 0;">
         <!-- Start: 整理后的左侧菜单 -->
-        <li class="layui-nav-item  layui-nav-itemed">
+        <li class="layui-nav-item  layui-nav-itemed" sec:authorize="hasRole('ROLE_SYSTEM')">
           <a href="javascript:;">
             公司
           </a>
@@ -84,14 +68,32 @@
                 系统概述
               </a>
             </dd>
-            <dd sec:authorize="hasRole('ROLE_ADMIN')">
+            <dd>
               <a href="javascript:;" data-url="/tenant/list" data-id="2" title="管理租户，增删改查">
                 租户管理
               </a>
             </dd>
           </dl>
         </li>
-        <li class="layui-nav-item  layui-nav-itemed">
+
+        <li class="layui-nav-item  layui-nav-itemed" sec:authorize="hasRole('ROLE_SYSTEM')">
+          <a href="javascript:;">
+            基础数据
+          </a>
+          <dl class="layui-nav-child">
+            <dd>
+              <a href="javascript:;" data-url="/bas/setting" data-id="1" title="设备类型">
+                设备类型
+              </a>
+            </dd>
+            <dd>
+              <a href="javascript:;" data-url="/tenant/list" data-id="2" title="角色">
+                角色
+              </a>
+            </dd>
+          </dl>
+        </li>
+        <li class="layui-nav-item  layui-nav-itemed" sec:authorize="hasAnyRole('ROLE_TENANTADMIN','ROLE_TENANT')">
           <a href="javascript:;">
             租户
           </a>
@@ -130,57 +132,6 @@
             </dd>
           </dl>
         </li>
-        <!-- End  : 整理后的左侧菜单 -->
-
-        <!-- Start: 公司部分 -->
-        <!--<li class="layui-nav-item">
-          <a href="javascript:;" data-url="/company/tenant" data-id="5">
-            公司 - 租户管理
-          </a>
-        </li>-->
-        <!-- End  : 公司部分 -->
-
-        <!-- Start: 租户部分 -->
-        <!--<li class="layui-nav-item">
-          <a href="javascript:;" data-url="/tenant/sites-manage" data-id="6">
-            租户 - 站点管理
-          </a>
-        </li>-->
-        <!--<li class="layui-nav-item">
-          <a href="javascript:;" data-id="6">
-            租户 - 站点设备管理
-          </a>
-          <dl class="layui-nav-child">
-            <dd>
-              <a href="javascript:;" data-url="/site/list" data-id="10">
-                站点
-              </a>
-            </dd>
-            <dd>
-              <a href="javascript:;" data-url="/device/list" data-id="11">
-                设备
-              </a>
-            </dd>
-
-          </dl>
-        </li>-->
-        <!--<li class="layui-nav-item">
-          <a href="javascript:;" data-url="/tenant/devices-manage" data-id="7">
-            租户 - 设备管理
-          </a>
-        </li>-->
-        <!--<li class="layui-nav-item">
-          <a href="javascript:;" data-url="/tenant/statistics-statements" data-id="8">
-            租户 - 统计报表
-          </a>
-        </li>-->
-        <!--<li class="layui-nav-item">
-          <a href="javascript:;" data-url="/tenant/settings" data-id="9">
-            租户 - 设置
-          </a>
-        </li>-->
-        <!-- End  : 租户部分 -->
-
       </ul>
     </div>
   </div>
