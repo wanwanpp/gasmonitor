@@ -64,9 +64,7 @@ public class TestController {
         device.setLogic(1);
         device.setName("name");
         device.setCreated(new Date());
-        device.setParent("name");
         device.setWatcher("watcher");
-        device.setPhone("18081922618");
         device.setTokenId("tokendId");
         device.setStatus(1);
         return deviceRepository.save(device);
@@ -76,10 +74,6 @@ public class TestController {
     public Object getDevice(@PathVariable(value = "id") long id) {
         Device device = deviceRepository.findOne(id);
         logger.info("查询到id{}的device{}", id, device);
-        if (device != null) {
-            Set<Site> sites = device.getSiteSet();
-            logger.info("查询到id{}的device{}的sites{}", id, device, sites);
-        }
         return device;
     }
 
