@@ -13,16 +13,23 @@
 
   <!-- Start: 侧边栏显示隐藏相关 css -->
   <style>
-    .layui-layout-admin .layui-side.layui-side-hide { width: 0; transition: width .6s; }
+    /* 触发按钮相关 */
+    #layui-left-menu-toggle { transition: all .6s; position: absolute; top: 50%; left: 174.5px; z-index: 999; padding: 0; }
+    #layui-left-menu-toggle img { width: 50px; }
+    #layui-left-menu-toggle.layui-left-menu-toggle-hide { left: -25.5px; }
+    #layui-left-menu-toggle:hover { transform: scale(2); }
+      /* 左侧菜单栏相关 */
+    .layui-layout-admin .layui-side { transition: width .6s; }
+    .layui-layout-admin .layui-side.layui-side-hide { width: 0; }
+    /* 右侧 body 相关 */
+    .layui-layout-admin .layui-body { transition: left .6s; }
+    .layui-layout-admin .layui-body.layui-body-on-side-hide { left: 0; }
   </style>
   <!-- End  : 侧边栏显示隐藏相关 css -->
 </head>
 <body>
 <!-- 布局容器 -->
 <div class="layui-layout layui-layout-admin">
-  <!-- Start: 收缩展开侧边栏菜单的按钮 -->
-  
-  <!-- End  : 收缩展开侧边栏菜单的按钮 -->
   <!-- 头部 -->
   <div class="layui-header">
     <div class="layui-main">
@@ -185,6 +192,12 @@
     </div>
   </div>
 
+  <!-- Start: 收缩展开侧边栏菜单的按钮 -->
+  <button id="layui-left-menu-toggle" class="layui-btn layui-btn-primary layui-btn-big">
+    <img src="/img/collapser.png" alt="展开/收拢菜单">
+  </button>
+  <!-- End  : 收缩展开侧边栏菜单的按钮 -->
+
   <!-- 底部 -->
   <div class="layui-footer" style="text-align: center; line-height: 44px;">
     Copyright © 2017 <a href="http://www.dongzhile.com" target="_blank">cms</a> Powered by saplmm
@@ -195,8 +208,5 @@
 <script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
 <script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
 <script type="text/javascript" src="js/app/index.js"></script>
-<script type="text/javascript">
-
-</script>
 </body>
 </html>

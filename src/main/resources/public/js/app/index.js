@@ -60,9 +60,33 @@ layui.use(['layer', 'element'], function () {
      * 初始化点击侧边栏第一个导航
      */
     nav.find('li a[data-url]').eq(0).click();
+
+    // Start: 点击按钮收起或展开侧边栏
+    $(document).on('click', '#layui-left-menu-toggle', function() {
+        debugger;
+        // class strings
+        var classStr_layuiSideHide = 'layui-side-hide';
+        var classStr_layuiBodyOnSideHide = 'layui-body-on-side-hide';
+        var classStr_layuiLeftMenuToggleHide = 'layui-left-menu-toggle-hide';
+        // dom elements
+        var domEle_layuiSideLayuiBgBlack = $('.layui-side.layui-bg-black');
+        var domEle_layuiBody = $('.layui-layout-admin .layui-body');
+        var domEle_layuiLeftMenuToggle = $('#layui-left-menu-toggle');
+        // 具体点击后 toggle
+        if(domEle_layuiSideLayuiBgBlack.hasClass(classStr_layuiSideHide)) {
+            domEle_layuiSideLayuiBgBlack.removeClass(classStr_layuiSideHide);
+            domEle_layuiBody.removeClass(classStr_layuiBodyOnSideHide);
+            domEle_layuiLeftMenuToggle.removeClass(classStr_layuiLeftMenuToggleHide);
+        } else {
+            domEle_layuiSideLayuiBgBlack.addClass(classStr_layuiSideHide);
+            domEle_layuiBody.addClass(classStr_layuiBodyOnSideHide);
+            domEle_layuiLeftMenuToggle.addClass(classStr_layuiLeftMenuToggleHide);
+        }
+    });
+    // End  : 点击按钮收起或展开侧边栏
 });
 
-// Start: 测试 oneSocket
+// Start: 在父页面初始化 oneSocket
 (function() {
     layui.use(['jquery', 'oneSocket'], function() {
         var $ = layui.jquery;
@@ -71,4 +95,4 @@ layui.use(['layer', 'element'], function () {
         });
     });
 })();
-// End  : 测试 oneSocket
+// End  : 在父页面初始化 oneSocket
