@@ -10,12 +10,13 @@ import com.gasmonitor.vo.AjaxResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
@@ -39,7 +40,6 @@ public class DeviceController {
     private SiteRepository siteRepository;
 
     //设备管理列表 界面
-    @Secured("ROLE_TENANT_ADMIN")
     @RequestMapping(value = "/list")
     public String deviceList(ModelMap modelMap) {
         List<Site> sites = siteRepository.findAll();
@@ -58,6 +58,24 @@ public class DeviceController {
         log.info("通过站点{}查询到的所有设备的信息{}", siteId, devices);
         return new AjaxResult<Device>(devices);
     }
+
+    @RequestMapping(value = "/ajax/listtree")
+    @ResponseBody
+    public AjaxResult<Device> ajaxList(@RequestParam(value = "siteId", defaultValue = "0") Long siteId) {
+        List<Device> devices = deviceService.findDeviceBySiteId(siteId);
+        log.info("通过站点{}查询到的所有设备的信息{}", siteId, devices);
+        return new AjaxResult<Device>(devices);
+    }
+
+
+    //ajax 获取设备信息的列表
+    @RequestMapping(value = "/ajax/listp")
+    @ResponseBody
+    public AjaxResult<Device> ajaxListp(Long siteId) {
+        List<Device> devices = deviceRepository.findBySiteIdAndParent(siteId, new Long(0));
+        return new AjaxResult<Device>(devices);
+    }
+
 
     //ajax 增加一个设备
     @RequestMapping(value = "/ajax/new", method = RequestMethod.POST)
@@ -84,23 +102,20 @@ public class DeviceController {
         //新生成的设备
         AjaxResult ret;
         Device device = deviceRepository.findOne(id);
-
         //如果在数据库中没有找到对应的设备，表示修改失败
         if (device == null) {
             ret = AjaxResult.ErrorAjaxResult();
             ret.setMsg("没有找到对应的设备，修改失败");
             return ret;
         }
-
         //找到对应的设备之后，修改并保存
         device.setCreated(new Date());
         device.setTokenId("");
         device.setName(name);
         device.setLogic(logic);
         device.setSiteId(siteId);
-        device.setPhone(phone);
         device.setStatus(status);
-        device.setParent(phone);
+        device.setParent(parent);
         log.info("创建新的设备:{}", device);
 
         Device retDevie = deviceRepository.save(device);

@@ -15,7 +15,8 @@ layui.define(function (exports) {
     // 导出的模块名和接口函数
     exports('tools', {
         getQueryString: getQueryString,
-        deviceid2des: deviceid2des
+        deviceid2des: deviceid2des,
+        renderSelectOption: renderSelectOption,
     });
     // Start: 所有的 function
     function getQueryString(name) {
@@ -36,5 +37,24 @@ layui.define(function (exports) {
         }
     }
 
+    //动态渲染select的option
+    function renderSelectOption(url, p, key, value, select) {
+        $.ajax({
+            type: "post",
+            url: url,
+            data: p,
+            async: false,
+            success: function (data) {
+                //得到数据之后来操作
+                console.log("得到的select option的数据:", JSON.stringify(data));
+                var op = "<option value='0'>根节点</option>"
+                for (var i = 0; i < data.data.length; i++) {
+                    op += "<option value=" + data.data[i][key] + ">" + data.data[i][value] + "</option>"
+                }
+                console.log("开始渲染html:" + op);
+                select.html(op);
+            }
+        });
+    }
 });
 
