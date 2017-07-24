@@ -83,6 +83,7 @@
                 data-siteId="{{item.siteId}}"
                 data-logic="{{item.logic}}"
                 data-created="{{item.created}}"
+                data-parent="{{item.parent}}"
                 style="display: none">
           </span>
           <button class="layui-btn layui-btn-mini device-detail" data-sourceid="{{item.id}}">
@@ -112,14 +113,27 @@
 
 <div id="layer_tenant_edit" style="display: none;padding: 15px;">
   <form id="form_layer_tenant_edit" class="layui-form" action="">
+    <input type="hidden" id="eidt_layer_id" name="id"/>
     <div class="layui-form-item">
       <label class="layui-form-label">站点</label>
       <div class="layui-input-block">
-        <select id="eidt_layer_siteId" name="siteId" lay-verify="required">
+        <select id="eidt_layer_siteId" name="siteId" lay-verify="required" lay-filter="siteid">
           <option th:each="prod,iterStat : ${sites}" th:value="${prod.id}" th:text=${prod.name}></option>
         </select>
       </div>
     </div>
+
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">父级设备</label>
+      <div class="layui-input-block">
+        <select id="eidt_layer_parent" name="parent" lay-verify="required">
+          <option value="">请选择</option>
+        </select>
+      </div>
+    </div>
+
+
     <div class="layui-form-item">
       <label class="layui-form-label">名称</label>
       <div class="layui-input-block">
@@ -169,21 +183,19 @@
     var addUrl = "/device/ajax/new"
     var editUrl = '/device/ajax/update';
     var rmUrl = '/device/ajax/remove';
+    var optionUrl = '/device/ajax/listp';
     var layer = layui.layer;
     var laypage = layui.laypage;
     var form = layui.form();
     var newTenant = true;//是否新增
+    var mytools = layui.tools;
+    console.log("得到的第一个 站点的值:[[${sites[0].id}]]");
 
-    laytpl.deviceTypeDes = function (t) {
-      if (t == 1) {
-        return '逻辑设备';
-      } else if (t == 2) {
-        return '物理设备';
-      } else {
-        return '未知设备';
-      }
-
-    }
+    form.on('select(siteid)', function (data) {
+      console.log("siteid-->select的选择事件" + data.value);
+      renderDeviceParentSelect(data.value);
+      form.render('select')
+    });
 
     //监听提交
     form.on('submit', function (data) {
@@ -204,6 +216,12 @@
 
     //第一次加载数据
     searchList();
+
+
+    //重新渲染select
+    function renderDeviceParentSelect(siteId) {
+      mytools.renderSelectOption(optionUrl, {"siteId": siteId}, "id", "name", $("#eidt_layer_parent"))
+    }
 
     //添加一个租户
     $(".newsAdd_btn").on('click', function () {
@@ -313,13 +331,17 @@
                   console.log("打开编辑窗口成功，是否新增？" + newTenant)
                   if (newTenant) {
                     //这里填充值
+                    renderDeviceParentSelect([[${sites[0].id}]]);
+                    form.render('select');
                     $("#form_btn_reset").click();
-                    return;//如果是新增加用户，直接返回，不用天充值
                   }
 
                   //这里填充值
                   var sourceIdSelector = "#source" + sourceId;
                   var siteIdVal = $(sourceIdSelector).data("siteid");
+                  renderDeviceParentSelect(siteIdVal) //初始化父辈的select
+                  $("#eidt_layer_id").val($(sourceIdSelector).data("id"));
+                  $("#eidt_layer_parent").val($(sourceIdSelector).data("parent"));
                   $("#eidt_layer_name").val($(sourceIdSelector).data("name"));
                   $("#eidt_layer_siteId").val(siteIdVal);
                   $("#eidt_layer_hardwareId").val($(sourceIdSelector).data("hardwareid"));
@@ -332,7 +354,7 @@
                   inputNameLogicElements.filter(['[value=', logic, ']'].join('')).next('div.layui-unselect.layui-form-radio').click();  // 直接触发 click
                   // form.render('radio');
                   // End  : 逻辑设备 radio
-                  $("#eidt_layer_siteId").val(siteIdVal);
+
                   form.render('select');
                 }
                 , yes: function (index, layero) {

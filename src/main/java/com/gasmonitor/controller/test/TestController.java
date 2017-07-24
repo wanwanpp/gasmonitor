@@ -64,9 +64,7 @@ public class TestController {
         device.setLogic(1);
         device.setName("name");
         device.setCreated(new Date());
-        device.setParent("name");
         device.setWatcher("watcher");
-        device.setPhone("18081922618");
         device.setTokenId("tokendId");
         device.setStatus(1);
         return deviceRepository.save(device);
