@@ -2,6 +2,7 @@ package com.gasmonitor.controller.tenant;
 
 import com.gasmonitor.dao.TenantRepository;
 import com.gasmonitor.entity.Tenant;
+import com.gasmonitor.service.tenant.TenantService;
 import com.gasmonitor.utils.PageUtils;
 import com.gasmonitor.vo.AjaxResult;
 import org.slf4j.Logger;
@@ -9,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,6 +24,9 @@ public class TenantController {
     private Logger logger = LoggerFactory.getLogger(TenantController.class);
     @Autowired
     private TenantRepository tenantRepository;
+
+    @Autowired
+    private TenantService tenantService;
 
     @RequestMapping(value = "/info")
     public String info() {
@@ -41,7 +44,7 @@ public class TenantController {
     @RequestMapping(value = "/ajax/new")
     @ResponseBody
     public AjaxResult<Tenant> ajaxNew(Tenant tenant) {
-        Tenant ret = tenantRepository.save(tenant);
+        Tenant ret = tenantService.newTenant(tenant);
         return new AjaxResult<>(ret);
     }
 
@@ -57,34 +60,8 @@ public class TenantController {
 
     @RequestMapping(value = "/ajax/update", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxResult<Tenant> ajaxUpdate(Long id, String name, String mobile, String address, String company) {
-        logger.info("更新租户的信息id:{},name:{},mobile:{},address:{},company:{}");
-        if (id == null) {
-            return AjaxResult.ErrorAjaxResult("没有找到记录");
-        }
-
-        Tenant ret = tenantRepository.findOne(id);
-        if (ret == null) {
-            return AjaxResult.ErrorAjaxResult();
-        }
-        if (!StringUtils.isEmpty(name)) {
-            ret.setName(name);
-        }
-
-        if (!StringUtils.isEmpty(mobile)) {
-            ret.setMobile(mobile);
-        }
-
-        if (!StringUtils.isEmpty(address)) {
-            ret.setAddress(address);
-        }
-        if (!StringUtils.isEmpty(company)) {
-            ret.setCompany(company);
-        }
-        tenantRepository.save(ret);
-
-        //保存成功，返回结果
-        return new AjaxResult<>(ret);
+    public AjaxResult<Tenant> ajaxUpdate(Tenant newTenant) {
+        return tenantService.updateTenant(newTenant);
     }
 
 
@@ -116,4 +93,12 @@ public class TenantController {
         return "tenant/settings";
     }
     // End  : 20170625 这里好像是对租户的增删改查？租户的菜单跳转暂时也先放这里吧
+
+
+    @RequestMapping(value = "/user/list")
+    public String userList() {
+        return "tenant/user/list";
+    }
+
+
 }

@@ -77,11 +77,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                return false;
 //            }
 //        });
-//        auth.inMemoryAuthentication().withUser("user").password("user").roles("USER");
-//        auth.inMemoryAuthentication().withUser("admin").password("123").roles("ADMIN");
-//        auth.inMemoryAuthentication().withUser("tenantadmin").password("123").roles("TENANTADMIN");
-//        auth.inMemoryAuthentication().withUser("system").password("123").roles("SYSTEM");
-
     }
 
     @Override
