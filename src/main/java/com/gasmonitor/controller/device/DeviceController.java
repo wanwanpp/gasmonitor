@@ -59,6 +59,15 @@ public class DeviceController {
         return new AjaxResult<Device>(devices);
     }
 
+    @RequestMapping(value = "/ajax/listtree")
+    @ResponseBody
+    public AjaxResult<Device> ajaxList(@RequestParam(value = "siteId", defaultValue = "0") Long siteId) {
+        List<Device> devices = deviceService.findDeviceBySiteId(siteId);
+        log.info("通过站点{}查询到的所有设备的信息{}", siteId, devices);
+        return new AjaxResult<Device>(devices);
+    }
+
+
     //ajax 获取设备信息的列表
     @RequestMapping(value = "/ajax/listp")
     @ResponseBody

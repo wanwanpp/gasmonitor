@@ -1,12 +1,11 @@
 package com.gasmonitor.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.Transient;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 //
@@ -48,10 +47,17 @@ public class Device {
     private Integer ubattery;
     private Integer usolar;
 
-    @ManyToMany(mappedBy = "deviceSet")
-    @JsonIgnore
-    private Set<Site> siteSet;
 
+    @Transient
+    private List<Device> children;
+
+    public List<Device> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Device> children) {
+        this.children = children;
+    }
 
     public String getHardwareId() {
         return hardwareId;
@@ -124,15 +130,6 @@ public class Device {
     public void setSiteId(Long siteId) {
         this.siteId = siteId;
     }
-
-    public Set<Site> getSiteSet() {
-        return siteSet;
-    }
-
-    public void setSiteSet(Set<Site> siteSet) {
-        this.siteSet = siteSet;
-    }
-
 
     public Integer getType() {
         return type;
@@ -300,7 +297,7 @@ public class Device {
                 ", watcher='" + watcher + '\'' +
                 ", created=" + created +
                 ", status=" + status +
-                ", parent='" + parent + '\'' +
+                ", parent=" + parent +
                 ", utemperature=" + utemperature +
                 ", upressure=" + upressure +
                 ", ustandard=" + ustandard +
@@ -318,7 +315,7 @@ public class Device {
                 ", uac220=" + uac220 +
                 ", ubattery=" + ubattery +
                 ", usolar=" + usolar +
-                ", siteSet=" + siteSet +
+                ", children=" + children +
                 '}';
     }
 }
