@@ -1,6 +1,6 @@
 package com.gasmonitor.config;
 
-import com.gasmonitor.service.login.LoginSuccHandler;
+import com.gasmonitor.service.security.LoginSuccHandler;
 import com.gasmonitor.service.security.CustomUserDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

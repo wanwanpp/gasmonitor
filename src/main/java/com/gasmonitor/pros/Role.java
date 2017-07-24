@@ -1,1 +1,1 @@
-package com.gasmonitor.pros;/** * Created by saplmm on 2017/7/24. */public class Role {    public static final String ROLE_TENANTADMIN = "ROLE_TENANTADMIN";}
+package com.gasmonitor.pros;/** * Created by saplmm on 2017/7/24. */public class Role {    public static final String ROLE_SYSTEM = "ROLE_SYSTEM";    public static final String ROLE_TENANTADMIN = "ROLE_TENANTADMIN";}

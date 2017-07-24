@@ -63,10 +63,14 @@ public class AjaxResult<T> {
 
     public static <M> AjaxResult<M> NewAjaxResult(Page<M> page) {
         AjaxResult<M> r = new AjaxResult<M>();
-        r.setData(page.getContent());
-        r.setPage(page.getNumber());
-        r.setTotalPage(page.getTotalPages());
-        r.setTotal(page.getTotalElements());
+        if (page != null) {
+            r.setData(page.getContent());
+            r.setPage(page.getNumber());
+            r.setTotalPage(page.getTotalPages());
+            r.setTotal(page.getTotalElements());
+        } else {
+            r.setData(new ArrayList<M>());
+        }
         return r;
     }
 

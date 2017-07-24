@@ -134,6 +134,13 @@
                 租户管理
               </a>
             </dd>
+            <dl class="layui-nav-child">
+              <dd>
+                <a href="javascript:;" data-url="/tenant/user/list" data-id="10" title="管理租户，增删改查">
+                  人员管理
+                </a>
+              </dd>
+            </dl>
           </dl>
         </li>
 
@@ -155,7 +162,7 @@
           </dl>
         </li>
 
-        <li class="layui-nav-item  layui-nav-itemed" sec:authorize="hasRole('ROLE_TENANTADMIN')">
+        <li class="layui-nav-item  layui-nav-itemed" sec:authorize="hasAnyRole('ROLE_TENANTADMIN')">
           <a href="javascript:;">
             人员管理
           </a>

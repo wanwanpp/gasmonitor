@@ -1,9 +1,14 @@
 package com.gasmonitor.controller.tenant;
 
 import com.gasmonitor.dao.TenantRepository;
+import com.gasmonitor.dao.UserRepository;
 import com.gasmonitor.entity.Tenant;
+import com.gasmonitor.entity.User;
+import com.gasmonitor.pros.Role;
 import com.gasmonitor.service.tenant.TenantService;
+import com.gasmonitor.service.user.UserSerevice;
 import com.gasmonitor.utils.PageUtils;
+import com.gasmonitor.utils.SessionUtils;
 import com.gasmonitor.vo.AjaxResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +18,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpSession;
+
+import static com.gasmonitor.utils.PageUtils.p;
 
 /**
  * Created by saplmm on 2017/6/12.
@@ -24,9 +33,12 @@ public class TenantController {
     private Logger logger = LoggerFactory.getLogger(TenantController.class);
     @Autowired
     private TenantRepository tenantRepository;
-
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private TenantService tenantService;
+    @Autowired
+    private UserSerevice userSerevice;
 
     @RequestMapping(value = "/info")
     public String info() {
@@ -74,7 +86,7 @@ public class TenantController {
     @ResponseBody
     @RequestMapping(value = "/ajax/list")
     public AjaxResult<Tenant> ajaxList(int currPage, String searchKey) {
-        Page<Tenant> page = tenantRepository.findByNameContainingOrCompanyContaining(searchKey, searchKey, PageUtils.p(currPage));
+        Page<Tenant> page = tenantRepository.findByNameContainingOrCompanyContaining(searchKey, searchKey, p(currPage));
         AjaxResult<Tenant> result = AjaxResult.NewAjaxResult(page);
         logger.info("找到的所有租户{}", result);
         return result;
@@ -101,4 +113,25 @@ public class TenantController {
     }
 
 
+    //根据角色的不同显示不同的结果
+    @RequestMapping(value = "/user/ajax/list")
+    @ResponseBody
+    public AjaxResult<User> userAjaxList(int currPage, String searchKey, HttpSession session) {
+        User user = SessionUtils.getUser(session);
+        logger.info("用户{}的权限{}开始查询所有的操作员", user.getId(), user.getRole());
+        Page<User> page = null;
+        if (user.getRole().equalsIgnoreCase(Role.ROLE_TENANTADMIN)) {
+            page = userRepository.findByTenantIdAndUsernameContaining(user.getTenantId(), searchKey, PageUtils.p(currPage));
+        } else if (user.getRole().equalsIgnoreCase(Role.ROLE_SYSTEM)) {
+            page = userRepository.findAll(PageUtils.p(currPage));
+        }
+        AjaxResult<User> result = AjaxResult.NewAjaxResult(page);
+        return result;
+    }
+
+    @RequestMapping(value = "/user/ajax/update", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxResult<User> ajaxUserUpdate(User newUser) {
+        return userSerevice.updateUser(newUser);
+    }
 }
