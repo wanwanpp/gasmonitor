@@ -10,10 +10,12 @@ import com.gasmonitor.vo.AjaxResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
@@ -37,6 +39,7 @@ public class DeviceController {
     private SiteRepository siteRepository;
 
     //设备管理列表 界面
+    @Secured("ROLE_TENANT_ADMIN")
     @RequestMapping(value = "/list")
     public String deviceList(ModelMap modelMap) {
         List<Site> sites = siteRepository.findAll();

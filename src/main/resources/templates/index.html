@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
@@ -26,8 +28,10 @@
     .layui-layout-admin .layui-body.layui-body-on-side-hide { left: 0; }
   </style>
   <!-- End  : 侧边栏显示隐藏相关 css -->
+
 </head>
 <body>
+
 <!-- 布局容器 -->
 <div class="layui-layout layui-layout-admin">
   <!-- 头部 -->
@@ -43,7 +47,7 @@
         </li>
         <li class="layui-nav-item">
           <a href="javascript:;">
-            admin
+            <span sec:authentication="name"></span> | <span sec:authentication="principal.authorities"></span>
           </a>
           <dl class="layui-nav-child">
             <dd>
@@ -57,7 +61,7 @@
               </a>
             </dd>
             <dd>
-              <a href="javascript:;">
+              <a th:href="@{/logout}">
                 退出登录
               </a>
             </dd>
@@ -72,7 +76,7 @@
     <div class="layui-side-scroll">
       <ul class="layui-nav layui-nav-tree" lay-filter="left-nav" style="border-radius: 0;">
         <!-- Start: 整理后的左侧菜单 -->
-        <li class="layui-nav-item  layui-nav-itemed">
+        <li class="layui-nav-item  layui-nav-itemed" sec:authorize="hasRole('ROLE_SYSTEM')">
           <a href="javascript:;">
             公司
           </a>
@@ -89,7 +93,25 @@
             </dd>
           </dl>
         </li>
-        <li class="layui-nav-item  layui-nav-itemed">
+
+        <li class="layui-nav-item  layui-nav-itemed" sec:authorize="hasRole('ROLE_SYSTEM')">
+          <a href="javascript:;">
+            基础数据
+          </a>
+          <dl class="layui-nav-child">
+            <dd>
+              <a href="javascript:;" data-url="/bas/setting" data-id="1" title="设备类型">
+                设备类型
+              </a>
+            </dd>
+            <dd>
+              <a href="javascript:;" data-url="/tenant/list" data-id="2" title="角色">
+                角色
+              </a>
+            </dd>
+          </dl>
+        </li>
+        <li class="layui-nav-item  layui-nav-itemed" sec:authorize="hasAnyRole('ROLE_TENANTADMIN','ROLE_TENANT')">
           <a href="javascript:;">
             租户
           </a>
@@ -110,7 +132,7 @@
               </a>
             </dd>
 
-            <dd>
+            <dd sec:authorize="hasRole('ROLE_TENANT_ADMIN')">
               <a href="javascript:;" data-url="/device/list" data-id="6">
                 设备管理(列表)
               </a>
@@ -128,57 +150,6 @@
             </dd>
           </dl>
         </li>
-        <!-- End  : 整理后的左侧菜单 -->
-
-        <!-- Start: 公司部分 -->
-        <!--<li class="layui-nav-item">
-          <a href="javascript:;" data-url="/company/tenant" data-id="5">
-            公司 - 租户管理
-          </a>
-        </li>-->
-        <!-- End  : 公司部分 -->
-
-        <!-- Start: 租户部分 -->
-        <!--<li class="layui-nav-item">
-          <a href="javascript:;" data-url="/tenant/sites-manage" data-id="6">
-            租户 - 站点管理
-          </a>
-        </li>-->
-        <!--<li class="layui-nav-item">
-          <a href="javascript:;" data-id="6">
-            租户 - 站点设备管理
-          </a>
-          <dl class="layui-nav-child">
-            <dd>
-              <a href="javascript:;" data-url="/site/list" data-id="10">
-                站点
-              </a>
-            </dd>
-            <dd>
-              <a href="javascript:;" data-url="/device/list" data-id="11">
-                设备
-              </a>
-            </dd>
-
-          </dl>
-        </li>-->
-        <!--<li class="layui-nav-item">
-          <a href="javascript:;" data-url="/tenant/devices-manage" data-id="7">
-            租户 - 设备管理
-          </a>
-        </li>-->
-        <!--<li class="layui-nav-item">
-          <a href="javascript:;" data-url="/tenant/statistics-statements" data-id="8">
-            租户 - 统计报表
-          </a>
-        </li>-->
-        <!--<li class="layui-nav-item">
-          <a href="javascript:;" data-url="/tenant/settings" data-id="9">
-            租户 - 设置
-          </a>
-        </li>-->
-        <!-- End  : 租户部分 -->
-
       </ul>
     </div>
   </div>
@@ -210,3 +181,4 @@
 <script type="text/javascript" src="js/app/index.js"></script>
 </body>
 </html>
+
