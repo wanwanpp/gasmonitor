@@ -63,7 +63,6 @@ layui.use(['layer', 'element'], function () {
 
     // Start: 点击按钮收起或展开侧边栏
     $(document).on('click', '#layui-left-menu-toggle', function() {
-        debugger;
         // class strings
         var classStr_layuiSideHide = 'layui-side-hide';
         var classStr_layuiBodyOnSideHide = 'layui-body-on-side-hide';

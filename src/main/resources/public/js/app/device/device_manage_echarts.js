@@ -357,6 +357,7 @@
     }
     // End  : 展示 layerContent_tpl 于 layer 中
     // 刷新折线图
+    var myChartsArr;    // 用于记录有哪些 eChartsInstance
     function refreshECharts(hardwareId) {
         // var hardwareId = 's1';
 
@@ -368,7 +369,7 @@
         var myChart1 = echarts.init(document.getElementById('echarts-1'));
         var myChart2 = echarts.init(document.getElementById('echarts-2'));
         var myChart3 = echarts.init(document.getElementById('echarts-3'));
-        var myChartsArr = [myChart0, myChart1, myChart2, myChart3];
+        myChartsArr = [myChart0, myChart1, myChart2, myChart3];
 
 
         // 指定图表的配置项和数据
@@ -418,7 +419,8 @@
              });*/
             // 最后，固定 echarts 容器宽度，并指定父容器滚动
             var deviceEchartsContainerEle = $('#device-echarts-container');
-            deviceEchartsContainerEle.css('width', deviceEchartsContainerEle.width());
+            // deviceEchartsContainerEle.css('width', deviceEchartsContainerEle.width());
+            deviceEchartsContainerEle.css('width', '100%');
             deviceEchartsContainerEle.parent().css('overflow-x', 'auto');
         });
     }
@@ -463,6 +465,22 @@
         });
         // End  : [设备列表]中某设备被点击
 
-
+        // Start: 绑定窗口的 resize 事件
+        var timerId_resize;
+        $(window).on('resize', function() {
+            if(myChartsArr && myChartsArr.length && myChartsArr.length > 0) {
+                console.log('[device_manage_echarts.js] triggered resize function out');
+                if(timerId_resize) {
+                    clearInterval(timerId_resize);
+                }
+                timerId_resize = setTimeout(function() {
+                    console.log('[device_manage_echarts.js] triggered resize function inner');
+                    myChartsArr.forEach(function(myChartItem) {
+                        myChartItem.resize();
+                    });
+                }, 100);
+            }
+        });
+        // End  : 绑定窗口的 resize 事件
     });
 })();
