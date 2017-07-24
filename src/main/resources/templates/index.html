@@ -15,16 +15,30 @@
 
   <!-- Start: 侧边栏显示隐藏相关 css -->
   <style>
+    /* 触发按钮 animation keyframe 相关 */
+    @keyframes layui-button-scale {
+      0%{ transform: scale(1) }
+      30% { transform: scale(1.2) }
+      60% { transform: scale(1) }
+    }
     /* 触发按钮相关 */
-    #layui-left-menu-toggle { transition: all .6s; position: absolute; top: 50%; left: 174.5px; z-index: 999; padding: 0; }
+    #layui-left-menu-toggle {
+      animation: layui-button-scale 1s infinite;
+      transition: all .4s;
+      position: absolute;
+      top: 50%;
+      left: 174.5px;
+      z-index: 999;
+      padding: 0;
+    }
     #layui-left-menu-toggle img { width: 50px; }
     #layui-left-menu-toggle.layui-left-menu-toggle-hide { left: -25.5px; }
-    #layui-left-menu-toggle:hover { transform: scale(2); }
-      /* 左侧菜单栏相关 */
-    .layui-layout-admin .layui-side { transition: width .6s; }
+    #layui-left-menu-toggle:hover { transform: scale(1.2); animation: none; }
+    /* 左侧菜单栏相关 */
+    .layui-layout-admin .layui-side { transition: width .4s; }
     .layui-layout-admin .layui-side.layui-side-hide { width: 0; }
     /* 右侧 body 相关 */
-    .layui-layout-admin .layui-body { transition: left .6s; }
+    .layui-layout-admin .layui-body { transition: left .4s; }
     .layui-layout-admin .layui-body.layui-body-on-side-hide { left: 0; }
   </style>
   <!-- End  : 侧边栏显示隐藏相关 css -->
