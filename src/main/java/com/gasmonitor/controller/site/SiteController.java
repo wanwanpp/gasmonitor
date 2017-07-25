@@ -3,6 +3,8 @@ package com.gasmonitor.controller.site;
 import com.gasmonitor.dao.SiteRepository;
 import com.gasmonitor.entity.Site;
 import com.gasmonitor.entity.Tenant;
+import com.gasmonitor.entity.User;
+import com.gasmonitor.service.site.SiteService;
 import com.gasmonitor.utils.PageUtils;
 import com.gasmonitor.utils.SessionUtils;
 import com.gasmonitor.vo.AjaxResult;
@@ -20,6 +22,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
+import java.util.List;
 
 /**
  * Created by saplmm on 2017/6/26.
@@ -33,6 +36,9 @@ public class SiteController {
 
     @Autowired
     private SiteRepository siteRepository;
+
+    @Autowired
+    private SiteService siteService;
 
 
     @RequestMapping(value = "list")
@@ -52,9 +58,9 @@ public class SiteController {
     public AjaxResult<Site> listStie(@RequestParam(defaultValue = "") String searchKey, Integer currPage, HttpSession session, Principal principal) {
         logger.info("开始查询站点列表:principal.getName() --> {}", principal.getName());
         AjaxResult<Site> data;
-        Tenant tenant = SessionUtils.getTanat(session);
-        if (tenant != null) {
-            data = AjaxResult.NewAjaxResult(siteRepository.findByTenantIdAndNameContaining(tenant.getId(), searchKey, PageUtils.p(currPage)));
+        User user = SessionUtils.getUser(session);
+        if (user != null) {
+            data = AjaxResult.NewAjaxResult(siteRepository.findByTenantIdAndNameContaining(user.getTenantId(), searchKey, PageUtils.p(currPage)));
         } else {
             data = AjaxResult.SuccAjaxResult();
         }
@@ -63,20 +69,9 @@ public class SiteController {
 
     @RequestMapping(value = "/ajax/new", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxResult ajaxNew(Site site, HttpServletRequest request, HttpSession session) {
-        Tenant user = SessionUtils.getTanat(session);
-        if (user == null) {
-            try {
-                request.logout();
-            } catch (ServletException e) {
-                e.printStackTrace();
-            }
-        } else {
-            site.setId(null);
-            site.setTenantId(((Tenant) session.getAttribute("tenant")).getId());
-            siteRepository.save(site);
-        }
-        return AjaxResult.SuccAjaxResult();
+    public AjaxResult ajaxNew(Site site, HttpSession session) {
+        User user = SessionUtils.getUser(session);
+        return siteService.newSite(site, user.getTenantId());
     }
 
     @RequestMapping(value = "/ajax/update", method = RequestMethod.POST)
@@ -126,5 +121,13 @@ public class SiteController {
             Site site = siteRepository.getOne(id);
             return new AjaxResult<Site>(site);
         }
+    }
+
+    @RequestMapping(value = "/ajax/allSiteAndDevie")
+    @ResponseBody
+    public AjaxResult<Site> allsiteAndDevie(HttpSession session) {
+        User user = SessionUtils.getUser(session);
+        AjaxResult<Site> sites = siteService.allsiteAndDevie(user.getTenantId());
+        return sites;
     }
 }

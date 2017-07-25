@@ -1,0 +1,1 @@
+package com.gasmonitor.exception;/** * Created by saplmm on 2017/7/25. */public class TipsException extends RuntimeException {    public TipsException(String msg) {        super(msg);    }}
