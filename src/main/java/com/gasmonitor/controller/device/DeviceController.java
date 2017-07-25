@@ -96,7 +96,7 @@ public class DeviceController {
 
 
     //ajax 删除一个设备
-    @RequestMapping(value = "/ajax/rm")
+    @RequestMapping(value = "/ajax/remove")
     @ResponseBody
     public AjaxResult<Device> ajaxRmDevice(Long id) {
         deviceRepository.delete(id);
@@ -106,28 +106,9 @@ public class DeviceController {
     //ajax 修改一个设备
     @RequestMapping(value = "/ajax/update")
     @ResponseBody
-    public AjaxResult<Device> ajaxUpdateDevice(Long id, String name, Integer logic, Long siteId, String phone, Integer status, Long parent) {
+    public AjaxResult<Device> ajaxUpdateDevice(Device newDevice) {
         //新生成的设备
-        AjaxResult ret;
-        Device device = deviceRepository.findOne(id);
-        //如果在数据库中没有找到对应的设备，表示修改失败
-        if (device == null) {
-            ret = AjaxResult.ErrorAjaxResult();
-            ret.setMsg("没有找到对应的设备，修改失败");
-            return ret;
-        }
-        //找到对应的设备之后，修改并保存
-        device.setCreated(new Date());
-        device.setTokenId("");
-        device.setName(name);
-        device.setLogic(logic);
-        device.setSiteId(siteId);
-        device.setStatus(status);
-        device.setParent(parent);
-        log.info("创建新的设备:{}", device);
-
-        Device retDevie = deviceRepository.save(device);
-        return new AjaxResult<>(retDevie);
+        return deviceService.updateDevice(newDevice);
     }
 
     @RequestMapping(value = "/devices-manage")

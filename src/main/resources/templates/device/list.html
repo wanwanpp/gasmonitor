@@ -74,7 +74,7 @@
         <td>{{item.hardwareId}}</td>
         <td>{{item.siteId}}</td>
         <td>{{layui.tools.deviceid2des(item.logic)}}</td>
-        <td>{{item.created}}</td>
+        <td>{{layui.tools.timestampToString(item.created)}}</td>
         <td>
           <span id="source{{item.id}}"
                 data-id="{{item.id}}"
@@ -168,11 +168,146 @@
       </div>
     </div>
 
+
     <div class="layui-form-item">
-      <div class="layui-input-block">
-        <button type="button" id="form_btn_submit" lay-submit lay-filter="formDemo" style="display: none"></button>
-        <button type="reset" id="form_btn_reset" style="display: none">重置</button>
+      <div class="layui-inline">
+        <label class="layui-form-label">压强单位</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_upressure" type="text" name="upressure" placeholder="压强单位" class="layui-input"/>
+        </div>
       </div>
+
+      <div class="layui-inline">
+        <label class="layui-form-label">温度单位</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_utemperature" type="text" name="utemperature" placeholder="温度单位" class="layui-input"/>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">流量单位</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_ustandard" type="text" name="ustandard" placeholder="压强单位" class="layui-input"/>
+        </div>
+      </div>
+
+      <div class="layui-inline">
+        <label class="layui-form-label">urunning</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_urunning" type="text" name="urunning" placeholder="温度单位" class="layui-input"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">usummary</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_usummary" type="text" name="usummary" placeholder="压强单位" class="layui-input"/>
+        </div>
+      </div>
+
+
+      <div class="layui-inline">
+        <label class="layui-form-label">usurplus</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_usurplus" type="text" name="usurplus" placeholder="温度单位" class="layui-input"/>
+        </div>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">uanalog1</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_uanalog1" type="text" name="uanalog1" placeholder="温度单位" class="layui-input"/>
+        </div>
+      </div>
+      <div class="layui-inline">
+        <label class="layui-form-label">uanalog2</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_uanalog2" type="text" name="uanalog2" placeholder="温度单位" class="layui-input"/>
+        </div>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">uanalog3</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_uanalog3" type="text" name="uanalog3" placeholder="温度单位" class="layui-input"/>
+        </div>
+      </div>
+
+      <div class="layui-inline">
+        <label class="layui-form-label">uanalog4</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_uanalog4" type="text" name="uanalog4" placeholder="温度单位" class="layui-input"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">uswitch1</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_uswitch1" type="text" name="uswitch1" placeholder="温度单位" class="layui-input"/>
+        </div>
+      </div>
+      <div class="layui-inline">
+        <label class="layui-form-label">uswitch2</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_uswitch2" type="text" name="uswitch2" placeholder="温度单位" class="layui-input"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+
+      <div class="layui-inline">
+        <label class="layui-form-label">uswitch3</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_uswitch3" type="text" name="uswitch3" placeholder="温度单位" class="layui-input"/>
+        </div>
+      </div>
+
+      <div class="layui-inline">
+        <label class="layui-form-label">uswitch4</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_uswitch4" type="text" name="uswitch4" placeholder="温度单位" class="layui-input"/>
+        </div>
+      </div>
+
+    </div>
+    <div class="layui-form-item">
+
+      <div class="layui-inline">
+        <label class="layui-form-label">uac220</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_uac220" type="text" name="uac220" placeholder="温度单位" class="layui-input"/>
+        </div>
+      </div>
+      <div class="layui-inline">
+        <label class="layui-form-label">ubattery</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_ubattery" type="text" name="ubattery" placeholder="温度单位" class="layui-input"/>
+        </div>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">usolar</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_usolar" type="text" name="usolar" placeholder="温度单位" class="layui-input"/>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="layui-input-block">
+      <button type="button" id="form_btn_submit" lay-submit lay-filter="formDemo" style="display: none"></button>
+      <button type="reset" id="form_btn_reset" style="display: none">重置</button>
     </div>
   </form>
 </div>

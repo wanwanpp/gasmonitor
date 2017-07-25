@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <title>站点列表</title>
+  <meta name="renderer" content="webkit"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="format-detection" content="telephone=no"/>
+  <link rel="stylesheet" href="/layui/css/layui.css" media="all"/>
+  <link rel="stylesheet" href="/css/me.css" media="all"/>
+
+</head>
+<body class="childrenBody">
+<blockquote class="layui-elem-quote news_search">
+  <div class="layui-inline">
+    <div class="layui-input-inline">
+      <input type="text" value="" placeholder="请输入关键字" class="layui-input search_input"/>
+    </div>
+    <button class="layui-btn search_btn"><i class="layui-icon">&#xe615;</i>查询</button>
+  </div>
+  <div class="layui-inline">
+    <button class="layui-btn newsAdd_btn">
+      <i class="layui-icon">&#xe608;</i> 添加
+    </button>
+  </div>
+  <div class="layui-inline">
+    <a class="layui-btn layui-btn-danger batchDel" disabled="true">
+      <i class="layui-icon">&#xe640;</i>批量删除
+    </a>
+  </div>
+</blockquote>
+
+<script id="slist" type="text/html">
+  <div class="layui-form news_list">
+    <table class="layui-table">
+      <colgroup>
+        <col width="10%"/>
+        <col width="10%"/>
+        <col width="10%"/>
+        <col width="10%"/>
+        <col width="10%"/>
+        <col width="15%"/>
+        <col width="15%"/>
+      </colgroup>
+      <thead>
+      <tr>
+        <th><input type="checkbox" name="" lay-skin="primary" lay-filter="allChoose" id="allChoose"/></th>
+        <th style="text-align:left;">姓名</th>
+        <th>公司</th>
+        <th>地址</th>
+        <th>电话</th>
+        <th>创建时间</th>
+        <th>操作</th>
+      </tr>
+      </thead>
+
+      <tbody class="news_content">
+      {{# layui.each(d.data, function(index, item){ }}
+      <tr>
+        <td>{{index}}</td>
+        <td>{{item.name}}</td>
+        <td>{{item.company}}</td>
+        <td>{{item.address}}</td>
+        <td>{{item.mobile}}</td>
+        <td>{{layui.tools.timestampToString(item.createdate)}}</td>
+        <td>
+          <span id="source{{item.id}}"
+                data-id="{{item.id}}"
+                data-address="{{item.address}}"
+                data-company="{{item.company}}"
+                data-createdate="{{item.createdate}}"
+                data-name="{{item.name}}"
+                data-mobile="{{item.mobile}}"
+                data-user_upper="{{item.user_upper}}"
+                data-device_upper="{{item.device_upper}}"
+                data-site_upper="{{item.site_upper}}"
+                style="display: none">
+          </span>
+          <button class="layui-btn layui-btn-mini tenant_edit" data-sourceid="{{item.id}}">
+            <i class="layui-icon">&#xe64c;</i>详情
+          </button>
+          <button class="layui-btn layui-btn-mini tenant_edit" data-sourceid="{{item.id}}">
+            <i class="layui-icon">&#xe642;</i>编辑
+          </button>
+          <button class="layui-btn layui-btn-danger layui-btn-mini tenant_del" data-sourceid="{{item.id}}">
+            <i class="layui-icon">&#xe640;</i>删除
+          </button>
+        </td>
+      </tr>
+      {{# }); }}
+      {{# if(d.data.length === 0){ }}
+      无数据
+      {{# } }}
+      </tbody>
+    </table>
+  </div>
+</script>
+<div id="tableview"></div>
+<div id="pageView" style="float: right;"></div>
+
+<script type="text/javascript" src="/layui/layui.js"></script>
+<script type="text/javascript" src="/js/app/tenant/list.js"></script>
+</body>
+
+<div id="layer_tenant_edit" style="display: none;padding: 15px;">
+  <form class="layui-form" action="">
+
+    <input type="text" id="eidt_layer_id" name="id" style="display: none;"/>
+    <div class="layui-form-item">
+      <label class="layui-form-label">名称</label>
+      <div class="layui-input-inline">
+        <input id="eidt_layer_name" type="text" name="name" lay-verify="title" placeholder="请输入名称" class="layui-input"/>
+      </div>
+      <label class="layui-form-label">电话号码</label>
+      <div class="layui-input-inline">
+        <input id="eidt_layer_mobile" type="tel" name="mobile" lay-verify="title" placeholder="请输入电话"
+               class="layui-input"/>
+      </div>
+    </div>
+
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">公司地址</label>
+      <div class="layui-input-inline">
+        <input id="eidt_layer_address" class="layui-input" type="text" name="address" lay-verify="title"
+               placeholder="请输入地址"/>
+      </div>
+      <label class="layui-form-label">公司名称</label>
+      <div class="layui-input-inline">
+        <input id="eidt_layer_company" class="layui-input" type="text" name="company" lay-verify="title"
+               placeholder="请输入公司"/>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">设备上限</label>
+      <div class="layui-input-inline">
+        <input id="eidt_layer_device_upper" class="layui-input" type="number" name="device_upper" lay-verify="number"
+               placeholder="请输入设备上限"/>
+      </div>
+      <label class="layui-form-label">站点上限</label>
+      <div class="layui-input-inline">
+        <input id="eidt_layer_site_upper" class="layui-input" type="number" name="site_upper" lay-verify="number"
+               placeholder="请输入站点上限"/>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">员工上限</label>
+      <div class="layui-input-inline">
+        <input id="eidt_layer_user_upper" class="layui-input" type="number" name="user_upper" lay-verify="number"
+               placeholder="请输入员工人数上限"/>
+      </div>
+    </div>
+
+    <button hidden type="button" id="eidt_layer_submit" lay-submit></button>
+    <button hidden id="eidt_layer_reset" type="reset"></button>
+  </form>
+</div>
+</html>
