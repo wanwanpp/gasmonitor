@@ -94,9 +94,11 @@ public class AjaxResult<T> {
         AjaxResult a = new AjaxResult();
         a.setCode(CODE_SUCC);
         a.setMsg(MSG_SUCC);
+        a.setData(new ArrayList());
+        a.setTotal(0);
+        a.setTotalPage(0);
         return a;
     }
-
 
     @Override
     public String toString() {

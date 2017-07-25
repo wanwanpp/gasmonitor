@@ -1,0 +1,1 @@
+package com.gasmonitor.exception;/** * Created by saplmm on 2017/7/25. */public class NException extends RuntimeException {    }

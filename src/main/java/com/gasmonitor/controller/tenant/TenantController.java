@@ -134,4 +134,17 @@ public class TenantController {
     public AjaxResult<User> ajaxUserUpdate(User newUser) {
         return userSerevice.updateUser(newUser);
     }
+
+    @RequestMapping(value = "/user/ajax/remove", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxResult<User> ajaxUserRemove(Long id) {
+        return userSerevice.remove(id);
+    }
+
+    //增加租户
+    @RequestMapping(value = "/user/ajax/new")
+    @ResponseBody
+    public AjaxResult<User> ajaxUserNew(User user) {
+        return userSerevice.newUser(user);
+    }
 }
