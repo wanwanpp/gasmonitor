@@ -76,7 +76,7 @@
             },
             xAxis: [
                 {
-                    type: 'category',
+                    type: 'time',
                     name: '时间',
                     boundaryGap: false,
                     data: (function (){
