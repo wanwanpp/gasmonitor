@@ -113,7 +113,7 @@
     var $ = layui.jquery;
     var getUrl = "/tenant/user/ajax/list";
     var addUrl = "/tenant/ajax/new"
-    var editUrl = '/tenant/ajax/update';
+    var editUrl = '/tenant/user/ajax/update';
     var rmUrl = '/tenant/ajax/remove';
     var layer = layui.layer;
     var laypage = layui.laypage;
@@ -258,8 +258,8 @@
 
 <!--编辑用户的模板-->
 <div id="layer_tenant_edit" style="display: none;padding: 15px;">
-  <input type="text" name="id" style="display: none;"/>
   <form class="layui-form" action="">
+    <input type="text" id="eidt_layer_id" name="id" style="display: none;"/>
     <div class="layui-form-item">
       <label class="layui-form-label">名称</label>
       <div class="layui-input-block">
