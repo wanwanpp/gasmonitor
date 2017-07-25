@@ -4,6 +4,8 @@ import com.gasmonitor.dao.DeviceRepository;
 import com.gasmonitor.dao.SiteRepository;
 import com.gasmonitor.entity.Device;
 import com.gasmonitor.entity.Site;
+import com.gasmonitor.entity.User;
+import com.gasmonitor.exception.TipsException;
 import com.gasmonitor.service.device.api.DeviceService;
 import com.gasmonitor.utils.SessionUtils;
 import com.gasmonitor.vo.AjaxResult;
@@ -41,8 +43,12 @@ public class DeviceController {
 
     //设备管理列表 界面
     @RequestMapping(value = "/list")
-    public String deviceList(ModelMap modelMap) {
-        List<Site> sites = siteRepository.findAll();
+    public String deviceList(ModelMap modelMap, HttpSession session) {
+        User user = SessionUtils.getUser(session);
+        List<Site> sites = siteRepository.findByTenantId(user.getTenantId());
+        if (sites.size() == 0) {
+            throw new TipsException("请先添加站点信息");
+        }
         log.info("寻找到所有的站点信息:{}", sites);
         modelMap.addAttribute("sites", sites);
         return "device/list";
@@ -82,7 +88,9 @@ public class DeviceController {
     @ResponseBody
     public AjaxResult<Device> ajaxAddDevice(Device device, HttpSession session) {
         //新生成的设备
-        device = deviceService.addDevice(device, SessionUtils.getTanat(session).getId());
+        User user = SessionUtils.getUser(session);
+        log.info("usr:{},tenantid:{}开始增加一个设备:{}", user, user.getTenantId(), device);
+        device = deviceService.addDevice(device, user.getTenantId());
         return new AjaxResult<>(device);
     }
 
