@@ -42,7 +42,7 @@
         <col width="10%"/>
         <col width="10%"/>
         <col width="10%"/>
-        <col width="10%"/>
+        <col width="15%"/>
         <col width="15%"/>
       </colgroup>
       <thead>
@@ -65,15 +65,18 @@
         <td>{{item.company}}</td>
         <td>{{item.address}}</td>
         <td>{{item.mobile}}</td>
-        <td>{{item.create_date}}</td>
+        <td>{{layui.tools.timestampToString(item.createdate)}}</td>
         <td>
           <span id="source{{item.id}}"
                 data-id="{{item.id}}"
                 data-address="{{item.address}}"
                 data-company="{{item.company}}"
-                data-create_date="{{item.create_date}}"
+                data-createdate="{{item.createdate}}"
                 data-name="{{item.name}}"
                 data-mobile="{{item.mobile}}"
+                data-user_upper="{{item.user_upper}}"
+                data-device_upper="{{item.device_upper}}"
+                data-site_upper="{{item.site_upper}}"
                 style="display: none">
           </span>
           <button class="layui-btn layui-btn-mini tenant_edit" data-sourceid="{{item.id}}">
@@ -104,40 +107,57 @@
 
 <div id="layer_tenant_edit" style="display: none;padding: 15px;">
   <form class="layui-form" action="">
+
+    <input type="text" id="eidt_layer_id" name="id" style="display: none;"/>
     <div class="layui-form-item">
       <label class="layui-form-label">名称</label>
-      <div class="layui-input-block">
-        <input id="eidt_layer_name" type="text" name="name" lay-verify="title" autocomplete="off" placeholder="请输入名称"
-               class="layui-input"/>
+      <div class="layui-input-inline">
+        <input id="eidt_layer_name" type="text" name="name" lay-verify="title" placeholder="请输入名称" class="layui-input"/>
       </div>
-    </div>
-
-    <div class="layui-form-item">
       <label class="layui-form-label">电话号码</label>
-      <div class="layui-input-block">
-        <input id="eidt_layer_mobile" type="text" name="mobile" lay-verify="title" autocomplete="off"
-               placeholder="请输入电话" class="layui-input"/>
-      </div>
-    </div>
-
-    <div class="layui-form-item">
-      <label class="layui-form-label">地址</label>
-      <div class="layui-input-block">
-        <input id="eidt_layer_address" type="text" name="address" lay-verify="title" autocomplete="off"
-               placeholder="请输入地址"
+      <div class="layui-input-inline">
+        <input id="eidt_layer_mobile" type="tel" name="mobile" lay-verify="title" placeholder="请输入电话"
                class="layui-input"/>
       </div>
     </div>
 
+
     <div class="layui-form-item">
+      <label class="layui-form-label">公司地址</label>
+      <div class="layui-input-inline">
+        <input id="eidt_layer_address" class="layui-input" type="text" name="address" lay-verify="title"
+               placeholder="请输入地址"/>
+      </div>
       <label class="layui-form-label">公司名称</label>
-      <div class="layui-input-block">
-        <input id="eidt_layer_company" type="text" name="company" lay-verify="title" autocomplete="off"
-               placeholder="请输入公司"
-               class="layui-input"/>
+      <div class="layui-input-inline">
+        <input id="eidt_layer_company" class="layui-input" type="text" name="company" lay-verify="title"
+               placeholder="请输入公司"/>
       </div>
     </div>
 
+    <div class="layui-form-item">
+      <label class="layui-form-label">设备上限</label>
+      <div class="layui-input-inline">
+        <input id="eidt_layer_device_upper" class="layui-input" type="number" name="device_upper" lay-verify="number"
+               placeholder="请输入设备上限"/>
+      </div>
+      <label class="layui-form-label">站点上限</label>
+      <div class="layui-input-inline">
+        <input id="eidt_layer_site_upper" class="layui-input" type="number" name="site_upper" lay-verify="number"
+               placeholder="请输入站点上限"/>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">员工上限</label>
+      <div class="layui-input-inline">
+        <input id="eidt_layer_user_upper" class="layui-input" type="number" name="user_upper" lay-verify="number"
+               placeholder="请输入员工人数上限"/>
+      </div>
+    </div>
+
+    <button hidden type="button" id="eidt_layer_submit" lay-submit></button>
+    <button hidden id="eidt_layer_reset" type="reset"></button>
   </form>
 </div>
 </html>

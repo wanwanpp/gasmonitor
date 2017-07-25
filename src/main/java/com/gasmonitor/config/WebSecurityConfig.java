@@ -1,6 +1,6 @@
 package com.gasmonitor.config;
 
-import com.gasmonitor.service.login.LoginSuccHandler;
+import com.gasmonitor.service.security.LoginSuccHandler;
 import com.gasmonitor.service.security.CustomUserDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,11 +77,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                return false;
 //            }
 //        });
-//        auth.inMemoryAuthentication().withUser("user").password("user").roles("USER");
-//        auth.inMemoryAuthentication().withUser("admin").password("123").roles("ADMIN");
-//        auth.inMemoryAuthentication().withUser("tenantadmin").password("123").roles("TENANTADMIN");
-//        auth.inMemoryAuthentication().withUser("system").password("123").roles("SYSTEM");
-
     }
 
     @Override

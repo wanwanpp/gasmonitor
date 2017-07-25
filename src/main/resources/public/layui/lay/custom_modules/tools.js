@@ -17,6 +17,7 @@ layui.define(function (exports) {
         getQueryString: getQueryString,
         deviceid2des: deviceid2des,
         renderSelectOption: renderSelectOption,
+        timestampToString: timestampToString
     });
     // Start: 所有的 function
     function getQueryString(name) {
@@ -56,5 +57,10 @@ layui.define(function (exports) {
             }
         });
     }
+
+    function timestampToString(tm) {
+        return new Date(parseInt(tm)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ")
+    }
+
 });
 

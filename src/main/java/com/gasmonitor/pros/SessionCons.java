@@ -1,0 +1,1 @@
+package com.gasmonitor.pros;/** * Created by saplmm on 2017/7/24. */public class SessionCons {    public static final String SESS_USER_KEY = "suser";}
