@@ -193,6 +193,9 @@
             console.log("查询到的所有站点设备 tree list 信息:" + JSON.stringify(data_allSitesAndDevices));
             var data_allSitesAndDevices_sitesArr = data_allSitesAndDevices.data;
             console.log('查询到的所有站点 tree list 信息 data_allSitesAndDevices_sitesArr： ' + JSON.stringify(data_allSitesAndDevices_sitesArr));
+            // Start: 触发第一个设备的 click
+            var urlHardwareId = tools.getQueryString('hardwareId');
+            // End  : 触发第一个设备的 click
             // Start: 测试渲染树
             layui.tree({
                 elem: '#devicesTreeList' //指定元素
@@ -201,7 +204,7 @@
                     layer.msg('当前节名称：'+ item.name + '<br>全部参数：'+ JSON.stringify(item));
                     console.log(item);
                 }
-                ,nodes: createDevicesTreeListNodes(data_allSitesAndDevices_sitesArr)
+                ,nodes: createDevicesTreeListNodes(data_allSitesAndDevices_sitesArr, urlHardwareId)
             });
             // End  : 测试渲染树
         };
@@ -345,9 +348,12 @@
         });
     }
     // 调用以创建 layui.tree nodes
-    function createDevicesTreeListNodes(data_allSitesAndDevices_sitesArr) {
-        // Start: 创建站点的子设备
-        function createSiteChildrenDevices(devices) {
+    function createDevicesTreeListNodes(data_allSitesAndDevices_sitesArr, urlHardwareId) {
+        // Start: 本 function 中所有被调用的子 function 定义
+        /**
+         * 创建站点的子设备
+         */
+        function createSiteChildrenDevices(devices, urlHardwareId) {
             console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] devices: ', JSON.stringify(devices));
             var arr_siteChildrenDevices = [];
             if(devices && devices.length && devices.length > 0) {
@@ -363,13 +369,120 @@
                     console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device siteId: ' + siteId);
                     console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device name: ' + name);
                     console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device logic: ' + logic);
-                    var node_siteChildrenDevice = {name: name, id: id, alias: name, children: createSiteChildrenDevices(children)};
+                    var node_siteChildrenDevice = {name: name, id: id, alias: name, children: createSiteChildrenDevices(children, urlHardwareId)};
                     arr_siteChildrenDevices.push(node_siteChildrenDevice);
                 });
             }
             return arr_siteChildrenDevices;
         }
-        // End  : 创建站点的子设备
+        /**
+         * 检查 urlHardwareId 是否在 devices 中。
+         * 0. devices 为空，则返回 null 。
+         * 1. urlHardwareId 为空，则返回 firstDeviceHardwareId ; 若 firstDeviceHardwareId 为空，则返回 devices 中第一个 device 的 hardwareId 。
+         * 2. urlHardwareId 非空， 检查 devices 中是否有 （hardwareId == urlHardwareId） 的 device ，有则返回 hardwareId ；否则返回空。
+         * @param urlHardwareId
+         * @param devices
+         * @param firstDeviceHardwareId
+         */
+        function checkUrlHardwareIdInDevices(urlHardwareId, devices, firstDeviceHardwareId) {
+            debugger;
+            // 0. devices 为空，则返回 null 。
+            if(!devices || !devices.length || !(devices.length > 0)) {
+                return null;
+            }
+            // 1. urlHardwareId 为空，则返回 firstDeviceHardwareId ; 若 firstDeviceHardwareId 为空，
+            //    则返回 devices 中第一个 device 的 hardwareId 。
+            if(!urlHardwareId) {
+                // firstDeviceHardwareId 非空则返回
+                if(firstDeviceHardwareId) {
+                    return firstDeviceHardwareId;
+                }
+                // 若 firstDeviceHardwareId 为空，则返回 devices 中第一个 device 的 hardwareId 。
+                return devices[0].hardwareId;
+            } else {
+                // 2. urlHardwareId 非空， 检查 devices 中是否有 （hardwareId == urlHardwareId） 的 device ，有则返回 hardwareId ；否则返回空。
+                var isUrlHardwareIdInDevices = false;
+                devices.forEach(function(item_device) {
+                    if(isUrlHardwareIdInDevices) {
+                        return false;   // 当 isUrlHardwareIdInDevices 为 true ，已经找到对应 hardwareId 的 device ，不用再比较
+                    }
+                    if(urlHardwareId == item_device.hardwareId) {
+                        isUrlHardwareIdInDevices = true;
+                    } else {    // 当前节点不匹配，看子节点
+                        // item_device.children 为空，返回 null ; urlHardwareId 必非空，检查无匹配子节点也返回 null ；
+                        // 返回具体 tmpFirstDeviceHardwareId 则有匹配
+                        var tmpFirstDeviceHardwareId = checkUrlHardwareIdInDevices(urlHardwareId,
+                            item_device.children, firstDeviceHardwareId);
+                        if(tmpFirstDeviceHardwareId && tmpFirstDeviceHardwareId == urlHardwareId) {
+                            isUrlHardwareIdInDevices = true;
+                        }
+                    }
+                });
+                // 有则返回 hardwareId ；否则返回空
+                if(isUrlHardwareIdInDevices) {
+                    return urlHardwareId;
+                } else {
+                    return null;
+                }
+            }
+        }
+        /**
+         * 检查 urlHardwareId 是否在 data_allSitesAndDevices_sitesArr 中的 devices 中，若不在则赋予第一个 device 的 hardwareId
+         */
+        function checkUrlHardwareId(urlHardwareId, data_allSitesAndDevices_sitesArr) {
+            // Start: 本 function 中所有被调用的 function
+
+            // End  : 本 function 中所有被调用的 function
+            var firstDeviceHardwareId = null;
+            if(data_allSitesAndDevices_sitesArr && data_allSitesAndDevices_sitesArr.length
+                && data_allSitesAndDevices_sitesArr.length > 0) {
+                data_allSitesAndDevices_sitesArr.forEach(function(item_site) {
+                    var devices = item_site.devices;
+                    var tmpFirstDeviceHardwareId = checkUrlHardwareIdInDevices(urlHardwareId, devices, firstDeviceHardwareId);
+                    // 如果 tmpFirstDeviceHardwareId 为 null ，则 urlHardwareId 不在当前这组 devices 里
+                    // 否则，可能 urlHardwareId 和 firstDeviceHardwareId 都为 null ，返回的值是一个保底值先赋值给 firstDeviceHardwareId
+                    if(tmpFirstDeviceHardwareId) {
+                        firstDeviceHardwareId = tmpFirstDeviceHardwareId;
+                    }
+                });
+                // 检查 urlHardwareId 如果为空，则把 firstDeviceHardwareId 赋值给它
+                if(!urlHardwareId) {
+                    urlHardwareId = firstDeviceHardwareId;
+                } else {
+                    // urlHardwareId 存在，但 firstDeviceHardwareId 不存在，说明没找到过 urlHardwareId 对应的 device ，
+                    // 则 urlHardwareId 重新赋值为新找的 firstDeviceHardwareId
+                    if(!firstDeviceHardwareId) {
+                        urlHardwareId = firstDeviceHardwareId = checkUrlHardwareIdInDevices(urlHardwareId = null,
+                            data_allSitesAndDevices_sitesArr[0].devices, firstDeviceHardwareId);
+                    }
+                }
+            } else {    // 相当于 urlHardwareId = null , 因为此时 data_allSitesAndDevices_sitesArr 为空
+                urlHardwareId = firstDeviceHardwareId;
+            }
+
+            return urlHardwareId;
+        }
+
+        /**
+         * 判断当前 treeNode 是否展开。
+         */
+        function judgeIsTreeNodeSpread(devices, urlHardwareId) {
+            // Start: 此 function 中使用的 function 定义
+            debugger;
+            // End  : 此 function 中使用的 function 定义
+            if(!devices || !devices.length || !(devices.length > 0)) {
+                return false;   // 没有 devices 子节点，不需要展开
+            }
+            // 有 devices 子节点，检查 urlHardwareId 是否在子节点里
+            var firstDeviceHardwareId = null;
+            firstDeviceHardwareId = checkUrlHardwareIdInDevices(urlHardwareId, devices, firstDeviceHardwareId);
+            return !!firstDeviceHardwareId;
+        }
+        // End  : 本 function 中所有被调用的子 function 定义
+        // Start: 检查 urlHardwareId 是否在 data_allSitesAndDevices_sitesArr 中的 devices 中，若不在则赋予第一个 device 的 hardwareId
+        urlHardwareId = checkUrlHardwareId(urlHardwareId, data_allSitesAndDevices_sitesArr);
+        debugger;
+        // End  : 检查 urlHardwareId 是否在 data_allSitesAndDevices_sitesArr 中的 devices 中，若不在则赋予第一个 device 的 hardwareId
         var devicesTreeListNodes = [];
         if(data_allSitesAndDevices_sitesArr && data_allSitesAndDevices_sitesArr.length
             && data_allSitesAndDevices_sitesArr.length > 0) {
@@ -381,11 +494,18 @@
                 console.log('[device_manage_echarts.js createDevicesTreeListNodes] name: ' + name);
                 console.log('[device_manage_echarts.js createDevicesTreeListNodes] devices: ' + JSON.stringify(devices));
                 //
-                var deviceTreeListNode = {name: name, id: id, alias: name, children: createSiteChildrenDevices(devices)};
+                debugger;
+                var deviceTreeListNode = {
+                    name: name
+                    , id: id
+                    , alias: name
+                    , children: createSiteChildrenDevices(devices, urlHardwareId)
+                    , spread: judgeIsTreeNodeSpread(devices, urlHardwareId)
+                };
                 devicesTreeListNodes.push(deviceTreeListNode);
             });
         }
-        return devicesTreeListNodes || [ //节点
+        return devicesTreeListNodes/* || [ //节点
             {
                 name: 'device-1'
                 ,id: 1
@@ -480,7 +600,7 @@
                     }
                 ]
             }
-        ];
+        ]*/;
     }
     // End  : 所有被本模块调用的函数定义在此
     layui.use(['jquery', 'oneSocket', 'laytpl', 'layer', 'form', 'tools', 'tree'], function() {
