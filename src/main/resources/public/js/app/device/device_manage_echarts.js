@@ -346,6 +346,31 @@
     }
     // 调用以创建 layui.tree nodes
     function createDevicesTreeListNodes(data_allSitesAndDevices_sitesArr) {
+        // Start: 创建站点的子设备
+        function createSiteChildrenDevices(devices) {
+            console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] devices: ', JSON.stringify(devices));
+            var arr_siteChildrenDevices = [];
+            if(devices && devices.length && devices.length > 0) {
+                devices.forEach(function(item_device) {
+                    var id = item_device.id
+                        , hardwareId = item_device.hardwareId
+                        , siteId = item_device.siteId
+                        , name = item_device.name
+                        , logic = item_device.logic
+                        , children = item_device.children;
+                    console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device id: ' + id);
+                    console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device hardwareId: ' + hardwareId);
+                    console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device siteId: ' + siteId);
+                    console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device name: ' + name);
+                    console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device logic: ' + logic);
+                    var node_siteChildrenDevice = {name: name, id: id, alias: name, children: createSiteChildrenDevices(children)};
+                    arr_siteChildrenDevices.push(node_siteChildrenDevice);
+                });
+            }
+            return arr_siteChildrenDevices;
+        }
+        // End  : 创建站点的子设备
+        var devicesTreeListNodes = [];
         if(data_allSitesAndDevices_sitesArr && data_allSitesAndDevices_sitesArr.length
             && data_allSitesAndDevices_sitesArr.length > 0) {
             data_allSitesAndDevices_sitesArr.forEach(function(siteItem) {
@@ -355,9 +380,12 @@
                 console.log('[device_manage_echarts.js createDevicesTreeListNodes] id: ' + id);
                 console.log('[device_manage_echarts.js createDevicesTreeListNodes] name: ' + name);
                 console.log('[device_manage_echarts.js createDevicesTreeListNodes] devices: ' + JSON.stringify(devices));
+                //
+                var deviceTreeListNode = {name: name, id: id, alias: name, children: createSiteChildrenDevices(devices)};
+                devicesTreeListNodes.push(deviceTreeListNode);
             });
         }
-        return [ //节点
+        return devicesTreeListNodes || [ //节点
             {
                 name: 'device-1'
                 ,id: 1
