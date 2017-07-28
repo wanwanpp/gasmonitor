@@ -203,10 +203,16 @@
                 ,click: function(item) { //点击节点回调
                     layer.msg('当前节名称：'+ item.name + '<br>全部参数：'+ JSON.stringify(item));
                     console.log(item);
+                    // Start: 根据用户的点击，清空折线图，然后重新 setStationId
+                    refreshECharts(item.hardwareId);
+                    // End  : 根据用户的点击，清空折线图，然后重新 setStationId
                 }
                 ,nodes: createDevicesTreeListNodes(data_allSitesAndDevices_sitesArr, urlHardwareId)
             });
             // End  : 测试渲染树
+            // Start: 触发相应 device 节点的 click
+            createDevicesTreeListNodes.triggerDeviceNodeClick(createDevicesTreeListNodes.urlHardwareId);
+            // End  : 触发相应 device 节点的 click
         };
         // 1. 打开 layer loading
         layer.load();
@@ -353,7 +359,7 @@
         /**
          * 创建站点的子设备
          */
-        function createSiteChildrenDevices(devices, urlHardwareId) {
+        function createSiteChildrenDevices(devices) {
             console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] devices: ', JSON.stringify(devices));
             var arr_siteChildrenDevices = [];
             if(devices && devices.length && devices.length > 0) {
@@ -369,8 +375,10 @@
                     console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device siteId: ' + siteId);
                     console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device name: ' + name);
                     console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device logic: ' + logic);
-                    var node_siteChildrenDevice = {name: name, id: id, alias: name, children: createSiteChildrenDevices(children, urlHardwareId)};
+                    var node_siteChildrenDevice = {name: name, id: id, hardwareId: hardwareId, alias: name, children: createSiteChildrenDevices(children)};
                     arr_siteChildrenDevices.push(node_siteChildrenDevice);
+                    //
+                    createDevicesTreeListNodes.arr_sitesAndDevicesNodes.push(node_siteChildrenDevice);
                 });
             }
             return arr_siteChildrenDevices;
@@ -385,7 +393,6 @@
          * @param firstDeviceHardwareId
          */
         function checkUrlHardwareIdInDevices(urlHardwareId, devices, firstDeviceHardwareId) {
-            debugger;
             // 0. devices 为空，则返回 null 。
             if(!devices || !devices.length || !(devices.length > 0)) {
                 return null;
@@ -468,7 +475,7 @@
          */
         function judgeIsTreeNodeSpread(devices, urlHardwareId) {
             // Start: 此 function 中使用的 function 定义
-            debugger;
+
             // End  : 此 function 中使用的 function 定义
             if(!devices || !devices.length || !(devices.length > 0)) {
                 return false;   // 没有 devices 子节点，不需要展开
@@ -481,8 +488,11 @@
         // End  : 本 function 中所有被调用的子 function 定义
         // Start: 检查 urlHardwareId 是否在 data_allSitesAndDevices_sitesArr 中的 devices 中，若不在则赋予第一个 device 的 hardwareId
         urlHardwareId = checkUrlHardwareId(urlHardwareId, data_allSitesAndDevices_sitesArr);
-        debugger;
         // End  : 检查 urlHardwareId 是否在 data_allSitesAndDevices_sitesArr 中的 devices 中，若不在则赋予第一个 device 的 hardwareId
+        // Start: 用于记录 deviceNode 的 index 和 具体 node 间映射
+        createDevicesTreeListNodes.arr_sitesAndDevicesNodes = [];
+        createDevicesTreeListNodes.urlHardwareId = urlHardwareId;
+        // End  : 用于记录 deviceNode 的 index 和 具体 node 间映射
         var devicesTreeListNodes = [];
         if(data_allSitesAndDevices_sitesArr && data_allSitesAndDevices_sitesArr.length
             && data_allSitesAndDevices_sitesArr.length > 0) {
@@ -494,14 +504,17 @@
                 console.log('[device_manage_echarts.js createDevicesTreeListNodes] name: ' + name);
                 console.log('[device_manage_echarts.js createDevicesTreeListNodes] devices: ' + JSON.stringify(devices));
                 //
-                debugger;
                 var deviceTreeListNode = {
                     name: name
                     , id: id
                     , alias: name
-                    , children: createSiteChildrenDevices(devices, urlHardwareId)
+                    // , children: createSiteChildrenDevices(devices)
                     , spread: judgeIsTreeNodeSpread(devices, urlHardwareId)
                 };
+                // Start: 这里 arr_sitesAndDevicesNodes push 必须在 createSiteChildrenDevices 前
+                createDevicesTreeListNodes.arr_sitesAndDevicesNodes.push(deviceTreeListNode);
+                deviceTreeListNode.children = createSiteChildrenDevices(devices);
+                // End  : 这里 arr_sitesAndDevicesNodes push 必须在 createSiteChildrenDevices 前
                 devicesTreeListNodes.push(deviceTreeListNode);
             });
         }
@@ -601,6 +614,22 @@
                 ]
             }
         ]*/;
+    }
+    createDevicesTreeListNodes.triggerDeviceNodeClick = function(urlHardwareId) {
+        var arr_sitesAndDevicesNodes = createDevicesTreeListNodes.arr_sitesAndDevicesNodes;
+        if(!arr_sitesAndDevicesNodes || !arr_sitesAndDevicesNodes.length || !(arr_sitesAndDevicesNodes.length > 0)) {
+            return ;
+        }
+        arr_sitesAndDevicesNodes.forEach(function (item_deviceNode, index_deviceNode) {
+            if(urlHardwareId != item_deviceNode.hardwareId) {
+                return ;
+            }
+            var arr_element_as = $('#devicesTreeList a');
+            if(!arr_element_as || !arr_element_as.length || !(arr_element_as.length > index_deviceNode)) {
+                return ;
+            }
+            arr_element_as[index_deviceNode].click();
+        });
     }
     // End  : 所有被本模块调用的函数定义在此
     layui.use(['jquery', 'oneSocket', 'laytpl', 'layer', 'form', 'tools', 'tree'], function() {
