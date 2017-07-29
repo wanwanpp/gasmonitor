@@ -101,6 +101,20 @@
             // 用客户端保存的数据刷新表单
             var savedSiteInfo = SiteInfoEditManager.loadSavedSiteInfo();
             SiteInfoEditManager.reloadSiteInfo2Table(savedSiteInfo);
+        }).on('click', '#button-edit_site_pos_in_map', function() {
+            var sitesId2MarkerMap = layui.SitesManageGlobal['sitesId2MarkerMap'];
+            var thisBtn = $(this);
+            var siteId = thisBtn.data('siteId');
+            //
+            var marker = sitesId2MarkerMap[siteId];
+            marker.setAnimation(null);
+            marker.enableDragging();
+            //
+            // var str_class_hide = 'hide';
+            // thisBtn.addClass(str_class_hide);
+            thisBtn.hide('normal', function() {
+                $('#button-submit_site_pos_in_map').show('normal');
+            });
         });
     });
 })();
