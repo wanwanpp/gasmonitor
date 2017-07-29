@@ -8,7 +8,7 @@ import com.gasmonitor.entity.Site;
 import com.gasmonitor.entity.User;
 import com.gasmonitor.exception.TipsException;
 import com.gasmonitor.service.bas.BasDataUnitService;
-import com.gasmonitor.service.device.api.DeviceService;
+import com.gasmonitor.service.device.DeviceService;
 import com.gasmonitor.utils.SessionUtils;
 import com.gasmonitor.vo.AjaxResult;
 import org.slf4j.Logger;
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
-import java.util.Date;
 import java.util.List;
 
 /**

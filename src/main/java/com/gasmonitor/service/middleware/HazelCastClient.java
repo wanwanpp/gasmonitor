@@ -5,7 +5,7 @@ package com.gasmonitor.service.middleware;
 
 import com.gasmonitor.entity.GasHazelcast;
 import com.gasmonitor.pros.HazelCastPros;
-import com.gasmonitor.service.device.api.DeviceService;
+import com.gasmonitor.service.device.DeviceService;
 import com.gasmonitor.service.tenant.TenantService;
 import com.gasmonitor.service.user.UserService;
 import com.gasmonitor.service.websocket.WsClientPool;
@@ -50,11 +50,11 @@ public class HazelCastClient implements CommandLineRunner {
                 hazelCastPros.getName(), hazelCastPros.getNametopic());
 
         tenantService.initTenantMap();   //初始化tenant-->device 的映射
-        deviceService.loadAllDeviceMap();//load所有的设备
+        deviceService.loadDeviceMap();//load所有的设备
         userService.loadAllUserMap();//load 所有的User
         this.initMsgListener();//初始化消息监听器
     }
-    
+
     //初始化listener：这里做接收到消息之后的处理
     public void initMsgListener() {
         ITopic<GasHazelcast> topic = hazelcastInstance.getTopic(hazelCastPros.getNametopic());
