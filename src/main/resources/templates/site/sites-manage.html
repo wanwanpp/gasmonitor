@@ -77,17 +77,8 @@
         <blockquote class="layui-elem-quote title">站点列表</blockquote>
         <!-- Start: 搜索 -->
         <div class="layui-form component">
-          <select lay-search lay-filter="component">
-            <option value="">搜索站点</option>
-            <option value="javascript:void(0);">站点 1</option>
-            <option value="javascript:void(0);">站点 2</option>
-            <option value="javascript:void(0);">站点 3</option>
-            <option value="javascript:void(0);">站点 4</option>
-            <option value="javascript:void(0);">站点 5</option>
-            <option value="javascript:void(0);">站点 6</option>
-            <option value="javascript:void(0);">站点 7</option>
-            <option value="javascript:void(0);">站点 8</option>
-            <option value="javascript:void(0);">站点 9</option>
+          <select id="select-search_site" lay-search lay-filter="search-site">
+            <option value="-1">搜索站点</option>
           </select>
         </div>
         <!-- End  : 搜索 -->
@@ -344,7 +335,7 @@
     <td class="site-edit-td">
       <div class="layui-input-block" style="margin-left: 0;">
         <div class="site-edit-labels">{{d.siteName}}</div>
-        <input type="text" name="siteName" autocomplete="off" placeholder="{{d.siteName}}" class="layui-input site-edit-inputs">
+        <input type="text" id="siteName" name="siteName" autocomplete="off" placeholder="{{d.siteName}}" value="{{d.siteName}}" class="layui-input site-edit-inputs">
       </div>
     </td>
   </tr>
@@ -353,7 +344,7 @@
     <td class="site-edit-td">
       <div class="layui-input-block" style="margin-left: 0;">
         <div class="site-edit-labels">{{d.siteLongitude}}</div>
-        <input type="text" name="siteLongitude" autocomplete="off" placeholder="{{d.siteLongitude}}" class="layui-input site-edit-inputs">
+        <input type="text" id="siteLongitude" name="siteLongitude" autocomplete="off" placeholder="{{d.siteLongitude}}" value="{{d.siteLongitude}}" class="layui-input site-edit-inputs">
       </div>
     </td>
   </tr>
@@ -362,7 +353,7 @@
     <td class="site-edit-td">
       <div class="layui-input-block" style="margin-left: 0;">
         <div class="site-edit-labels">{{d.siteLatitude}}</div>
-        <input type="text" name="siteLatitude" autocomplete="off" placeholder="{{d.siteLatitude}}" class="layui-input site-edit-inputs">
+        <input type="text" id="siteLatitude" name="siteLatitude" autocomplete="off" placeholder="{{d.siteLatitude}}" value="{{d.siteLatitude}}" class="layui-input site-edit-inputs">
       </div>
     </td>
   </tr>
@@ -371,284 +362,9 @@
     <td>{{d.siteParent}}</td>
   </tr>-->
 </script>
-<script>
-  //  <![data[
-
-  (function() {
-    layui.use(['laytpl', 'jquery', 'layer', 'tools'], function() {
-      var laytpl = layui.laytpl;
-      var $ = layui.jquery;
-      var getUrl = "/site/ajax/list";
-      var layer = layui.layer;
-      var tools = layui.tools;
-
-      //第一次加载数据
-      searchList();
-
-      // 站点 marker map
-      var sitesId2MarkerMap = {};
-
-      function searchList(currPage) {
-        console.log("开始查询站点 list 的信息 ...");
-        layer.load();   // loading
-        $.get(
-                getUrl,
-                {"currPage": currPage || 1},
-                function (data) {
-                    console.log("查询到的站点 list 信息:" + JSON.stringify(data));
-                    var total = data.total;
-                    var page = data.page;
-                    var totalPage = data.totalPage;
-                    var sitesDataArr = data.data;
-                    console.log(['[sites-manage searchList]total: ', total].join(''));
-                    console.log(['[sites-manage searchList]page: ', page].join(''));
-                    console.log(['[sites-manage searchList]totalPage: ', totalPage].join(''));
-                    console.log(['[sites-manage searchList]sitesDataArr: ', JSON.stringify(sitesDataArr)].join(''));
-                    // Start: 站点列表刷新
-                    laytpl(sitesList.innerHTML).render(sitesDataArr, function (html) {
-                      sitesListTableView.innerHTML = html;
-                      layer.closeAll('loading');   //关闭所有的loading
-                    });
-                    // End  : 站点列表刷新
-
-                    // Start: 站点在地图上增加 marker
-                    if(sitesDataArr && sitesDataArr.length && sitesDataArr.length > 0) {
-                      sitesDataArr.forEach(function(siteDataItem, siteDataIndex) {
-                        // var pointChengDu4 = new BMap.Point(pointChengDu.lng + siteDataItem.longitude / 1000, pointChengDu.lat + siteDataItem.latitude / 1000);
-                        var pointChengDu4 = new BMap.Point(siteDataItem.longitude, siteDataItem.latitude);
-                        var marker = new BMap.Marker(pointChengDu4);// 创建标注
-                        map.addOverlay(marker);             // 将标注添加到地图中
-                        // 记录 marker
-                        markersArr.push(marker);
-                        sitesId2MarkerMap[siteDataItem.id] = marker;
-                        // Start: marker 点击后的弹出层
-                          addClickHandler(['[站点 id ： ', siteDataItem.id, '][站点 name ： ', siteDataItem.name, '][站点经度： ',
-                              siteDataItem.longitude, '][站点纬度： ', siteDataItem.latitude, ']'].join(''), marker);
-                          // functions
-                          var opts = {
-                              width : 250,     // 信息窗口宽度
-                              height: 80,     // 信息窗口高度
-                              title : "信息窗口" , // 信息窗口标题
-                              enableMessage:true//设置允许信息窗发送短息
-                          };
-                          function addClickHandler(content, marker) {
-                              marker.addEventListener("click",function(e){
-                                  openInfo(content,e)}
-                              );
-                          }
-                          function openInfo(content, e){
-                              var p = e.target;
-                              var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat + 0.009);
-                              var infoWindow = new BMap.InfoWindow(content, opts);  // 创建信息窗口对象
-                              layui.SitesManageGlobal['map'].openInfoWindow(infoWindow, point); //开启信息窗口
-                          }
-                        // End  : marker 点击后的弹出层
-                      });
-                    }
-                    // End  : 站点在地图上增加 marker
-                    // Start: 触发第一个站点的 click
-                    var urlSiteId = tools.getQueryString('siteId');
-                    var siteTableTr;
-                    if(urlSiteId) {
-                        siteTableTr = $(['.site-table-tr[data-id=', urlSiteId,']'].join(''));
-                    }
-                    if(!siteTableTr) {
-                        siteTableTr = $('.site-table-tr:first')
-                    }
-                    siteTableTr.click();
-                    // End  : 触发第一个站点的 click
-                },
-                "json"
-        );
-      }
-
-      // Start: 展示 layerContent_tpl 于 layer 中
-      function showLayerContentTplInLayer(title, content) {
-        laytpl(layerContent_tpl.innerHTML).render(content, function(html) {
-          layer.open({
-            type: 1
-            , title: title
-            , area: ['400px', '300px']
-            , shadeClose: true //开启遮罩关闭
-            , maxmin: true
-            , content: html
-            , btn: ['取消', '提交']
-            , yes: function (index, layero) {
-              alert('点击了按钮 yes');
-              //按钮【按钮一】的回调
-              layer.close(index);
-              // alert("点击了按钮1");
-            }
-            , btn2: function (index, layero) {
-              alert("点击了按钮 2");
-              //按钮【按钮二】的回调
-              //return false 开启该代码可禁止点击该按钮关闭
-            }
-            ,
-          });
-        });
-      }
-      // End  : 展示 layerContent_tpl 于 layer 中
-
-      // Start: 【查看设备】按钮被点击
-      $(document).on('click', '.view-devices-by-site-id', function() {
-        var thisBtn = $(this);
-        var siteId = thisBtn.data('id');
-        //
-        showLayerContentTplInLayer('根据站点查询设备', ['siteId: ', siteId].join(''))
-      });
-      // End  : 【查看设备】按钮被点击
-
-      // Start: [站点列表]中某站点被点击
-      $(document).on('click', '.site-table-tr', function() {
-          var thisTr = $(this);
-          var siteId = thisTr.data('id');
-          var siteName = thisTr.data('name');
-          var siteLongitude = thisTr.data('longitude');
-          var siteLatitude = thisTr.data('latitude');
-          var siteParent = thisTr.data('parent');
-          // Start: 被选中的 tr addClass 以区分
-          var siteTrSelectedClassStr = 'site-tr-selected';
-          $('.site-table-tr').removeClass(siteTrSelectedClassStr);
-          thisTr.addClass(siteTrSelectedClassStr);
-          // End  : 被选中的 tr addClass 以区分
-          //
-          /*showLayerContentTplInLayer('站点信息', ['[siteId: ', siteId, '][siteName: ',
-            siteName, '][siteLongitude: ', siteLongitude, '][siteLatitude: ', siteLatitude, ']'].join(''));*/
-          console.log(['站点信息[siteId: ', siteId, '][siteName: ', siteName, '][siteLongitude: ',
-            siteLongitude, '][siteLatitude: ', siteLatitude, ']'].join(''));
-          // Start: 从 sitesId2MarkerMap 中得到对应 marker 并展示（1. 表格中展示详情； 2. marker focus 调整地图到 marker ； 3. marker 弹跳）
-          var trMarker = sitesId2MarkerMap[siteId];
-          // 其他 marker 停止动画，当前选中 marker 开始动画
-          markersArr.forEach(function (markerItem) {
-              markerItem.setAnimation(null);
-          });
-          trMarker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
-          // 移动到 trMarker 为中心的点
-          var trMarkerPosition = trMarker.getPosition();
-          layui.SitesManageGlobal['map'].panTo(new BMap.Point(trMarkerPosition.lng, trMarkerPosition.lat));
-          // layui.SitesManageGlobal['map'].panTo(new BMap.Point(siteLongitude, siteLatitude));
-          // End  : 从 sitesId2MarkerMap 中得到对应 marker 并展示（1. 表格中展示详情； 2. marker focus 调整地图到 marker ； 3. marker 弹跳）
-          // Start: 展示站点详情于表格中
-          var siteDetailInfoData = {
-              siteId: siteId,
-              siteName: siteName,
-              siteLongitude: siteLongitude,
-              siteLatitude: siteLatitude,
-              siteParent: siteParent
-          };
-          laytpl(siteDetailInfo_tpl.innerHTML).render(siteDetailInfoData, function (html) {
-              siteDetailInfo.innerHTML = html;
-          });
-          // End  : 展示站点详情于表格中
-      });
-      // Start: [站点列表]中某站点被点击
-    });
-  })();
-
-  //]]>
-</script>
+<script type="text/javascript" src="/js/app/site/site_manage_search_list.js"></script>
 <!-- End  : 与服务器交互 ajax -->
 
-<!-- Start: layui 表单相关 -->
-<script>
-    layui.use(['form'/*, 'layer', 'layedit', 'laydate'*/], function(){
-        var form = layui.form();
-    });
-</script>
-<!-- End  : layui 表单相关 -->
-
 <!-- Start: 编辑站点详情（table） -->
-<script>
-    (function() {
-        layui.use(['jquery'], function() {
-            var $ = layui.jquery;
-            // hide ： 【提交】或【取消】按钮组
-            var submitOrCancelEditSiteInfoBtnContainer = $('#submit-or-cancel-edit-site-info-btn-container');
-            submitOrCancelEditSiteInfoBtnContainer.hide();
-            // 【编辑站点详情】按钮被点击后
-            var click2EditSiteInfoBtnIdStr = '#click-2-edit-site-info-btn';
-            var click2EditSiteInfoBtn = $(click2EditSiteInfoBtnIdStr);
-            // fadeIn 和 fadeOut 的速度
-            var fadeSpeedStr = 'normal'
-            // 表单数据处理对象
-            var SiteInfoEditManager = {
-                // 保存表单数据，【取消】后可以恢复
-                saveSiteInfo: function() {
-                    console.log('[saveSiteInfo]保存表单数据，【取消】后可以恢复');
-
-                },
-                // load 【function saveSiteInfo】保存的数据
-                loadSavedSiteInfo: function() {
-                    console.log('[loadSavedSiteInfo]load 【function saveSiteInfo】保存的数据');
-
-                },
-                // 激活站点详情表单可编辑
-                enableSiteInfoTableFormEdit: function() {
-                    console.log('[enableSiteInfoTableFormEdit]激活站点详情表单可编辑');
-                    // $('.site-edit-labels').hide();
-                    $('.site-edit-td').addClass('site-editing');
-                    // $('.site-edit-inputs').show();
-                },
-                // 恢复表单不可编辑状态
-                disableSiteInfoTableFormEdit: function() {
-                    console.log('[disableSiteInfoTableFormEdit]恢复站点详情表单不可编辑');
-                    // $('.site-edit-inputs').hide();
-                    $('.site-edit-td').removeClass('site-editing');
-                    // $('.site-edit-labels').show();
-                },
-                // 刷新表单
-                reloadSiteInfo2Table: function() {
-                    console.log('[reloadSiteInfo2Table]刷新表单');
-
-                }
-            };
-            // 【编辑】按钮被点击
-            $(document).on('click', click2EditSiteInfoBtnIdStr, function() {
-                // 隐藏【编辑】按钮
-                click2EditSiteInfoBtn.fadeOut(fadeSpeedStr, function() {
-                    // 显示【提交】或【取消】按钮组
-                    submitOrCancelEditSiteInfoBtnContainer.fadeIn(fadeSpeedStr);
-                });
-                // 保存表单数据，【取消】后可以恢复
-                SiteInfoEditManager.saveSiteInfo();
-                // 激活站点详情表单可编辑
-                SiteInfoEditManager.enableSiteInfoTableFormEdit();
-            });
-            // 【提交】或【取消】按钮被点击以后
-            function hideSubmitOrCancelAndShowEditBtn() {
-                submitOrCancelEditSiteInfoBtnContainer.fadeOut(fadeSpeedStr, function() {
-                    click2EditSiteInfoBtn.fadeIn(fadeSpeedStr);
-                });
-            }
-            $(document).on('click', '#submit-edited-site-info-btn', function() {
-                // 提交，先显示遮罩菊花，同时 ajax 请求服务器，若回复成功，才隐藏【提交】和【取消】
-                layer.load();   // loading
-                $.post(
-                    '/site/ajax/update',
-                    {id: 1, name: 'site_1_sdfaa_p', longitude: 104.074, latitude: 30.762},
-                    function(data) {
-                        console.log('[post: /site/ajax/update] callback data: ', data);
-                        // 切换【提交】【取消】按钮和【提交按钮】
-                        hideSubmitOrCancelAndShowEditBtn();
-                        // 恢复表单不可编辑状态
-                        SiteInfoEditManager.disableSiteInfoTableFormEdit();
-                        // 用服务器返回的数据刷新表单
-                        SiteInfoEditManager.reloadSiteInfo2Table();
-                        // 隐藏遮罩菊花
-                        layer.closeAll('loading');   //关闭所有的loading
-                    },
-                    "json"
-                );
-            }).on('click', '#cancel-edited-site-info-btn', function() {
-                hideSubmitOrCancelAndShowEditBtn();
-                // 取消，先恢复表单不可编辑状态
-                SiteInfoEditManager.disableSiteInfoTableFormEdit();
-                // 用客户端保存的数据刷新表单
-                var savedSiteInfo = SiteInfoEditManager.loadSavedSiteInfo();
-                SiteInfoEditManager.reloadSiteInfo2Table(savedSiteInfo);
-            });
-        });
-    })();
-</script>
+<script type="text/javascript" src="/js/app/site/site_manage_update.js"></script>
 <!-- End  : 编辑站点详情（table） -->

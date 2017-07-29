@@ -1,5 +1,5 @@
 (function() {
-    var $, oneSocket, laytpl, layer, tools;
+    var $, oneSocket, laytpl, layer, tools, form;
 
     // Start: 所有被本模块调用的函数定义在此
     function genOption(hardwareId, subTitle) {
@@ -191,6 +191,11 @@
         var params_allSitesAndDevices = {};
         var callback_allSitesAndDevices = function(data_allSitesAndDevices) {
             console.log("查询到的所有站点设备 tree list 信息:" + JSON.stringify(data_allSitesAndDevices));
+            var data_allSitesAndDevices_sitesArr = data_allSitesAndDevices.data;
+            console.log('查询到的所有站点 tree list 信息 data_allSitesAndDevices_sitesArr： ' + JSON.stringify(data_allSitesAndDevices_sitesArr));
+            // Start: 触发第一个设备的 click
+            var urlHardwareId = tools.getQueryString('hardwareId');
+            // End  : 触发第一个设备的 click
             // Start: 测试渲染树
             layui.tree({
                 elem: '#devicesTreeList' //指定元素
@@ -198,105 +203,22 @@
                 ,click: function(item) { //点击节点回调
                     layer.msg('当前节名称：'+ item.name + '<br>全部参数：'+ JSON.stringify(item));
                     console.log(item);
+                    // Start: 根据用户的点击，清空折线图，然后重新 setStationId
+                    if(item && item.hardwareId) {
+                        refreshECharts(item.hardwareId);
+                        createDevicesTreeListNodes.renderSelectSearchDevicesOptions(item.hardwareId);
+                    }
+                    // End  : 根据用户的点击，清空折线图，然后重新 setStationId
                 }
-                ,nodes: [ //节点
-                    {
-                        name: 'device-1'
-                        ,id: 1
-                        ,alias: 'device-1'
-                        ,children: [
-                        {
-                            name: 'device-1-1'
-                            ,id: 11
-                            ,href: 'http://www.layui.com/'
-                            ,alias: 'device-1-1'
-                        }, {
-                            name: 'device-1-2'
-                            ,id: 12
-                        }, {
-                            name: 'device-1-3'
-                            ,id: 13
-                        }
-                    ]
-                    }, {
-                        name: 'device-2'
-                        ,id: 2
-                        ,spread: true
-                        ,children: [
-                            {
-                                name: 'device-2-1'
-                                ,id: 21
-                                ,spread: true
-                                ,children: [
-                                {
-                                    name: 'device-2-1-1'
-                                    ,id: 211
-                                    ,children: [
-                                    {
-                                        name: 'device-2-1-1-1'
-                                        ,id: 2111
-                                    }, {
-                                        name: 'device-2-1-1-2'
-                                        ,id: 2112
-                                    }, {
-                                        name: 'device-2-1-1-3'
-                                        ,id: 2113
-                                    }
-                                ]
-                                }, {
-                                    name: 'device-2-1-2'
-                                    ,id: 212
-                                }, {
-                                    name: 'device-2-1-3'
-                                    ,id: 213
-                                }
-                            ]
-                            }, {
-                                name: 'device-2-2'
-                                ,id: 22
-                                ,children: [
-                                    {
-                                        name: 'device-2-2-1'
-                                        ,id: 221
-                                    }, {
-                                        name: 'device-2-2-2'
-                                        ,id: 222
-                                    }, {
-                                        name: 'device-2-2-3'
-                                        ,id: 223
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                    ,{
-                        name: 'device-3'
-                        ,id: 3
-                        ,alias: 'device-3'
-                        ,children: [
-                            {
-                                name: 'device-3-1'
-                                ,id: 31
-                                ,alias: 'device-3-1'
-                            }, {
-                                name: 'device-3-2'
-                                ,id: 12
-                                ,children: [
-                                    {
-                                        name: 'device-3-2-1'
-                                        ,id: 121
-                                    }
-                                    ,{
-                                        name: 'device-3-2-2'
-                                        ,id: 122
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
+                ,nodes: createDevicesTreeListNodes(data_allSitesAndDevices_sitesArr, urlHardwareId)
             });
             // End  : 测试渲染树
+            // Start: 触发相应 device 节点的 click
+            createDevicesTreeListNodes.triggerDeviceNodeClick(createDevicesTreeListNodes.urlHardwareId);
+            // End  : 触发相应 device 节点的 click
+            // Start: 刷新 search device
+            createDevicesTreeListNodes.renderSelectSearchDevicesOptions();
+            // End  : 刷新 search device
         };
         // 1. 打开 layer loading
         layer.load();
@@ -437,13 +359,319 @@
             deviceEchartsContainerEle.parent().css('overflow-x', 'auto');
         });
     }
+    // 调用以创建 layui.tree nodes
+    function createDevicesTreeListNodes(data_allSitesAndDevices_sitesArr, urlHardwareId) {
+        // Start: 本 function 中所有被调用的子 function 定义
+        /**
+         * 创建站点的子设备
+         */
+        function createSiteChildrenDevices(devices) {
+            console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] devices: ', JSON.stringify(devices));
+            var arr_siteChildrenDevices = [];
+            if(devices && devices.length && devices.length > 0) {
+                devices.forEach(function(item_device) {
+                    var id = item_device.id
+                        , hardwareId = item_device.hardwareId
+                        , siteId = item_device.siteId
+                        , name = item_device.name
+                        , logic = item_device.logic
+                        , children = item_device.children;
+                    console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device id: ' + id);
+                    console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device hardwareId: ' + hardwareId);
+                    console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device siteId: ' + siteId);
+                    console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device name: ' + name);
+                    console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device logic: ' + logic);
+                    var node_siteChildrenDevice = {name: name, id: id, hardwareId: hardwareId, alias: name, children: createSiteChildrenDevices(children)};
+                    arr_siteChildrenDevices.push(node_siteChildrenDevice);
+                    //
+                    createDevicesTreeListNodes.arr_sitesAndDevicesNodes.push(node_siteChildrenDevice);
+                });
+            }
+            return arr_siteChildrenDevices;
+        }
+        /**
+         * 检查 urlHardwareId 是否在 devices 中。
+         * 0. devices 为空，则返回 null 。
+         * 1. urlHardwareId 为空，则返回 firstDeviceHardwareId ; 若 firstDeviceHardwareId 为空，则返回 devices 中第一个 device 的 hardwareId 。
+         * 2. urlHardwareId 非空， 检查 devices 中是否有 （hardwareId == urlHardwareId） 的 device ，有则返回 hardwareId ；否则返回空。
+         * @param urlHardwareId
+         * @param devices
+         * @param firstDeviceHardwareId
+         */
+        function checkUrlHardwareIdInDevices(urlHardwareId, devices, firstDeviceHardwareId) {
+            // 0. devices 为空，则返回 null 。
+            if(!devices || !devices.length || !(devices.length > 0)) {
+                return null;
+            }
+            // 1. urlHardwareId 为空，则返回 firstDeviceHardwareId ; 若 firstDeviceHardwareId 为空，
+            //    则返回 devices 中第一个 device 的 hardwareId 。
+            if(!urlHardwareId) {
+                // firstDeviceHardwareId 非空则返回
+                if(firstDeviceHardwareId) {
+                    return firstDeviceHardwareId;
+                }
+                // 若 firstDeviceHardwareId 为空，则返回 devices 中第一个 device 的 hardwareId 。
+                return devices[0].hardwareId;
+            } else {
+                // 2. urlHardwareId 非空， 检查 devices 中是否有 （hardwareId == urlHardwareId） 的 device ，有则返回 hardwareId ；否则返回空。
+                var isUrlHardwareIdInDevices = false;
+                devices.forEach(function(item_device) {
+                    if(isUrlHardwareIdInDevices) {
+                        return false;   // 当 isUrlHardwareIdInDevices 为 true ，已经找到对应 hardwareId 的 device ，不用再比较
+                    }
+                    if(urlHardwareId == item_device.hardwareId) {
+                        isUrlHardwareIdInDevices = true;
+                    } else {    // 当前节点不匹配，看子节点
+                        // item_device.children 为空，返回 null ; urlHardwareId 必非空，检查无匹配子节点也返回 null ；
+                        // 返回具体 tmpFirstDeviceHardwareId 则有匹配
+                        var tmpFirstDeviceHardwareId = checkUrlHardwareIdInDevices(urlHardwareId,
+                            item_device.children, firstDeviceHardwareId);
+                        if(tmpFirstDeviceHardwareId && tmpFirstDeviceHardwareId == urlHardwareId) {
+                            isUrlHardwareIdInDevices = true;
+                        }
+                    }
+                });
+                // 有则返回 hardwareId ；否则返回空
+                if(isUrlHardwareIdInDevices) {
+                    return urlHardwareId;
+                } else {
+                    return null;
+                }
+            }
+        }
+        /**
+         * 检查 urlHardwareId 是否在 data_allSitesAndDevices_sitesArr 中的 devices 中，若不在则赋予第一个 device 的 hardwareId
+         */
+        function checkUrlHardwareId(urlHardwareId, data_allSitesAndDevices_sitesArr) {
+            // Start: 本 function 中所有被调用的 function
+
+            // End  : 本 function 中所有被调用的 function
+            var firstDeviceHardwareId = null;
+            if(data_allSitesAndDevices_sitesArr && data_allSitesAndDevices_sitesArr.length
+                && data_allSitesAndDevices_sitesArr.length > 0) {
+                data_allSitesAndDevices_sitesArr.forEach(function(item_site) {
+                    var devices = item_site.devices;
+                    var tmpFirstDeviceHardwareId = checkUrlHardwareIdInDevices(urlHardwareId, devices, firstDeviceHardwareId);
+                    // 如果 tmpFirstDeviceHardwareId 为 null ，则 urlHardwareId 不在当前这组 devices 里
+                    // 否则，可能 urlHardwareId 和 firstDeviceHardwareId 都为 null ，返回的值是一个保底值先赋值给 firstDeviceHardwareId
+                    if(tmpFirstDeviceHardwareId) {
+                        firstDeviceHardwareId = tmpFirstDeviceHardwareId;
+                    }
+                });
+                // 检查 urlHardwareId 如果为空，则把 firstDeviceHardwareId 赋值给它
+                if(!urlHardwareId) {
+                    urlHardwareId = firstDeviceHardwareId;
+                } else {
+                    // urlHardwareId 存在，但 firstDeviceHardwareId 不存在，说明没找到过 urlHardwareId 对应的 device ，
+                    // 则 urlHardwareId 重新赋值为新找的 firstDeviceHardwareId
+                    if(!firstDeviceHardwareId) {
+                        urlHardwareId = firstDeviceHardwareId = checkUrlHardwareIdInDevices(urlHardwareId = null,
+                            data_allSitesAndDevices_sitesArr[0].devices, firstDeviceHardwareId);
+                    }
+                }
+            } else {    // 相当于 urlHardwareId = null , 因为此时 data_allSitesAndDevices_sitesArr 为空
+                urlHardwareId = firstDeviceHardwareId;
+            }
+
+            return urlHardwareId;
+        }
+
+        /**
+         * 判断当前 treeNode 是否展开。
+         */
+        function judgeIsTreeNodeSpread(devices, urlHardwareId) {
+            // Start: 此 function 中使用的 function 定义
+
+            // End  : 此 function 中使用的 function 定义
+            if(!devices || !devices.length || !(devices.length > 0)) {
+                return false;   // 没有 devices 子节点，不需要展开
+            }
+            // 有 devices 子节点，检查 urlHardwareId 是否在子节点里
+            var firstDeviceHardwareId = null;
+            firstDeviceHardwareId = checkUrlHardwareIdInDevices(urlHardwareId, devices, firstDeviceHardwareId);
+            return !!firstDeviceHardwareId;
+        }
+        // End  : 本 function 中所有被调用的子 function 定义
+        // Start: 检查 urlHardwareId 是否在 data_allSitesAndDevices_sitesArr 中的 devices 中，若不在则赋予第一个 device 的 hardwareId
+        urlHardwareId = checkUrlHardwareId(urlHardwareId, data_allSitesAndDevices_sitesArr);
+        // End  : 检查 urlHardwareId 是否在 data_allSitesAndDevices_sitesArr 中的 devices 中，若不在则赋予第一个 device 的 hardwareId
+        // Start: 用于记录 deviceNode 的 index 和 具体 node 间映射
+        createDevicesTreeListNodes.arr_sitesAndDevicesNodes = [];
+        createDevicesTreeListNodes.urlHardwareId = urlHardwareId;
+        // End  : 用于记录 deviceNode 的 index 和 具体 node 间映射
+        var devicesTreeListNodes = [];
+        if(data_allSitesAndDevices_sitesArr && data_allSitesAndDevices_sitesArr.length
+            && data_allSitesAndDevices_sitesArr.length > 0) {
+            data_allSitesAndDevices_sitesArr.forEach(function(siteItem) {
+                var id = siteItem.id
+                    , name = siteItem.name
+                    , devices = siteItem.devices;
+                console.log('[device_manage_echarts.js createDevicesTreeListNodes] id: ' + id);
+                console.log('[device_manage_echarts.js createDevicesTreeListNodes] name: ' + name);
+                console.log('[device_manage_echarts.js createDevicesTreeListNodes] devices: ' + JSON.stringify(devices));
+                //
+                var deviceTreeListNode = {
+                    name: name
+                    , id: id
+                    , alias: name
+                    // , children: createSiteChildrenDevices(devices)
+                    , spread: judgeIsTreeNodeSpread(devices, urlHardwareId)
+                };
+                // Start: 这里 arr_sitesAndDevicesNodes push 必须在 createSiteChildrenDevices 前
+                createDevicesTreeListNodes.arr_sitesAndDevicesNodes.push(deviceTreeListNode);
+                deviceTreeListNode.children = createSiteChildrenDevices(devices);
+                // End  : 这里 arr_sitesAndDevicesNodes push 必须在 createSiteChildrenDevices 前
+                devicesTreeListNodes.push(deviceTreeListNode);
+            });
+        }
+        return devicesTreeListNodes/* || [ //节点
+            {
+                name: 'device-1'
+                ,id: 1
+                ,alias: 'device-1'
+                ,children: [
+                {
+                    name: 'device-1-1'
+                    ,id: 11
+                    ,href: 'http://www.layui.com/'
+                    ,alias: 'device-1-1'
+                }, {
+                    name: 'device-1-2'
+                    ,id: 12
+                }, {
+                    name: 'device-1-3'
+                    ,id: 13
+                }
+            ]
+            }, {
+                name: 'device-2'
+                ,id: 2
+                ,spread: true
+                ,children: [
+                    {
+                        name: 'device-2-1'
+                        ,id: 21
+                        ,spread: true
+                        ,children: [
+                        {
+                            name: 'device-2-1-1'
+                            ,id: 211
+                            ,children: [
+                            {
+                                name: 'device-2-1-1-1'
+                                ,id: 2111
+                            }, {
+                                name: 'device-2-1-1-2'
+                                ,id: 2112
+                            }, {
+                                name: 'device-2-1-1-3'
+                                ,id: 2113
+                            }
+                        ]
+                        }, {
+                            name: 'device-2-1-2'
+                            ,id: 212
+                        }, {
+                            name: 'device-2-1-3'
+                            ,id: 213
+                        }
+                    ]
+                    }, {
+                        name: 'device-2-2'
+                        ,id: 22
+                        ,children: [
+                            {
+                                name: 'device-2-2-1'
+                                ,id: 221
+                            }, {
+                                name: 'device-2-2-2'
+                                ,id: 222
+                            }, {
+                                name: 'device-2-2-3'
+                                ,id: 223
+                            }
+                        ]
+                    }
+                ]
+            }
+            ,{
+                name: 'device-3'
+                ,id: 3
+                ,alias: 'device-3'
+                ,children: [
+                    {
+                        name: 'device-3-1'
+                        ,id: 31
+                        ,alias: 'device-3-1'
+                    }, {
+                        name: 'device-3-2'
+                        ,id: 12
+                        ,children: [
+                            {
+                                name: 'device-3-2-1'
+                                ,id: 121
+                            }
+                            ,{
+                                name: 'device-3-2-2'
+                                ,id: 122
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]*/;
+    }
+    createDevicesTreeListNodes.triggerDeviceNodeClick = function(urlHardwareId) {
+        var arr_sitesAndDevicesNodes = createDevicesTreeListNodes.arr_sitesAndDevicesNodes;
+        if(!arr_sitesAndDevicesNodes || !arr_sitesAndDevicesNodes.length || !(arr_sitesAndDevicesNodes.length > 0)) {
+            return ;
+        }
+        arr_sitesAndDevicesNodes.forEach(function (item_deviceNode, index_deviceNode) {
+            if(urlHardwareId != item_deviceNode.hardwareId) {
+                return ;
+            }
+            var arr_element_as = $('#devicesTreeList a');
+            if(!arr_element_as || !arr_element_as.length || !(arr_element_as.length > index_deviceNode)) {
+                return ;
+            }
+            arr_element_as[index_deviceNode].click();
+        });
+    };
+    createDevicesTreeListNodes.renderSelectSearchDevicesOptions = function(selectedHardwareId) {
+        var arr_sitesAndDevicesNodes = createDevicesTreeListNodes.arr_sitesAndDevicesNodes;
+        if(arr_sitesAndDevicesNodes && arr_sitesAndDevicesNodes.length && arr_sitesAndDevicesNodes.length > 0) {
+            var arr_devicesNodes = [];
+            arr_sitesAndDevicesNodes.forEach(function(item_siteOrDeviceNode) {
+                if(item_siteOrDeviceNode.hardwareId) {
+                    arr_devicesNodes.push(item_siteOrDeviceNode);
+                }
+            });
+            if(arr_devicesNodes.length < 1) {
+                $('#select-search_device').html('<option value="-1">--- 没有设备 ---</option>');
+            } else {
+                var arr_options_devices = [];
+                arr_devicesNodes.forEach(function(item_deviceNode) {
+                    arr_options_devices.push([
+                        '<option value="'
+                        , item_deviceNode.hardwareId
+                        , '"'
+                        , ((selectedHardwareId && selectedHardwareId == item_deviceNode.hardwareId) ? ' selected' : '')
+                        , '>'
+                        , item_deviceNode.name
+                        , '</option>'].join(''));
+                });
+                $('#select-search_device').html(arr_options_devices.join(''));
+            }
+            form.render();
+        }
+    };
     // End  : 所有被本模块调用的函数定义在此
     layui.use(['jquery', 'oneSocket', 'laytpl', 'layer', 'form', 'tools', 'tree'], function() {
         $ = layui.jquery;
         oneSocket = layui.oneSocket(/*SockJS, Stomp*/);
         laytpl = layui.laytpl;
         layer = layui.layer;
-        var form = layui.form();
+        form = layui.form();
         tools = layui.tools;
 
         //第一次加载数据
@@ -497,5 +725,16 @@
             }
         });
         // End  : 绑定窗口的 resize 事件
+
+        // Start: 绑定 search device select 的选项被点击事件
+        form.on('select(search-device)', function(data){
+            console.log(data.elem); //得到select原始DOM对象
+            console.log(data.value); //得到被选中的值
+            console.log(data.othis); //得到美化后的DOM对象
+            //
+            var hardwareId = data.value;
+            createDevicesTreeListNodes.triggerDeviceNodeClick(hardwareId);
+        });
+        // End  : 绑定 search device select 的选项被点击事件
     });
 })();
