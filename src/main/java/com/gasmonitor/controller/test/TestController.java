@@ -3,9 +3,7 @@ package com.gasmonitor.controller.test;
 import com.gasmonitor.dao.DeviceRepository;
 import com.gasmonitor.dao.TenantRepository;
 import com.gasmonitor.entity.Device;
-import com.gasmonitor.entity.Site;
 import com.gasmonitor.entity.Tenant;
-import com.gasmonitor.service.websocket.WsClientPool;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import org.slf4j.Logger;
@@ -22,7 +20,6 @@ import java.security.Principal;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by saplmm on 2017/6/26.
@@ -64,7 +61,7 @@ public class TestController {
         device.setLogic(1);
         device.setName("name");
         device.setCreated(new Date());
-        device.setWatcher("watcher");
+        device.setWatcher((long) 21);
         device.setTokenId("tokendId");
         device.setStatus(1);
         return deviceRepository.save(device);
@@ -118,6 +115,7 @@ public class TestController {
 
     @RequestMapping(value = "ws/wsClient")
     public Object wsClient() {
-        return WsClientPool.getClients();
+//        return WsClientPool.getClients();
+        return null;
     }
 }

@@ -1,6 +1,6 @@
 package com.gasmonitor.controller.websocket;
 
-import com.gasmonitor.service.middleware.api.WsClientPoolApi;
+import com.gasmonitor.service.websocket.WsClientPool;
 import com.gasmonitor.vo.RequestMessage;
 import com.gasmonitor.vo.ResponseMessage;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public class WsController {
     private static Logger log = LoggerFactory.getLogger(WsController.class);
 
     @Autowired
-    public WsClientPoolApi wsClientPoolApi;
+    public WsClientPool wsClientPool;
     @Autowired
     public SimpMessagingTemplate template;
 
@@ -57,6 +57,6 @@ public class WsController {
     @MessageMapping("/setStations")
     public void setStations(Principal principal, String stations) {
         log.info("接收到的用户:{}，设置的站点信息:{}", principal.getName(), stations);
-        wsClientPoolApi.addMonitorStations(principal.getName(), stations);
+        wsClientPool.addMonitorStations(principal.getName(), stations);
     }
 }

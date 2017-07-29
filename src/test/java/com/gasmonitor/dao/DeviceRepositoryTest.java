@@ -36,7 +36,7 @@ public class DeviceRepositoryTest {
             device.setLogic(1);
             device.setName("name");
             device.setCreated(new Date());
-            device.setWatcher("watcher");
+            device.setWatcher((long) 21);
             device.setTokenId("tokendId");
             device.setStatus(1);
             deviceRepository.save(device);

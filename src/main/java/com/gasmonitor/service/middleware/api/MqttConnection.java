@@ -1,4 +1,4 @@
-package com.gasmonitor.service.websocket.api;
+package com.gasmonitor.service.middleware.api;
 
 /**
  * Created by 王萍 on 2017/6/8 0008.

@@ -6,7 +6,7 @@ import com.gasmonitor.entity.Tenant;
 import com.gasmonitor.entity.User;
 import com.gasmonitor.pros.Role;
 import com.gasmonitor.service.tenant.TenantService;
-import com.gasmonitor.service.user.UserSerevice;
+import com.gasmonitor.service.user.UserService;
 import com.gasmonitor.utils.PageUtils;
 import com.gasmonitor.utils.SessionUtils;
 import com.gasmonitor.vo.AjaxResult;
@@ -38,7 +38,7 @@ public class TenantController {
     @Autowired
     private TenantService tenantService;
     @Autowired
-    private UserSerevice userSerevice;
+    private UserService userSerevice;
 
     @RequestMapping(value = "/info")
     public String info() {

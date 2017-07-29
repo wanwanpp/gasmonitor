@@ -1,8 +1,8 @@
 package com.gasmonitor.service.middleware;
 
 import com.gasmonitor.protobuf.GasMsg;
-import com.gasmonitor.service.websocket.api.MqttConnection;
-import com.gasmonitor.service.middleware.api.WsClientPoolApi;
+import com.gasmonitor.service.middleware.api.MqttConnection;
+import com.gasmonitor.service.websocket.WsClientPool;
 import com.gasmonitor.utils.GasDataUtil;
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.UTF8Buffer;
@@ -27,7 +27,7 @@ import java.net.URISyntaxException;
 public class MqttListener implements CommandLineRunner {
 
     @Autowired
-    public WsClientPoolApi wsClientPoolApi;
+    public WsClientPool wsClientPool;
 
     private Logger logger = LoggerFactory.getLogger(MqttListener.class);
 
@@ -165,7 +165,7 @@ public class MqttListener implements CommandLineRunner {
                         .append("\"standardFlow\":").append(gasData.getStandardFlow()).append(",")
                         .append("\"workFlow\":").append(gasData.getWorkFlow()).append(",")
                         .append("\"sumFlow\":").append(gasData.getSumFlow());
-                wsClientPoolApi.sendMonitorData(builder.toString());
+                wsClientPool.sendMonitorData(builder.toString());
             }
         });
     }

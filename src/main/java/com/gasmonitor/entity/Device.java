@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Transient;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
 //
 //
 @Entity
-public class Device {
+public class Device implements Serializable {
     @Id
     @GeneratedValue
     private Long id;  //设备Id
@@ -24,7 +25,7 @@ public class Device {
     private String tokenId;
     private Integer logic;
     private Integer type;//设备类型，目前只有三种设备类型
-    private String watcher;
+    private Long watcher;   //由谁来监控
     private Date created;
     private Integer status;
     private Long parent;
@@ -54,6 +55,14 @@ public class Device {
 
     @Transient
     private List<Device> children;
+
+    public Long getWatcher() {
+        return watcher;
+    }
+
+    public void setWatcher(Long watcher) {
+        this.watcher = watcher;
+    }
 
     public Long getId() {
         return id;
@@ -109,14 +118,6 @@ public class Device {
 
     public void setType(Integer type) {
         this.type = type;
-    }
-
-    public String getWatcher() {
-        return watcher;
-    }
-
-    public void setWatcher(String watcher) {
-        this.watcher = watcher;
     }
 
     public Date getCreated() {
