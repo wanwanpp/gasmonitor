@@ -335,7 +335,7 @@
     <td class="site-edit-td">
       <div class="layui-input-block" style="margin-left: 0;">
         <div class="site-edit-labels">{{d.siteName}}</div>
-        <input type="text" name="siteName" autocomplete="off" placeholder="{{d.siteName}}" class="layui-input site-edit-inputs">
+        <input type="text" id="siteName" name="siteName" autocomplete="off" placeholder="{{d.siteName}}" value="{{d.siteName}}" class="layui-input site-edit-inputs">
       </div>
     </td>
   </tr>
@@ -344,7 +344,7 @@
     <td class="site-edit-td">
       <div class="layui-input-block" style="margin-left: 0;">
         <div class="site-edit-labels">{{d.siteLongitude}}</div>
-        <input type="text" name="siteLongitude" autocomplete="off" placeholder="{{d.siteLongitude}}" class="layui-input site-edit-inputs">
+        <input type="text" id="siteLongitude" name="siteLongitude" autocomplete="off" placeholder="{{d.siteLongitude}}" value="{{d.siteLongitude}}" class="layui-input site-edit-inputs">
       </div>
     </td>
   </tr>
@@ -353,7 +353,7 @@
     <td class="site-edit-td">
       <div class="layui-input-block" style="margin-left: 0;">
         <div class="site-edit-labels">{{d.siteLatitude}}</div>
-        <input type="text" name="siteLatitude" autocomplete="off" placeholder="{{d.siteLatitude}}" class="layui-input site-edit-inputs">
+        <input type="text" id="siteLatitude" name="siteLatitude" autocomplete="off" placeholder="{{d.siteLatitude}}" value="{{d.siteLatitude}}" class="layui-input site-edit-inputs">
       </div>
     </td>
   </tr>
@@ -366,96 +366,5 @@
 <!-- End  : 与服务器交互 ajax -->
 
 <!-- Start: 编辑站点详情（table） -->
-<script>
-    (function() {
-        layui.use(['jquery'], function() {
-            var $ = layui.jquery;
-            // hide ： 【提交】或【取消】按钮组
-            var submitOrCancelEditSiteInfoBtnContainer = $('#submit-or-cancel-edit-site-info-btn-container');
-            submitOrCancelEditSiteInfoBtnContainer.hide();
-            // 【编辑站点详情】按钮被点击后
-            var click2EditSiteInfoBtnIdStr = '#click-2-edit-site-info-btn';
-            var click2EditSiteInfoBtn = $(click2EditSiteInfoBtnIdStr);
-            // fadeIn 和 fadeOut 的速度
-            var fadeSpeedStr = 'normal'
-            // 表单数据处理对象
-            var SiteInfoEditManager = {
-                // 保存表单数据，【取消】后可以恢复
-                saveSiteInfo: function() {
-                    console.log('[saveSiteInfo]保存表单数据，【取消】后可以恢复');
-
-                },
-                // load 【function saveSiteInfo】保存的数据
-                loadSavedSiteInfo: function() {
-                    console.log('[loadSavedSiteInfo]load 【function saveSiteInfo】保存的数据');
-
-                },
-                // 激活站点详情表单可编辑
-                enableSiteInfoTableFormEdit: function() {
-                    console.log('[enableSiteInfoTableFormEdit]激活站点详情表单可编辑');
-                    // $('.site-edit-labels').hide();
-                    $('.site-edit-td').addClass('site-editing');
-                    // $('.site-edit-inputs').show();
-                },
-                // 恢复表单不可编辑状态
-                disableSiteInfoTableFormEdit: function() {
-                    console.log('[disableSiteInfoTableFormEdit]恢复站点详情表单不可编辑');
-                    // $('.site-edit-inputs').hide();
-                    $('.site-edit-td').removeClass('site-editing');
-                    // $('.site-edit-labels').show();
-                },
-                // 刷新表单
-                reloadSiteInfo2Table: function() {
-                    console.log('[reloadSiteInfo2Table]刷新表单');
-
-                }
-            };
-            // 【编辑】按钮被点击
-            $(document).on('click', click2EditSiteInfoBtnIdStr, function() {
-                // 隐藏【编辑】按钮
-                click2EditSiteInfoBtn.fadeOut(fadeSpeedStr, function() {
-                    // 显示【提交】或【取消】按钮组
-                    submitOrCancelEditSiteInfoBtnContainer.fadeIn(fadeSpeedStr);
-                });
-                // 保存表单数据，【取消】后可以恢复
-                SiteInfoEditManager.saveSiteInfo();
-                // 激活站点详情表单可编辑
-                SiteInfoEditManager.enableSiteInfoTableFormEdit();
-            });
-            // 【提交】或【取消】按钮被点击以后
-            function hideSubmitOrCancelAndShowEditBtn() {
-                submitOrCancelEditSiteInfoBtnContainer.fadeOut(fadeSpeedStr, function() {
-                    click2EditSiteInfoBtn.fadeIn(fadeSpeedStr);
-                });
-            }
-            $(document).on('click', '#submit-edited-site-info-btn', function() {
-                // 提交，先显示遮罩菊花，同时 ajax 请求服务器，若回复成功，才隐藏【提交】和【取消】
-                layer.load();   // loading
-                $.post(
-                    '/site/ajax/update',
-                    {id: 1, name: 'site_1_sdfaa_p', longitude: 104.074, latitude: 30.762},
-                    function(data) {
-                        console.log('[post: /site/ajax/update] callback data: ', data);
-                        // 切换【提交】【取消】按钮和【提交按钮】
-                        hideSubmitOrCancelAndShowEditBtn();
-                        // 恢复表单不可编辑状态
-                        SiteInfoEditManager.disableSiteInfoTableFormEdit();
-                        // 用服务器返回的数据刷新表单
-                        SiteInfoEditManager.reloadSiteInfo2Table();
-                        // 隐藏遮罩菊花
-                        layer.closeAll('loading');   //关闭所有的loading
-                    },
-                    "json"
-                );
-            }).on('click', '#cancel-edited-site-info-btn', function() {
-                hideSubmitOrCancelAndShowEditBtn();
-                // 取消，先恢复表单不可编辑状态
-                SiteInfoEditManager.disableSiteInfoTableFormEdit();
-                // 用客户端保存的数据刷新表单
-                var savedSiteInfo = SiteInfoEditManager.loadSavedSiteInfo();
-                SiteInfoEditManager.reloadSiteInfo2Table(savedSiteInfo);
-            });
-        });
-    })();
-</script>
+<script type="text/javascript" src="/js/app/site/site_manage_update.js"></script>
 <!-- End  : 编辑站点详情（table） -->
