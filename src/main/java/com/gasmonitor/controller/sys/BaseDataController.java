@@ -1,1 +1,0 @@
-package com.gasmonitor.controller.sys;import org.springframework.stereotype.Controller;import org.springframework.web.bind.annotation.RequestMapping;/** * Created by saplmm on 2017/7/25. * 基础数据 */@Controller@RequestMapping(value = "base")public class BaseDataController {    @RequestMapping    public String unitList() {        return "sys/unit/list";    }    }

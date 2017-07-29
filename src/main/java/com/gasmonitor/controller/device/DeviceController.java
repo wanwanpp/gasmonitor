@@ -2,10 +2,12 @@ package com.gasmonitor.controller.device;
 
 import com.gasmonitor.dao.DeviceRepository;
 import com.gasmonitor.dao.SiteRepository;
+import com.gasmonitor.entity.BasDeviceUnit;
 import com.gasmonitor.entity.Device;
 import com.gasmonitor.entity.Site;
 import com.gasmonitor.entity.User;
 import com.gasmonitor.exception.TipsException;
+import com.gasmonitor.service.bas.BasDataUnitService;
 import com.gasmonitor.service.device.api.DeviceService;
 import com.gasmonitor.utils.SessionUtils;
 import com.gasmonitor.vo.AjaxResult;
@@ -38,6 +40,9 @@ public class DeviceController {
     private DeviceRepository deviceRepository;
     @Autowired
     private DeviceService deviceService;
+
+    @Autowired
+    private BasDataUnitService basDataUnitService;
     @Autowired
     private SiteRepository siteRepository;
 
@@ -49,8 +54,12 @@ public class DeviceController {
         if (sites.size() == 0) {
             throw new TipsException("请先添加站点信息");
         }
+
+        List<BasDeviceUnit> units = basDataUnitService.selectOptions();
         log.info("寻找到所有的站点信息:{}", sites);
         modelMap.addAttribute("sites", sites);
+        modelMap.addAttribute("units", units);
+
         return "device/list";
     }
 
@@ -62,7 +71,7 @@ public class DeviceController {
                                        Integer currPage) {
         List<Device> devices = deviceRepository.findBySiteId(siteId);
         log.info("通过站点{}查询到的所有设备的信息{}", siteId, devices);
-        return new AjaxResult<Device>(devices);
+        return AjaxResult.AjaxResultWithList(devices);
     }
 
     @RequestMapping(value = "/ajax/listtree")
@@ -70,7 +79,7 @@ public class DeviceController {
     public AjaxResult<Device> ajaxList(@RequestParam(value = "siteId", defaultValue = "0") Long siteId) {
         List<Device> devices = deviceService.findDeviceBySiteId(siteId);
         log.info("通过站点{}查询到的所有设备的信息{}", siteId, devices);
-        return new AjaxResult<Device>(devices);
+        return AjaxResult.AjaxResultWithList(devices);
     }
 
 
@@ -79,7 +88,7 @@ public class DeviceController {
     @ResponseBody
     public AjaxResult<Device> ajaxListp(Long siteId) {
         List<Device> devices = deviceRepository.findBySiteIdAndParent(siteId, new Long(0));
-        return new AjaxResult<Device>(devices);
+        return AjaxResult.AjaxResultWithList(devices);
     }
 
 
@@ -109,6 +118,13 @@ public class DeviceController {
     public AjaxResult<Device> ajaxUpdateDevice(Device newDevice) {
         //新生成的设备
         return deviceService.updateDevice(newDevice);
+    }
+
+    @RequestMapping(value = "/ajax/gaojing/update")
+    @ResponseBody
+    public AjaxResult<Device> ajaxGaoJIngUpdateDevice(Device newDevice) {
+        //新生成的设备
+        return deviceService.updateDeviceGaoJing(newDevice);
     }
 
     @RequestMapping(value = "/devices-manage")
