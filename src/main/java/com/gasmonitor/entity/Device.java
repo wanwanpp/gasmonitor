@@ -6,7 +6,6 @@ import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 //
 ///**
@@ -29,34 +28,39 @@ public class Device {
     private Date created;
     private Integer status;
     private Long parent;
-    private Integer utemperature;
-    private Integer upressure;
-    private Integer ustandard;
-    private Integer urunning;
-    private Integer usummary;
-    private Integer usurplus;
-    private Integer uanalog1;
-    private Integer uanalog2;
-    private Integer uanalog3;
-    private Integer uanalog4;
-    private Integer uswitch1;
-    private Integer uswitch2;
-    private Integer uswitch3;
-    private Integer uswitch4;
-    private Integer uac220;
-    private Integer ubattery;
-    private Integer usolar;
+    private Long utemperature;
+    private Long upressure;
+    private Long ustandard;
+    private Long urunning;
+    private Long usummary;
+    private Long usurplus;
+    private Long uanalog1;
+    private Long uanalog2;
+    private Long uanalog3;
+    private Long uanalog4;
+    private Long uswitch1;
+    private Long uswitch2;
+    private Long uswitch3;
+    private Long uswitch4;
+    private Long uac220;
+    private Long ubattery;
+    private Long usolar;
 
+    private Integer standardFlowUpper;
+    private Integer temperatureUpper;
+    private Integer temperatureLow;
+    private Integer pressureUpper;
+    private Integer pressureLow;
 
     @Transient
     private List<Device> children;
 
-    public List<Device> getChildren() {
-        return children;
+    public Long getId() {
+        return id;
     }
 
-    public void setChildren(List<Device> children) {
-        this.children = children;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getHardwareId() {
@@ -67,20 +71,12 @@ public class Device {
         this.hardwareId = hardwareId;
     }
 
-    public Long getId() {
-        return id;
+    public Long getSiteId() {
+        return siteId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTokenId() {
-        return tokenId;
-    }
-
-    public void setTokenId(String tokenId) {
-        this.tokenId = tokenId;
+    public void setSiteId(Long siteId) {
+        this.siteId = siteId;
     }
 
     public String getName() {
@@ -91,12 +87,28 @@ public class Device {
         this.name = name;
     }
 
+    public String getTokenId() {
+        return tokenId;
+    }
+
+    public void setTokenId(String tokenId) {
+        this.tokenId = tokenId;
+    }
+
     public Integer getLogic() {
         return logic;
     }
 
     public void setLogic(Integer logic) {
         this.logic = logic;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 
     public String getWatcher() {
@@ -123,165 +135,196 @@ public class Device {
         this.status = status;
     }
 
-    public Long getSiteId() {
-        return siteId;
-    }
-
-    public void setSiteId(Long siteId) {
-        this.siteId = siteId;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public Integer getUtemperature() {
-        return utemperature;
-    }
-
-    public void setUtemperature(Integer utemperature) {
-        this.utemperature = utemperature;
-    }
-
-    public Integer getUpressure() {
-        return upressure;
-    }
-
-    public void setUpressure(Integer upressure) {
-        this.upressure = upressure;
-    }
-
-    public Integer getUstandard() {
-        return ustandard;
-    }
-
-    public void setUstandard(Integer ustandard) {
-        this.ustandard = ustandard;
-    }
-
-    public Integer getUrunning() {
-        return urunning;
-    }
-
-    public void setUrunning(Integer urunning) {
-        this.urunning = urunning;
-    }
-
-    public Integer getUsummary() {
-        return usummary;
-    }
-
-    public void setUsummary(Integer usummary) {
-        this.usummary = usummary;
-    }
-
-    public Integer getUsurplus() {
-        return usurplus;
-    }
-
-    public void setUsurplus(Integer usurplus) {
-        this.usurplus = usurplus;
-    }
-
-    public Integer getUanalog1() {
-        return uanalog1;
-    }
-
-    public void setUanalog1(Integer uanalog1) {
-        this.uanalog1 = uanalog1;
-    }
-
-    public Integer getUanalog2() {
-        return uanalog2;
-    }
-
-    public void setUanalog2(Integer uanalog2) {
-        this.uanalog2 = uanalog2;
-    }
-
-    public Integer getUanalog3() {
-        return uanalog3;
-    }
-
-    public void setUanalog3(Integer uanalog3) {
-        this.uanalog3 = uanalog3;
-    }
-
-    public Integer getUanalog4() {
-        return uanalog4;
-    }
-
-    public void setUanalog4(Integer uanalog4) {
-        this.uanalog4 = uanalog4;
-    }
-
-    public Integer getUswitch1() {
-        return uswitch1;
-    }
-
-    public void setUswitch1(Integer uswitch1) {
-        this.uswitch1 = uswitch1;
-    }
-
-    public Integer getUswitch2() {
-        return uswitch2;
-    }
-
-    public void setUswitch2(Integer uswitch2) {
-        this.uswitch2 = uswitch2;
-    }
-
-    public Integer getUswitch3() {
-        return uswitch3;
-    }
-
-    public void setUswitch3(Integer uswitch3) {
-        this.uswitch3 = uswitch3;
-    }
-
-    public Integer getUswitch4() {
-        return uswitch4;
-    }
-
-    public void setUswitch4(Integer uswitch4) {
-        this.uswitch4 = uswitch4;
-    }
-
-    public Integer getUac220() {
-        return uac220;
-    }
-
-    public void setUac220(Integer uac220) {
-        this.uac220 = uac220;
-    }
-
-    public Integer getUbattery() {
-        return ubattery;
-    }
-
-    public void setUbattery(Integer ubattery) {
-        this.ubattery = ubattery;
-    }
-
-    public Integer getUsolar() {
-        return usolar;
-    }
-
-    public void setUsolar(Integer usolar) {
-        this.usolar = usolar;
-    }
-
-
     public Long getParent() {
         return parent;
     }
 
     public void setParent(Long parent) {
         this.parent = parent;
+    }
+
+    public Long getUtemperature() {
+        return utemperature;
+    }
+
+    public void setUtemperature(Long utemperature) {
+        this.utemperature = utemperature;
+    }
+
+    public Long getUpressure() {
+        return upressure;
+    }
+
+    public void setUpressure(Long upressure) {
+        this.upressure = upressure;
+    }
+
+    public Long getUstandard() {
+        return ustandard;
+    }
+
+    public void setUstandard(Long ustandard) {
+        this.ustandard = ustandard;
+    }
+
+    public Long getUrunning() {
+        return urunning;
+    }
+
+    public void setUrunning(Long urunning) {
+        this.urunning = urunning;
+    }
+
+    public Long getUsummary() {
+        return usummary;
+    }
+
+    public void setUsummary(Long usummary) {
+        this.usummary = usummary;
+    }
+
+    public Long getUsurplus() {
+        return usurplus;
+    }
+
+    public void setUsurplus(Long usurplus) {
+        this.usurplus = usurplus;
+    }
+
+    public Long getUanalog1() {
+        return uanalog1;
+    }
+
+    public void setUanalog1(Long uanalog1) {
+        this.uanalog1 = uanalog1;
+    }
+
+    public Long getUanalog2() {
+        return uanalog2;
+    }
+
+    public void setUanalog2(Long uanalog2) {
+        this.uanalog2 = uanalog2;
+    }
+
+    public Long getUanalog3() {
+        return uanalog3;
+    }
+
+    public void setUanalog3(Long uanalog3) {
+        this.uanalog3 = uanalog3;
+    }
+
+    public Long getUanalog4() {
+        return uanalog4;
+    }
+
+    public void setUanalog4(Long uanalog4) {
+        this.uanalog4 = uanalog4;
+    }
+
+    public Long getUswitch1() {
+        return uswitch1;
+    }
+
+    public void setUswitch1(Long uswitch1) {
+        this.uswitch1 = uswitch1;
+    }
+
+    public Long getUswitch2() {
+        return uswitch2;
+    }
+
+    public void setUswitch2(Long uswitch2) {
+        this.uswitch2 = uswitch2;
+    }
+
+    public Long getUswitch3() {
+        return uswitch3;
+    }
+
+    public void setUswitch3(Long uswitch3) {
+        this.uswitch3 = uswitch3;
+    }
+
+    public Long getUswitch4() {
+        return uswitch4;
+    }
+
+    public void setUswitch4(Long uswitch4) {
+        this.uswitch4 = uswitch4;
+    }
+
+    public Long getUac220() {
+        return uac220;
+    }
+
+    public void setUac220(Long uac220) {
+        this.uac220 = uac220;
+    }
+
+    public Long getUbattery() {
+        return ubattery;
+    }
+
+    public void setUbattery(Long ubattery) {
+        this.ubattery = ubattery;
+    }
+
+    public Long getUsolar() {
+        return usolar;
+    }
+
+    public void setUsolar(Long usolar) {
+        this.usolar = usolar;
+    }
+
+    public List<Device> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Device> children) {
+        this.children = children;
+    }
+
+    public Integer getStandardFlowUpper() {
+        return standardFlowUpper;
+    }
+
+    public void setStandardFlowUpper(Integer standardFlowUpper) {
+        this.standardFlowUpper = standardFlowUpper;
+    }
+
+    public Integer getTemperatureUpper() {
+        return temperatureUpper;
+    }
+
+    public void setTemperatureUpper(Integer temperatureUpper) {
+        this.temperatureUpper = temperatureUpper;
+    }
+
+    public Integer getTemperatureLow() {
+        return temperatureLow;
+    }
+
+    public void setTemperatureLow(Integer temperatureLow) {
+        this.temperatureLow = temperatureLow;
+    }
+
+    public Integer getPressureUpper() {
+        return pressureUpper;
+    }
+
+    public void setPressureUpper(Integer pressureUpper) {
+        this.pressureUpper = pressureUpper;
+    }
+
+    public Integer getPressureLow() {
+        return pressureLow;
+    }
+
+    public void setPressureLow(Integer pressureLow) {
+        this.pressureLow = pressureLow;
     }
 
     @Override

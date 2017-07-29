@@ -19,12 +19,27 @@ import java.util.List;
 @Service
 public class SiteService {
 
-
     @Autowired
     private SiteRepository siteRepository;
 
     @Autowired
     private DeviceRepository deviceRepository;
+
+    //返回所有的站点设备消息
+    @Transactional
+    public AjaxResult<Site> allsiteAndDevie(Long tenantId) {
+        //1,找到所有的站点
+        List<Site> sites = siteRepository.findByTenantId(tenantId);
+        for (Site s : sites) {
+            s.setDevices(deviceRepository.findBySiteIdAndParent(s.getId(), (long) 0));
+            for (Device d : s.getDevices()) {
+                d.setChildren(deviceRepository.findBySiteIdAndParent(s.getId(), d.getId()));
+            }
+        }
+        //返回最终的结果
+        return AjaxResult.AjaxResultWithList(sites);
+    }
+
 
     //返回所有的站点设备消息
     @Transactional
@@ -38,7 +53,7 @@ public class SiteService {
             }
         }
         //返回最终的结果
-        return new AjaxResult<Site>(sites);
+        return AjaxResult.AjaxResultWithList(sites);
     }
 
 

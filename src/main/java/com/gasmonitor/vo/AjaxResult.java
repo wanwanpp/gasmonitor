@@ -40,16 +40,17 @@ public class AjaxResult<T> {
     }
 
 
-    public AjaxResult(List<T> data) {
-        this();
-        this.data = data;
+    public static <T> AjaxResult<T> AjaxResultWithList(List<T> data) {
+        AjaxResult<T> r = new AjaxResult<T>();
+        r.data = data;
+        r.setPage(1);
+        r.setTotalPage(1);
         if (data == null) {
-            this.setTotal(0);
+            r.setTotal(0);
         } else {
-            this.setTotal(data.size());
+            r.setTotal(data.size());
         }
-        this.setPage(1);
-        this.setTotalPage(1);
+        return r;
     }
 
     public static <M> AjaxResult<M> NewAjaxResult(List<M> t, long total, int page) {

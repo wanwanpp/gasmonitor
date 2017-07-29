@@ -1,0 +1,1 @@
+package com.gasmonitor.dao;import com.gasmonitor.entity.BasDeviceUnit;import org.springframework.data.jpa.repository.JpaRepository;import java.util.List;/** * Created by saplmm on 2017/7/28. */public interface BasDeviceUnitRespository extends JpaRepository<BasDeviceUnit, Long> {    @Override    List<BasDeviceUnit> findAll();}
