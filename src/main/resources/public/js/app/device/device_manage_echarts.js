@@ -1,5 +1,5 @@
 (function() {
-    var $, oneSocket, laytpl, layer, tools;
+    var $, oneSocket, laytpl, layer, tools, form;
 
     // Start: 所有被本模块调用的函数定义在此
     function genOption(hardwareId, subTitle) {
@@ -204,7 +204,10 @@
                     layer.msg('当前节名称：'+ item.name + '<br>全部参数：'+ JSON.stringify(item));
                     console.log(item);
                     // Start: 根据用户的点击，清空折线图，然后重新 setStationId
-                    refreshECharts(item.hardwareId);
+                    if(item && item.hardwareId) {
+                        refreshECharts(item.hardwareId);
+                        createDevicesTreeListNodes.renderSelectSearchDevicesOptions(item.hardwareId);
+                    }
                     // End  : 根据用户的点击，清空折线图，然后重新 setStationId
                 }
                 ,nodes: createDevicesTreeListNodes(data_allSitesAndDevices_sitesArr, urlHardwareId)
@@ -213,6 +216,9 @@
             // Start: 触发相应 device 节点的 click
             createDevicesTreeListNodes.triggerDeviceNodeClick(createDevicesTreeListNodes.urlHardwareId);
             // End  : 触发相应 device 节点的 click
+            // Start: 刷新 search device
+            createDevicesTreeListNodes.renderSelectSearchDevicesOptions();
+            // End  : 刷新 search device
         };
         // 1. 打开 layer loading
         layer.load();
@@ -630,14 +636,42 @@
             }
             arr_element_as[index_deviceNode].click();
         });
-    }
+    };
+    createDevicesTreeListNodes.renderSelectSearchDevicesOptions = function(selectedHardwareId) {
+        var arr_sitesAndDevicesNodes = createDevicesTreeListNodes.arr_sitesAndDevicesNodes;
+        if(arr_sitesAndDevicesNodes && arr_sitesAndDevicesNodes.length && arr_sitesAndDevicesNodes.length > 0) {
+            var arr_devicesNodes = [];
+            arr_sitesAndDevicesNodes.forEach(function(item_siteOrDeviceNode) {
+                if(item_siteOrDeviceNode.hardwareId) {
+                    arr_devicesNodes.push(item_siteOrDeviceNode);
+                }
+            });
+            if(arr_devicesNodes.length < 1) {
+                $('#select-search_device').html('<option value="-1">--- 没有设备 ---</option>');
+            } else {
+                var arr_options_devices = [];
+                arr_devicesNodes.forEach(function(item_deviceNode) {
+                    arr_options_devices.push([
+                        '<option value="'
+                        , item_deviceNode.hardwareId
+                        , '"'
+                        , ((selectedHardwareId && selectedHardwareId == item_deviceNode.hardwareId) ? ' selected' : '')
+                        , '>'
+                        , item_deviceNode.name
+                        , '</option>'].join(''));
+                });
+                $('#select-search_device').html(arr_options_devices.join(''));
+            }
+            form.render();
+        }
+    };
     // End  : 所有被本模块调用的函数定义在此
     layui.use(['jquery', 'oneSocket', 'laytpl', 'layer', 'form', 'tools', 'tree'], function() {
         $ = layui.jquery;
         oneSocket = layui.oneSocket(/*SockJS, Stomp*/);
         laytpl = layui.laytpl;
         layer = layui.layer;
-        var form = layui.form();
+        form = layui.form();
         tools = layui.tools;
 
         //第一次加载数据
@@ -691,5 +725,16 @@
             }
         });
         // End  : 绑定窗口的 resize 事件
+
+        // Start: 绑定 search device select 的选项被点击事件
+        form.on('select(search-device)', function(data){
+            console.log(data.elem); //得到select原始DOM对象
+            console.log(data.value); //得到被选中的值
+            console.log(data.othis); //得到美化后的DOM对象
+            //
+            var hardwareId = data.value;
+            createDevicesTreeListNodes.triggerDeviceNodeClick(hardwareId);
+        });
+        // End  : 绑定 search device select 的选项被点击事件
     });
 })();
