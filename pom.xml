@@ -78,11 +78,11 @@
         </dependency>
 
         <!--开发过程中可以动态的查看修改结果，生产环境中应该移除-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
-        </dependency>
+        <!--<dependency>-->
+        <!--<groupId>org.springframework.boot</groupId>-->
+        <!--<artifactId>spring-boot-devtools</artifactId>-->
+        <!--<optional>true</optional>-->
+        <!--</dependency>-->
 
         <!--?nfluxdb数据库-->
         <dependency>
@@ -134,7 +134,7 @@
         <thymeleaf.version>3.0.6.RELEASE</thymeleaf.version>
         <thymeleaf-layout-dialect.version>2.0.0</thymeleaf-layout-dialect.version>
     </properties>
-
+    
     <!--spring boot插件-->
     <packaging>
         jar
