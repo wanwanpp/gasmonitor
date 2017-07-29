@@ -76,7 +76,7 @@
             },
             xAxis: [
                 {
-                    type: 'time',
+                    type: 'category',
                     name: '时间',
                     boundaryGap: false,
                     data: (function (){
@@ -156,7 +156,9 @@
         var data0 = myChart2RenderOption.series[0].data;
         // var data1 = myChart2RenderOption.series[1].data;
 
-        if(data0.length >= 10) {
+        var max = 10;
+
+        if(data0.length >= max) {
             data0.shift();
         }
         // data0.push(Math.round(Math.random() * 1000));
@@ -168,8 +170,11 @@
         // data1.push((Math.random() * 1000 + 5).toFixed(1) - 0);
         data1.push(jDataSummaryVal);*/
 
-        myChart2RenderOption.xAxis[0].data.shift();
-        myChart2RenderOption.xAxis[0].data.push(axisData);
+        var xAxis0Data = myChart2RenderOption.xAxis[0].data;
+        if(xAxis0Data && xAxis0Data.length && xAxis0Data.length >= max) {
+            xAxis0Data.shift();
+        }
+        xAxis0Data.push(axisData);
 
         myChart2Render.setOption(myChart2RenderOption);
     }
