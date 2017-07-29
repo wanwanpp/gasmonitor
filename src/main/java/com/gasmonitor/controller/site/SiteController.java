@@ -123,11 +123,11 @@ public class SiteController {
         }
     }
 
-    @RequestMapping(value = "/ajax/allSiteAndDevie")
+    @RequestMapping(value = "/ajax/allSitesAndDevices")
     @ResponseBody
-    public AjaxResult<Site> allsiteAndDevie(HttpSession session) {
+    public AjaxResult<Site> allSitesAndDevices(HttpSession session) {
         User user = SessionUtils.getUser(session);
-        AjaxResult<Site> sites = siteService.allsiteAndDevie(user.getTenantId());
+        AjaxResult<Site> sites = siteService.allSitesAndDevices(user.getTenantId());
         return sites;
     }
 }

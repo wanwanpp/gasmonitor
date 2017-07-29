@@ -76,7 +76,7 @@
             },
             xAxis: [
                 {
-                    type: 'category',
+                    type: 'time',
                     name: '时间',
                     boundaryGap: false,
                     data: (function (){
@@ -184,6 +184,126 @@
 
         myChart2Render.setOption(myChart2RenderOption);
     }
+    // Start: 请求服务器数据，更新左侧树
+    function searchTreeList() {
+        // 0. 请求相关的 url 、参数表、回调
+        var url_allSitesAndDevices = '/site/ajax/allSitesAndDevices';
+        var params_allSitesAndDevices = {};
+        var callback_allSitesAndDevices = function(data_allSitesAndDevices) {
+            console.log("查询到的所有站点设备 tree list 信息:" + JSON.stringify(data_allSitesAndDevices));
+            // Start: 测试渲染树
+            layui.tree({
+                elem: '#devicesTreeList' //指定元素
+                ,target: '_blank' //是否新选项卡打开（比如节点返回href才有效）
+                ,click: function(item) { //点击节点回调
+                    layer.msg('当前节名称：'+ item.name + '<br>全部参数：'+ JSON.stringify(item));
+                    console.log(item);
+                }
+                ,nodes: [ //节点
+                    {
+                        name: 'device-1'
+                        ,id: 1
+                        ,alias: 'device-1'
+                        ,children: [
+                        {
+                            name: 'device-1-1'
+                            ,id: 11
+                            ,href: 'http://www.layui.com/'
+                            ,alias: 'device-1-1'
+                        }, {
+                            name: 'device-1-2'
+                            ,id: 12
+                        }, {
+                            name: 'device-1-3'
+                            ,id: 13
+                        }
+                    ]
+                    }, {
+                        name: 'device-2'
+                        ,id: 2
+                        ,spread: true
+                        ,children: [
+                            {
+                                name: 'device-2-1'
+                                ,id: 21
+                                ,spread: true
+                                ,children: [
+                                {
+                                    name: 'device-2-1-1'
+                                    ,id: 211
+                                    ,children: [
+                                    {
+                                        name: 'device-2-1-1-1'
+                                        ,id: 2111
+                                    }, {
+                                        name: 'device-2-1-1-2'
+                                        ,id: 2112
+                                    }, {
+                                        name: 'device-2-1-1-3'
+                                        ,id: 2113
+                                    }
+                                ]
+                                }, {
+                                    name: 'device-2-1-2'
+                                    ,id: 212
+                                }, {
+                                    name: 'device-2-1-3'
+                                    ,id: 213
+                                }
+                            ]
+                            }, {
+                                name: 'device-2-2'
+                                ,id: 22
+                                ,children: [
+                                    {
+                                        name: 'device-2-2-1'
+                                        ,id: 221
+                                    }, {
+                                        name: 'device-2-2-2'
+                                        ,id: 222
+                                    }, {
+                                        name: 'device-2-2-3'
+                                        ,id: 223
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                    ,{
+                        name: 'device-3'
+                        ,id: 3
+                        ,alias: 'device-3'
+                        ,children: [
+                            {
+                                name: 'device-3-1'
+                                ,id: 31
+                                ,alias: 'device-3-1'
+                            }, {
+                                name: 'device-3-2'
+                                ,id: 12
+                                ,children: [
+                                    {
+                                        name: 'device-3-2-1'
+                                        ,id: 121
+                                    }
+                                    ,{
+                                        name: 'device-3-2-2'
+                                        ,id: 122
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            });
+            // End  : 测试渲染树
+        };
+        // 1. 打开 layer loading
+        layer.load();
+        // 2. $.get 请求服务器 tree list 数据，并调用回调
+        $.get(url_allSitesAndDevices, params_allSitesAndDevices, callback_allSitesAndDevices, "json");
+    }
+    // End  : 请求服务器数据，更新左侧树
     function searchList(currPage) {
         console.log("开始查询设备 list 的信息 ...");
         layer.load();   // loading
@@ -218,113 +338,6 @@
                 }
                 deviceTableTr.click();
                 // End  : 触发第一个设备的 click
-
-                // Start: 测试渲染树
-                layui.tree({
-                    elem: '#devicesTreeList' //指定元素
-                    ,target: '_blank' //是否新选项卡打开（比如节点返回href才有效）
-                    ,click: function(item){ //点击节点回调
-                        layer.msg('当前节名称：'+ item.name + '<br>全部参数：'+ JSON.stringify(item));
-                        console.log(item);
-                    }
-                    ,nodes: [ //节点
-                        {
-                            name: 'device-1'
-                            ,id: 1
-                            ,alias: 'device-1'
-                            ,children: [
-                            {
-                                name: 'device-1-1'
-                                ,id: 11
-                                ,href: 'http://www.layui.com/'
-                                ,alias: 'device-1-1'
-                            }, {
-                                name: 'device-1-2'
-                                ,id: 12
-                            }, {
-                                name: 'device-1-3'
-                                ,id: 13
-                            }
-                        ]
-                        }, {
-                            name: 'device-2'
-                            ,id: 2
-                            ,spread: true
-                            ,children: [
-                                {
-                                    name: 'device-2-1'
-                                    ,id: 21
-                                    ,spread: true
-                                    ,children: [
-                                    {
-                                        name: 'device-2-1-1'
-                                        ,id: 211
-                                        ,children: [
-                                        {
-                                            name: 'device-2-1-1-1'
-                                            ,id: 2111
-                                        }, {
-                                            name: 'device-2-1-1-2'
-                                            ,id: 2112
-                                        }, {
-                                            name: 'device-2-1-1-3'
-                                            ,id: 2113
-                                        }
-                                    ]
-                                    }, {
-                                        name: 'device-2-1-2'
-                                        ,id: 212
-                                    }, {
-                                        name: 'device-2-1-3'
-                                        ,id: 213
-                                    }
-                                ]
-                                }, {
-                                    name: 'device-2-2'
-                                    ,id: 22
-                                    ,children: [
-                                        {
-                                            name: 'device-2-2-1'
-                                            ,id: 221
-                                        }, {
-                                            name: 'device-2-2-2'
-                                            ,id: 222
-                                        }, {
-                                            name: 'device-2-2-3'
-                                            ,id: 223
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                        ,{
-                            name: 'device-3'
-                            ,id: 3
-                            ,alias: 'device-3'
-                            ,children: [
-                                {
-                                    name: 'device-3-1'
-                                    ,id: 31
-                                    ,alias: 'device-3-1'
-                                }, {
-                                    name: 'device-3-2'
-                                    ,id: 12
-                                    ,children: [
-                                        {
-                                            name: 'device-3-2-1'
-                                            ,id: 121
-                                        }
-                                        ,{
-                                            name: 'device-3-2-2'
-                                            ,id: 122
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                });
-                // End  : 测试渲染树
             },
             "json"
         );
@@ -435,6 +448,8 @@
 
         //第一次加载数据
         searchList();
+        // 第一次加载左侧 tree list 数据
+        searchTreeList();
 
         // Start: [设备列表]中某设备被点击
         $(document).on('click', '.device-table-tr', function() {
