@@ -677,7 +677,9 @@
         //第一次加载数据
         searchList();
         // 第一次加载左侧 tree list 数据
-        searchTreeList();
+        $(function() {
+            searchTreeList();
+        });
 
         // Start: [设备列表]中某设备被点击
         $(document).on('click', '.device-table-tr', function() {

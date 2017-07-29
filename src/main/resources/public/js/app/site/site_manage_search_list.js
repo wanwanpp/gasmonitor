@@ -9,6 +9,7 @@
 
         // Start: 所有 function 定义
         var sitesId2MarkerMap = {}; // 站点 marker map
+        layui.SitesManageGlobal['sitesId2MarkerMap'] = sitesId2MarkerMap;
 
         // Start: 地图相关 functions
         var opts = {
@@ -210,6 +211,9 @@
             // Start: 重新渲染 select search site
             renderSelectSearchSitesOptions(siteId);
             // End  : 重新渲染 select search site
+            // Start: 在编辑地图按钮上附加 siteId ，以便获取到当前应该编辑的 siteId
+            $('#button-edit_site_pos_in_map').data('siteId', siteId);
+            // End  : 在编辑地图按钮上附加 siteId ，以便获取到当前应该编辑的 siteId
         });
         /**
          * 绑定事件： select search site 的 option 被点击后，要触发相应 site tr 的 click
