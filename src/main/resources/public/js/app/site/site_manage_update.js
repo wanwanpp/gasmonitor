@@ -155,15 +155,14 @@
                     , shadeClose: true //开启遮罩关闭
                     , maxmin: true
                     , content: html_laytpl
-                    , btn: ['取消', '提交']
+                    , btn: ['提交', '取消']
                     , yes: function (index, layero) {
-                        layer.msg('点击了按钮 取消');
+                        layer.msg("提交中，请稍候 。。。");
                         //按钮【按钮一】的回调
-                        layer.close(index);
-                        // alert("点击了按钮1");
+                        // layer.close(index);
                     }
                     , btn2: function (index, layero) {
-                        layer.msg("点击了按钮 提交");
+                        layer.msg('取消编辑站点位置');
                         //按钮【按钮二】的回调
                         //return false 开启该代码可禁止点击该按钮关闭
                     }
@@ -175,6 +174,19 @@
             // map.centerAndZoom("成都", 12);      // 初始化地图,用城市名设置地图中心点
             map_edit.centerAndZoom(point_chengDu, 12);      // 初始化地图，用 point 设置地图中心点
             map_edit.enableScrollWheelZoom(true);  // 启用缩放
+            // 在地图中添加 marker
+            // var position_point_chengDu = point_chengDu.getPosition();
+            var point_site2Edit = new BMap.Point(siteLongitude || point_chengDu.lng
+                , siteLatitude || point_chengDu.lat);
+            var marker_site2Edit = new BMap.Marker(point_site2Edit);
+            map_edit.addOverlay(marker_site2Edit);            //增加点
+            marker_site2Edit.enableDragging();           // 可拖拽
+            // 拖拽后获取 marker 信息
+            marker_site2Edit.addEventListener("dragend", function() {
+                processMarkerDragend(marker_site2Edit);
+            });
+            // 移动地图到该点
+            map_edit.panTo(point_site2Edit);
         })
         // End  : 绑定拖动地图上坐标后的经纬度获取回调
     });
