@@ -104,6 +104,8 @@
                             // End  : marker 点击后的弹出层
                         });
                     }
+                    // sitesId2MarkerMap 已完成初始化，现在触发事件
+                    $('body').trigger('event_sitesId2MarkerMap');
                     // End  : 站点在地图上增加 marker
                     // Start: 触发第一个站点的 click
                     var urlSiteId = tools.getQueryString('siteId');
@@ -213,6 +215,9 @@
             // End  : 重新渲染 select search site
             // Start: 在编辑地图按钮上附加 siteId ，以便获取到当前应该编辑的 siteId
             $('#button-edit_site_pos_in_map').data('siteId', siteId);
+            $('#button-edit_site_pos_in_map').data('siteName', siteName);
+            $('#button-edit_site_pos_in_map').data('siteLongitude', siteLongitude);
+            $('#button-edit_site_pos_in_map').data('siteLatitude', siteLatitude);
             // End  : 在编辑地图按钮上附加 siteId ，以便获取到当前应该编辑的 siteId
         });
         /**
