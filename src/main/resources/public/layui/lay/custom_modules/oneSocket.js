@@ -3,8 +3,7 @@
  * (c) 2017 Payne Pandaroid Wang
  * 封装对 socket 使用，处理跨父子页面共用 socket 的差异。接收分发协议、被调用发送协议。
  */
-layui.define(['jquery'], function(exports) {
-    var $ = layui.jquery;
+layui.define(function(exports) {
     console.log('【oneSocket】加载完毕后执行回调');
     // 导出的模块名和接口函数
     exports('oneSocket', function(SockJS, Stomp) {
@@ -41,11 +40,6 @@ layui.define(['jquery'], function(exports) {
         var stomp = Stomp.over(sock);
         stomp.connect('guest', 'guest', function (frame) {
             stomp.subscribe("/user/queue/notifications", handleNotifications);
-            // set station
-            // stomp.send("/setStations", {}, "s1");
-            /*setTimeout(function () {
-                stomp.send("/setStations", {}, "s2");
-            }, 5000);*/
         });
         // 收到消息的处理
         // layui.oneSocket.EventEmitter = $(document);
@@ -101,9 +95,5 @@ layui.define(['jquery'], function(exports) {
 
         return layui.oneSocket;
     });
-    // 4. 定义 oneSocket 的事件
-    /*layui.oneSocket.EVENT = {
-        GM_EVENT_handleNotifications: 'GM_EVENT_handleNotifications'
-    };*/
 
 });
