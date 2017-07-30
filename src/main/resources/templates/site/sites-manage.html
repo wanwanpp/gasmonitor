@@ -21,7 +21,7 @@
   </style>
   <!-- Start: 百度地图 css -->
   <style type="text/css">
-    body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+    body, html, #sites-show-map, #site-edit-map {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
   </style>
   <!-- End  : 百度地图 css -->
   <!-- Start: layui search css -->
@@ -99,7 +99,7 @@
             <col width="110"></col>
           </colgroup>
           <div class="layui-elem-quote layui-quote-nm" style="min-height: 400px; max-height: 400px; height: 100%;">
-            <div id="allmap"></div>
+            <div id="sites-show-map"></div>
 
           </div>
         </table>
@@ -136,7 +136,7 @@
 
 
   // 百度地图API功能
-  var map = new BMap.Map("allmap", { enableMapClick: false });  // 创建Map实例
+  var map = new BMap.Map("sites-show-map", { enableMapClick: false });  // 创建Map实例
   // Start: SitesManageGlobal 中存储需要跨作用域使用的 map
   if(!layui.SitesManageGlobal) {
       layui.SitesManageGlobal = {};
@@ -369,5 +369,8 @@
 <!-- End  : 与服务器交互 ajax -->
 
 <!-- Start: 编辑站点详情（table） -->
+<script id="tpl_layerContent_siteEditMap" type="text/html">
+  <div id="site-edit-map"></div>
+</script>
 <script type="text/javascript" src="/js/app/site/site_manage_update.js"></script>
 <!-- End  : 编辑站点详情（table） -->
