@@ -10,10 +10,12 @@ import com.hazelcast.core.IMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
@@ -132,4 +134,12 @@ public class TestController {
 //        return WsClientPool.getClients();
         return null;
     }
+
+    @RequestMapping("datef")
+    @ResponseBody
+    public Object fetchResult(@DateTimeFormat(pattern = "yyyy-MM-dd:HH:mm:ss") Date date) {
+        logger.info("获取到的时间信息:{}", date);
+        return date;
+    }
+
 }
