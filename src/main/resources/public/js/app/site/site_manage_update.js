@@ -1,6 +1,7 @@
 (function() {
-    layui.use(['jquery'], function() {
+    layui.use(['jquery', 'laytpl'], function() {
         var $ = layui.jquery;
+        var laytpl = layui.laytpl;
         // hide ： 【提交】或【取消】按钮组
         var submitOrCancelEditSiteInfoBtnContainer = $('#submit-or-cancel-edit-site-info-btn-container');
         submitOrCancelEditSiteInfoBtnContainer.hide();
@@ -8,7 +9,7 @@
         var click2EditSiteInfoBtnIdStr = '#click-2-edit-site-info-btn';
         var click2EditSiteInfoBtn = $(click2EditSiteInfoBtnIdStr);
         // fadeIn 和 fadeOut 的速度
-        var fadeSpeedStr = 'normal'
+        var fadeSpeedStr = 'normal';
         // 表单数据处理对象
         var SiteInfoEditManager = {
             // 保存表单数据，【取消】后可以恢复
@@ -60,7 +61,6 @@
             });
         }
         $(document).on('click', '#submit-edited-site-info-btn', function() {
-            debugger;
             layer.load();   // loading
             // Start: 搜集参数
             var element_siteTrSelected = $('.site-tr-selected');
@@ -80,7 +80,6 @@
             var params = {id: siteId, name: $('#siteName').val(), longitude: $('#siteLongitude').val()
                 , latitude: $('#siteLatitude').val()};
             var callback = function(data) {
-                debugger;
                 console.log('[post: /site/ajax/update] callback data: ', data);
                 // 切换【提交】【取消】按钮和【提交按钮】
                 hideSubmitOrCancelAndShowEditBtn();
@@ -101,20 +100,82 @@
             // 用客户端保存的数据刷新表单
             var savedSiteInfo = SiteInfoEditManager.loadSavedSiteInfo();
             SiteInfoEditManager.reloadSiteInfo2Table(savedSiteInfo);
-        }).on('click', '#button-edit_site_pos_in_map', function() {
-            var sitesId2MarkerMap = layui.SitesManageGlobal['sitesId2MarkerMap'];
+        });
+
+        // Start: 绑定拖动地图上坐标后的经纬度获取回调
+        function processMarkerDragend(marker) {
+            var pos = marker.getPosition();       //获取marker的位置
+            layer.msg("站点当前位置是（经度： " + pos.lng + ", 纬度： " + pos.lat + "）");
+        }
+
+        var sitesId2MarkerMap = null;
+        function onEventSitesId2MarkerMapInited() {
+            sitesId2MarkerMap = layui.SitesManageGlobal['sitesId2MarkerMap'];
+            /*debugger;
+            for(var siteId in sitesId2MarkerMap) {
+                var marker = sitesId2MarkerMap[siteId];
+                marker.addEventListener("dragend", function() {
+                    processMarkerDragend(marker);
+                });
+            }*/
+        }
+        $('body').on('event_sitesId2MarkerMap', onEventSitesId2MarkerMapInited);
+
+        $(document).on('click', '#button-edit_site_pos_in_map', function() {
             var thisBtn = $(this);
-            var siteId = thisBtn.data('siteId');
+            var siteId = thisBtn.data('siteId')
+                , siteName = thisBtn.data('siteName')
+                , siteLongitude = thisBtn.data('siteLongitude')
+                , siteLatitude = thisBtn.data('siteLatitude');
             //
-            var marker = sitesId2MarkerMap[siteId];
+            if(!sitesId2MarkerMap) {
+                layer.msg("页面环境更新中，请稍候再尝试编辑，谢谢 ^_^");
+                return ;
+            }
+            // Start: 原来的在地图中编辑的代码
+            /*var marker = sitesId2MarkerMap[siteId];
             marker.setAnimation(null);
             marker.enableDragging();
+            marker.addEventListener("dragend", function() {
+                processMarkerDragend(marker);
+            });
             //
             // var str_class_hide = 'hide';
             // thisBtn.addClass(str_class_hide);
             thisBtn.hide('normal', function() {
                 $('#button-submit_site_pos_in_map').show('normal');
+            });*/
+            // End  : 原来的在地图中编辑的代码
+            // 打开 layer ，初始化编辑地图，进行编辑
+            laytpl(tpl_layerContent_siteEditMap.innerHTML).render({}, function (html_laytpl) {
+                layer.open({
+                    type: 1
+                    , title: ['编辑站点位置【', siteName, '】'].join('')
+                    , area: ['100%', '100%']
+                    , shadeClose: true //开启遮罩关闭
+                    , maxmin: true
+                    , content: html_laytpl
+                    , btn: ['取消', '提交']
+                    , yes: function (index, layero) {
+                        layer.msg('点击了按钮 取消');
+                        //按钮【按钮一】的回调
+                        layer.close(index);
+                        // alert("点击了按钮1");
+                    }
+                    , btn2: function (index, layero) {
+                        layer.msg("点击了按钮 提交");
+                        //按钮【按钮二】的回调
+                        //return false 开启该代码可禁止点击该按钮关闭
+                    }
+                });
             });
-        });
+            // 初始化 layer 中 laytpl 中的地图
+            var map_edit = new BMap.Map("site-edit-map", { enableMapClick: false });  // 创建Map实例
+            var point_chengDu = new BMap.Point(104.072, 30.663);
+            // map.centerAndZoom("成都", 12);      // 初始化地图,用城市名设置地图中心点
+            map_edit.centerAndZoom(point_chengDu, 12);      // 初始化地图，用 point 设置地图中心点
+            map_edit.enableScrollWheelZoom(true);  // 启用缩放
+        })
+        // End  : 绑定拖动地图上坐标后的经纬度获取回调
     });
 })();
