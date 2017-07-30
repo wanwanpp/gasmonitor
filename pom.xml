@@ -134,7 +134,7 @@
         <thymeleaf.version>3.0.6.RELEASE</thymeleaf.version>
         <thymeleaf-layout-dialect.version>2.0.0</thymeleaf-layout-dialect.version>
     </properties>
-    
+
     <!--spring boot插件-->
     <packaging>
         jar

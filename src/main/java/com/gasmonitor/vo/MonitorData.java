@@ -3,6 +3,8 @@ package com.gasmonitor.vo;
 import com.gasmonitor.entity.GasEvent;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 
+import java.util.Date;
+
 /**
  * Created by saplmm on 2017/6/13.
  * 监测数据
@@ -14,6 +16,12 @@ public class MonitorData {
     private GasEvent gasEvent;
     private boolean gaojing;
     private String msg;
+
+    public static MonitorData NewByGasEvent(GasEvent event) {
+        MonitorData data = new MonitorData();
+        data.setGasEvent(event);
+        return data;
+    }
 
     public boolean getGaojing() {
         return gaojing;
