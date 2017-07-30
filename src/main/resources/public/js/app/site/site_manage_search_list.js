@@ -133,19 +133,12 @@
                     , shadeClose: true //开启遮罩关闭
                     , maxmin: true
                     , content: html
-                    , btn: ['取消', '提交']
+                    , btn: ['关闭']
                     , yes: function (index, layero) {
-                        alert('点击了按钮 yes');
+                        layer.msg('关闭');
                         //按钮【按钮一】的回调
                         layer.close(index);
-                        // alert("点击了按钮1");
                     }
-                    , btn2: function (index, layero) {
-                        alert("点击了按钮 2");
-                        //按钮【按钮二】的回调
-                        //return false 开启该代码可禁止点击该按钮关闭
-                    }
-                    ,
                 });
             });
         }
@@ -161,9 +154,11 @@
          */
         $(document).on('click', '.view-devices-by-site-id', function() {
             var thisBtn = $(this);
-            var siteId = thisBtn.data('id');
+            var siteId = thisBtn.data('id')
+                , siteName = thisBtn.data('name');
             //
-            showLayerContentTplInLayer('根据站点查询设备', ['siteId: ', siteId].join(''))
+            showLayerContentTplInLayer(['根据站点查询设备【站点： ', siteName, '】'].join('')
+                , ['siteId: ', siteId].join(''))
         });
 
         /**
