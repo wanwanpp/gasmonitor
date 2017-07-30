@@ -3,6 +3,7 @@ package com.gasmonitor.controller.point;
 import com.gasmonitor.entity.GasEvent;
 import com.gasmonitor.vo.AjaxResult;
 import com.gasmonitor.vo.MonitorData;
+import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -64,13 +66,17 @@ public class PointController {
 
         //暂时直接返回
         try {
-            List<GasEvent> json = restTemplate.postForEntity(url, params, List.class).getBody();
+            List<LinkedHashMap<String, String>> json = restTemplate.postForEntity(url, params, List.class).getBody();
             List<MonitorData> datas = new ArrayList<MonitorData>();
-            for (GasEvent e : json) {
-                datas.add(MonitorData.NewByGasEvent(e));
+            for (LinkedHashMap<String, String> e : json) {
+                GasEvent gasEvent = new GasEvent();
+                BeanUtils.populate(gasEvent, e);
+                datas.add(MonitorData.NewByGasEvent(gasEvent));
             }
             return AjaxResult.AjaxResultWithList(datas);
         } catch (Exception e) {
+            log.info("出现错误:{}", e);
+            e.printStackTrace();
             return AjaxResult.ErrorAjaxResult();
         }
     }
