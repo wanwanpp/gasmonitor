@@ -98,16 +98,11 @@
             // 取消，先恢复表单不可编辑状态
             SiteInfoEditManager.disableSiteInfoTableFormEdit();
             // 用客户端保存的数据刷新表单
-            var savedSiteInfo = SiteInfoEditManager.loadSavedSiteInfo();
-            SiteInfoEditManager.reloadSiteInfo2Table(savedSiteInfo);
+            /*var savedSiteInfo = SiteInfoEditManager.loadSavedSiteInfo();
+            SiteInfoEditManager.reloadSiteInfo2Table(savedSiteInfo);*/
         });
 
         // Start: 绑定拖动地图上坐标后的经纬度获取回调
-        function processMarkerDragend(marker) {
-            var pos = marker.getPosition();       //获取marker的位置
-            layer.msg("站点当前位置是（经度： " + pos.lng + ", 纬度： " + pos.lat + "）");
-        }
-
         var sitesId2MarkerMap = null;
         function onEventSitesId2MarkerMapInited() {
             sitesId2MarkerMap = layui.SitesManageGlobal['sitesId2MarkerMap'];
@@ -160,6 +155,8 @@
                         layer.msg("提交中，请稍候 。。。");
                         //按钮【按钮一】的回调
                         // layer.close(index);
+                        // 调用 function 进行提交
+                        submitSiteEditMap();
                     }
                     , btn2: function (index, layero) {
                         layer.msg('取消编辑站点位置');
@@ -182,11 +179,36 @@
             map_edit.addOverlay(marker_site2Edit);            //增加点
             marker_site2Edit.enableDragging();           // 可拖拽
             // 拖拽后获取 marker 信息
+            function processMarkerDragend(marker) {
+                var pos = marker.getPosition();       //获取marker的位置
+                submitSiteEditMap.params.longitude = pos.lng;
+                submitSiteEditMap.params.latitude = pos.lat;
+                layer.msg("站点当前位置是（经度： " + submitSiteEditMap.params.longitude
+                    + ", 纬度： " + submitSiteEditMap.params.latitude + "）");
+            }
             marker_site2Edit.addEventListener("dragend", function() {
                 processMarkerDragend(marker_site2Edit);
             });
             // 移动地图到该点
             map_edit.panTo(point_site2Edit);
+            // Start: 编辑地图站点位置后提交
+            function submitSiteEditMap() {
+                layer.load();
+                $.post(submitSiteEditMap.url, submitSiteEditMap.params, submitSiteEditMap.callback, "json");
+            }
+            // url params 和 callback
+            submitSiteEditMap.url = '/site/ajax/update';
+            submitSiteEditMap.params = {id: siteId, name: siteName, longitude: siteLongitude
+                , latitude: siteLatitude};
+            submitSiteEditMap.callback = function(data_submitSiteEditMap) {
+                console.log('[submitSiteEditMap.callback] callback data_submitSiteEditMap: ', data_submitSiteEditMap);
+                // 隐藏遮罩菊花
+                layer.closeAll('loading');   //关闭所有的loading
+                layer.msg('提交成功，请等待刷新 。。。');
+                //
+                window.location.replace(['/site/sites-manage?siteId=', siteId].join(''));
+            };
+            // End  : 编辑地图站点位置后提交
         })
         // End  : 绑定拖动地图上坐标后的经纬度获取回调
     });
