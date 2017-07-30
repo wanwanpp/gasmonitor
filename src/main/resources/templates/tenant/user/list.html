@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <title>站点列表</title>
+  <meta name="renderer" content="webkit"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="format-detection" content="telephone=no"/>
+  <link rel="stylesheet" href="/layui/css/layui.css" media="all"/>
+  <link rel="stylesheet" href="/css/me.css" media="all"/>
+
+</head>
+<body class="childrenBody">
+<blockquote class="layui-elem-quote news_search">
+  <div class="layui-inline">
+    <div class="layui-input-inline">
+      <input type="text" value="" placeholder="请输入关键字" class="layui-input search_input"/>
+    </div>
+    <button class="layui-btn search_btn"><i class="layui-icon">&#xe615;</i>查询</button>
+  </div>
+  <div class="layui-inline">
+    <button class="layui-btn newsAdd_btn">
+      <i class="layui-icon">&#xe608;</i> 添加
+    </button>
+  </div>
+  <div class="layui-inline">
+    <a class="layui-btn layui-btn-danger batchDel" disabled="true">
+      <i class="layui-icon">&#xe640;</i>批量删除
+    </a>
+  </div>
+</blockquote>
+
+<script id="slist" type="text/html">
+  <div class="layui-form news_list">
+    <table class="layui-table">
+      <colgroup>
+        <col width="5%"/>
+        <col width="5%"/>
+        <col width="5%"/>
+        <col width="10%"/>
+        <col width="10%"/>
+        <col width="10%"/>
+        <col width="10%"/>
+        <col width="10%"/>
+        <col width="20%"/>
+      </colgroup>
+      <thead>
+      <tr>
+        <th><input type="checkbox" name="" lay-skin="primary" lay-filter="allChoose" id="allChoose"/></th>
+        <th>姓名</th>
+        <th>地址</th>
+        <th>电话</th>
+        <th>状态</th>
+        <th>角色</th>
+        <th>创建时间</th>
+        <th>登录时间</th>
+        <th>操作</th>
+      </tr>
+      </thead>
+
+      <tbody class="news_content">
+      {{# layui.each(d.data, function(index, item){ }}
+      <tr>
+        <td>{{index}}</td>
+        <td>{{item.username}}</td>
+        <td>{{item.address}}</td>
+        <td>{{item.mobile}}</td>
+        <td>{{item.status}}</td>
+        <td>{{item.role}}</td>
+        <td>{{layui.tools.timestampToString(item.createdate)}}</td>
+        <td>{{layui.tools.timestampToString(item.lastlogin)}}</td>
+        <td>
+          <span id="source{{item.id}}"
+                data-id="{{item.id}}"
+                data-username="{{item.username}}"
+                data-address="{{item.address}}"
+                data-mobile="{{item.mobile}}"
+                data-status="{{item.status}}"
+                data-createdate="{{item.createdate}}"
+                data-role="{{item.role}}"
+                style="display: none">
+          </span>
+          <button class="layui-btn layui-btn-mini tenant_edit" data-sourceid="{{item.id}}">
+            <i class="layui-icon">&#xe64c;</i>详情
+          </button>
+          <button class="layui-btn layui-btn-mini tenant_edit" data-sourceid="{{item.id}}">
+            <i class="layui-icon">&#xe642;</i>编辑
+          </button>
+          <button class="layui-btn layui-btn-danger layui-btn-mini tenant_del" data-sourceid="{{item.id}}">
+            <i class="layui-icon">&#xe640;</i>删除
+          </button>
+        </td>
+      </tr>
+      {{# }); }}
+      {{# if(d.data.length === 0){ }}
+      无数据
+      {{# } }}
+      </tbody>
+    </table>
+  </div>
+</script>
+<div id="tableview"></div>
+<div id="pageView" style="float: right;"></div>
+
+<script type="text/javascript" src="/layui/layui.js"></script>
+<script type="text/javascript">
+  layui.use(['laytpl', 'jquery', 'layer', 'laypage', 'form', 'tools'], function () {
+    console.log("开始执行渲染模板");
+    var laytpl = layui.laytpl;
+    var $ = layui.jquery;
+    var getUrl = "/tenant/user/ajax/list";
+    var addUrl = "/tenant/user/ajax/new"
+    var editUrl = '/tenant/user/ajax/update';
+    var rmUrl = '/tenant/user/ajax/remove';
+    var layer = layui.layer;
+    var laypage = layui.laypage;
+    var form = layui.form();
+    var newTenant = false;
+
+    //第一次加载数据
+    searchList();
+
+    //表单监控提交事件
+    form.on('submit', function (data) {
+      console.log("submit-->newTenant:" + newTenant + "data:" + JSON.stringify(data.field));
+      $.post(
+              newTenant ? addUrl : editUrl
+              , data.field
+              , function (data) {
+                console.log("保存数据结束：" + JSON.stringify(data));
+                if (data.code) {
+                  layer.msg('保存数据成功', {icon: 1, time: 1000,});
+                  searchList();
+                }
+              });
+      layer.closeAll();   //这里关闭所有
+      return false;
+    });
+
+    //添加一个租户
+    $(".newsAdd_btn").on('click', function () {
+      console.log("添加一个用户.弹出编辑框");
+      showEditLayer(true);
+    });
+
+    $(".search_btn").on('click', function () {
+      console.log("点击了搜索按钮，开始搜索");
+      searchList();
+    })
+
+    function initClickEvent() {
+      $("#h").on('click', function () {
+        alert("哈哈哈");
+      });
+      //为按钮设置事件
+      $(".tenant_edit").on('click', function () {
+        var that = this;
+        showEditLayer(false, $(that).data("sourceid"));
+      });
+
+      $(".tenant_del").on('click', function () {
+        console.log("开始删除租户的信息");
+        var sourceId = $(this).data("sourceid");
+        layer.confirm('确定删除？', {
+          btn: ['确定', '取消'] //按钮
+        }, function () {
+          $.post(rmUrl
+                  , {
+                    "id": sourceId,
+                  }
+                  , function (data) {
+                    console.log("删除数据成功：" + JSON.stringify(data));
+                    if (data.code) {
+                      searchList();
+                      layer.msg('删除数据成功', {icon: 1, time: 1000,});
+                    }
+                  }
+          );
+        }, function () {
+
+        });
+      });
+
+    }
+
+    //显示编辑弹出层
+    function showEditLayer(b, sourceId) {
+      newTenant = b;
+      console.log("开始编辑租户的信息:sourceId" + sourceId);
+      layer.open({
+                type: 1
+                , title: '编辑租户'
+                , area: ['500px', '450px']
+                , shadeClose: true //开启遮罩关闭
+                , maxmin: true
+                , content: $('#layer_tenant_edit') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                , btn: ['提交', '取消']
+                , success: function (layero, index) {
+                  console.log("打开编辑窗口成功，是否新增？" + newTenant)
+                  if (newTenant) {
+                    console.log("新增租户，现在开始reset");
+                    $("#eidt_layer_reset").click();
+                    return;//如果是新增加用户，直接返回，不用天充值
+                  }
+                  //这里填充值
+                  $("#eidt_layer_id").val($("#source" + sourceId).data("id"));
+                  $("#eidt_layer_username").val($("#source" + sourceId).data("username"));
+                  $("#eidt_layer_mobile").val($("#source" + sourceId).data("mobile"));
+                  $("#eidt_layer_address").val($("#source" + sourceId).data("address"));
+                  $("#eidt_layer_role").val($("#source" + sourceId).data("role"));
+                  form.render('select');
+                }
+                , yes: function (index, layero) {
+                  $("#eidt_layer_submit").click();
+                }
+                , btn2: function (index, layero) {
+                },
+              }
+      );
+    }
+
+    function searchList(currPage) {
+      console.log("开始查询租户list的信息...");
+      layer.load();   //loading
+      $.get(
+              getUrl,
+              {"currPage": currPage || 1, "searchKey": $(".search_input").val()},
+              function (data) {
+                console.log("查询到的玩家的list信息:" + JSON.stringify(data));
+                laytpl(slist.innerHTML).render(data, function (html) {
+                  tableview.innerHTML = html;
+                  initClickEvent();   //渲染之后才能初始化按钮的信息，不然没有作用
+                  //分页
+                  laypage({
+                    cont: 'pageView'
+                    , pages: data.totalPage
+                    , skip: true
+                    , curr: currPage || 1 //当前页,
+                    , jump: function (obj, first) {
+                      if (!first) {
+                        searchList(obj.curr)
+                      }
+                    }
+                  });
+                  layer.closeAll('loading');   //关闭所有的loading
+                });
+              },
+              "json"
+      );
+    }
+  });
+
+</script>
+</body>
+
+<!--编辑用户的模板-->
+<div id="layer_tenant_edit" style="display: none;padding: 15px;">
+  <form class="layui-form" action="">
+    <input type="text" id="eidt_layer_id" name="id" style="display: none;"/>
+    <div class="layui-form-item">
+      <label class="layui-form-label">名称</label>
+      <div class="layui-input-block">
+        <input id="eidt_layer_name" type="text" name="name" lay-verify="title" autocomplete="off" placeholder="请输入名称"
+               class="layui-input"/>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">电话号码</label>
+      <div class="layui-input-block">
+        <input id="eidt_layer_mobile" type="text" name="mobile" lay-verify="title" autocomplete="off"
+               placeholder="请输入电话" class="layui-input"/>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">地址</label>
+      <div class="layui-input-block">
+        <input id="eidt_layer_address" type="text" name="address" lay-verify="title" autocomplete="off"
+               placeholder="请输入地址"
+               class="layui-input"/>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">角色</label>
+      <div class="layui-input-block">
+        <select id="eidt_layer_role" type="text" name="role">
+          <option value="ROLE_TENANT">管理员</option>
+          <option value="ROLE_TENANTADMIN">操作员</option>
+        </select>
+      </div>
+    </div>
+
+    <button hidden type="button" id="eidt_layer_submit" lay-submit></button>
+    <button hidden id="eidt_layer_reset" type="reset"></button>
+  </form>
+</div>
+</html>

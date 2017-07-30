@@ -1,12 +1,10 @@
 package com.gasmonitor.service.middleware;
 
-import com.gasmonitor.service.middleware.api.WsClientPoolApi;
-import com.gasmonitor.vo.MonitorData;
+import com.gasmonitor.service.websocket.WsClientPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Service;
 
 /**
  * Created by saplmm on 2017/6/12.
@@ -17,7 +15,7 @@ public class MqttClient implements CommandLineRunner {
     Logger log = LoggerFactory.getLogger(MqttClient.class);
 
     @Autowired
-    public WsClientPoolApi wsClientPoolApi;
+    public WsClientPool wsClientPoolApi;
 
     @Override
     public void run(String... strings) throws Exception {

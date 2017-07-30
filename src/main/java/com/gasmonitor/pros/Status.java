@@ -1,0 +1,1 @@
+package com.gasmonitor.pros;/** * Created by saplmm on 2017/7/25. */public class Status {    public static class User {        public static final int STATUS_DEFAULT = 1;    }}

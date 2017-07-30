@@ -73,8 +73,8 @@
         <td>{{item.name}}</td>
         <td>{{item.hardwareId}}</td>
         <td>{{item.siteId}}</td>
-        <td>{{item.logic}}</td>
-        <td>{{item.created}}</td>
+        <td>{{layui.tools.deviceid2des(item.logic)}}</td>
+        <td>{{layui.tools.timestampToString(item.created)}}</td>
         <td>
           <span id="source{{item.id}}"
                 data-id="{{item.id}}"
@@ -83,6 +83,29 @@
                 data-siteId="{{item.siteId}}"
                 data-logic="{{item.logic}}"
                 data-created="{{item.created}}"
+                data-parent="{{item.parent}}"
+                data-utemperature="{{item.utemperature}}"
+                data-upressure="{{item.upressure}}"
+                data-ustandard="{{item.ustandard}}"
+                data-urunning="{{item.urunning}}"
+                data-usummary="{{item.usummary}}"
+                data-usurplus="{{item.usurplus}}"
+                data-uanalog1="{{item.uanalog1}}"
+                data-uanalog2="{{item.uanalog2}}"
+                data-uanalog3="{{item.uanalog3}}"
+                data-uanalog4="{{item.uanalog4}}"
+                data-uswitch1="{{item.uswitch1}}"
+                data-uswitch2="{{item.uswitch2}}"
+                data-uswitch3="{{item.uswitch3}}"
+                data-uswitch4="{{item.uswitch4}}"
+                data-uac220="{{item.uac220}}"
+                data-ubattery="{{item.ubattery}}"
+                data-usolar="{{item.usolar}}"
+                data-standardflowupper="{{item.standardFlowUpper}}"
+                data-temperatureupper="{{item.temperatureUpper}}"
+                data-temperaturelow="{{item.temperatureLow}}"
+                data-pressureupper="{{item.pressureUpper}}"
+                data-pressurelow="{{item.pressureLow}}"
                 style="display: none">
           </span>
           <button class="layui-btn layui-btn-mini device-detail" data-sourceid="{{item.id}}">
@@ -91,6 +114,11 @@
           <button class="layui-btn layui-btn-mini tenant_edit" data-sourceid="{{item.id}}">
             <i class="layui-icon">&#xe642;</i>编辑
           </button>
+
+          <button class="layui-btn layui-btn-mini device_gaojing" data-sourceid="{{item.id}}">
+            <i class="layui-icon">&#xe642;</i>告警设置
+          </button>
+
           <button class="layui-btn layui-btn-danger layui-btn-mini tenant_del" data-sourceid="{{item.id}}">
             <i class="layui-icon">&#xe640;</i>删除
           </button>
@@ -112,250 +140,557 @@
 
 <div id="layer_tenant_edit" style="display: none;padding: 15px;">
   <form id="form_layer_tenant_edit" class="layui-form" action="">
-    <div class="layui-form-item">
-      <label class="layui-form-label">站点</label>
-      <div class="layui-input-block">
-        <select id="eidt_layer_siteId" name="siteId" lay-verify="required">
-          <option th:each="prod,iterStat : ${sites}" th:value="${prod.id}" th:text=${prod.name}></option>
-        </select>
-      </div>
-    </div>
-    <div class="layui-form-item">
-      <label class="layui-form-label">名称</label>
-      <div class="layui-input-block">
-        <input id="eidt_layer_name" type="text" name="name" placeholder="请输入名称" class="layui-input"/>
-      </div>
-    </div>
+    <input type="hidden" id="eidt_layer_id" name="id"/>
 
     <div class="layui-form-item">
-      <label class="layui-form-label">硬件ID</label>
-      <div class="layui-input-block">
-        <input id="eidt_layer_hardwareId" type="text" name="hardwareId" placeholder="硬件ID" class="layui-input"/>
+      <div class="layui-inline">
+        <label class="layui-form-label">站点</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_siteId" name="siteId" lay-verify="required" lay-filter="siteid">
+            <option th:each="prod,iterStat : ${sites}" th:value="${prod.id}" th:text=${prod.name}></option>
+          </select>
+        </div>
       </div>
-    </div>
 
-
-    <div class="layui-form-item">
-      <label class="layui-form-label">设备电话</label>
-      <div class="layui-input-block">
-        <input id="eidt_layer_phone" type="tel" name="phone" placeholder="请输入设备连接电话" class="layui-input"/>
+      <div class="layui-inline">
+        <label class="layui-form-label">父级设备</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_parent" name="parent" lay-verify="required">
+            <option value="">请选择</option>
+          </select>
+        </div>
       </div>
     </div>
 
     <div class="layui-form-item">
-      <label class="layui-form-label">逻辑设备</label>
-      <div class="layui-input-block">
-        <input type="radio" name="logic" value="1" title="逻辑设备" checked="">
-        <input type="radio" name="logic" value="2" title="物理设备">
+      <div class="layui-inline">
+        <label class="layui-form-label">名称</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_name" type="text" name="name" placeholder="请输入名称" class="layui-input"/>
+        </div>
+      </div>
+
+      <div class="layui-inline">
+        <label class="layui-form-label">硬件ID</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_hardwareId" type="text" name="hardwareId" placeholder="硬件ID" class="layui-input"/>
+        </div>
       </div>
     </div>
 
     <div class="layui-form-item">
-      <div class="layui-input-block">
-        <button type="button" id="form_btn_submit" lay-submit lay-filter="formDemo" style="display: none"></button>
-        <button type="reset" id="form_btn_reset" style="display: none">重置</button>
+      <div class="layui-inline">
+        <label class="layui-form-label">设备电话</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_phone" type="tel" name="phone" placeholder="请输入设备连接电话" class="layui-input"/>
+        </div>
       </div>
+
+      <div class="layui-inline">
+        <label class="layui-form-label">逻辑设备</label>
+        <div class="layui-input-block">
+          <input type="radio" name="logic" value="1" title="逻辑设备" checked="">
+          <input type="radio" name="logic" value="2" title="物理设备">
+        </div>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">压强单位</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_upressure" name="upressure" lay-verify="required" lay-filter="siteid">
+            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
+          </select>
+        </div>
+      </div>
+
+      <div class="layui-inline">
+        <label class="layui-form-label">温度单位</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_utemperature" name="utemperature" lay-verify="required" lay-filter="siteid">
+            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">流量单位</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_ustandard" name="ustandard" lay-verify="required" lay-filter="siteid">
+            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
+          </select>
+        </div>
+      </div>
+
+      <div class="layui-inline">
+        <label class="layui-form-label">urunning</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_urunning" name="urunning" lay-verify="required" lay-filter="siteid">
+            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">usummary</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_usummary" name="usummary" lay-verify="required" lay-filter="siteid">
+            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
+          </select>
+        </div>
+      </div>
+
+
+      <div class="layui-inline">
+        <label class="layui-form-label">usurplus</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_usurplus" name="usurplus" lay-verify="required" lay-filter="siteid">
+            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">uanalog1</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_uanalog1" name="uanalog1" lay-verify="required" lay-filter="siteid">
+            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
+          </select>
+        </div>
+      </div>
+      <div class="layui-inline">
+        <label class="layui-form-label">uanalog2</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_uanalog2" name="uanalog2" lay-verify="required" lay-filter="siteid">
+            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">uanalog3</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_uanalog3" name="uanalog3" lay-verify="required" lay-filter="siteid">
+            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
+          </select>
+        </div>
+      </div>
+
+      <div class="layui-inline">
+        <label class="layui-form-label">uanalog4</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_uanalog4" name="uanalog4" lay-verify="required" lay-filter="siteid">
+            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">uswitch1</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_uswitch1" name="uswitch1" lay-verify="required" lay-filter="siteid">
+            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
+          </select>
+        </div>
+      </div>
+      <div class="layui-inline">
+        <label class="layui-form-label">uswitch2</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_uswitch2" name="uswitch2" lay-verify="required" lay-filter="siteid">
+            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+
+      <div class="layui-inline">
+        <label class="layui-form-label">uswitch3</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_uswitch3" name="uswitch3" lay-verify="required" lay-filter="siteid">
+            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
+          </select>
+        </div>
+      </div>
+
+      <div class="layui-inline">
+        <label class="layui-form-label">uswitch4</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_uswitch4" name="uswitch4" lay-verify="required" lay-filter="siteid">
+            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
+          </select>
+        </div>
+      </div>
+
+    </div>
+    <div class="layui-form-item">
+
+      <div class="layui-inline">
+        <label class="layui-form-label">uac220</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_uac220" name="uac220" lay-verify="required" lay-filter="siteid">
+            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
+          </select>
+        </div>
+      </div>
+      <div class="layui-inline">
+        <label class="layui-form-label">ubattery</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_ubattery" name="ubattery" lay-verify="required" lay-filter="siteid">
+            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">usolar</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_usolar" name="usolar" lay-verify="required" lay-filter="siteid">
+            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="layui-input-block">
+      <button type="button" id="form_btn_submit" lay-submit lay-filter="device" style="display: none"></button>
+      <button type="reset" id="form_btn_reset" style="display: none">重置</button>
+    </div>
+  </form>
+</div>
+
+
+<div id="layer_gaojing_edit" style="display: none;padding: 15px;">
+  <form id="form_layer_gaojing_edit" class="layui-form" action="">
+    <input type="hidden" id="eidt_layer_gaojing_id" name="id"/>
+
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">standardFlowUpper</label>
+        <div class="layui-input-inline">
+          <input class="layui-input" id="eidt_layer_standardFlowUpper" name="standardFlowUpper" lay-verify="required"/>
+        </div>
+      </div>
+
+      <div class="layui-inline">
+        <label class="layui-form-label">temperatureUpper</label>
+        <div class="layui-input-inline">
+          <input class="layui-input" id="eidt_layer_temperatureUpper" name="temperatureUpper" lay-verify="required"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">temperatureLow</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_temperatureLow" type="text" name="temperatureLow" placeholder="请输入名称"
+                 class="layui-input"/>
+        </div>
+      </div>
+
+      <div class="layui-inline">
+        <label class="layui-form-label">pressureUpper</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_pressureUpper" type="text" name="pressureUpper" placeholder="" class="layui-input"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">pressureLow</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_pressureLow" type="tel" name="pressureLow" placeholder="" class="layui-input"/>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="layui-input-block">
+      <button type="button" id="form_btn_gaojing_submit" lay-submit lay-filter="gaojing"
+              style="display: none"></button>
+      <button type="reset" id="form_btn_gaojing_reset" style="display: none">重置</button>
     </div>
   </form>
 </div>
 
 <script type="text/javascript" src="/layui/layui.js"></script>
 <script type="text/javascript">
-    layui.use(['laytpl', 'jquery', 'layer', 'laypage', 'form', 'jquery'], function () {
-        console.log("开始执行渲染模板");
-        var laytpl = layui.laytpl;
-        var $ = layui.jquery;
-        var getUrl = "/device/ajax/list";
-        var addUrl = "/device/ajax/new"
-        var editUrl = '/device/ajax/update';
-        var rmUrl = '/device/ajax/remove';
-        var layer = layui.layer;
-        var laypage = layui.laypage;
-        var form = layui.form();
-        var $ = layui.jquery;
-        var newTenant = true;//是否新增
+  layui.use(['laytpl', 'jquery', 'layer', 'laypage', 'form', 'tools'], function () {
+    console.log("开始执行渲染模板");
+    var laytpl = layui.laytpl;
+    var $ = layui.jquery;
+    var getUrl = "/device/ajax/list";
+    var addUrl = "/device/ajax/new"
+    var editUrl = '/device/ajax/update';
+    var rmUrl = '/device/ajax/remove';
+    var optionUrl = '/device/ajax/listp';
+    var updateGaojing = '/device/ajax/gaojing/update'
+    var layer = layui.layer;
+    var laypage = layui.laypage;
+    var form = layui.form();
+    var newTenant = true;//是否新增
+    var mytools = layui.tools;
+    console.log("得到的第一个 站点的值:[[${sites[0].id}]]");
 
-        laytpl.deviceTypeDes = function (t) {
-            if (t == 1) {
-                return '逻辑设备';
-            } else if (t == 2) {
-                return '物理设备';
-            } else {
-                return '未知设备';
-            }
+    form.on('select(siteid)', function (data) {
+      console.log("siteid-->select的选择事件" + data.value);
+      renderDeviceParentSelect(data.value);
+      form.render('select')
+    });
 
-        }
-
-        //监听提交
-        form.on('submit', function (data) {
-            console.log("点击了提交按钮 field:" + JSON.stringify(data.field));
-            $.post(
-                newTenant ? addUrl : editUrl
-                , data.field
-                , function (data) {
-                    console.log("保存数据结束：" + JSON.stringify(data));
-                    if (data.code) {
-                        layer.alert("保存数据成功");
-                        searchList();
-                    }
+    //监听提交
+    form.on('submit(device)', function (data) {
+      console.log("点击了提交按钮 field:" + JSON.stringify(data.field));
+      $.post(
+              newTenant ? addUrl : editUrl
+              , data.field
+              , function (data) {
+                console.log("保存数据结束：" + JSON.stringify(data));
+                if (data.code) {
+                  layer.alert("保存数据成功");
+                  searchList();
                 }
-            );
-            return false;
-        });
+              }
+      );
+      return false;
+    });
 
-        //第一次加载数据
-        searchList();
-
-        //添加一个租户
-        $(".newsAdd_btn").on('click', function () {
-            console.log("添加一个用户.弹出编辑框");
-            newTenant = true
-            showEditLayer();
-        });
-
-        $(".search_btn").on('click', function () {
-            console.log("点击了搜索按钮，开始搜索");
-            searchList();
-        })
-
-        function initClickEvent() {
-            $("#h").on('click', function () {
-                console.log("点击了提交...");
-            });
-            //为按钮设置事件
-            $(".tenant_edit").on('click', function () {
-                var that = this;
-                newTenant = false;
-                showEditLayer($(that).data("sourceid"));
-            });
-            // 详情按钮被点击
-            $(document).on('click', '.device-detail', function() {
-                var sourceId = $(this).data('sourceid');
-                //
-                var sourceIdSelector = "#source" + sourceId;
-                var hardwareId = $(sourceIdSelector).data("hardwareid");
-                //
-                window.location.replace(['/device/devices-manage?hardwareId=', hardwareId].join(''));
-
-            });
-
-            $(".tenant_del").on('click', function () {
-                console.log("开始删除租户的信息");
-                var sourceId = $(this).data("sourceid");
-                layer.confirm('确定删除？', {
-                    btn: ['确定', '取消'] //按钮
-                }, function () {
-                    $.post(rmUrl
-                        , {
-                            "id": sourceId,
-                        }
-                        , function (data) {
-                            console.log("删除数据成功：" + JSON.stringify(data));
-                            if (data.code) {
-                                searchList();
-                                layer.msg('删除数据成功', {icon: 1, time: 1000,});
-                            }
-                        }
-                    );
-                }, function () {
-
-                });
-            });
-
-        }
-
-        //显示编辑弹出层
-        function searchList(currPage) {
-            console.log("开始查询租户list的信息...");
-            layer.load();   //loading
-            $.get(
-                getUrl,
-                {
-                    "siteId": $("#search_select_site").val(),
-                    "currPage": currPage || 1,
-                    "searchKey": $(".search_input").val()
-                },
-                function (data) {
-                    console.log("查询到的玩家的list信息:" + JSON.stringify(data));
-                    laytpl(slist.innerHTML).render(data, function (html) {
-                        tableview.innerHTML = html;
-                        initClickEvent();   //渲染之后才能初始化按钮的信息，不然没有作用
-                        //分页
-                        laypage({
-                            cont: 'pageView'
-                            , pages: data.totalPage
-                            , skip: true
-                            , curr: currPage || 1 //当前页,
-                            , jump: function (obj, first) {
-                                if (!first) {
-                                    searchList(obj.curr)
-                                }
-                            }
-                        });
-                        layer.closeAll('loading');   //关闭所有的loading
-                    });
-                },
-                "json"
-            );
-        }
-
-        //显示编辑弹出层
-        function showEditLayer(sourceId) {
-            console.log("开始编辑租户的信息:sourceId" + sourceId);
-            layer.open({
-                    type: 1
-                    , title: '编辑租户'
-                    , area: ['400px', '400px']
-                    , shadeClose: true //开启遮罩关闭
-                    , maxmin: true
-                    , content: $('#layer_tenant_edit') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-                    , btn: ['取消', '提交']
-                    , success: function (layero, index) {
-                        console.log("打开编辑窗口成功，是否新增？" + newTenant)
-                        if (newTenant) {
-                            //这里填充值
-                            $("#form_btn_reset").click();
-                            return;//如果是新增加用户，直接返回，不用天充值
-                        }
-
-                        //这里填充值
-                        var sourceIdSelector = "#source" + sourceId;
-                        var siteIdVal = $(sourceIdSelector).data("siteid");
-                        $("#eidt_layer_name").val($(sourceIdSelector).data("name"));
-                        $("#eidt_layer_siteId").val(siteIdVal);
-                        $("#eidt_layer_hardwareId").val($(sourceIdSelector).data("hardwareid"));
-                        $("#eidt_layer_phone").val($(sourceIdSelector).data("phone"));
-                        // Start: 逻辑设备 radio
-                        var inputNameLogicElements = $('input[name="logic"]');
-                        // inputNameLogicElements.removeAttr('checked');
-                        // 根据属性刷新 radio
-                        var logic = $(sourceIdSelector).data("logic");  // logic 数据
-                        inputNameLogicElements.filter(['[value=', logic, ']'].join('')).next('div.layui-unselect.layui-form-radio').click();  // 直接触发 click
-                        // form.render('radio');
-                        // End  : 逻辑设备 radio
-                        // Start: 站点 select
-                        var layuiThisClass = 'layui-this';  // 下拉选框中显示被选中的 item
-                        var divLayuiFormSelect = $('#eidt_layer_siteId').next('div.layui-unselect.layui-form-select');  // 下面下拉选框和 input 显示值的公共父元素
-                        var dlLayuiAnimUpbit = divLayuiFormSelect.children('dl.layui-anim.layui-anim-upbit'); // 下拉选框置空和重新高亮显示被选中的 layuiThisClass 的公共父元素
-                        dlLayuiAnimUpbit.children('dd').removeClass(layuiThisClass);  // 高亮置空
-                        var ddLayValueSiteId = dlLayuiAnimUpbit.children(['dd[lay-value=', siteIdVal, ']'].join('')); // 选中相应元素，高亮
-                        ddLayValueSiteId.addClass(layuiThisClass);  // 高亮 class layuiThisClass
-                        var ddLayValueSiteIdText = ddLayValueSiteId.text(); // 获取到高亮 class item 的 text （具体显示的站点）
-                        divLayuiFormSelect.find('div.layui-select-title input.layui-input.layui-unselect').val(ddLayValueSiteIdText); // input 框填充具体站点 text
-                        // End  : 站点 select
-                    }
-                    , yes: function (index, layero) {
-                        layer.close(index);
-                    }
-                    , btn2: function (index, layero) {
-                        $("#form_btn_submit").click();
-                        layer.close(index);
-                    },
+    //监听提交
+    form.on('submit(gaojing)', function (data) {
+      console.log("点击了提交按钮 field:" + JSON.stringify(data.field));
+      $.post(
+              updateGaojing
+              , data.field
+              , function (data) {
+                console.log("保存数据结束：" + JSON.stringify(data));
+                if (data.code) {
+                  layer.alert("保存数据成功");
+                  searchList();
                 }
-            );
-        }
+              }
+      );
+      return false;
+    });
+
+    //第一次加载数据
+    searchList();
+
+
+    //重新渲染select
+    function renderDeviceParentSelect(siteId) {
+      mytools.renderSelectOption(optionUrl, {"siteId": siteId}, "id", "name", $("#eidt_layer_parent"))
+    }
+
+    //添加一个租户
+    $(".newsAdd_btn").on('click', function () {
+      console.log("添加一个用户.弹出编辑框");
+      newTenant = true
+      showEditLayer();
+    });
+
+    $(".search_btn").on('click', function () {
+      console.log("点击了搜索按钮，开始搜索");
+      searchList();
     })
-    ;
+
+    function initClickEvent() {
+      $("#h").on('click', function () {
+        console.log("点击了提交...");
+      });
+      //为按钮设置事件
+      $(".tenant_edit").on('click', function () {
+        var that = this;
+        newTenant = false;
+        showEditLayer($(that).data("sourceid"));
+      });
+      // 详情按钮被点击
+      $(document).on('click', '.device-detail', function () {
+        var sourceId = $(this).data('sourceid');
+        //
+        var sourceIdSelector = "#source" + sourceId;
+        var hardwareId = $(sourceIdSelector).data("hardwareid");
+        //
+        window.location.replace(['/device/devices-manage?hardwareId=', hardwareId].join(''));
+
+      });
+
+      $(".tenant_del").on('click', function () {
+        console.log("开始删除租户的信息");
+        var sourceId = $(this).data("sourceid");
+        layer.confirm('确定删除？', {
+          btn: ['确定', '取消'] //按钮
+        }, function () {
+          $.post(rmUrl
+                  , {
+                    "id": sourceId,
+                  }
+                  , function (data) {
+                    console.log("删除数据成功：" + JSON.stringify(data));
+                    if (data.code) {
+                      searchList();
+                      layer.msg('删除数据成功', {icon: 1, time: 1000,});
+                    }
+                  }
+          );
+        }, function () {
+
+        });
+      });
+
+      //打开告警的编辑界面
+      $(".device_gaojing").on('click', function () {
+        var that = this;
+        showGaoJingEditLayer($(that).data("sourceid"));
+      });
+    }
+
+    //显示编辑弹出层
+    function searchList(currPage) {
+      console.log("开始查询租户list的信息...");
+      layer.load();   //loading
+      $.get(
+              getUrl,
+              {
+                "siteId": $("#search_select_site").val(),
+                "currPage": currPage || 1,
+                "searchKey": $(".search_input").val()
+              },
+              function (data) {
+                console.log("查询到的玩家的list信息:" + JSON.stringify(data));
+                laytpl(slist.innerHTML).render(data, function (html) {
+                  tableview.innerHTML = html;
+                  initClickEvent();   //渲染之后才能初始化按钮的信息，不然没有作用
+                  //分页
+                  laypage({
+                    cont: 'pageView'
+                    , pages: data.totalPage
+                    , skip: true
+                    , curr: currPage || 1 //当前页,
+                    , jump: function (obj, first) {
+                      if (!first) {
+                        searchList(obj.curr)
+                      }
+                    }
+                  });
+                  layer.closeAll('loading');   //关闭所有的loading
+                });
+              },
+              "json"
+      );
+    }
+
+    //显示编辑弹出层
+    function showEditLayer(sourceId) {
+      console.log("开始编辑租户的信息:sourceId" + sourceId);
+      layer.open({
+                type: 1
+                , title: '编辑租户'
+                , area: ['800px', '80%']
+                , shadeClose: true //开启遮罩关闭
+                , maxmin: true
+                , content: $('#layer_tenant_edit') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                , btn: ['取消', '提交']
+                , success: function (layero, index) {
+                  console.log("打开编辑窗口成功，是否新增？" + newTenant)
+                  if (newTenant) {
+                    //这里填充值
+                    renderDeviceParentSelect([[${sites[0].id}]]);
+                    form.render('select');
+                    $("#form_btn_reset").click();
+                    return;
+                  }
+
+                  //这里填充值
+                  var sourceIdSelector = "#source" + sourceId;
+                  var siteIdVal = $(sourceIdSelector).data("siteid");
+                  renderDeviceParentSelect(siteIdVal) //初始化父辈的select
+                  $("#eidt_layer_id").val($(sourceIdSelector).data("id"));
+                  $("#eidt_layer_parent").val($(sourceIdSelector).data("parent"));
+                  $("#eidt_layer_name").val($(sourceIdSelector).data("name"));
+                  $("#eidt_layer_siteId").val(siteIdVal);
+                  $("#eidt_layer_hardwareId").val($(sourceIdSelector).data("hardwareid"));
+                  $("#eidt_layer_phone").val($(sourceIdSelector).data("phone"));
+                  $("#eidt_layer_utemperature").val($(sourceIdSelector).data("utemperature"));
+                  $("#eidt_layer_upressure").val($(sourceIdSelector).data("upressure"));
+                  $("#eidt_layer_ustandard").val($(sourceIdSelector).data("ustandard"));
+                  $("#eidt_layer_urunning").val($(sourceIdSelector).data("urunning"));
+                  $("#eidt_layer_usummary").val($(sourceIdSelector).data("usummary"));
+                  $("#eidt_layer_usurplus").val($(sourceIdSelector).data("usurplus"));
+                  $("#eidt_layer_uanalog1").val($(sourceIdSelector).data("uanalog1"));
+                  $("#eidt_layer_uanalog2").val($(sourceIdSelector).data("uanalog2"));
+                  $("#eidt_layer_uanalog3").val($(sourceIdSelector).data("uanalog3"));
+                  $("#eidt_layer_uanalog4").val($(sourceIdSelector).data("uanalog4"));
+                  $("#eidt_layer_uswitch1").val($(sourceIdSelector).data("uswitch1"));
+                  $("#eidt_layer_uswitch2").val($(sourceIdSelector).data("uswitch2"));
+                  $("#eidt_layer_uswitch3").val($(sourceIdSelector).data("uswitch3"));
+                  $("#eidt_layer_uswitch4").val($(sourceIdSelector).data("uswitch4"));
+                  $("#eidt_layer_uac220").val($(sourceIdSelector).data("uac220"));
+                  $("#eidt_layer_ubattery").val($(sourceIdSelector).data("ubattery"));
+                  $("#eidt_layer_usolar").val($(sourceIdSelector).data("usolar"));
+
+                  var inputNameLogicElements = $('input[name="logic"]');
+                  var logic = $(sourceIdSelector).data("logic");  // logic 数据
+                  inputNameLogicElements.filter(['[value=', logic, ']'].join('')).next('div.layui-unselect.layui-form-radio').click();  // 直接触发 click
+                  form.render('select');
+                }
+                , yes: function (index, layero) {
+                  layer.close(index);
+                }
+                , btn2: function (index, layero) {
+                  $("#form_btn_submit").click();
+                  layer.close(index);
+                },
+              }
+      );
+    }
+
+    //显示告警编辑框
+    function showGaoJingEditLayer(sourceId) {
+      console.log("开始设备的告警的信息:sourceId" + sourceId);
+      layer.open({
+                type: 1
+                , title: '编辑租户'
+                , area: ['800px', '400px']
+                , shadeClose: true //开启遮罩关闭
+                , maxmin: true
+                , content: $('#layer_gaojing_edit') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                , btn: ['取消', '提交']
+                , success: function (layero, index) {
+                  //这里填充值
+                  var sourceIdSelector = "#source" + sourceId;
+                  $("#eidt_layer_gaojing_id").val($(sourceIdSelector).data("id"));
+                  $("#eidt_layer_standardFlowUpper").val($(sourceIdSelector).data("standardflowupper"));
+                  $("#eidt_layer_temperatureUpper").val($(sourceIdSelector).data("temperatureupper"));
+                  $("#eidt_layer_temperatureLow").val($(sourceIdSelector).data("temperaturelow"));
+                  $("#eidt_layer_pressureUpper").val($(sourceIdSelector).data("pressureupper"));
+                  $("#eidt_layer_pressureLow").val($(sourceIdSelector).data("pressurelow"));
+                }
+                , yes: function (index, layero) {
+                  layer.close(index);
+                }
+                , btn2: function (index, layero) {
+                  $("#form_btn_gaojing_submit").click();
+                  layer.close(index);
+                },
+              }
+      );
+    }
+  });
 
 </script>
 </html>

@@ -1,18 +1,21 @@
 package com.gasmonitor.config;
 
-import com.gasmonitor.service.login.LoginSuccHandler;
-import com.gasmonitor.service.security.CustomUserService;
+import com.gasmonitor.service.security.LoginSuccHandler;
+import com.gasmonitor.service.security.CustomUserDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationDetailsSource;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by saplmm on 2017/6/10.
@@ -28,10 +31,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private LoginSuccHandler loginSuccHandler;
 
-    @Bean
-    UserDetailsService customUserService() {
-        return new CustomUserService();
-    }
+    @Autowired
+    private AuthenticationProvider authenticationProvider;  //AuthenticationProvider提供登录验证处理逻辑，我们实现该接口编写自己的验证逻辑。
+
+
+    @Autowired
+    private AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails> authenticationDetailsSource;
+
+
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -40,7 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.headers().frameOptions().sameOrigin()
                 .and().authorizeRequests().antMatchers("/test/**").permitAll()
                 .and().authorizeRequests().anyRequest().authenticated() //4
-                .and().formLogin().loginPage("/login").failureUrl("/login?error").successHandler(loginSuccHandler).permitAll() //5
+                .and().formLogin().loginPage("/login").failureUrl("/login?error").successHandler(loginSuccHandler).authenticationDetailsSource(authenticationDetailsSource).permitAll() //5
                 .and().logout().logoutUrl("/logout").logoutSuccessUrl("/login").permitAll();
     }
 
@@ -53,7 +62,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .authoritiesByUsernameQuery("select username,role from roles where username = ?");
 
         log.info("进入到configure函数，开始认证...");
-        auth.userDetailsService(customUserService());
+        auth.userDetailsService(customUserDetailsService);
+        auth.authenticationProvider(authenticationProvider);
         //下边的方法 可以用于增加用户的md5摘要
 //        auth.userDetailsService(customUserService()).passwordEncoder(new PasswordEncoder() {
 //            @Override
@@ -67,10 +77,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                return false;
 //            }
 //        });
-//        auth.inMemoryAuthentication().withUser("user").password("user").roles("USER");
-//        auth.inMemoryAuthentication().withUser("wyf").password("wyf").roles("ADMIN");
-//        auth.inMemoryAuthentication().withUser("wisely").password("wisely").roles("ADMIN");
-//        auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
     }
 
     @Override

@@ -40,16 +40,17 @@ public class AjaxResult<T> {
     }
 
 
-    public AjaxResult(List<T> data) {
-        this();
-        this.data = data;
+    public static <T> AjaxResult<T> AjaxResultWithList(List<T> data) {
+        AjaxResult<T> r = new AjaxResult<T>();
+        r.data = data;
+        r.setPage(1);
+        r.setTotalPage(1);
         if (data == null) {
-            this.setTotal(0);
+            r.setTotal(0);
         } else {
-            this.setTotal(data.size());
+            r.setTotal(data.size());
         }
-        this.setPage(1);
-        this.setTotalPage(1);
+        return r;
     }
 
     public static <M> AjaxResult<M> NewAjaxResult(List<M> t, long total, int page) {
@@ -63,10 +64,14 @@ public class AjaxResult<T> {
 
     public static <M> AjaxResult<M> NewAjaxResult(Page<M> page) {
         AjaxResult<M> r = new AjaxResult<M>();
-        r.setData(page.getContent());
-        r.setPage(page.getNumber());
-        r.setTotalPage(page.getTotalPages());
-        r.setTotal(page.getTotalElements());
+        if (page != null) {
+            r.setData(page.getContent());
+            r.setPage(page.getNumber());
+            r.setTotalPage(page.getTotalPages());
+            r.setTotal(page.getTotalElements());
+        } else {
+            r.setData(new ArrayList<M>());
+        }
         return r;
     }
 
@@ -90,9 +95,11 @@ public class AjaxResult<T> {
         AjaxResult a = new AjaxResult();
         a.setCode(CODE_SUCC);
         a.setMsg(MSG_SUCC);
+        a.setData(new ArrayList());
+        a.setTotal(0);
+        a.setTotalPage(0);
         return a;
     }
-
 
     @Override
     public String toString() {

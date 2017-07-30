@@ -177,16 +177,16 @@
         showEditLayer(false, $(that).data("sourceid"));
       });
 
-        // 详情按钮被点击
-        $(document).on('click', '.site-detail', function() {
-            var sourceId = $(this).data('sourceid');
-            //
-            var sourceIdSelector = "#source" + sourceId;
-            var siteId = $(sourceIdSelector).data("id");
-            //
-            window.location.replace(['/site/sites-manage?siteId=', siteId].join(''));
+      // 详情按钮被点击
+      $(document).on('click', '.site-detail', function () {
+        var sourceId = $(this).data('sourceid');
+        //
+        var sourceIdSelector = "#source" + sourceId;
+        var siteId = $(sourceIdSelector).data("id");
+        //
+        window.location.replace(['/site/sites-manage?siteId=', siteId].join(''));
 
-        });
+      });
 
       $(".tenant_del").on('click', function () {
         console.log("开始删除租户的信息");

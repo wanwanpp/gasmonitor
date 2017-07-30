@@ -2,7 +2,7 @@ layui.use(['tools'], function () {
     layui.tools.indexLeftNavTopTab();
 });
 
-// Start: 测试 oneSocket
+// Start: 在父页面初始化 oneSocket
 (function() {
     layui.use(['jquery', 'oneSocket'], function() {
         var $ = layui.jquery;
@@ -11,4 +11,4 @@ layui.use(['tools'], function () {
         });
     });
 })();
-// End  : 测试 oneSocket
+// End  : 在父页面初始化 oneSocket

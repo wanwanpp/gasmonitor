@@ -1,0 +1,5 @@
+/* Start: layui-tree css 样式优化，使得叶子节点和非叶子节点 icon 对齐，而不是不整齐的叶子节点 icon 对齐非叶子节点展开收拢 icon */
+i.layui-icon.layui-tree-leaf {
+    margin-left: 22px;
+}
+/* End  : layui-tree css 样式优化，使得叶子节点和非叶子节点 icon 对齐，而不是不整齐的叶子节点 icon 对齐非叶子节点展开收拢 icon */
