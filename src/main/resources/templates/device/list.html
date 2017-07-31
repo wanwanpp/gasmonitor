@@ -532,8 +532,8 @@
         var sourceIdSelector = "#source" + sourceId;
         var hardwareId = $(sourceIdSelector).data("hardwareid");
         //
-        window.location.replace(['/device/devices-manage?hardwareId=', hardwareId].join(''));
-
+        // window.location.replace(['/device/devices-manage?hardwareId=', hardwareId].join(''));
+          mytools.jumpLeftNavTab(['/device/devices-manage?hardwareId=', hardwareId].join(''));
       });
 
       $(".tenant_del").on('click', function () {
