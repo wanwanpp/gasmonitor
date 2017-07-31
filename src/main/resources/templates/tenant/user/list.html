@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="utf-8"/>
   <title>站点列表</title>
@@ -14,8 +15,13 @@
 
 </head>
 <body class="childrenBody">
-<blockquote class="layui-elem-quote news_search">
+<blockquote class="layui-elem-quote news_search layui-form ">
   <div class="layui-inline">
+    <div class="layui-input-inline" >
+      <select id="search_select_tenant" name="tenantId" lay-verify="required">
+        <option th:each="prod,iterStat : ${tenants}" th:value="${prod.id}" th:text=${prod.name}></option>
+      </select>
+    </div>
     <div class="layui-input-inline">
       <input type="text" value="" placeholder="请输入关键字" class="layui-input search_input"/>
     </div>
@@ -227,7 +233,11 @@
       layer.load();   //loading
       $.get(
               getUrl,
-              {"currPage": currPage || 1, "searchKey": $(".search_input").val()},
+              {
+                "currPage": currPage || 1
+                , "searchKey": $(".search_input").val()
+                , "tenantId": $("#search_select_tenant").val()
+              },
               function (data) {
                 console.log("查询到的玩家的list信息:" + JSON.stringify(data));
                 laytpl(slist.innerHTML).render(data, function (html) {

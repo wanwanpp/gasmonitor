@@ -1,9 +1,12 @@
 package com.gasmonitor.controller.tenant;
 
+import com.gasmonitor.dao.SiteRepository;
 import com.gasmonitor.dao.TenantRepository;
 import com.gasmonitor.dao.UserRepository;
+import com.gasmonitor.entity.Site;
 import com.gasmonitor.entity.Tenant;
 import com.gasmonitor.entity.User;
+import com.gasmonitor.exception.TipsException;
 import com.gasmonitor.pros.Role;
 import com.gasmonitor.service.tenant.TenantService;
 import com.gasmonitor.service.user.UserService;
@@ -15,11 +18,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.gasmonitor.utils.PageUtils.p;
 
@@ -39,6 +46,9 @@ public class TenantController {
     private TenantService tenantService;
     @Autowired
     private UserService userSerevice;
+    @Autowired
+    private SiteRepository siteRepository;
+
 
     @RequestMapping(value = "/info")
     public String info() {
@@ -108,23 +118,42 @@ public class TenantController {
 
 
     @RequestMapping(value = "/user/list")
-    public String userList() {
-        return "tenant/user/list";
+    public String userList(ModelMap modelMap, HttpSession session) {
+        User user = SessionUtils.getUser(session);
+        List<Tenant> tenants = null;//所有的租户
+        if (user.getRole().equalsIgnoreCase(Role.ROLE_TENANTADMIN)) {
+            //如果是租户管理员:select 只显示自己租户所在的公司
+            tenants = new ArrayList<>();
+            Tenant t = tenantRepository.findOne(user.getTenantId());
+            if (t != null) {
+                tenants.add(t);
+            }
+        } else if (user.getRole().equalsIgnoreCase(Role.ROLE_SYSTEM)) {
+            //如果是租户管理员:select 显示所有的租户
+            tenants = tenantRepository.findAll();
+        }
+        //开始查询
+        if (tenants == null || tenants.size() <= 0) {
+            throw new TipsException("请先创建租户");
+        } else {
+            modelMap.addAttribute("tenants", tenants);
+            return "tenant/user/list";
+        }
     }
 
 
     //根据角色的不同显示不同的结果
     @RequestMapping(value = "/user/ajax/list")
     @ResponseBody
-    public AjaxResult<User> userAjaxList(int currPage, String searchKey, HttpSession session) {
+    public AjaxResult<User> userAjaxList(Long tenantId, int currPage, String searchKey, HttpSession session) {
         User user = SessionUtils.getUser(session);
         logger.info("用户{}的权限{}开始查询所有的操作员", user.getId(), user.getRole());
         Page<User> page = null;
-        if (user.getRole().equalsIgnoreCase(Role.ROLE_TENANTADMIN)) {
-            page = userRepository.findByTenantIdAndUsernameContaining(user.getTenantId(), searchKey, PageUtils.p(currPage));
-        } else if (user.getRole().equalsIgnoreCase(Role.ROLE_SYSTEM)) {
-            page = userRepository.findAll(PageUtils.p(currPage));
-        }
+//        if (user.getRole().equalsIgnoreCase(Role.ROLE_TENANTADMIN)) {
+        page = userRepository.findByTenantIdAndUsernameContaining(tenantId, searchKey, PageUtils.p(currPage));
+//        } else if (user.getRole().equalsIgnoreCase(Role.ROLE_SYSTEM)) {
+//            page = userRepository.findAll(PageUtils.p(currPage));
+//        }
         AjaxResult<User> result = AjaxResult.NewAjaxResult(page);
         return result;
     }
