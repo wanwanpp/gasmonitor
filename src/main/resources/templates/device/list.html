@@ -488,6 +488,13 @@
     });
 
     //第一次加载数据
+      // Start: 如果有 urlSiteId ，则对 select 进行初始化
+      var urlSiteId = mytools.getQueryString('siteId');
+      if(urlSiteId) {
+          $("#search_select_site").val(urlSiteId);
+          form.render();
+      }
+      // End  : 如果有 urlSiteId ，则对 select 进行初始化
     searchList();
 
 
