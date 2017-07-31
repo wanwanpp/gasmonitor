@@ -336,11 +336,12 @@
     //  <![data[
 
     (function() {
-        layui.use(['laytpl', 'jquery', 'layer', 'form'], function() {
+        layui.use(['laytpl', 'jquery', 'layer', 'form', 'tools'], function() {
             var laytpl = layui.laytpl;
             var $ = layui.jquery;
             var layer = layui.layer;
             var form = layui.form();
+            var tools = layui.tools;
 
             //第一次加载数据
             searchList();
@@ -420,7 +421,8 @@
                 var thisBtn = $(this);
                 var siteId = thisBtn.data('id');
                 //
-                showLayerContentTplInLayer('根据站点查询设备', ['siteId: ', siteId].join(''))
+                // showLayerContentTplInLayer('根据站点查询设备', ['siteId: ', siteId].join(''))
+                tools.jumpLeftNavTab(['/device/list?siteId=', siteId].join(''))
             });
             // End  : 【查看设备】按钮被点击
 
