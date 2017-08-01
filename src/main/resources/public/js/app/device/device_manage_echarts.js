@@ -9,33 +9,40 @@
             , laydate = layui.laydate;
 
         // Start: 所有被本模块调用的函数定义在此
-        function getTodayStartDateTime() {
+        function getTodayStartDateTime(offsetTime) {
             var date = new Date();
             date.setHours(8);
             date.setMinutes(0);
             date.setSeconds(0);
             date.setMilliseconds(0);
+            if(offsetTime) {
+                date = new Date(date.getTime() + offsetTime);
+            }
             return date;
         }
         var data = [];
+        // var dataInit = [];
         var testRefreshData = function() {
-            layer.msg('testRefreshData');
+            layer.msg('testRefreshData index: ' + testRefreshData.index);
             // data.shift();
-            data.push(randomData(1));
+            data.push(randomData(testRefreshData.index++));
             myChartsArr[0].setOption({
-                series: [{
-                    data: data
-                }]
+                series: [
+                    {
+                        data: data
+                    }
+                ]
             });
         };
-        setInterval(testRefreshData, 5000);
+        testRefreshData.index = 1;
+        setInterval(testRefreshData, 2000);
         // var now = +new Date(2017, 8, 1);
         var now = getTodayStartDateTime();
         var oneDay = 24 * 3600 * 1000, oneHour = oneDay / 24, oneMin = oneHour / 60, oneSec = oneMin / 60;
         var value = Math.random() * 1000;
         function randomData(index_i, isInit) {
             var tmp_now = now;
-            now = new Date(+now + (isInit ? oneHour : oneMin) * (isInit ? 1 : index_i));
+            now = new Date(+now + (isInit ? oneDay : oneMin) * (isInit ? 1 : index_i));
             value = isInit ? 0 : (value + Math.random() * 21 - 10);
             return {
                 name: tmp_now.toString(),
@@ -48,9 +55,9 @@
                 ]
             }
         }
-        for (var i = 0, max_i = 24/* * 60 * 60*/; i <= max_i; i++) {
-            data.push(randomData(i, true));
-        }
+        /*for (var i = 0, max_i = 2/!* * 60 * 60*!/; i <= max_i; i++) {
+            dataInit.push(randomData(i, true));
+        }*/
         now = getTodayStartDateTime();
 
         function genOption(hardwareId, subTitle) {
@@ -140,6 +147,8 @@
                         show: false
                     },
                     name: '时间',
+                    min: laydate.now(getTodayStartDateTime().getTime(), 'YYYY-MM-DD hh:mm:ss'),
+                    max: laydate.now(getTodayStartDateTime(oneDay).getTime(), 'YYYY-MM-DD hh:mm:ss'),
                     boundaryGap: false/*,
                     data: (function (){
                         var now = getTodayStartDateTime();
@@ -183,21 +192,21 @@
                             return res;
                         })()*/
                     }/*,
-                {
-                    name:'summary',
-                    type:'line',
-                    areaStyle: {normal: {}},
-                    data: []
-                    /!*data:(function (){
-                        var res = [];
-                        var len = 0;
-                        while (len < 10) {
-                            res.push((Math.random()*1000 + 5).toFixed(1) - 0);
-                            len++;
-                        }
-                        return res;
-                    })()*!/
-                }*/
+                    {
+                        name:'summary',
+                        type:'line',
+                        areaStyle: {normal: {}},
+                        data: dataInit
+                        /!*data:(function (){
+                            var res = [];
+                            var len = 0;
+                            while (len < 10) {
+                                res.push((Math.random()*1000 + 5).toFixed(1) - 0);
+                                len++;
+                            }
+                            return res;
+                        })()*!/
+                    }*/
                 ]
             };
 
