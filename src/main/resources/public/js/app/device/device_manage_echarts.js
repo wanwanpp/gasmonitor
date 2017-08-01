@@ -8,6 +8,7 @@
                 text: subTitle,
                 subtext: ['[', hardwareId, ']'].join('')
             },
+            backgroundColor: '#CCFFCC',
             tooltip: {
                 trigger: 'axis',
                 axisPointer: {
@@ -105,7 +106,7 @@
                 {
                     name: subTitle,
                     type:'line',
-                    areaStyle: {normal: {}},
+                    // areaStyle: {normal: {}},
                     data: []
                     /*data:(function (){
                         var res = [];
