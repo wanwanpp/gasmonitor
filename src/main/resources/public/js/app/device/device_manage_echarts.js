@@ -18,14 +18,25 @@
             return date;
         }
         var data = [];
+        var testRefreshData = function() {
+            layer.msg('testRefreshData');
+            // data.shift();
+            data.push(randomData(1));
+            myChartsArr[0].setOption({
+                series: [{
+                    data: data
+                }]
+            });
+        };
+        setInterval(testRefreshData, 5000);
         // var now = +new Date(2017, 8, 1);
         var now = getTodayStartDateTime();
-        var oneDay = 24 * 3600 * 1000, oneHour = oneDay / 24, oneMin = oneHour / 60;
+        var oneDay = 24 * 3600 * 1000, oneHour = oneDay / 24, oneMin = oneHour / 60, oneSec = oneMin / 60;
         var value = Math.random() * 1000;
-        function randomData(index_i) {
+        function randomData(index_i, isInit) {
             var tmp_now = now;
-            now = new Date(+now + oneMin * index_i);
-            value = value + Math.random() * 21 - 10;
+            now = new Date(+now + (isInit ? oneHour : oneMin) * (isInit ? 1 : index_i));
+            value = isInit ? 0 : (value + Math.random() * 21 - 10);
             return {
                 name: tmp_now.toString(),
                 value: [
@@ -37,9 +48,10 @@
                 ]
             }
         }
-        for (var i = 0, max_i = 24/* * 60*/; i <= max_i; i++) {
-            data.push(randomData(i));
+        for (var i = 0, max_i = 24/* * 60 * 60*/; i <= max_i; i++) {
+            data.push(randomData(i, true));
         }
+        now = getTodayStartDateTime();
 
         function genOption(hardwareId, subTitle) {
             var option = {
@@ -129,16 +141,16 @@
                     },
                     name: '时间',
                     boundaryGap: false/*,
-                data: (function (){
-                    var now = new Date();
-                    var res = [];
-                    var len = 10;
-                    while (len--) {
-                        res.unshift(now.toLocaleTimeString().replace(/^\D*!/,''));
-                        now = new Date(now - 2000);
-                    }
-                    return res;
-                })()*/
+                    data: (function (){
+                        var now = getTodayStartDateTime();
+                        var res = [];
+                        var len = 25;
+                        while (len--) {
+                            res.push(laydate.now(now.getTime(), 'YYYY-MM-DD hh:mm:ss'));
+                            now = new Date(+now + oneHour);
+                        }
+                        return res;
+                    })()*/
                 },
                 yAxis: {
                     boundaryGap: [0, '100%'],
