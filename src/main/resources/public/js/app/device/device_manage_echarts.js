@@ -20,9 +20,9 @@
             }
             return date;
         }
-        var data = [];
+        // var data = [];
         // var dataInit = [];
-        var testRefreshData = function() {
+        /*var testRefreshData = function() {
             layer.msg('testRefreshData index: ' + testRefreshData.index);
             // data.shift();
             data.push(randomData(testRefreshData.index++));
@@ -35,8 +35,7 @@
             });
         };
         testRefreshData.index = 1;
-        setInterval(testRefreshData, 2000);
-        // var now = +new Date(2017, 8, 1);
+        setInterval(testRefreshData, 2000);*/
         var now = getTodayStartDateTime();
         var oneDay = 24 * 3600 * 1000, oneHour = oneDay / 24, oneMin = oneHour / 60, oneSec = oneMin / 60;
         var value = Math.random() * 1000;
@@ -121,7 +120,6 @@
                                         //按钮【按钮二】的回调
                                         //return false 开启该代码可禁止点击该按钮关闭
                                     }
-                                    ,
                                 });
                             }
                         }
@@ -182,7 +180,7 @@
                         name: subTitle,
                         type:'line',
                         // areaStyle: {normal: {}},
-                        data: data
+                        data: []
                         /*data:(function (){
                             var res = [];
                             var len = 10;
@@ -213,26 +211,47 @@
             return option;
         }
         // render function
-        function renderUpdatedData2Charts(myChart2Render, myChart2RenderOption, jDataHardwareId, jDataFieldVal, jDataSummaryVal) {
-            if(!myChart2Render || !myChart2RenderOption || !jDataHardwareId || (!jDataFieldVal && jDataFieldVal !== 0) || (!jDataSummaryVal && jDataSummaryVal !== 0)) {
+        function renderUpdatedData2Charts(myChart2Render, myChart2RenderOption, jDataHardwareId, jDataFieldVal
+                                          , jDataSummaryVal, jDataPointTimeVal) {
+            if(!myChart2Render || !myChart2RenderOption || !jDataHardwareId || (!jDataFieldVal && jDataFieldVal !== 0)
+                || (!jDataSummaryVal && jDataSummaryVal !== 0) || (!jDataPointTimeVal && jDataPointTimeVal !== 0)) {
                 console.error('[renderUpdatedData2Charts] 参数检查有误：');
                 console.info(['[renderUpdatedData2Charts] myChart2Render: ',        myChart2Render      ].join(''));
                 console.info(['[renderUpdatedData2Charts] myChart2RenderOption: ',  myChart2RenderOption].join(''));
                 console.info(['[renderUpdatedData2Charts] jDataHardwareId: ',       jDataHardwareId     ].join(''));
                 console.info(['[renderUpdatedData2Charts] jDataFieldVal: ',         jDataFieldVal       ].join(''));
                 console.info(['[renderUpdatedData2Charts] jDataSummaryVal: ',       jDataSummaryVal     ].join(''));
+                console.info(['[renderUpdatedData2Charts] jDataPointTimeVal: ',     jDataPointTimeVal   ].join(''));
                 return ;
             }
 
-            var axisData = (new Date()).toLocaleTimeString().replace(/^\D*/,'');
+            // var axisData = (new Date()).toLocaleTimeString().replace(/^\D*/,'');
             // var axisData = jData.timeStr;
+            var jDataPointTime = new Date(jDataPointTimeVal);
 
             myChart2RenderOption.title.subtext = ['[', jDataHardwareId, ']'].join('');
 
             var data0 = myChart2RenderOption.series[0].data;
+
+            data0.push({
+                name: jDataPointTime.toString(),
+                value: [
+                    laydate.now(jDataPointTime.getTime(), 'YYYY-MM-DD hh:mm:ss'),
+                    Math.round(jDataFieldVal)
+                ]
+            });
+
+            myChart2Render.setOption({
+                series: [
+                    {
+                        data: data0
+                    }
+                ]
+            });
+
             // var data1 = myChart2RenderOption.series[1].data;
 
-            var max = 10;
+            /*var max = 10;
 
             if(data0.length >= max) {
                 data0.shift();
@@ -240,11 +259,11 @@
             // data0.push(Math.round(Math.random() * 1000));
             data0.push(jDataFieldVal);
 
-            /*if(data1.length >= 10) {
+            /!*if(data1.length >= 10) {
                 data1.shift();
             }
             // data1.push((Math.random() * 1000 + 5).toFixed(1) - 0);
-            data1.push(jDataSummaryVal);*/
+            data1.push(jDataSummaryVal);*!/
 
             var xAxis0Data = myChart2RenderOption.xAxis[0].data;
             if(xAxis0Data && xAxis0Data.length && xAxis0Data.length >= max) {
@@ -252,14 +271,14 @@
             }
             xAxis0Data.push(axisData);
 
-            myChart2Render.setOption(myChart2RenderOption);
+            myChart2Render.setOption(myChart2RenderOption);*/
         }
         // init function
         function renderInitData2Charts(myChart2Render, myChart2RenderOption) {
             if(!myChart2Render || !myChart2RenderOption) {
-                console.error('[renderUpdatedData2Charts] 参数检查有误：');
-                console.info(['[renderUpdatedData2Charts] myChart2Render: ',        myChart2Render      ].join(''));
-                console.info(['[renderUpdatedData2Charts] myChart2RenderOption: ',  myChart2RenderOption].join(''));
+                console.error('[renderInitData2Charts] 参数检查有误：');
+                console.info(['[renderInitData2Charts] myChart2Render: ',        myChart2Render      ].join(''));
+                console.info(['[renderInitData2Charts] myChart2RenderOption: ',  myChart2RenderOption].join(''));
                 return ;
             }
 
@@ -413,6 +432,7 @@
                     var jData = JSON.parse(data);
                     console.log('[documentEvent oneSocketEvent] jData: ');
                     var jDataGasEvent = jData.gasEvent;
+                    console.log(jDataGasEvent);
                     /*myChartsArr.forEach(function(myChartItem) {
                      renderUpdatedData2Charts(myChartItem, jData);
                      });*/
@@ -422,10 +442,14 @@
                         return ;
                     }
                     // End  : 判断 hardwareId 相符，才进行刷新
-                    renderUpdatedData2Charts(myChartsArr[0], optionsArr[0], jDataGasEvent.hardwareId, jDataGasEvent.temperature,   jDataGasEvent.summary);
-                    renderUpdatedData2Charts(myChartsArr[1], optionsArr[1], jDataGasEvent.hardwareId, jDataGasEvent.pressure,      jDataGasEvent.summary);
-                    renderUpdatedData2Charts(myChartsArr[2], optionsArr[2], jDataGasEvent.hardwareId, jDataGasEvent.standard,      jDataGasEvent.summary);
-                    renderUpdatedData2Charts(myChartsArr[3], optionsArr[3], jDataGasEvent.hardwareId, jDataGasEvent.running,       jDataGasEvent.summary);
+                    renderUpdatedData2Charts(myChartsArr[0], optionsArr[0], jDataGasEvent.hardwareId, jDataGasEvent.temperature
+                        , jDataGasEvent.summary, jDataGasEvent.pointtime);
+                    renderUpdatedData2Charts(myChartsArr[1], optionsArr[1], jDataGasEvent.hardwareId, jDataGasEvent.pressure
+                        , jDataGasEvent.summary, jDataGasEvent.pointtime);
+                    renderUpdatedData2Charts(myChartsArr[2], optionsArr[2], jDataGasEvent.hardwareId, jDataGasEvent.standard
+                        , jDataGasEvent.summary, jDataGasEvent.pointtime);
+                    renderUpdatedData2Charts(myChartsArr[3], optionsArr[3], jDataGasEvent.hardwareId, jDataGasEvent.running
+                        , jDataGasEvent.summary, jDataGasEvent.pointtime);
                 });
                 oneSocket.setStation(hardwareId);
                 /*$(oneSocket.EventEmitter).on(oneSocketEvent.GM_EVENT_handleNotifications, '', function(event, data) {
