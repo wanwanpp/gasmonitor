@@ -47,7 +47,7 @@
     <table class="layui-table">
       <colgroup>
         <col width="5%"/>
-        <col width="5%"/>
+        <col width="10%"/>
         <col width="5%"/>
         <col width="10%"/>
         <col width="10%"/>
@@ -116,12 +116,18 @@
           </button>
 
           <button class="layui-btn layui-btn-mini device_gaojing" data-sourceid="{{item.id}}">
-            <i class="layui-icon">&#xe642;</i>告警设置
+            <i class="layui-icon">&#xe642;</i>告警
           </button>
+
+          <button class="layui-btn layui-btn-danger layui-btn-mini device_status" data-sourceid="{{item.id}}">
+            <i class="layui-icon">&#xe640;</i>状态
+          </button>
+
 
           <button class="layui-btn layui-btn-danger layui-btn-mini tenant_del" data-sourceid="{{item.id}}">
             <i class="layui-icon">&#xe640;</i>删除
           </button>
+
         </td>
       </tr>
       {{# }); }}
@@ -528,6 +534,17 @@
         window.location.replace(['/device/devices-manage?hardwareId=', hardwareId].join(''));
 
       });
+      $(".device_status").on('click', function () {
+        var that = this
+        layer.tips(
+                '<button class="layui-btn" style="margin-bottom: 2px">正常</button><br>' +
+                '<button class="layui-btn" style="margin-bottom: 2px">故障</button><br>' +
+                '<button class="layui-btn" style="margin-bottom: 2px">停用</button>',
+                that, {
+                  tips: [1, '#ffffff'],
+                  time: 4000
+                });
+      })
 
       $(".tenant_del").on('click', function () {
         console.log("开始删除租户的信息");
