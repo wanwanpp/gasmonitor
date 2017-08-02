@@ -154,15 +154,17 @@
                 },
                 tooltip: {
                     trigger: 'axis',
+                    formatter: function (params) {
+                        params = params[0];
+                        var date = new Date(params.name);
+                        return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' : ' + params.value[1];
+                    },
                     axisPointer: {
-                        type: 'cross',
-                        label: {
-                            backgroundColor: '#6a7985'
-                        }
+                        animation: false
                     }
                 },
                 legend: {
-                    data:['今日压力', '历史压力']
+                    data:['今日压力'/*, '历史压力'*/]
                 },
                 toolbox: {
                     show: true,
@@ -188,38 +190,139 @@
                     top: 75,
                     containLabel: true
                 },
-                xAxis: [
+                xAxis: {
+                    type: 'time',
+                    name: '时间',
+                    splitLine: {
+                        show: false
+                    },
+                    data: (function (){
+                        var now = new Date();
+                        var res = [];
+                        var len = 10;
+                        while (len--) {
+                            res.unshift(now.toLocaleTimeString().replace(/^\D*/,''));
+                            now = new Date(now - 2000);
+                        }
+                        return res;
+                    })()
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '压力值',
+                    nameGap: 8,
+                    boundaryGap: [0, '100%'],
+                    splitLine: {
+                        show: false
+                    }
+                },
+                series: [{
+                    name:'今日压力',
+                    type: 'line',
+                    showSymbol: false,
+                    hoverAnimation: false,
+                    data:(function (){
+                        var res = [];
+                        var len = 10;
+                        while (len--) {
+                            res.push(Math.round(Math.random() * 1000));
+                        }
+                        return res;
+                    })()
+                }]
+                //
+                /*title: {
+                    text: '设备监测曲线图',
+                    subtext: '[设备或站点名]'
+                },*/
+                /*tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross',
+                        label: {
+                            backgroundColor: '#6a7985'
+                        }
+                    }
+                },*/
+                /*tooltip: {
+                    trigger: 'axis',
+                    /!*formatter: function (params) {
+                        params = params[0];
+                        var date = new Date(params.name);
+                        return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' : ' + params.value[1];
+                    },*!/
+                    axisPointer: {
+                        animation: false
+                    }
+                },*/
+                /*legend: {
+                    data:['今日压力'/!*, '历史压力'*!/]
+                },*/
+                /*toolbox: {
+                    show: true,
+                    feature: {
+                        dataZoom: {
+                            yAxisIndex: 'none'
+                        },
+                        dataView: {readOnly: false},
+                        // magicType: {type: ['line', 'bar']},
+                        restore: {},
+                        saveAsImage: {}
+                    }
+                },*/
+                /*dataZoom: {
+                    show: false,
+                    start: 0,
+                    end: 100
+                },
+                grid: {
+                    left: '0%',
+                    right: '6%',
+                    bottom: '0%',
+                    top: 75,
+                    containLabel: true
+                },*/
+                /*xAxis: [
                     {
                         type: 'category',
                         name: '时间',
                         boundaryGap: false,
+                        splitLine: {
+                            show: false
+                        },
                         data: (function (){
                             var now = new Date();
                             var res = [];
                             var len = 10;
                             while (len--) {
-                                res.unshift(now.toLocaleTimeString().replace(/^\D*/,''));
+                                res.unshift(now.toLocaleTimeString().replace(/^\D*!/,''));
                                 now = new Date(now - 2000);
                             }
                             return res;
                         })()
                     }
-                ],
-                yAxis: [
+                ],*/
+                /*yAxis: [
                     {
                         type: 'value',
-                        scale: true,
+                        // scale: true,
                         name: '压力值',
                         nameGap: 8,
                         min: 0,
-                        boundaryGap: [0.2, 0.2]
+                        // boundaryGap: [0.2, 0.2]
+                        boundaryGap: [0, '100%'],
+                        splitLine: {
+                            show: false
+                        }
                     }
                 ],
                 series: [
                     {
                         name:'今日压力',
                         type:'line',
-                        areaStyle: {normal: {}},
+                        // areaStyle: {normal: {}},
+                        showSymbol: false,
+                        hoverAnimation: false,
                         data:(function (){
                             var res = [];
                             var len = 10;
@@ -228,7 +331,7 @@
                             }
                             return res;
                         })()
-                    },
+                    }/!*,
                     {
                         name:'历史压力',
                         type:'line',
@@ -242,8 +345,8 @@
                             }
                             return res;
                         })()
-                    }
-                ]
+                    }*!/
+                ]*/
             };
 
             // 测试 demo ： 定时刷新
@@ -264,16 +367,16 @@
                 var axisData = jData.timeStr;
 
                 var data0 = option.series[0].data;
-                var data1 = option.series[1].data;
+                // var data1 = option.series[1].data;
                 data0.shift();
                 // data0.push(Math.round(Math.random() * 1000));
                 data0.push(jData.data0);
-                data1.shift();
+                // data1.shift();
                 // data1.push((Math.random() * 1000 + 5).toFixed(1) - 0);
-                data1.push(jData.data1);
+                // data1.push(jData.data1);
 
-                option.xAxis[0].data.shift();
-                option.xAxis[0].data.push(axisData);
+                option.xAxis/*[0]*/.data.shift();
+                option.xAxis/*[0]*/.data.push(axisData);
 
                 myChart.setOption(option);
             }
@@ -336,19 +439,18 @@
     //  <![data[
 
     (function() {
-        layui.use(['laytpl', 'jquery', 'layer', 'form'], function() {
+        layui.use(['laytpl', 'jquery', 'layer', 'form', 'tools'], function() {
             var laytpl = layui.laytpl;
             var $ = layui.jquery;
             var layer = layui.layer;
             var form = layui.form();
+            var tools = layui.tools;
 
             //第一次加载数据
-            searchList();
+            // searchList();
 
             // 站点 marker map
-            var sitesId2MarkerMap = {};
-
-            function searchList(currPage) {
+            /*function searchList(currPage) {
                 console.log("开始查询站点 list 的信息 ...");
                 layer.load();   // loading
                 $.get(
@@ -412,7 +514,7 @@
                         ,
                     });
                 });
-            }
+            }*/
             // End  : 展示 layerContent_tpl 于 layer 中
 
             // Start: 【查看设备】按钮被点击
@@ -420,7 +522,8 @@
                 var thisBtn = $(this);
                 var siteId = thisBtn.data('id');
                 //
-                showLayerContentTplInLayer('根据站点查询设备', ['siteId: ', siteId].join(''))
+                // showLayerContentTplInLayer('根据站点查询设备', ['siteId: ', siteId].join(''))
+                tools.jumpLeftNavTab(['/device/list?siteId=', siteId].join(''))
             });
             // End  : 【查看设备】按钮被点击
 

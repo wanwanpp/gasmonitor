@@ -157,8 +157,9 @@
             var siteId = thisBtn.data('id')
                 , siteName = thisBtn.data('name');
             //
-            showLayerContentTplInLayer(['根据站点查询设备【站点： ', siteName, '】'].join('')
-                , ['siteId: ', siteId].join(''))
+            /*showLayerContentTplInLayer(['根据站点查询设备【站点： ', siteName, '】'].join('')
+                , ['siteId: ', siteId].join(''))*/
+            tools.jumpLeftNavTab(['/device/list?siteId=', siteId].join(''));
         });
 
         /**

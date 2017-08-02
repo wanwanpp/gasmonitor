@@ -494,6 +494,13 @@
     });
 
     //第一次加载数据
+      // Start: 如果有 urlSiteId ，则对 select 进行初始化
+      var urlSiteId = mytools.getQueryString('siteId');
+      if(urlSiteId) {
+          $("#search_select_site").val(urlSiteId);
+          form.render();
+      }
+      // End  : 如果有 urlSiteId ，则对 select 进行初始化
     searchList();
 
 
@@ -531,8 +538,8 @@
         var sourceIdSelector = "#source" + sourceId;
         var hardwareId = $(sourceIdSelector).data("hardwareid");
         //
-        window.location.replace(['/device/devices-manage?hardwareId=', hardwareId].join(''));
-
+        // window.location.replace(['/device/devices-manage?hardwareId=', hardwareId].join(''));
+          mytools.jumpLeftNavTab(['/device/devices-manage?hardwareId=', hardwareId].join(''));
       });
       $(".device_status").on('click', function () {
         var that = this

@@ -141,7 +141,7 @@
 
 <script type="text/javascript" src="/layui/layui.js"></script>
 <script type="text/javascript">
-  layui.use(['laytpl', 'jquery', 'layer', 'laypage'], function () {
+  layui.use(['laytpl', 'jquery', 'layer', 'laypage', 'tools'], function () {
     console.log("开始执行渲染模板");
     var laytpl = layui.laytpl;
     var $ = layui.jquery;
@@ -151,6 +151,7 @@
     var rmUrl = '/site/ajax/remove';
     var layer = layui.layer;
     var laypage = layui.laypage;
+    var tools = layui.tools;
 
     //第一次加载数据
     searchList();
@@ -184,8 +185,8 @@
         var sourceIdSelector = "#source" + sourceId;
         var siteId = $(sourceIdSelector).data("id");
         //
-        window.location.replace(['/site/sites-manage?siteId=', siteId].join(''));
-
+        // window.location.replace(['/site/sites-manage?siteId=', siteId].join(''));
+          tools.jumpLeftNavTab(['/site/sites-manage?siteId=', siteId].join(''));
       });
 
       $(".tenant_del").on('click', function () {
