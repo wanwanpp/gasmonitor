@@ -108,17 +108,13 @@
                                     , shadeClose: true //开启遮罩关闭
                                     , maxmin: true
                                     , content: '折线图对比 content'
-                                    , btn: ['取消', '提交']
+                                    , btn: ['关闭']
                                     , yes: function (index, layero) {
-                                        layer.msg('点击了按钮 取消');
+                                        // console.log(layero);
+                                        layer.msg('点击了按钮 关闭');
                                         //按钮【按钮一】的回调
                                         layer.close(index);
                                         // alert("点击了按钮1");
-                                    }
-                                    , btn2: function (index, layero) {
-                                        layer.msg("点击了按钮 提交");
-                                        //按钮【按钮二】的回调
-                                        //return false 开启该代码可禁止点击该按钮关闭
                                     }
                                 });
                             }
