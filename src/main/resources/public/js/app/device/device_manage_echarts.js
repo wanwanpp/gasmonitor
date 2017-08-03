@@ -101,21 +101,131 @@
                             title: '对比',
                             icon: 'path://M247.1424 794.9824c-1.0752 0-2.176-0.0768-3.2768-0.2304-10.8032-1.3568-19.6096-9.3952-21.9648-20.0448L112.64 282.112c-3.0976-13.952 5.7088-27.7504 19.6608-30.848 13.8752-3.1232 27.7504 5.7088 30.848 19.6608l93.6704 422.3232 218.5472-428.4928c6.5024-12.7232 22.016-17.792 34.7904-11.2896 12.7232 6.5024 17.7664 22.0672 11.2896 34.7904l-251.2384 492.6208C265.7024 789.6064 256.768 794.9824 247.1424 794.9824zM669.184 793.7792c-4.8128 0-9.7024-0.128-14.6176-0.3584-58.4448-3.0976-104.9344-22.912-134.4-57.3696-24.1664-28.2112-34.8416-63.7696-30.848-102.784l0.5888-5.0176c1.9712-14.1568 14.9248-24.0128 29.2096-22.0672 14.1568 1.9712 24.0128 15.0272 22.0672 29.2096l-0.3584 3.1488c-2.5088 24.576 3.9424 46.6432 18.6624 63.8208 20.0704 23.424 53.888 37.0432 97.8432 39.3728 85.9648 4.48 151.8848-41.9584 169.9584-87.9616 18.0736-45.9776-27.6992-74.7776-48.1792-85.0176-10.3424-5.1712-31.4624-10.9056-53.7856-16.9984-65.3312-17.7664-146.6368-39.8848-174.8736-95.0784-12.1088-23.6288-12.8256-49.9968-2.176-78.336 19.0208-50.56 51.1488-86.2464 95.488-106.0096 51.5072-22.9632 119.8848-22.0416 182.8608 2.5344 75.8016 29.568 89.7792 108.3136 86.5792 145.8176-1.2032 14.2336-13.568 24.8064-27.9808 23.6032-14.208-1.2032-24.7296-13.6448-23.6032-27.8528l0 0c0.2304-2.8672 4.5568-70.5792-53.7856-93.3376-50.3552-19.6352-103.7824-20.9664-142.976-3.4816-31.2576 13.9264-54.1696 39.8592-68.1472 76.9792-7.1936 19.072-3.5584 30.0032-0.2048 36.5568 17.792 34.816 92.7488 55.1936 142.3872 68.7104 26.0096 7.0656 48.4352 13.1584 63.36 20.6336 68.1728 34.0992 96.2304 91.648 73.1904 150.2208C851.2256 734.2848 773.4272 793.7792 669.184 793.7792zM1024 214.6048 1024 732.928c0 14.08-11.52 25.6-25.6 25.6s-25.6-11.52-25.6-25.6L972.8 214.6048c0-33.536-28.416-60.928-61.952-60.928L112.128 153.6768C78.592 153.6768 51.2 178.2528 51.2 211.7888l0 597.8624c0 33.536 27.392 60.928 60.928 60.928l742.7584 0c14.08 0 25.6 11.52 25.6 25.6s-11.52 25.6-25.6 25.6L112.128 921.7792c-61.952 0-112.128-50.176-112.128-112.128L0 211.7888c0-61.952 50.176-109.312 112.128-109.312l798.72 0C972.544 102.4768 1024 152.6528 1024 214.6048z',
                             onclick: function () {
-                                layer.open({
-                                    type: 1
-                                    , title: '折线图对比'
-                                    , area: ['100%', '100%']
-                                    , shadeClose: true //开启遮罩关闭
-                                    , maxmin: true
-                                    , content: '折线图对比 content'
-                                    , btn: ['关闭']
-                                    , yes: function (index, layero) {
-                                        // console.log(layero);
-                                        layer.msg('点击了按钮 关闭');
-                                        //按钮【按钮一】的回调
-                                        layer.close(index);
-                                        // alert("点击了按钮1");
-                                    }
+                                // Start: functions
+                                /**
+                                 * 打开 layer - 折线图对比
+                                 * @param layerContent
+                                 */
+                                function openLayer_eChartsCompare(layerContent) {
+                                    layer.open({
+                                        type: 1
+                                        , title: '折线图对比（测试数据）'
+                                        , area: ['100%', '100%']
+                                        , shadeClose: true //开启遮罩关闭
+                                        , maxmin: true
+                                        , content: layerContent
+                                        , success: function(layero, index){
+                                            console.log(layero, index);
+                                            initLayerEChartsCompare();
+                                        }
+                                        , btn: ['关闭']
+                                        , yes: function (index, layero) {
+                                            // console.log(layero);
+                                            layer.msg('点击了按钮 关闭');
+                                            //按钮【按钮一】的回调
+                                            layer.close(index);
+                                            // alert("点击了按钮1");
+                                        }
+                                    });
+                                }
+
+                                /**
+                                 * 初始化 layer 中的 eCharts
+                                 */
+                                function initLayerEChartsCompare() {
+                                    var myChart_compare = echarts.init(document.getElementById('echarts-compare'));
+
+                                    var colors = ['#5793f3', '#d14a61', '#675bba'];
+                                    var option = {
+                                        color: colors,
+
+                                        tooltip: {
+                                            trigger: 'none',
+                                            axisPointer: {
+                                                type: 'cross'
+                                            }
+                                        },
+                                        legend: {
+                                            data:['昨日', '今日']
+                                        },
+                                        grid: {
+                                            top: 70,
+                                            bottom: 50
+                                        },
+                                        xAxis: [
+                                            {
+                                                type: 'category',
+                                                name: '今日',
+                                                boundaryGap: false,
+                                                axisTick: {
+                                                    alignWithLabel: true
+                                                },
+                                                axisLine: {
+                                                    onZero: false,
+                                                    lineStyle: {
+                                                        color: colors[1]
+                                                    }
+                                                },
+                                                axisPointer: {
+                                                    label: {
+                                                        formatter: function (params) {
+                                                            return '' + params.value
+                                                                + (params.seriesData.length ? '：' + params.seriesData[0].data : '');
+                                                        }
+                                                    }
+                                                },
+                                                data: ["8:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00", "24:00", "2:00", "4:00", "6:00", "8:00"]
+                                            },
+                                            {
+                                                type: 'category',
+                                                name: '昨日',
+                                                boundaryGap: false,
+                                                axisTick: {
+                                                    alignWithLabel: true
+                                                },
+                                                axisLine: {
+                                                    onZero: false,
+                                                    lineStyle: {
+                                                        color: colors[0]
+                                                    }
+                                                },
+                                                axisPointer: {
+                                                    label: {
+                                                        formatter: function (params) {
+                                                            return '' + params.value
+                                                                + (params.seriesData.length ? '：' + params.seriesData[0].data : '');
+                                                        }
+                                                    }
+                                                },
+                                                data: ["8:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00", "24:00", "2:00", "4:00", "6:00", "8:00"]
+                                            }
+                                        ],
+                                        yAxis: [
+                                            {
+                                                type: 'value'
+                                            }
+                                        ],
+                                        series: [
+                                            {
+                                                name:'昨日',
+                                                type:'line',
+                                                xAxisIndex: 1,
+                                                smooth: true,
+                                                data: [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 154.3, 48.7, 18.8, 6.0, 2.3]
+                                            },
+                                            {
+                                                name:'今日',
+                                                type:'line',
+                                                smooth: true,
+                                                data: [3.9, 5.9, 11.1, 18.7, 48.3, 69.2, 231.6, 122.5, 46.6, 55.4, 18.4, 10.3, 0.7]
+                                            }
+                                        ]
+                                    };
+                                    myChart_compare.setOption(option);
+                                }
+                                // End  : functions
+                                laytpl(tpl_eCharts_compare.innerHTML).render({}, function(html_tpl_eCharts_compare) {
+                                    openLayer_eChartsCompare(html_tpl_eCharts_compare);
                                 });
                             }
                         }
@@ -401,7 +511,6 @@
             var myChart2 = echarts.init(document.getElementById('echarts-2'));
             var myChart3 = echarts.init(document.getElementById('echarts-3'));
             myChartsArr = [myChart0, myChart1, myChart2, myChart3];
-
 
             // 指定图表的配置项和数据
             var option0 = genOption(hardwareId, subTitlesArr[0]);
