@@ -119,6 +119,15 @@ public class DeviceController {
         return deviceService.updateDevice(newDevice);
     }
 
+    @RequestMapping(value = "ajax/setstatus")
+    public AjaxResult<Device> setstatus(Long deviceId, Integer status) {
+        boolean ret = deviceService.setDeviceStatus(deviceId, status);
+        if (ret) {
+            return AjaxResult.SuccAjaxResult();
+        }
+        return AjaxResult.ErrorAjaxResult();
+    }
+
     @RequestMapping(value = "/ajax/gaojing/update")
     @ResponseBody
     public AjaxResult<Device> ajaxGaoJIngUpdateDevice(Device newDevice) {
