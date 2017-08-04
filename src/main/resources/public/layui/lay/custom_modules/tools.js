@@ -180,6 +180,34 @@ layui.define(['jquery', 'layer', 'element'], function(exports) {
     function timestampToString(tm) {
         return new Date(parseInt(tm)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ")
     }
+
+    /**
+     * 将【参数对象：obj_params】序列化为"?param_a=value_a&param_b=value_b"的形式
+     * @param obj_params    参数对象
+     */
+    function serializeParams(obj_params) {
+        if(!obj_params) {
+            console.error('[tools.serializeParams] obj_params 为空！ obj_params: ');
+            console.warn(obj_params);
+            return '';
+        }
+        var arr_str_params = ['?'];
+        for(var name_obj_params in obj_params) {
+            var value_obj_params = obj_params[name_obj_params];
+            if(1 !== arr_str_params.length) {
+                arr_str_params.push('&');
+            }
+            arr_str_params.push(name_obj_params, '=', value_obj_params);
+        }
+        // 有 1 个参数，至少长度都是 4
+        if(arr_str_params.length < 4) {
+            console.error('[tools.serializeParams] arr_str_params 没有意义！ arr_str_params: ');
+            console.warn(arr_str_params);
+            return '';
+        }
+        //
+        return arr_str_params.join('');
+    }
     // End  : 所有的 function
 
     // 导出的模块名和接口函数
@@ -192,5 +220,6 @@ layui.define(['jquery', 'layer', 'element'], function(exports) {
         , deviceid2des: deviceid2des
         , renderSelectOption: renderSelectOption
         , timestampToString: timestampToString
+        , serializeParams: serializeParams
     });
 });
