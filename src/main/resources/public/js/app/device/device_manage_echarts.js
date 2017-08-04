@@ -532,6 +532,10 @@
                 renderInitData2Charts(myChartsArr[3], optionsArr[3]);
 
                 // var oneSocketEvent = oneSocket.EVENT;
+                /**
+                 * 处理 monitorData
+                 * @param data  monitorData
+                 */
                 function processMonitorData(data) {
                     console.log('[documentEvent oneSocketEvent] data: ');
                     console.log(data);
@@ -569,6 +573,30 @@
                 // deviceEchartsContainerEle.css('width', deviceEchartsContainerEle.width());
                 deviceEchartsContainerEle.css('width', '100%');
                 deviceEchartsContainerEle.parent().css('overflow-x', 'auto');
+                // Start: 请求 history 信息
+                /**
+                 * 请求历史 monitorData ，并渲染到 eCharts
+                 */
+                function renderHistoryData2Charts() {
+                    // $.get('http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00', {}, function(data) {console.log(data)}, 'json')
+                    // 1. 请求 http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00
+                    var url_get_history = 'http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00';
+                    var params_history = {hardwareId: 't21s1d1', begin: '2017-08-03:08:00:00', end: '2017-08-04:08:00:00'};
+                    var callback_history = function(data_history) {
+                        debugger;
+                        console.log('[device_manage_echarts.js callback_history] data_history: ');
+                        console.log(data_history);
+                        //
+                        var code = data_history.code, msg = data_history.msg;
+                        console.log('[device_manage_echarts.js callback_history] code: ' + code);
+                        console.log('[device_manage_echarts.js callback_history] msg: ' + msg);
+
+                    }
+                    // 2. 发 get 请求
+                    $.get(url_get_history, {}, callback_history, 'json');
+                }
+                renderHistoryData2Charts();
+                // End  : 请求 history 信息
             });
         }
         // 调用以创建 layui.tree nodes
@@ -880,7 +908,7 @@
         // End  : 所有被本模块调用的函数定义在此
 
         //第一次加载数据
-        searchList();
+        // searchList();
         // 第一次加载左侧 tree list 数据
         $(function() {
             searchTreeList();
