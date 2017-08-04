@@ -10,7 +10,8 @@
 
         // Start: 所有被本模块调用的函数定义在此
         function getTodayStartDateTime(offsetTime) {
-            var date = new Date();
+            // var date = new Date();
+            var date = new Date(1501833236607);
             date.setHours(8);
             date.setMinutes(0);
             date.setSeconds(0);
@@ -536,10 +537,13 @@
                  * 处理 monitorData
                  * @param data  monitorData
                  */
-                function processMonitorData(data) {
+                function processMonitorData(data, isJSONObj) {
                     console.log('[documentEvent oneSocketEvent] data: ');
                     console.log(data);
-                    var jData = JSON.parse(data);
+                    var jData = data;
+                    if(!isJSONObj) {
+                        jData = JSON.parse(data);
+                    }
                     console.log('[documentEvent oneSocketEvent] jData: ');
                     var jDataGasEvent = jData.gasEvent;
                     console.log(jDataGasEvent);
@@ -580,16 +584,36 @@
                 function renderHistoryData2Charts() {
                     // $.get('http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00', {}, function(data) {console.log(data)}, 'json')
                     // 1. 请求 http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00
-                    var url_get_history = 'http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00';
-                    var params_history = {hardwareId: 't21s1d1', begin: '2017-08-03:08:00:00', end: '2017-08-04:08:00:00'};
+                    var params_history = {hardwareId: 't21s1d1', begin: '2017-08-04:08:00:00', end: '2017-08-05:08:00:00'};
+                    var url_get_history = 'http://localhost:9099/point/query/history' + tools.serializeParams(params_history);
                     var callback_history = function(data_history) {
-                        debugger;
                         console.log('[device_manage_echarts.js callback_history] data_history: ');
                         console.log(data_history);
                         //
-                        var code = data_history.code, msg = data_history.msg;
+                        var code = data_history.code, msg = data_history.msg, page = data_history.page
+                            , total = data_history.total, totalPage = data_history.totalPage, arr_monitorData = data_history.data;
                         console.log('[device_manage_echarts.js callback_history] code: ' + code);
                         console.log('[device_manage_echarts.js callback_history] msg: ' + msg);
+                        console.log('[device_manage_echarts.js callback_history] page: ' + page);
+                        console.log('[device_manage_echarts.js callback_history] total: ' + total);
+                        console.log('[device_manage_echarts.js callback_history] totalPage: ' + totalPage);
+                        console.log('[device_manage_echarts.js callback_history] arr_monitorData: ');
+                        console.log(arr_monitorData);
+                        // 处理 arr_monitorData
+                        function processMonitorData_async(item_monitorData, index_monitorData, isJSONObj) {
+                            console.log('[device_manage_echarts.js processMonitorData_async] index_monitorData: ' + index_monitorData);
+                            setTimeout(function() {
+                                processMonitorData(item_monitorData, isJSONObj);
+                            }, index_monitorData * 1000);
+                        }
+                        function processMonitorDataArr(arr_monitorData) {
+                            if(arr_monitorData && arr_monitorData.length && arr_monitorData.length > 0) {
+                                arr_monitorData.forEach(function(item_monitorData, index_monitorData) {
+                                    processMonitorData_async(item_monitorData, index_monitorData, true);
+                                });
+                            }
+                        }
+                        processMonitorDataArr(arr_monitorData);
 
                     }
                     // 2. 发 get 请求
