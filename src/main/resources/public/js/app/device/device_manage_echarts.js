@@ -433,7 +433,7 @@
             $.get(url_allSitesAndDevices, params_allSitesAndDevices, callback_allSitesAndDevices, "json");
         }
         // End  : 请求服务器数据，更新左侧树
-        function searchList(currPage) {
+        /*function searchList(currPage) {
             console.log("开始查询设备 list 的信息 ...");
             layer.load();   // loading
             $.get(
@@ -470,7 +470,7 @@
                 },
                 "json"
             );
-        }
+        }*/
         // Start: 展示 layerContent_tpl 于 layer 中
         function showLayerContentTplInLayer(title, content) {
             laytpl(layerContent_tpl.innerHTML).render(content, function(html) {
