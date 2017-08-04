@@ -532,7 +532,7 @@
                 renderInitData2Charts(myChartsArr[3], optionsArr[3]);
 
                 // var oneSocketEvent = oneSocket.EVENT;
-                oneSocket.setHandler(oneSocket.Event.GAS_EVENT, function(data) {
+                function processMonitorData(data) {
                     console.log('[documentEvent oneSocketEvent] data: ');
                     console.log(data);
                     var jData = JSON.parse(data);
@@ -556,7 +556,8 @@
                         , jDataGasEvent.summary, jDataGasEvent.pointtime);
                     renderUpdatedData2Charts(myChartsArr[3], optionsArr[3], jDataGasEvent.hardwareId, jDataGasEvent.running
                         , jDataGasEvent.summary, jDataGasEvent.pointtime);
-                });
+                }
+                oneSocket.setHandler(oneSocket.Event.GAS_EVENT, processMonitorData);
                 oneSocket.setStation(hardwareId);
                 /*$(oneSocket.EventEmitter).on(oneSocketEvent.GM_EVENT_handleNotifications, '', function(event, data) {
                  console.log(['[documentEvent oneSocketEvent ', oneSocketEvent.GM_EVENT_handleNotifications, '] data: '].join(''));
