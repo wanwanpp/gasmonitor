@@ -57,7 +57,9 @@
       </select>
     </div>
     <!-- End  : 搜索 -->
-    <div id="devicesListTableView"></div>
+    <div id="devicesListTableView">
+      <ul id="devicesTreeList"></ul>
+    </div>
   </div>
   <div class="sysNotice col right-details">
     <blockquote class="layui-elem-quote title">设备曲线<i class="iconfont icon-new1"></i></blockquote>
@@ -140,7 +142,7 @@
 <!-- End  : echarts -->
 
 <!-- Start: layui template 模板 -->
-<script id="devicesList" type="text/html">
+<!--<script id="devicesList" type="text/html">
   <table class="layui-table" lay-skin="line">
     <colgroup>
       <col width="110">
@@ -158,7 +160,7 @@
     </tbody>
   </table>
   <ul id="devicesTreeList"></ul>
-</script>
+</script>-->
 <script id="layerContent_tpl" type="text/html">
   <div style="width: 96%; text-align: center; margin: 10px auto;">{{d}}</div>
 </script>
