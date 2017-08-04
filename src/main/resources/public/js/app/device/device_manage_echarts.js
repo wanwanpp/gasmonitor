@@ -137,6 +137,7 @@
 
                                     var colors = ['#5793f3', '#d14a61', '#675bba'];
                                     var option = {
+
                                         color: colors,
 
                                         tooltip: {
