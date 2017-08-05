@@ -46,8 +46,8 @@ public class TestController {
     private HazelCastPros hazelCastPros;
 
     @RequestMapping(value = "/device/list")
-    public Object findDevice() {
-        List<Device> devices = deviceRepository.findBySiteId((long) 999);
+    public Object findDevice(@RequestParam("siteId") long siteId) {
+        List<Device> devices = deviceRepository.findBySiteId(siteId);
         logger.info("测试，找到的devices:{}", devices);
         return devices;
     }
