@@ -87,7 +87,10 @@
         }*/
         now = getTodayStartDateTime();
 
-        function genOption(hardwareId, subTitle) {
+        function genOption(hardwareId, subId) {
+            // 4 个折线图每个的 title
+            var subTitlesArr = ['温度', '压力', 'standard', 'running'];
+            var subTitle = subTitlesArr[subId];
             var option = {
                 title: {
                     text: subTitle,
@@ -144,7 +147,7 @@
                                         , content: layerContent
                                         , success: function(layero, index){
                                             console.log(layero, index);
-                                            initLayerEChartsCompare();
+                                            initLayerEChartsCompare(hardwareId, subId, subTitle);
                                         }
                                         , btn: ['关闭']
                                         , yes: function (index, layero) {
@@ -160,30 +163,62 @@
                                 /**
                                  * 初始化 layer 中的 eCharts
                                  */
-                                function initLayerEChartsCompare() {
+                                function initLayerEChartsCompare(hardwareId, subId, subTitle) {
+                                    layer.msg(['[initLayerEChartsCompare][hardwareId: ', hardwareId, '][subId: ', subId
+                                        , '][subTitle: ', subTitle, ']'].join(''));
+
                                     var myChart_compare = echarts.init(document.getElementById('echarts-compare'));
 
                                     var colors = ['#5793f3', '#d14a61', '#675bba'];
-                                    var option = {
+                                    var option_base = optionsArr[subId];
+                                    var option_compare = {
+                                        title: {
+                                            text: [subTitle, ' 历史数据对比'].join('')
+                                        },
 
                                         color: colors,
 
                                         tooltip: {
-                                            trigger: 'none',
+                                            trigger: 'axis',
+                                            formatter: function (params) {
+                                                params = params[0];
+                                                var date = new Date(params.name);
+                                                return ['[', laydate.now(date.getTime(), 'YYYY-MM-DD hh:mm:ss'), '] : '
+                                                    , params.value[1]].join('');
+                                            },
                                             axisPointer: {
-                                                type: 'cross'
+                                                animation: false,
+                                                type: 'cross',
+                                                label: {
+                                                    backgroundColor: '#6a7985'
+                                                }
                                             }
                                         },
                                         legend: {
                                             data:['昨日', '今日']
                                         },
+                                        dataZoom: {
+                                            show: false,
+                                            start: 0,
+                                            end: 100
+                                        },
                                         grid: {
-                                            top: 70,
-                                            bottom: 50
+                                            left: '0%',
+                                            right: '6%',
+                                            bottom: '0%',
+                                            top: 75,
+                                            containLabel: true
                                         },
                                         xAxis: [
                                             {
-                                                type: 'category',
+                                                type: 'time',
+                                                splitLine: {
+                                                    show: false
+                                                },
+                                                min: laydate.now(checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
+                                                max: laydate.now(checkIsTimestampBetweenStartEnd.getEndTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
+
+                                                // type: 'category',
                                                 name: '今日',
                                                 boundaryGap: false,
                                                 axisTick: {
@@ -202,11 +237,18 @@
                                                                 + (params.seriesData.length ? '：' + params.seriesData[0].data : '');
                                                         }
                                                     }
-                                                },
-                                                data: ["8:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00", "24:00", "2:00", "4:00", "6:00", "8:00"]
+                                                }// ,
+                                                // data: ["8:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00", "24:00", "2:00", "4:00", "6:00", "8:00"]
                                             },
                                             {
-                                                type: 'category',
+                                                // type: 'category',
+                                                type: 'time',
+                                                splitLine: {
+                                                    show: false
+                                                },
+                                                min: laydate.now(checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
+                                                max: laydate.now(checkIsTimestampBetweenStartEnd.getEndTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
+
                                                 name: '昨日',
                                                 boundaryGap: false,
                                                 axisTick: {
@@ -226,31 +268,52 @@
                                                         }
                                                     }
                                                 },
-                                                data: ["8:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00", "24:00", "2:00", "4:00", "6:00", "8:00"]
+                                                // data: ["8:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00", "24:00", "2:00", "4:00", "6:00", "8:00"]
                                             }
                                         ],
                                         yAxis: [
                                             {
-                                                type: 'value'
+                                                boundaryGap: [0, '100%'],
+                                                splitLine: {
+                                                    show: false
+                                                },
+
+                                                type: 'value',
+                                                scale: true,
+                                                name: [subTitle, '值'].join(''),
+                                                nameGap: 8,
+                                                min: 0
+                                                // boundaryGap: [0.2, 0.2]
                                             }
                                         ],
                                         series: [
                                             {
+                                                showSymbol: false,
+                                                hoverAnimation: false,
                                                 name:'昨日',
                                                 type:'line',
                                                 xAxisIndex: 1,
                                                 smooth: true,
-                                                data: [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 154.3, 48.7, 18.8, 6.0, 2.3]
+                                                data: [] // [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 154.3, 48.7, 18.8, 6.0, 2.3]
                                             },
                                             {
+                                                showSymbol: false,
+                                                hoverAnimation: false,
                                                 name:'今日',
                                                 type:'line',
                                                 smooth: true,
-                                                data: [3.9, 5.9, 11.1, 18.7, 48.3, 69.2, 231.6, 122.5, 46.6, 55.4, 18.4, 10.3, 0.7]
+                                                /*{
+                                                 name: jDataPointTime.toString(),
+                                                 value: [
+                                                 laydate.now(jDataPointTime.getTime(), 'YYYY-MM-DD hh:mm:ss'),
+                                                 Math.round(jDataFieldVal)
+                                                 ]
+                                                 }*/
+                                                data: option_base.series[0].data// [3.9, 5.9, 11.1, 18.7, 48.3, 69.2, 231.6, 122.5, 46.6, 55.4, 18.4, 10.3, 0.7]
                                             }
                                         ]
                                     };
-                                    myChart_compare.setOption(option);
+                                    myChart_compare.setOption(option_compare);
                                 }
                                 // End  : functions
                                 laytpl(tpl_eCharts_compare.innerHTML).render({}, function(html_tpl_eCharts_compare) {
@@ -530,18 +593,15 @@
                         //按钮【按钮二】的回调
                         //return false 开启该代码可禁止点击该按钮关闭
                     }
-                    ,
                 });
             });
         }
         // End  : 展示 layerContent_tpl 于 layer 中
         // 刷新折线图
         var myChartsArr;    // 用于记录有哪些 eChartsInstance
+        var optionsArr;
         function refreshECharts(hardwareId) {
             // var hardwareId = 's1';
-
-            // 4 个折线图每个的 title
-            var subTitlesArr = ['温度', '压力', 'standard', 'running'];
 
             // 基于准备好的dom，初始化echarts实例
             var myChart0 = echarts.init(document.getElementById('echarts-0'));
@@ -551,11 +611,11 @@
             myChartsArr = [myChart0, myChart1, myChart2, myChart3];
 
             // 指定图表的配置项和数据
-            var option0 = genOption(hardwareId, subTitlesArr[0]);
-            var option1 = genOption(hardwareId, subTitlesArr[1]);
-            var option2 = genOption(hardwareId, subTitlesArr[2]);
-            var option3 = genOption(hardwareId, subTitlesArr[3]);
-            var optionsArr = [option0, option1, option2, option3];
+            var option0 = genOption(hardwareId, 0);
+            var option1 = genOption(hardwareId, 1);
+            var option2 = genOption(hardwareId, 2);
+            var option3 = genOption(hardwareId, 3);
+            optionsArr = [option0, option1, option2, option3];
 
             // 实际： 监听事件进行刷新
             $(function() {
