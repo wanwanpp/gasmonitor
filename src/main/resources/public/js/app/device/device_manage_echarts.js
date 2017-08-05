@@ -582,9 +582,17 @@
                     // Start: 判断 hardwareId 相符，才进行刷新
                     console.info(['[documentEvent oneSocketEvent][hardwareId: ', hardwareId, '][jDataGasEvent.hardwareId: ', jDataGasEvent.hardwareId, '] 不相等？： ', hardwareId != jDataGasEvent.hardwareId].join(''));
                     if(hardwareId != jDataGasEvent.hardwareId) {
+                        console.warn('[device_manage_echarts.js processMonitorData] hardwareId 不符');
                         return ;
                     }
                     // End  : 判断 hardwareId 相符，才进行刷新
+
+                    // 判断 jDataGasEvent 的 pointtime 是否在有效时间范围内
+                    if(!checkIsTimestampBetweenStartEnd(jDataGasEvent.pointtime)) {
+                        console.warn('[device_manage_echarts.js processMonitorData] jDataGasEvent 的 pointtime 不在有效时间范围内');
+                        return ;
+                    }
+
                     renderUpdatedData2Charts(myChartsArr[0], optionsArr[0], jDataGasEvent.hardwareId, jDataGasEvent.temperature
                         , jDataGasEvent.summary, jDataGasEvent.pointtime, isNot2Render);
                     renderUpdatedData2Charts(myChartsArr[1], optionsArr[1], jDataGasEvent.hardwareId, jDataGasEvent.pressure
