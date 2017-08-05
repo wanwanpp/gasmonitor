@@ -646,19 +646,43 @@
                         }
                         function processMonitorDataArr(arr_monitorData) {
                             if(arr_monitorData && arr_monitorData.length && arr_monitorData.length > 0) {
-                                arr_monitorData.forEach(function(item_monitorData, index_monitorData) {
+                                // 先筛除掉 arr_monitorData 中不合格的数据（时间范围不在图中开始结束时间范围以内的）
+                                var arr_filtered_monitorData = [];
+                                arr_monitorData.forEach(function(item_monitorData) {
+                                    if(checkIsTimestampBetweenStartEnd(item_monitorData.gasEvent.pointtime)) {
+                                        arr_filtered_monitorData.push(item_monitorData);
+                                    }
+                                });
+                                arr_monitorData = arr_filtered_monitorData;
+                                // 先按 max_history 抽样 arr_monitorData
+                                var length_arr_monitorData = arr_monitorData.length
+                                    , arr_sample_monitorData = arr_monitorData;
+                                if(length_arr_monitorData > max_history) {
+                                    arr_sample_monitorData = [];
+                                    var step = Math.floor(length_arr_monitorData / max_history);
+                                    for(var i = 0; i < length_arr_monitorData && arr_sample_monitorData.length <= max_history; i += step) {
+                                        arr_sample_monitorData.push(arr_monitorData[i]);
+                                    }
+                                }
+                                console.log('[device_manage_echarts.js processMonitorDataArr] arr_sample_monitorData.length: ' + arr_sample_monitorData.length);
+                                // Start: 对 arr_sample_monitorData 中的数据进行排序
+                                arr_sample_monitorData.sort(function(a_sample_monitorData, b_sample_monitorData) {
+                                    return a_sample_monitorData.gasEvent.pointtime - b_sample_monitorData.gasEvent.pointtime;
+                                });
+                                // End  : 对 arr_sample_monitorData 中的数据进行排序
+                                arr_sample_monitorData.forEach(function(item_monitorData, index_monitorData) {
                                     processMonitorData_async(item_monitorData, index_monitorData, true
                                         , !(index_monitorData + 1 === arr_monitorData.length));
                                 });
                             }
                         }
                         processMonitorDataArr(arr_monitorData);
-
-                    }
+                    };
                     // 2. 发 get 请求
+                    layer.load();
                     $.get(url_get_history, {}, callback_history, 'json');
                 }
-                // renderHistoryData2Charts();
+                renderHistoryData2Charts();
                 // End  : 请求 history 信息
             });
         }
@@ -684,7 +708,6 @@
                         console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device siteId: ' + siteId);
                         console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device name: ' + name);
                         console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device logic: ' + logic);
-                        debugger;
                         var node_siteChildrenDevice = {name: ['[', hardwareId, ' : ', name, ']'].join(''), id: id
                             , hardwareId: hardwareId, alias: name, children: createSiteChildrenDevices(children)};
                         arr_siteChildrenDevices.push(node_siteChildrenDevice);
