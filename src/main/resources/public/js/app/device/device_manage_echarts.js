@@ -11,7 +11,7 @@
         // Start: 所有被本模块调用的函数定义在此
         function getTodayStartDateTime(offsetTime) {
             // var date = new Date();
-            var date = new Date(1501833236607);
+            var date = new Date(1501833236607); // 测试，定为 8 月 4 日
             date.setHours(8);
             date.setMinutes(0);
             date.setSeconds(0);
