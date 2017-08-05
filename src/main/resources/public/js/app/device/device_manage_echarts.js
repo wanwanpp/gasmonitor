@@ -11,7 +11,8 @@
         // Start: 所有被本模块调用的函数定义在此
         function getTodayStartDateTime(offsetTime) {
             // var date = new Date();
-            var date = new Date(1501833236607); // 测试，定为 8 月 4 日
+            // var date = new Date(1501833236607); // 测试，定为 8 月 4 日
+            var date = new Date(1501721236607); // 测试，定为 8 月 3 日
             date.setHours(8);
             date.setMinutes(0);
             date.setSeconds(0);
@@ -617,7 +618,8 @@
                 function renderHistoryData2Charts() {
                     // $.get('http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00', {}, function(data) {console.log(data)}, 'json')
                     // 1. 请求 http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00
-                    var params_history = {hardwareId: 't21s1d1', begin: '2017-08-04:08:00:00', end: '2017-08-05:08:00:00'};
+                    // var params_history = {hardwareId: 't21s1d1', begin: '2017-08-04:08:00:00', end: '2017-08-05:08:00:00'};
+                    var params_history = {hardwareId: 't21s1d1', begin: '2017-08-03:08:00:00', end: '2017-08-04:08:00:00'};
                     var url_get_history = 'http://localhost:9099/point/query/history' + tools.serializeParams(params_history);
                     var max_history = 1000;  // 历史测点的 max 数目
                     var callback_history = function(data_history) {
