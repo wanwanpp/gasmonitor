@@ -436,28 +436,32 @@
                 // Start: 测试渲染树
                 layui.tree({
                     elem: '#devicesTreeList' //指定元素
-                    ,target: '_blank' //是否新选项卡打开（比如节点返回href才有效）
-                    ,click: function(item) { //点击节点回调
-                        layer.msg('当前节名称：'+ item.name + '<br>全部参数：'+ JSON.stringify(item));
+                    , target: '_blank' //是否新选项卡打开（比如节点返回href才有效）
+                    , click: function(item) { //点击节点回调
+                        layer.msg(['当前选中设备：', item.name, '，hardwareId： ', item.hardwareId].join(''));
+                        console.log(['[device_manage_echarts.js layui.tree]当前被点击选中节点名称：', item.name, '全部参数：', JSON.stringify(item)].join(''));
                         console.log(item);
                         // Start: 根据用户的点击，清空折线图，然后重新 setStationId
-                        /*if(item && item.hardwareId) {
+                        if(item && item.hardwareId) {
+                            layer.load();
                             refreshECharts(item.hardwareId);
                             createDevicesTreeListNodes.renderSelectSearchDevicesOptions(item.hardwareId);
-                        }*/
+                            // 关闭所有的 loading
+                            // layer.closeAll('loading');
+                        }
                         // End  : 根据用户的点击，清空折线图，然后重新 setStationId
                     }
-                    ,nodes: createDevicesTreeListNodes(data_allSitesAndDevices_sitesArr, urlHardwareId)
+                    , nodes: createDevicesTreeListNodes(data_allSitesAndDevices_sitesArr, urlHardwareId)
                 });
                 // End  : 测试渲染树
+                // 关闭所有的 loading
+                // layer.closeAll('loading');
                 // Start: 触发相应 device 节点的 click
                 createDevicesTreeListNodes.triggerDeviceNodeClick(createDevicesTreeListNodes.urlHardwareId);
                 // End  : 触发相应 device 节点的 click
                 // Start: 刷新 search device
                 createDevicesTreeListNodes.renderSelectSearchDevicesOptions();
                 // End  : 刷新 search device
-                // 关闭所有的 loading
-                layer.closeAll('loading');
             };
             // 1. 打开 layer loading
             layer.load();
