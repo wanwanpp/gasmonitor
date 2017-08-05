@@ -21,6 +21,32 @@
             }
             return date;
         }
+
+        /**
+         * 检查 timestamp 是否在 startTimestamp 和 EndTimeStamp 中间
+         * @param timestamp
+         * @returns {boolean}
+         */
+        function checkIsTimestampBetweenStartEnd(timestamp) {
+            if(timestamp >= checkIsTimestampBetweenStartEnd.getStartTimestamp()
+                && timestamp <= checkIsTimestampBetweenStartEnd.getEndTimestamp()) {
+                return true;
+            }
+            return false;
+        }
+        checkIsTimestampBetweenStartEnd.getStartTimestamp = function() {
+            if(!checkIsTimestampBetweenStartEnd.startTime) {
+                checkIsTimestampBetweenStartEnd.startTime = getTodayStartDateTime().getTime();
+            }
+            return checkIsTimestampBetweenStartEnd.startTime;
+        };
+        checkIsTimestampBetweenStartEnd.getEndTimestamp = function() {
+            if(!checkIsTimestampBetweenStartEnd.endTime) {
+                checkIsTimestampBetweenStartEnd.endTime = getTodayStartDateTime(oneDay).getTime();
+            }
+            return checkIsTimestampBetweenStartEnd.endTime;
+        };
+
         // var data = [];
         // var dataInit = [];
         /*var testRefreshData = function() {
@@ -253,8 +279,8 @@
                         show: false
                     },
                     name: '时间',
-                    min: laydate.now(getTodayStartDateTime().getTime(), 'YYYY-MM-DD hh:mm:ss'),
-                    max: laydate.now(getTodayStartDateTime(oneDay).getTime(), 'YYYY-MM-DD hh:mm:ss'),
+                    min: laydate.now(checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
+                    max: laydate.now(checkIsTimestampBetweenStartEnd.getEndTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
                     boundaryGap: false/*,
                     data: (function (){
                         var now = getTodayStartDateTime();
@@ -401,7 +427,6 @@
             var url_allSitesAndDevices = '/site/ajax/allSitesAndDevices';
             var params_allSitesAndDevices = {};
             var callback_allSitesAndDevices = function(data_allSitesAndDevices) {
-                debugger;
                 console.log("查询到的所有站点设备 tree list 信息:" + JSON.stringify(data_allSitesAndDevices));
                 var data_allSitesAndDevices_sitesArr = data_allSitesAndDevices.data;
                 console.log('查询到的所有站点 tree list 信息 data_allSitesAndDevices_sitesArr： ' + JSON.stringify(data_allSitesAndDevices_sitesArr));
