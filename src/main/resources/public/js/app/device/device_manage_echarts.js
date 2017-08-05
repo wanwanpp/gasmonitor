@@ -320,7 +320,7 @@
         }
         // render function
         function renderUpdatedData2Charts(myChart2Render, myChart2RenderOption, jDataHardwareId, jDataFieldVal
-                                          , jDataSummaryVal, jDataPointTimeVal) {
+                                          , jDataSummaryVal, jDataPointTimeVal, isNot2Render) {
             if(!myChart2Render || !myChart2RenderOption || !jDataHardwareId || (!jDataFieldVal && jDataFieldVal !== 0)
                 || (!jDataSummaryVal && jDataSummaryVal !== 0) || (!jDataPointTimeVal && jDataPointTimeVal !== 0)) {
                 console.error('[renderUpdatedData2Charts] 参数检查有误：');
@@ -349,13 +349,16 @@
                 ]
             });
 
-            myChart2Render.setOption({
-                series: [
-                    {
-                        data: data0
-                    }
-                ]
-            });
+            console.log('[device_manage_echarts.js renderUpdatedData2Charts] isNot2Render: ' + isNot2Render);
+            if(!isNot2Render) {
+                myChart2Render.setOption({
+                    series: [
+                        {
+                            data: data0
+                        }
+                    ]
+                });
+            }
 
             // var data1 = myChart2RenderOption.series[1].data;
 
@@ -398,6 +401,7 @@
             var url_allSitesAndDevices = '/site/ajax/allSitesAndDevices';
             var params_allSitesAndDevices = {};
             var callback_allSitesAndDevices = function(data_allSitesAndDevices) {
+                debugger;
                 console.log("查询到的所有站点设备 tree list 信息:" + JSON.stringify(data_allSitesAndDevices));
                 var data_allSitesAndDevices_sitesArr = data_allSitesAndDevices.data;
                 console.log('查询到的所有站点 tree list 信息 data_allSitesAndDevices_sitesArr： ' + JSON.stringify(data_allSitesAndDevices_sitesArr));
@@ -412,10 +416,10 @@
                         layer.msg('当前节名称：'+ item.name + '<br>全部参数：'+ JSON.stringify(item));
                         console.log(item);
                         // Start: 根据用户的点击，清空折线图，然后重新 setStationId
-                        if(item && item.hardwareId) {
+                        /*if(item && item.hardwareId) {
                             refreshECharts(item.hardwareId);
                             createDevicesTreeListNodes.renderSelectSearchDevicesOptions(item.hardwareId);
-                        }
+                        }*/
                         // End  : 根据用户的点击，清空折线图，然后重新 setStationId
                     }
                     ,nodes: createDevicesTreeListNodes(data_allSitesAndDevices_sitesArr, urlHardwareId)
@@ -427,6 +431,8 @@
                 // Start: 刷新 search device
                 createDevicesTreeListNodes.renderSelectSearchDevicesOptions();
                 // End  : 刷新 search device
+                // 关闭所有的 loading
+                layer.closeAll('loading');
             };
             // 1. 打开 layer loading
             layer.load();
@@ -521,10 +527,6 @@
             var option3 = genOption(hardwareId, subTitlesArr[3]);
             var optionsArr = [option0, option1, option2, option3];
 
-            // 测试 demo ： 定时刷新
-            /*setInterval(function (){
-             renderUpdatedData2Charts();
-             }, 3000);*/
             // 实际： 监听事件进行刷新
             $(function() {
                 renderInitData2Charts(myChartsArr[0], optionsArr[0]);
@@ -537,7 +539,7 @@
                  * 处理 monitorData
                  * @param data  monitorData
                  */
-                function processMonitorData(data, isJSONObj) {
+                function processMonitorData(data, isJSONObj, isNot2Render) {
                     console.log('[documentEvent oneSocketEvent] data: ');
                     console.log(data);
                     var jData = data;
@@ -547,9 +549,7 @@
                     console.log('[documentEvent oneSocketEvent] jData: ');
                     var jDataGasEvent = jData.gasEvent;
                     console.log(jDataGasEvent);
-                    /*myChartsArr.forEach(function(myChartItem) {
-                     renderUpdatedData2Charts(myChartItem, jData);
-                     });*/
+
                     // Start: 判断 hardwareId 相符，才进行刷新
                     console.info(['[documentEvent oneSocketEvent][hardwareId: ', hardwareId, '][jDataGasEvent.hardwareId: ', jDataGasEvent.hardwareId, '] 不相等？： ', hardwareId != jDataGasEvent.hardwareId].join(''));
                     if(hardwareId != jDataGasEvent.hardwareId) {
@@ -557,21 +557,17 @@
                     }
                     // End  : 判断 hardwareId 相符，才进行刷新
                     renderUpdatedData2Charts(myChartsArr[0], optionsArr[0], jDataGasEvent.hardwareId, jDataGasEvent.temperature
-                        , jDataGasEvent.summary, jDataGasEvent.pointtime);
+                        , jDataGasEvent.summary, jDataGasEvent.pointtime, isNot2Render);
                     renderUpdatedData2Charts(myChartsArr[1], optionsArr[1], jDataGasEvent.hardwareId, jDataGasEvent.pressure
-                        , jDataGasEvent.summary, jDataGasEvent.pointtime);
+                        , jDataGasEvent.summary, jDataGasEvent.pointtime, isNot2Render);
                     renderUpdatedData2Charts(myChartsArr[2], optionsArr[2], jDataGasEvent.hardwareId, jDataGasEvent.standard
-                        , jDataGasEvent.summary, jDataGasEvent.pointtime);
+                        , jDataGasEvent.summary, jDataGasEvent.pointtime, isNot2Render);
                     renderUpdatedData2Charts(myChartsArr[3], optionsArr[3], jDataGasEvent.hardwareId, jDataGasEvent.running
-                        , jDataGasEvent.summary, jDataGasEvent.pointtime);
+                        , jDataGasEvent.summary, jDataGasEvent.pointtime, isNot2Render);
                 }
                 oneSocket.setHandler(oneSocket.Event.GAS_EVENT, processMonitorData);
                 oneSocket.setStation(hardwareId);
-                /*$(oneSocket.EventEmitter).on(oneSocketEvent.GM_EVENT_handleNotifications, '', function(event, data) {
-                 console.log(['[documentEvent oneSocketEvent ', oneSocketEvent.GM_EVENT_handleNotifications, '] data: '].join(''));
-                 console.log(data);
-                 renderUpdatedData2Charts(JSON.parse(data));
-                 });*/
+
                 // 最后，固定 echarts 容器宽度，并指定父容器滚动
                 var deviceEchartsContainerEle = $('#device-echarts-container');
                 // deviceEchartsContainerEle.css('width', deviceEchartsContainerEle.width());
@@ -600,16 +596,21 @@
                         console.log('[device_manage_echarts.js callback_history] arr_monitorData: ');
                         console.log(arr_monitorData);
                         // 处理 arr_monitorData
-                        function processMonitorData_async(item_monitorData, index_monitorData, isJSONObj) {
+                        function processMonitorData_async(item_monitorData, index_monitorData, isJSONObj, isNot2Render) {
                             console.log('[device_manage_echarts.js processMonitorData_async] index_monitorData: ' + index_monitorData);
+                            console.log('[device_manage_echarts.js processMonitorData_async] isNot2Render: ' + isNot2Render);
                             setTimeout(function() {
-                                processMonitorData(item_monitorData, isJSONObj);
-                            }, index_monitorData * 1000);
+                                processMonitorData(item_monitorData, isJSONObj, isNot2Render);
+                                if(!isNot2Render) {
+                                    layer.closeAll('loading');   //关闭所有的loading
+                                }
+                            }, index_monitorData * 1);
                         }
                         function processMonitorDataArr(arr_monitorData) {
                             if(arr_monitorData && arr_monitorData.length && arr_monitorData.length > 0) {
                                 arr_monitorData.forEach(function(item_monitorData, index_monitorData) {
-                                    processMonitorData_async(item_monitorData, index_monitorData, true);
+                                    processMonitorData_async(item_monitorData, index_monitorData, true
+                                        , !(index_monitorData + 1 === arr_monitorData.length));
                                 });
                             }
                         }
@@ -619,7 +620,7 @@
                     // 2. 发 get 请求
                     $.get(url_get_history, {}, callback_history, 'json');
                 }
-                renderHistoryData2Charts();
+                // renderHistoryData2Charts();
                 // End  : 请求 history 信息
             });
         }
@@ -645,7 +646,9 @@
                         console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device siteId: ' + siteId);
                         console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device name: ' + name);
                         console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device logic: ' + logic);
-                        var node_siteChildrenDevice = {name: name, id: id, hardwareId: hardwareId, alias: name, children: createSiteChildrenDevices(children)};
+                        debugger;
+                        var node_siteChildrenDevice = {name: ['[', hardwareId, ' : ', name, ']'].join(''), id: id
+                            , hardwareId: hardwareId, alias: name, children: createSiteChildrenDevices(children)};
                         arr_siteChildrenDevices.push(node_siteChildrenDevice);
                         //
                         createDevicesTreeListNodes.arr_sitesAndDevicesNodes.push(node_siteChildrenDevice);
