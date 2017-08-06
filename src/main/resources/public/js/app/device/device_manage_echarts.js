@@ -123,7 +123,7 @@
 
         function genOption(hardwareId, subId) {
             // 4 个折线图每个的 title
-            var subTitlesArr = ['温度', '压力', 'standard', 'running'];
+            var subTitlesArr = ['温度', '压力', '标况流量', '工况流量'];
             var subTitle = subTitlesArr[subId];
             var option = {
                 title: {
