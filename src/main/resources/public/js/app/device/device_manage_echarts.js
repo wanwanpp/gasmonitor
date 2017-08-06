@@ -298,12 +298,10 @@
                                                             , isNot2Render));
                                                     });
                                                 }
-                                                debugger;
                                                 return arr_data_compare;
                                             }
                                             var arr_data_compare = processMonitorDataArr(arr_monitorData);
                                             //
-                                            debugger;
                                             renderOptionCompare(arr_data_compare);
                                         };
                                         // 2. 发 get 请求
@@ -314,7 +312,6 @@
                                     // End  : 从数据库获取 8 月 3 日数据，做对比测试
 
                                     function renderOptionCompare(arr_data_compare) {
-                                        debugger;
                                         var option_compare = {
                                             title: {
                                                 text: [subTitle, ' 历史数据对比'].join('')
@@ -323,7 +320,7 @@
                                             color: colors,
 
                                             tooltip: {
-                                                trigger: 'none',
+                                                trigger: 'axis',
                                                 axisPointer: {
                                                     type: 'cross'
                                                 }
@@ -344,11 +341,11 @@
                                             legend: {
                                                 data:['昨日', '今日']
                                             },
-                                            dataZoom: {
+                                            /*dataZoom: {
                                                 show: false,
                                                 start: 0,
                                                 end: 100
-                                            },
+                                            },*/
                                             grid: {
                                                 left: '0%',
                                                 right: '6%',
@@ -359,9 +356,9 @@
                                             xAxis: [
                                                 {
                                                     type: 'time',
-                                                    splitLine: {
+                                                    /*splitLine: {
                                                         show: false
-                                                    },
+                                                    },*/
                                                     min: laydate.now(checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
                                                     max: laydate.now(checkIsTimestampBetweenStartEnd.getEndTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
 
@@ -386,7 +383,7 @@
                                                                     , params.value[1]].join('');*/
 
                                                                 return '' + laydate.now(params.value, 'YYYY-MM-DD hh:mm:ss')
-                                                                    + (params.seriesData.length ? '：' + params.seriesData[0].data[1] : '');
+                                                                    + (params.seriesData.length ? '：' + params.seriesData[0].data.value[1] : '');
                                                             }
                                                         }
                                                     }// ,
@@ -395,9 +392,9 @@
                                                 {
                                                     // type: 'category',
                                                     type: 'time',
-                                                    splitLine: {
+                                                    /*splitLine: {
                                                         show: false
-                                                    },
+                                                    },*/
                                                     min: laydate.now(checkIsTimestampBetweenStartEnd_compare.getStartTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
                                                     max: laydate.now(checkIsTimestampBetweenStartEnd_compare.getEndTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
 
@@ -421,7 +418,7 @@
                                                                     , params.value[1]].join('');*/
 
                                                                 return '' + laydate.now(params.value, 'YYYY-MM-DD hh:mm:ss')
-                                                                    + (params.seriesData.length ? '：' + params.seriesData[0].data[1] : '');
+                                                                    + (params.seriesData.length ? '：' + params.seriesData[0].data.value[1] : '');
                                                             }
                                                         }
                                                     },
@@ -430,7 +427,8 @@
                                             ],
                                             yAxis: [
                                                 {
-                                                    boundaryGap: [0, '100%'],
+                                                    type: 'value'
+                                                    /*boundaryGap: [0, '100%'],
                                                     splitLine: {
                                                         show: false
                                                     },
@@ -439,14 +437,14 @@
                                                     scale: true,
                                                     // name: [subTitle, '值'].join(''),
                                                     nameGap: 8,
-                                                    min: 0
+                                                    min: 0*/
                                                     // boundaryGap: [0.2, 0.2]
                                                 }
                                             ],
                                             series: [
                                                 {
-                                                    showSymbol: false,
-                                                    hoverAnimation: false,
+                                                    /*showSymbol: false,
+                                                    hoverAnimation: false,*/
                                                     name:'昨日',
                                                     type:'line',
                                                     xAxisIndex: 1,
@@ -454,8 +452,8 @@
                                                     data: arr_data_compare // [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 154.3, 48.7, 18.8, 6.0, 2.3]
                                                 },
                                                 {
-                                                    showSymbol: false,
-                                                    hoverAnimation: false,
+                                                    /*showSymbol: false,
+                                                    hoverAnimation: false,*/
                                                     name:'今日',
                                                     type:'line',
                                                     smooth: true,
