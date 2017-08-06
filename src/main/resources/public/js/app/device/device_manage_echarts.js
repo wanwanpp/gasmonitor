@@ -11,6 +11,20 @@
         // Start: 所有被本模块调用的函数定义在此
         function getTodayStartDateTime(offsetTime) {
             // var date = new Date();
+            var date = new Date(1501833236607); // 测试，定为 8 月 4 日
+            // var date = new Date(1501721236607); // 测试，定为 8 月 3 日
+            date.setHours(8);
+            date.setMinutes(0);
+            date.setSeconds(0);
+            date.setMilliseconds(0);
+            if(offsetTime) {
+                date = new Date(date.getTime() + offsetTime);
+            }
+            return date;
+        }
+
+        function getTodayStartDateTime_compare(offsetTime) {
+            // var date = new Date();
             // var date = new Date(1501833236607); // 测试，定为 8 月 4 日
             var date = new Date(1501721236607); // 测试，定为 8 月 3 日
             date.setHours(8);
@@ -46,6 +60,26 @@
                 checkIsTimestampBetweenStartEnd.endTime = getTodayStartDateTime(oneDay).getTime();
             }
             return checkIsTimestampBetweenStartEnd.endTime;
+        };
+
+        function checkIsTimestampBetweenStartEnd_compare(timestamp) {
+            if(timestamp >= checkIsTimestampBetweenStartEnd_compare.getStartTimestamp()
+                && timestamp <= checkIsTimestampBetweenStartEnd_compare.getEndTimestamp()) {
+                return true;
+            }
+            return false;
+        }
+        checkIsTimestampBetweenStartEnd_compare.getStartTimestamp = function() {
+            if(!checkIsTimestampBetweenStartEnd_compare.startTime) {
+                checkIsTimestampBetweenStartEnd_compare.startTime = getTodayStartDateTime_compare().getTime();
+            }
+            return checkIsTimestampBetweenStartEnd_compare.startTime;
+        };
+        checkIsTimestampBetweenStartEnd_compare.getEndTimestamp = function() {
+            if(!checkIsTimestampBetweenStartEnd_compare.endTime) {
+                checkIsTimestampBetweenStartEnd_compare.endTime = getTodayStartDateTime_compare(oneDay).getTime();
+            }
+            return checkIsTimestampBetweenStartEnd_compare.endTime;
         };
 
         // var data = [];
@@ -171,149 +205,274 @@
 
                                     var colors = ['#5793f3', '#d14a61', '#675bba'];
                                     var option_base = optionsArr[subId];
-                                    var option_compare = {
-                                        title: {
-                                            text: [subTitle, ' 历史数据对比'].join('')
-                                        },
 
-                                        color: colors,
-
-                                        tooltip: {
-                                            trigger: 'axis',
-                                            formatter: function (params) {
-                                                params = params[0];
-                                                var date = new Date(params.name);
-                                                return ['[', laydate.now(date.getTime(), 'YYYY-MM-DD hh:mm:ss'), '] : '
-                                                    , params.value[1]].join('');
-                                            },
-                                            axisPointer: {
-                                                animation: false,
-                                                type: 'cross',
-                                                label: {
-                                                    backgroundColor: '#6a7985'
+                                    // Start: 从数据库获取 8 月 3 日数据，做对比测试
+                                    function renderHistoryData2Charts_compare() {
+                                        // $.get('http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00', {}, function(data) {console.log(data)}, 'json')
+                                        // 1. 请求 http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00
+                                        // var params_history = {hardwareId: 't21s1d1', begin: '2017-08-04:08:00:00', end: '2017-08-05:08:00:00'};
+                                        var params_history_compare = {hardwareId: 't21s1d1', begin: '2017-08-03:08:00:00', end: '2017-08-04:08:00:00'};
+                                        var url_get_history_compare = 'http://localhost:9099/point/query/history' + tools.serializeParams(params_history_compare);
+                                        var max_history_compare = 1000;  // 历史测点的 max 数目
+                                        var callback_history_compare = function(data_history_compare) {
+                                            console.log('[device_manage_echarts.js callback_history_compare] data_history_compare: ');
+                                            console.log(data_history_compare);
+                                            //
+                                            var code = data_history_compare.code, msg = data_history_compare.msg, page = data_history_compare.page
+                                                , total = data_history_compare.total, totalPage = data_history_compare.totalPage
+                                                , arr_monitorData = data_history_compare.data;
+                                            console.log('[device_manage_echarts.js callback_history_compare] code: ' + code);
+                                            console.log('[device_manage_echarts.js callback_history_compare] msg: ' + msg);
+                                            console.log('[device_manage_echarts.js callback_history_compare] page: ' + page);
+                                            console.log('[device_manage_echarts.js callback_history_compare] total: ' + total);
+                                            console.log('[device_manage_echarts.js callback_history_compare] totalPage: ' + totalPage);
+                                            console.log('[device_manage_echarts.js callback_history_compare] arr_monitorData: ');
+                                            console.log(arr_monitorData);
+                                            // 处理 arr_monitorData
+                                            function processMonitorData_sync_compare(item_monitorData, index_monitorData, isJSONObj, isNot2Render) {
+                                                console.log('[device_manage_echarts.js processMonitorData_sync_compare] index_monitorData: ' + index_monitorData);
+                                                console.log('[device_manage_echarts.js processMonitorData_sync_compare] isNot2Render: ' + isNot2Render);
+                                                /*setTimeout(function() {
+                                                    processMonitorData(item_monitorData, isJSONObj, isNot2Render);
+                                                    if(!isNot2Render) {
+                                                        layer.closeAll('loading');   //关闭所有的loading
+                                                    }
+                                                }, index_monitorData * 1);*/
+                                                function getJDataFieldVal_compare(subId, item_monitorData) {
+                                                    // .temperature .pressure .standard .running
+                                                    var gasEvent = item_monitorData.gasEvent;
+                                                    var jDataFieldVal = gasEvent.temperature;
+                                                    switch (subId) {
+                                                        case 1:
+                                                            jDataFieldVal = gasEvent.pressure;
+                                                            break;
+                                                        case 2:
+                                                            jDataFieldVal = gasEvent.standard;
+                                                            break;
+                                                        case 3:
+                                                            jDataFieldVal = gasEvent.running;
+                                                            break;
+                                                    }
+                                                    return jDataFieldVal;
                                                 }
+                                                var jDataPointTime = new Date(item_monitorData.gasEvent.pointtime);
+                                                var jDataFieldVal = getJDataFieldVal_compare(subId, item_monitorData);
+                                                return {
+                                                    name: jDataPointTime.toString(),
+                                                    value: [
+                                                        laydate.now(jDataPointTime.getTime(), 'YYYY-MM-DD hh:mm:ss'),
+                                                        Math.round(jDataFieldVal)
+                                                    ]
+                                                };
                                             }
-                                        },
-                                        legend: {
-                                            data:['昨日', '今日']
-                                        },
-                                        dataZoom: {
-                                            show: false,
-                                            start: 0,
-                                            end: 100
-                                        },
-                                        grid: {
-                                            left: '0%',
-                                            right: '6%',
-                                            bottom: '0%',
-                                            top: 75,
-                                            containLabel: true
-                                        },
-                                        xAxis: [
-                                            {
-                                                type: 'time',
-                                                splitLine: {
-                                                    show: false
-                                                },
-                                                min: laydate.now(checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
-                                                max: laydate.now(checkIsTimestampBetweenStartEnd.getEndTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
-
-                                                // type: 'category',
-                                                name: '今日',
-                                                boundaryGap: false,
-                                                axisTick: {
-                                                    alignWithLabel: true
-                                                },
-                                                axisLine: {
-                                                    onZero: false,
-                                                    lineStyle: {
-                                                        color: colors[1]
-                                                    }
-                                                },
-                                                axisPointer: {
-                                                    label: {
-                                                        formatter: function (params) {
-                                                            return '' + params.value
-                                                                + (params.seriesData.length ? '：' + params.seriesData[0].data : '');
+                                            function processMonitorDataArr(arr_monitorData) {
+                                                var arr_data_compare = [];
+                                                if(arr_monitorData && arr_monitorData.length && arr_monitorData.length > 0) {
+                                                    // 先筛除掉 arr_monitorData 中不合格的数据（时间范围不在图中开始结束时间范围以内的）
+                                                    var arr_filtered_monitorData = [];
+                                                    arr_monitorData.forEach(function(item_monitorData) {
+                                                        if(checkIsTimestampBetweenStartEnd_compare(item_monitorData.gasEvent.pointtime)) {
+                                                            arr_filtered_monitorData.push(item_monitorData);
+                                                        }
+                                                    });
+                                                    arr_monitorData = arr_filtered_monitorData;
+                                                    // 先按 max_history 抽样 arr_monitorData
+                                                    var length_arr_monitorData = arr_monitorData.length
+                                                        , arr_sample_monitorData = arr_monitorData;
+                                                    if(length_arr_monitorData > max_history_compare) {
+                                                        arr_sample_monitorData = [];
+                                                        var step = Math.floor(length_arr_monitorData / max_history);
+                                                        for(var i = 0; i < length_arr_monitorData && arr_sample_monitorData.length <= max_history; i += step) {
+                                                            arr_sample_monitorData.push(arr_monitorData[i]);
                                                         }
                                                     }
-                                                }// ,
-                                                // data: ["8:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00", "24:00", "2:00", "4:00", "6:00", "8:00"]
-                                            },
-                                            {
-                                                // type: 'category',
-                                                type: 'time',
-                                                splitLine: {
-                                                    show: false
-                                                },
-                                                min: laydate.now(checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
-                                                max: laydate.now(checkIsTimestampBetweenStartEnd.getEndTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
+                                                    console.log('[device_manage_echarts.js processMonitorDataArr] arr_sample_monitorData.length: ' + arr_sample_monitorData.length);
+                                                    // Start: 对 arr_sample_monitorData 中的数据进行排序
+                                                    arr_sample_monitorData.sort(function(a_sample_monitorData, b_sample_monitorData) {
+                                                        return a_sample_monitorData.gasEvent.pointtime - b_sample_monitorData.gasEvent.pointtime;
+                                                    });
+                                                    // End  : 对 arr_sample_monitorData 中的数据进行排序
+                                                    arr_sample_monitorData.forEach(function(item_monitorData, index_monitorData) {
+                                                        var isNot2Render = !(index_monitorData + 1 === arr_monitorData.length);
+                                                        arr_data_compare.push(processMonitorData_sync_compare(item_monitorData, index_monitorData, true
+                                                            , isNot2Render));
+                                                    });
+                                                }
+                                                debugger;
+                                                return arr_data_compare;
+                                            }
+                                            var arr_data_compare = processMonitorDataArr(arr_monitorData);
+                                            //
+                                            debugger;
+                                            renderOptionCompare(arr_data_compare);
+                                        };
+                                        // 2. 发 get 请求
+                                        layer.load();
+                                        $.get(url_get_history_compare, {}, callback_history_compare, 'json');
+                                    }
+                                    renderHistoryData2Charts_compare();
+                                    // End  : 从数据库获取 8 月 3 日数据，做对比测试
 
-                                                name: '昨日',
-                                                boundaryGap: false,
-                                                axisTick: {
-                                                    alignWithLabel: true
-                                                },
-                                                axisLine: {
-                                                    onZero: false,
-                                                    lineStyle: {
-                                                        color: colors[0]
-                                                    }
+                                    function renderOptionCompare(arr_data_compare) {
+                                        debugger;
+                                        var option_compare = {
+                                            title: {
+                                                text: [subTitle, ' 历史数据对比'].join('')
+                                            },
+
+                                            color: colors,
+
+                                            tooltip: {
+                                                trigger: 'none',
+                                                axisPointer: {
+                                                    type: 'cross'
+                                                }
+                                                /*formatter: function (params) {
+                                                    params = params[0];
+                                                    var date = new Date(params.name);
+                                                    return ['[', laydate.now(date.getTime(), 'YYYY-MM-DD hh:mm:ss'), '] : '
+                                                        , params.value[1]].join('');
                                                 },
                                                 axisPointer: {
+                                                    animation: false,
+                                                    type: 'cross',
                                                     label: {
-                                                        formatter: function (params) {
-                                                            return '' + params.value
-                                                                + (params.seriesData.length ? '：' + params.seriesData[0].data : '');
-                                                        }
+                                                        backgroundColor: '#6a7985'
                                                     }
-                                                },
-                                                // data: ["8:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00", "24:00", "2:00", "4:00", "6:00", "8:00"]
-                                            }
-                                        ],
-                                        yAxis: [
-                                            {
-                                                boundaryGap: [0, '100%'],
-                                                splitLine: {
-                                                    show: false
-                                                },
-
-                                                type: 'value',
-                                                scale: true,
-                                                name: [subTitle, '值'].join(''),
-                                                nameGap: 8,
-                                                min: 0
-                                                // boundaryGap: [0.2, 0.2]
-                                            }
-                                        ],
-                                        series: [
-                                            {
-                                                showSymbol: false,
-                                                hoverAnimation: false,
-                                                name:'昨日',
-                                                type:'line',
-                                                xAxisIndex: 1,
-                                                smooth: true,
-                                                data: [] // [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 154.3, 48.7, 18.8, 6.0, 2.3]
+                                                }*/
                                             },
-                                            {
-                                                showSymbol: false,
-                                                hoverAnimation: false,
-                                                name:'今日',
-                                                type:'line',
-                                                smooth: true,
-                                                /*{
-                                                 name: jDataPointTime.toString(),
-                                                 value: [
-                                                 laydate.now(jDataPointTime.getTime(), 'YYYY-MM-DD hh:mm:ss'),
-                                                 Math.round(jDataFieldVal)
-                                                 ]
-                                                 }*/
-                                                data: option_base.series[0].data// [3.9, 5.9, 11.1, 18.7, 48.3, 69.2, 231.6, 122.5, 46.6, 55.4, 18.4, 10.3, 0.7]
-                                            }
-                                        ]
-                                    };
-                                    myChart_compare.setOption(option_compare);
+                                            legend: {
+                                                data:['昨日', '今日']
+                                            },
+                                            dataZoom: {
+                                                show: false,
+                                                start: 0,
+                                                end: 100
+                                            },
+                                            grid: {
+                                                left: '0%',
+                                                right: '6%',
+                                                bottom: '0%',
+                                                top: 75,
+                                                containLabel: true
+                                            },
+                                            xAxis: [
+                                                {
+                                                    type: 'time',
+                                                    splitLine: {
+                                                        show: false
+                                                    },
+                                                    min: laydate.now(checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
+                                                    max: laydate.now(checkIsTimestampBetweenStartEnd.getEndTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
+
+                                                    // type: 'category',
+                                                    name: '今日',
+                                                    boundaryGap: false,
+                                                    axisTick: {
+                                                        alignWithLabel: true
+                                                    },
+                                                    axisLine: {
+                                                        onZero: false,
+                                                        lineStyle: {
+                                                            color: colors[1]
+                                                        }
+                                                    },
+                                                    axisPointer: {
+                                                        label: {
+                                                            formatter: function (params) {
+                                                                /*params = params[0];
+                                                                var date = new Date(params.name);
+                                                                return ['[', laydate.now(date.getTime(), 'YYYY-MM-DD hh:mm:ss'), '] : '
+                                                                    , params.value[1]].join('');*/
+
+                                                                return '' + laydate.now(params.value, 'YYYY-MM-DD hh:mm:ss')
+                                                                    + (params.seriesData.length ? '：' + params.seriesData[0].data[1] : '');
+                                                            }
+                                                        }
+                                                    }// ,
+                                                    // data: ["8:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00", "24:00", "2:00", "4:00", "6:00", "8:00"]
+                                                },
+                                                {
+                                                    // type: 'category',
+                                                    type: 'time',
+                                                    splitLine: {
+                                                        show: false
+                                                    },
+                                                    min: laydate.now(checkIsTimestampBetweenStartEnd_compare.getStartTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
+                                                    max: laydate.now(checkIsTimestampBetweenStartEnd_compare.getEndTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
+
+                                                    name: '昨日',
+                                                    boundaryGap: false,
+                                                    axisTick: {
+                                                        alignWithLabel: true
+                                                    },
+                                                    axisLine: {
+                                                        onZero: false,
+                                                        lineStyle: {
+                                                            color: colors[0]
+                                                        }
+                                                    },
+                                                    axisPointer: {
+                                                        label: {
+                                                            formatter: function (params) {
+                                                                /*params = params[0];
+                                                                var date = new Date(params.name);
+                                                                return ['[', laydate.now(date.getTime(), 'YYYY-MM-DD hh:mm:ss'), '] : '
+                                                                    , params.value[1]].join('');*/
+
+                                                                return '' + laydate.now(params.value, 'YYYY-MM-DD hh:mm:ss')
+                                                                    + (params.seriesData.length ? '：' + params.seriesData[0].data[1] : '');
+                                                            }
+                                                        }
+                                                    },
+                                                    // data: ["8:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00", "24:00", "2:00", "4:00", "6:00", "8:00"]
+                                                }
+                                            ],
+                                            yAxis: [
+                                                {
+                                                    boundaryGap: [0, '100%'],
+                                                    splitLine: {
+                                                        show: false
+                                                    },
+
+                                                    type: 'value',
+                                                    scale: true,
+                                                    // name: [subTitle, '值'].join(''),
+                                                    nameGap: 8,
+                                                    min: 0
+                                                    // boundaryGap: [0.2, 0.2]
+                                                }
+                                            ],
+                                            series: [
+                                                {
+                                                    showSymbol: false,
+                                                    hoverAnimation: false,
+                                                    name:'昨日',
+                                                    type:'line',
+                                                    xAxisIndex: 1,
+                                                    smooth: true,
+                                                    data: arr_data_compare // [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 154.3, 48.7, 18.8, 6.0, 2.3]
+                                                },
+                                                {
+                                                    showSymbol: false,
+                                                    hoverAnimation: false,
+                                                    name:'今日',
+                                                    type:'line',
+                                                    smooth: true,
+                                                    /*{
+                                                     name: jDataPointTime.toString(),
+                                                     value: [
+                                                     laydate.now(jDataPointTime.getTime(), 'YYYY-MM-DD hh:mm:ss'),
+                                                     Math.round(jDataFieldVal)
+                                                     ]
+                                                     }*/
+                                                    data: option_base.series[0].data// [3.9, 5.9, 11.1, 18.7, 48.3, 69.2, 231.6, 122.5, 46.6, 55.4, 18.4, 10.3, 0.7]
+                                                }
+                                            ]
+                                        };
+                                        myChart_compare.setOption(option_compare);
+                                        layer.closeAll('loading');   //关闭所有的loading
+                                    }
                                 }
                                 // End  : functions
                                 laytpl(tpl_eCharts_compare.innerHTML).render({}, function(html_tpl_eCharts_compare) {
@@ -678,8 +837,8 @@
                 function renderHistoryData2Charts() {
                     // $.get('http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00', {}, function(data) {console.log(data)}, 'json')
                     // 1. 请求 http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00
-                    // var params_history = {hardwareId: 't21s1d1', begin: '2017-08-04:08:00:00', end: '2017-08-05:08:00:00'};
-                    var params_history = {hardwareId: 't21s1d1', begin: '2017-08-03:08:00:00', end: '2017-08-04:08:00:00'};
+                    var params_history = {hardwareId: 't21s1d1', begin: '2017-08-04:08:00:00', end: '2017-08-05:08:00:00'};
+                    // var params_history = {hardwareId: 't21s1d1', begin: '2017-08-03:08:00:00', end: '2017-08-04:08:00:00'};
                     var url_get_history = 'http://localhost:9099/point/query/history' + tools.serializeParams(params_history);
                     var max_history = 1000;  // 历史测点的 max 数目
                     var callback_history = function(data_history) {
