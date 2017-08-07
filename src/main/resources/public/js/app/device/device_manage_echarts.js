@@ -950,6 +950,9 @@
                                     processMonitorData_async(item_monitorData, index_monitorData, true
                                         , !(index_monitorData + 1 === arr_monitorData.length));
                                 });
+                            } else {
+                                // arr_monitorData 为空，需要隐藏掉 layer loading
+                                layer.closeAll('loading');
                             }
                         }
                         processMonitorDataArr(arr_monitorData);
@@ -1302,7 +1305,7 @@
             console.log(['设备信息[deviceId: ', deviceId, '][hardwareId: ', hardwareId, '][tokenId: ', tokenId, '][deviceName: ', deviceName, '][logic: ', logic,
                 '][watcher: ', watcher, '][phone: ', phone, '][created: ', created, '][status: ', status, '][parent: ', parent, '][siteId: ', siteId, ']'].join(''));
             // Start: 根据用户的点击，清空折线图，然后重新 setStationId
-            refreshECharts(hardwareId);
+            refreshECharts(hardwareId, deviceName);
             // End  : 根据用户的点击，清空折线图，然后重新 setStationId
         });
         // End  : [设备列表]中某设备被点击
