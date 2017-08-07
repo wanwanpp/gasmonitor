@@ -722,7 +722,7 @@
                         // Start: 根据用户的点击，清空折线图，然后重新 setStationId
                         if(item && item.hardwareId) {
                             layer.load();
-                            refreshECharts(item.hardwareId);
+                            refreshECharts(item.hardwareId, item.name);
                             createDevicesTreeListNodes.renderSelectSearchDevicesOptions(item.hardwareId);
                             // 关闭所有的 loading
                             // layer.closeAll('loading');
@@ -814,7 +814,7 @@
         // 刷新折线图
         var myChartsArr;    // 用于记录有哪些 eChartsInstance
         var optionsArr;
-        function refreshECharts(hardwareId) {
+        function refreshECharts(hardwareId, deviceName) {
             // var hardwareId = 's1';
 
             // 基于准备好的dom，初始化echarts实例
@@ -825,10 +825,10 @@
             myChartsArr = [myChart0, myChart1, myChart2, myChart3];
 
             // 指定图表的配置项和数据
-            var option0 = genOption(hardwareId, 0);
-            var option1 = genOption(hardwareId, 1);
-            var option2 = genOption(hardwareId, 2);
-            var option3 = genOption(hardwareId, 3);
+            var option0 = genOption(hardwareId, 0, deviceName);
+            var option1 = genOption(hardwareId, 1, deviceName);
+            var option2 = genOption(hardwareId, 2, deviceName);
+            var option3 = genOption(hardwareId, 3, deviceName);
             optionsArr = [option0, option1, option2, option3];
 
             // 实际： 监听事件进行刷新
