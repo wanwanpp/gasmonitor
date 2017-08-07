@@ -346,9 +346,15 @@
                                     // End  : 从数据库获取 8 月 3 日数据，做对比测试
 
                                     function renderOptionCompare(arr_data_compare) {
+                                        var legend_history = ['历史【', subTitle, '】曲线，时间：'
+                                            , laydate.now(checkIsTimestampBetweenStartEnd_compare.getStartTimestamp(), 'YYYY-MM-DD')
+                                            , '，采集点数：', arr_data_compare.length].join('');
+                                        var legend_today = ['今日【', subTitle, '】曲线，时间：'
+                                            , laydate.now(checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD')
+                                            , '，采集点数：', option_base.series[0].data.length].join('');
                                         var option_compare = {
                                             title: {
-                                                text: [subTitle, ' 历史数据对比'].join('')
+                                                text: ['设备', deviceName].join('')
                                             },
 
                                             color: colors,
