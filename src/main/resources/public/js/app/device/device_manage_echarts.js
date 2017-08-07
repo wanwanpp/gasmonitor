@@ -246,7 +246,7 @@
                                         // 1. 请求 http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00
                                         // var params_history = {hardwareId: 't21s1d1', begin: '2017-08-04:08:00:00', end: '2017-08-05:08:00:00'};
                                         var params_history_compare = {hardwareId: 't21s1d1', begin: '2017-08-03:08:00:00', end: '2017-08-04:08:00:00'};
-                                        var url_get_history_compare = 'http://localhost:9099/point/query/history' + tools.serializeParams(params_history_compare);
+                                        var url_get_history_compare = '/point/query/history' + tools.serializeParams(params_history_compare);
                                         var max_history_compare = 1000;  // 历史测点的 max 数目
                                         var callback_history_compare = function(data_history_compare) {
                                             console.log('[device_manage_echarts.js callback_history_compare] data_history_compare: ');
@@ -894,7 +894,7 @@
                     // 1. 请求 http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00
                     var params_history = {hardwareId: 't21s1d1', begin: '2017-08-04:08:00:00', end: '2017-08-05:08:00:00'};
                     // var params_history = {hardwareId: 't21s1d1', begin: '2017-08-03:08:00:00', end: '2017-08-04:08:00:00'};
-                    var url_get_history = 'http://localhost:9099/point/query/history' + tools.serializeParams(params_history);
+                    var url_get_history = '/point/query/history' + tools.serializeParams(params_history);
                     var max_history = 1000;  // 历史测点的 max 数目
                     var callback_history = function(data_history) {
                         console.log('[device_manage_echarts.js callback_history] data_history: ');
