@@ -400,10 +400,10 @@
                                                 end: 100
                                             },*/
                                             grid: {
-                                                left: '0%',
-                                                right: '6%',
-                                                bottom: '0%',
-                                                top: 75,
+                                                left: 8,
+                                                right: 28,
+                                                bottom: 30,
+                                                top: 45,
                                                 containLabel: true
                                             },
                                             xAxis: [
@@ -416,7 +416,9 @@
                                                     max: laydate.now(checkIsTimestampBetweenStartEnd.getEndTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
 
                                                     // type: 'category',
-                                                    name: '今日',
+                                                    name: legend_today,
+                                                    nameLocation: 'middle',
+                                                    nameGap: 38,
                                                     boundaryGap: false,
                                                     axisTick: {
                                                         alignWithLabel: true
@@ -451,7 +453,9 @@
                                                     min: laydate.now(checkIsTimestampBetweenStartEnd_compare.getStartTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
                                                     max: laydate.now(checkIsTimestampBetweenStartEnd_compare.getEndTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
 
-                                                    name: '昨日',
+                                                    name: legend_history,
+                                                    nameLocation: 'middle',
+                                                    nameGap: 38,
                                                     boundaryGap: false,
                                                     axisTick: {
                                                         alignWithLabel: true
@@ -498,7 +502,7 @@
                                                 {
                                                     /*showSymbol: false,
                                                     hoverAnimation: false,*/
-                                                    name:'昨日',
+                                                    name: legend_history,
                                                     type:'line',
                                                     xAxisIndex: 1,
                                                     smooth: true,
@@ -507,7 +511,7 @@
                                                 {
                                                     /*showSymbol: false,
                                                     hoverAnimation: false,*/
-                                                    name:'今日',
+                                                    name: legend_today,
                                                     type:'line',
                                                     smooth: true,
                                                     /*{
