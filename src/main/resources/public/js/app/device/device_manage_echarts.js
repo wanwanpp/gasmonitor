@@ -379,7 +379,20 @@
                                                 }*/
                                             },
                                             legend: {
-                                                data:['昨日', '今日']
+                                                right: 150,
+                                                data:[legend_history, legend_today]
+                                            },
+                                            toolbox: {
+                                                show: true,
+                                                feature: {
+                                                    dataZoom: {
+                                                        yAxisIndex: 'none'
+                                                    },
+                                                    dataView: {readOnly: false},
+                                                    // magicType: {type: ['line', 'bar']},
+                                                    restore: {},
+                                                    saveAsImage: {}
+                                                }
                                             },
                                             /*dataZoom: {
                                                 show: false,
