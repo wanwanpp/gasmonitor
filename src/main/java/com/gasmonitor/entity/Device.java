@@ -22,6 +22,7 @@ public class Device implements Serializable {
     private String hardwareId;  //硬件Id
     private Long siteId;
     private String name;    //设备名称
+    private String factory;//生产厂家
     private String tokenId;
     private Integer logic;
     private Integer type;//设备类型，目前只有三种设备类型
@@ -326,6 +327,14 @@ public class Device implements Serializable {
 
     public void setPressureLow(Integer pressureLow) {
         this.pressureLow = pressureLow;
+    }
+
+    public String getFactory() {
+        return factory;
+    }
+
+    public void setFactory(String factory) {
+        this.factory = factory;
     }
 
     @Override
