@@ -9,16 +9,122 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="format-detection" content="telephone=no"/>
-  <!--<link rel="stylesheet" href="/layui/css/layui.css" media="all"/>
-  <link rel="stylesheet" href="/css/me.css" media="all"/>-->
+  <link rel="stylesheet" href="/layui/css/layui.css" media="all"/>
+  <link rel="stylesheet" href="/css/me.css" media="all"/>
 
+  <!-- Start: treeTable 的 css -->
+  <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-treetable/3.2.0/css/jquery.treetable.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-treetable/3.2.0/css/jquery.treetable.theme.default.min.css">-->
+  <!-- End  : treeTable 的 css -->
 </head>
 <body class="childrenBody">
-  <p>租户 - 总表。用 treeTable 展示， vue 渲染数据。</p>
-  <p>https://cdnjs.com/libraries/jquery-treetable</p>
-  <p>http://www.oschina.net/p/jquery-treetable/</p>
-  <p>http://ludo.cubicphuse.nl/jquery-treetable/</p>
-  <p>https://github.com/ludo/jquery-treetable-ajax-example</p>
-  <p>http://jsfiddle.net/djlerman/bbj8k9pe/</p>
+  <!-- Start: table html -->
+  <table id="tree_table-sum" class="layui-table">
+    <caption>
+      <button class="layui-btn" id="btn-expand_all">全部展开</button>
+      <button class="layui-btn" id="btn-collapse_all">全部收拢</button>
+    </caption>
+    <thead>
+    <tr>
+      <th>Tree column</th>
+      <th>Additional data</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr data-tt-id="1" data-tt-branch='true'>
+      <td>1: column 1</td>
+      <td>1: column 2</td>
+    </tr>
+    <tr data-tt-id="1.1"  data-tt-parent-id="1">
+      <td>1.1: column 1</td>
+      <td>1.1: column 2</td>
+    </tr>
+
+    <tr data-tt-id="2" data-tt-branch='true'>
+      <td>2: column 1</td>
+      <td>2: column 2</td>
+    </tr>
+    <tr data-tt-id="2.1"  data-tt-parent-id="2">
+      <td>2.1: column 1</td>
+      <td>2.1: column 2</td>
+    </tr>
+    <tr data-tt-id="2.2"  data-tt-parent-id="2">
+      <td>2.2: column 1</td>
+      <td>2.2: column 2</td>
+    </tr>
+
+    <tr data-tt-id="3" data-tt-branch='true'>
+      <td>3: column 1</td>
+      <td>3: column 2</td>
+    </tr>
+    <tr data-tt-id="3.1"  data-tt-parent-id="3">
+      <td>3.1: column 1</td>
+      <td>3.1: column 2</td>
+    </tr>
+    <tr data-tt-id="3.2"  data-tt-parent-id="3">
+      <td>3.2: column 1</td>
+      <td>3.2: column 2</td>
+    </tr>
+    <tr data-tt-id="3.3"  data-tt-parent-id="3">
+      <td>3.3: column 1</td>
+      <td>3.3: column 2</td>
+    </tr>
+    </tbody>
+  </table>
+  <!-- End  : table html -->
 </body>
 </html>
+
+<!-- Start: treeTable 的 js -->
+<script type="text/javascript" src="/layui/layui.js"></script>
+<!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-treetable/3.2.0/jquery.treetable.min.js"></script>-->
+<script>
+    (function () {
+        layui.use(['treeTable'], function() {
+            var $ = layui.jquery
+                , treeTable = layui.treeTable;
+
+            $(function () {
+                // Start: treeTable 初始化相关
+                // initialize treeTable
+                $("#tree_table-sum").treetable({
+                    expandable:     true,
+                    onNodeExpand:   nodeExpand,
+                    onNodeCollapse: nodeCollapse
+                });
+
+
+                // expand node with ID "1" by default
+                $("#tree_table-sum").treetable("reveal", '1');
+
+
+                // Highlight a row when selected
+                $("#tree_table-sum tbody").on("mousedown", "tr", function() {
+                    $(".selected").not(this).removeClass("selected");
+                    $(this).toggleClass("selected");
+                });
+
+                function nodeExpand () {
+                    // alert("Expanded: " + this.id);
+                    // http://jsfiddle.net/djlerman/bbj8k9pe/
+                    // getNodeViaAjax(this.id);
+                }
+
+
+                function nodeCollapse () {
+                    // alert("Collapsed: " + this.id);
+                }
+                // End  : treeTable 初始化相关
+
+                // Start: 全部展开 和 全部收拢 按钮
+                $(document).on('click', '#btn-expand_all', function () {
+                    layui.treeTable.jQuery('#tree_table-sum').treetable('expandAll');
+                }).on('click', '#btn-collapse_all', function () {
+                    layui.treeTable.jQuery('#tree_table-sum').treetable('collapseAll');
+                });
+                // End  : 全部展开 和 全部收拢 按钮
+            });
+        });
+    })();
+</script>
+<!-- End  : treeTable 的 js -->
