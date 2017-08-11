@@ -16,6 +16,9 @@
   <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-treetable/3.2.0/css/jquery.treetable.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-treetable/3.2.0/css/jquery.treetable.theme.default.min.css">-->
   <!-- End  : treeTable 的 css -->
+  <style>
+    .color-red { color: #CC0033; }
+  </style>
 </head>
 <body class="childrenBody">
   <!-- Start: table html -->
@@ -26,48 +29,237 @@
     </caption>
     <thead>
     <tr>
-      <th>Tree column</th>
-      <th>Additional data</th>
+      <th>站点名称</th>
+      <th>监测时间</th>
+      <th>工况流量（m³/h）</th>
+      <th>标况流量（Nm³/h）</th>
+      <th>累计流量（立方米）</th>
+      <th>剩余流量（立方米）</th>
+      <th>压力（KPa）</th>
+      <th>温度（℃）</th>
+      <th>市电状态</th>
+      <th>电池电压（V）</th>
+      <th>太阳能电压（V）</th>
+      <th>仪表地址</th>
+      <th>仪表厂家</th>
     </tr>
     </thead>
     <tbody>
-    <tr data-tt-id="1" data-tt-branch='true'>
-      <td>1: column 1</td>
-      <td>1: column 2</td>
+    <tr data-tt-id="1">
+      <td>辛忠驿总计量西</td>
+      <td>2017-8-11 18:34:44</td>
+      <td>150.02</td>
+      <td>578.94</td>
+      <td>10581894.00</td>
+      <td></td>
+      <td>290.19</td>
+      <td>19.45</td>
+      <td>有电</td>
+      <td>4.10</td>
+      <td></td>
+      <td>2</td>
+      <td>天津五机床厂V型</td>
     </tr>
-    <tr data-tt-id="1.1"  data-tt-parent-id="1">
+    <!--<tr data-tt-id="1.1"  data-tt-parent-id="1">
       <td>1.1: column 1</td>
       <td>1.1: column 2</td>
-    </tr>
+    </tr>-->
 
-    <tr data-tt-id="2" data-tt-branch='true'>
-      <td>2: column 1</td>
-      <td>2: column 2</td>
+    <tr data-tt-id="2" data-tt-branch='true' class="color-red">
+      <td>辛忠驿总计量东</td>
+      <td>2017-8-11 18:35:01</td>
+      <td>586.17</td>
+      <td>2282.28</td>
+      <td>22911032.00</td>
+      <td></td>
+      <td>284.19</td>
+      <td>12.41</td>
+      <td>有电</td>
+      <td>4.10</td>
+      <td></td>
+      <td>3</td>
+      <td>天津五机床厂V型</td>
     </tr>
     <tr data-tt-id="2.1"  data-tt-parent-id="2">
-      <td>2.1: column 1</td>
-      <td>2.1: column 2</td>
+      <td>分表合计</td>
+      <td></td>
+      <td>1073.77</td>
+      <td>3755.99</td>
+      <td>115999355.13</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr data-tt-id="2.2"  data-tt-parent-id="2">
-      <td>2.2: column 1</td>
-      <td>2.2: column 2</td>
+      <td>宏源金属一线</td>
+      <td>2017-8-11 18:32:51</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>424117.00</td>
+      <td>3747</td>
+      <td>380.51</td>
+      <td>32.50</td>
+      <td>有电</td>
+      <td>4.13</td>
+      <td></td>
+      <td>2</td>
+      <td>天信CPU卡</td>
+    </tr>
+    <tr data-tt-id="2.3"  data-tt-parent-id="2">
+      <td>宏源金属二线</td>
+      <td>2017-8-11 18:32:52</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>424116.00</td>
+      <td>3748</td>
+      <td>381.51</td>
+      <td>31.50</td>
+      <td>有电</td>
+      <td>4.12</td>
+      <td></td>
+      <td>3</td>
+      <td>天信CPU卡</td>
+    </tr>
+    <tr data-tt-id="2.4"  data-tt-parent-id="2" class="color-red">
+      <td>马村总表</td>
+      <td>2017-8-11 18:31:52</td>
+      <td>38.11</td>
+      <td>136.34</td>
+      <td>2466150.00</td>
+      <td>0</td>
+      <td>369.51</td>
+      <td>26.50</td>
+      <td>有电</td>
+      <td>4.08</td>
+      <td></td>
+      <td>2</td>
+      <td>天信CPU卡</td>
+    </tr>
+    <tr data-tt-id="2.4.1"  data-tt-parent-id="2.4">
+      <td>分表合计</td>
+      <td></td>
+      <td>26.81</td>
+      <td>97.31</td>
+      <td>1406821.13</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr data-tt-id="2.4.2"  data-tt-parent-id="2.4">
+      <td>多海镀锌</td>
+      <td>2017-8-11 18:32:08</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>704388.00</td>
+      <td>21711</td>
+      <td>370.51</td>
+      <td>35.50</td>
+      <td>有电</td>
+      <td>4.15</td>
+      <td></td>
+      <td>2</td>
+      <td>天信CPU卡</td>
+    </tr>
+    <tr data-tt-id="2.4.3"  data-tt-parent-id="2.4">
+      <td>多海镀锌二线</td>
+      <td>2017-8-11 18:33:52</td>
+      <td>26.11</td>
+      <td>97.34</td>
+      <td>702433.00</td>
+      <td>22965</td>
+      <td>359.51</td>
+      <td>24.50</td>
+      <td>有电</td>
+      <td>4.15</td>
+      <td></td>
+      <td>3</td>
+      <td>天信CPU卡</td>
     </tr>
 
-    <tr data-tt-id="3" data-tt-branch='true'>
-      <td>3: column 1</td>
-      <td>3: column 2</td>
+    <tr data-tt-id="3" data-tt-branch='true' class="color-red">
+      <td>思贤阀室中路</td>
+      <td>2017-8-11 18:33:15</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>3953164.00</td>
+      <td>19313.00</td>
+      <td>355.19</td>
+      <td>31.31</td>
+      <td>有电</td>
+      <td>4.16</td>
+      <td></td>
+      <td>2</td>
+      <td>天信CPU</td>
     </tr>
     <tr data-tt-id="3.1"  data-tt-parent-id="3">
-      <td>3.1: column 1</td>
-      <td>3.1: column 2</td>
+      <td>分表合计</td>
+      <td></td>
+      <td>42.77</td>
+      <td>149.99</td>
+      <td>1861577.13</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr data-tt-id="3.2"  data-tt-parent-id="3">
-      <td>3.2: column 1</td>
-      <td>3.2: column 2</td>
+      <td>方正镀锌上</td>
+      <td>2017-8-11 18:32:51</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>424117.00</td>
+      <td>3747</td>
+      <td>380.51</td>
+      <td>32.50</td>
+      <td>有电</td>
+      <td>4.13</td>
+      <td></td>
+      <td>2</td>
+      <td>天信CPU卡</td>
     </tr>
     <tr data-tt-id="3.3"  data-tt-parent-id="3">
-      <td>3.3: column 1</td>
-      <td>3.3: column 2</td>
+      <td>方正镀锌下</td>
+      <td>2017-8-11 18:32:51</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>424117.00</td>
+      <td>3747</td>
+      <td>380.51</td>
+      <td>32.50</td>
+      <td>有电</td>
+      <td>4.13</td>
+      <td></td>
+      <td>2</td>
+      <td>天信CPU卡</td>
+    </tr>
+    <tr data-tt-id="3.4"  data-tt-parent-id="3">
+      <td>永发摩配</td>
+      <td>2017-8-11 18:32:08</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>704388.00</td>
+      <td>21711</td>
+      <td>370.51</td>
+      <td>35.50</td>
+      <td>有电</td>
+      <td>4.15</td>
+      <td></td>
+      <td>2</td>
+      <td>天信CPU卡</td>
     </tr>
     </tbody>
   </table>
