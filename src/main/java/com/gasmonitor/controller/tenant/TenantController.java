@@ -114,6 +114,15 @@ public class TenantController {
     public String settings() {
         return "tenant/settings";
     }
+
+    /**
+     * 总表
+     * @return
+     */
+    @RequestMapping(value = "/sum-table")
+    public String sumTable() {
+        return "tenant/sum-table";
+    }
     // End  : 20170625 这里好像是对租户的增删改查？租户的菜单跳转暂时也先放这里吧
 
 
