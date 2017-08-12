@@ -17,7 +17,7 @@
 <body class="childrenBody">
 <blockquote class="layui-elem-quote news_search layui-form ">
   <div class="layui-inline">
-    <div class="layui-input-inline" >
+    <div class="layui-input-inline">
       <select id="search_select_tenant" name="tenantId" lay-verify="required">
         <option th:each="prod,iterStat : ${tenants}" th:value="${prod.id}" th:text=${prod.name}></option>
       </select>
@@ -72,8 +72,8 @@
       <tr>
         <td>{{index}}</td>
         <td>{{item.username}}</td>
-        <td>{{item.address}}</td>
-        <td>{{item.mobile}}</td>
+        <td>{{item.address||''}}</td>
+        <td>{{item.mobile||''}}</td>
         <td>{{item.status}}</td>
         <td>{{item.role}}</td>
         <td>{{layui.tools.timestampToString(item.createdate)}}</td>
