@@ -878,7 +878,7 @@
                         , jDataGasEvent.summary, jDataGasEvent.pointtime, isNot2Render);
                 }
                 oneSocket.setHandler(oneSocket.Event.GAS_EVENT, processMonitorData);
-                oneSocket.setStation(hardwareId);
+                // oneSocket.setStation(hardwareId);
 
                 // 最后，固定 echarts 容器宽度，并指定父容器滚动
                 var deviceEchartsContainerEle = $('#device-echarts-container');
