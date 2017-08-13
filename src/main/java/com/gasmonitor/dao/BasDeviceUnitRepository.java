@@ -1,0 +1,1 @@
+package com.gasmonitor.dao;import com.gasmonitor.entity.BasDeviceUnit;import org.springframework.data.jpa.repository.JpaRepository;/** * Created by saplmm on 2017/8/13. */public interface BasDeviceUnitRepository extends JpaRepository<BasDeviceUnit, Long> {    }

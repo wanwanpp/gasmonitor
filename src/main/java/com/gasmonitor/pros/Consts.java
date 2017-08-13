@@ -1,0 +1,1 @@
+package com.gasmonitor.pros;/** * Created by saplmm on 2017/8/13. */public class Consts {    public static final String CACHE_USER = "c_user";  //user缓存}
