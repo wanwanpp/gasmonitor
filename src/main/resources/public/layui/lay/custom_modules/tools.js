@@ -6,7 +6,12 @@
 var DEVICE_TYPE_LOGIN = 1;
 var DEVICE_TYPE_WULI = 2;
 
-layui.define(['jquery', 'layer', 'element'], function(exports) {
+var DEVICE_TYPE_LIULIANG = 1;
+var DEVICE_TYPE_IC = 2;
+var DEVICE_TYPE_ICLIULIANG = 3;
+
+
+layui.define(['jquery', 'layer', 'element'], function (exports) {
     var $ = layui.jquery;
     var layer = layui.layer;
     var element = layui.element();
@@ -15,24 +20,24 @@ layui.define(['jquery', 'layer', 'element'], function(exports) {
     // Start: 所有的 function
     var LeftNavTabManager = {
         check: {},
-        jumpLeftNavTab: function(url) {
+        jumpLeftNavTab: function (url) {
             console.log(['jumpLeftNavTab url: ', url].join(''));
             var arr_element_leftNav = $('.layui-side-scroll .layui-nav .layui-nav-item a[data-url]');
-            if(!arr_element_leftNav || !arr_element_leftNav.length || !(arr_element_leftNav.length > 0)) {
-                if(window && window.parent && (window !== window.parent)
-                        && window.parent.layui && window.parent.layui.tools) {
+            if (!arr_element_leftNav || !arr_element_leftNav.length || !(arr_element_leftNav.length > 0)) {
+                if (window && window.parent && (window !== window.parent)
+                    && window.parent.layui && window.parent.layui.tools) {
                     window.parent.layui.tools.jumpLeftNavTab(url);
                 }
-                return ;
+                return;
             }
             //
             var arr_urlAndParamStr = url.split('?');
             var url_pureLeftNav = arr_urlAndParamStr[0];
             //
-            for(var i = 0, len = arr_element_leftNav.length; i < len; ++i) {
+            for (var i = 0, len = arr_element_leftNav.length; i < len; ++i) {
                 var item_element_leftNav = $(arr_element_leftNav[i]);
                 var str_dataUrl = item_element_leftNav.data('url');
-                if(str_dataUrl == url_pureLeftNav) {
+                if (str_dataUrl == url_pureLeftNav) {
                     // item_element_leftNav.attr('data-url', url);
                     //
                     LeftNavTabManager.check = {
@@ -84,7 +89,7 @@ layui.define(['jquery', 'layer', 'element'], function(exports) {
                         //获取iframe身上的tab index
                         tabindex = iframe.attr('data-tabindex');
                         //
-                        if(id == LeftNavTabManager.check.dataId) {
+                        if (id == LeftNavTabManager.check.dataId) {
                             iframe.attr('src', LeftNavTabManager.check.dataUrl);
                             LeftNavTabManager.check = {};
                         }
@@ -92,7 +97,7 @@ layui.define(['jquery', 'layer', 'element'], function(exports) {
                         //显示加载层
                         layer.load();
                         //
-                        if(id == LeftNavTabManager.check.dataId) {
+                        if (id == LeftNavTabManager.check.dataId) {
                             src = LeftNavTabManager.check.dataUrl;
                             LeftNavTabManager.check = {};
                         }
@@ -117,7 +122,7 @@ layui.define(['jquery', 'layer', 'element'], function(exports) {
             nav.find('li a[data-url]').eq(0).click();
 
             // Start: 点击按钮收起或展开侧边栏
-            $(document).on('click', '#layui-left-menu-toggle', function() {
+            $(document).on('click', '#layui-left-menu-toggle', function () {
                 // class strings
                 var classStr_layuiSideHide = 'layui-side-hide';
                 var classStr_layuiBodyOnSideHide = 'layui-body-on-side-hide';
@@ -127,7 +132,7 @@ layui.define(['jquery', 'layer', 'element'], function(exports) {
                 var domEle_layuiBody = $('.layui-layout-admin .layui-body');
                 var domEle_layuiLeftMenuToggle = $('#layui-left-menu-toggle');
                 // 具体点击后 toggle
-                if(domEle_layuiSideLayuiBgBlack.hasClass(classStr_layuiSideHide)) {
+                if (domEle_layuiSideLayuiBgBlack.hasClass(classStr_layuiSideHide)) {
                     domEle_layuiSideLayuiBgBlack.removeClass(classStr_layuiSideHide);
                     domEle_layuiBody.removeClass(classStr_layuiBodyOnSideHide);
                     domEle_layuiLeftMenuToggle.removeClass(classStr_layuiLeftMenuToggleHide);
@@ -140,6 +145,7 @@ layui.define(['jquery', 'layer', 'element'], function(exports) {
             // End  : 点击按钮收起或展开侧边栏
         }
     };
+
     function getQueryString(name) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
         var r = window.location.search.substr(1).match(reg);
@@ -154,6 +160,16 @@ layui.define(['jquery', 'layer', 'element'], function(exports) {
             return "物理设备";
         } else {
             return "其他设备";
+        }
+    }
+
+    function deviceType2des(l) {
+        if (l == DEVICE_TYPE_LIULIANG) {
+            return "流量计";
+        } else if (l == DEVICE_TYPE_IC) {
+            return "IC";
+        } else if (l == DEVICE_TYPE_ICLIULIANG) {
+            return "IC&流量计";
         }
     }
 
@@ -186,21 +202,21 @@ layui.define(['jquery', 'layer', 'element'], function(exports) {
      * @param obj_params    参数对象
      */
     function serializeParams(obj_params) {
-        if(!obj_params) {
+        if (!obj_params) {
             console.error('[tools.serializeParams] obj_params 为空！ obj_params: ');
             console.warn(obj_params);
             return '';
         }
         var arr_str_params = ['?'];
-        for(var name_obj_params in obj_params) {
+        for (var name_obj_params in obj_params) {
             var value_obj_params = obj_params[name_obj_params];
-            if(1 !== arr_str_params.length) {
+            if (1 !== arr_str_params.length) {
                 arr_str_params.push('&');
             }
             arr_str_params.push(name_obj_params, '=', value_obj_params);
         }
         // 有 1 个参数，至少长度都是 4
-        if(arr_str_params.length < 4) {
+        if (arr_str_params.length < 4) {
             console.error('[tools.serializeParams] arr_str_params 没有意义！ arr_str_params: ');
             console.warn(arr_str_params);
             return '';
@@ -208,18 +224,20 @@ layui.define(['jquery', 'layer', 'element'], function(exports) {
         //
         return arr_str_params.join('');
     }
+
     // End  : 所有的 function
 
     // 导出的模块名和接口函数
     exports('tools', {
         getQueryString: getQueryString
         // Start: 左侧导航菜单和顶部 tab 相关
-        , indexLeftNavTopTab:   LeftNavTabManager.indexLeftNavTopTab
-        , jumpLeftNavTab:       LeftNavTabManager.jumpLeftNavTab
+        , indexLeftNavTopTab: LeftNavTabManager.indexLeftNavTopTab
+        , jumpLeftNavTab: LeftNavTabManager.jumpLeftNavTab
         // End  : 左侧导航菜单和顶部 tab 相关
         , deviceid2des: deviceid2des
         , renderSelectOption: renderSelectOption
         , timestampToString: timestampToString
         , serializeParams: serializeParams
+        , deviceType2des: deviceType2des
     });
 });

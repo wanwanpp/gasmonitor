@@ -120,7 +120,7 @@ public class DeviceController {
     @ResponseBody
     public AjaxResult<Device> ajaxUpdateDevice(Device newDevice) {
         //新生成的设备
-        return deviceService.updateDevice(newDevice);
+        return AjaxResult.AjaxResultWithOne(deviceService.updateDevice(newDevice));
     }
 
     @RequestMapping(value = "ajax/setstatus")
