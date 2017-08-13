@@ -3,7 +3,6 @@ package com.gasmonitor.controller.tenant;
 import com.gasmonitor.dao.SiteRepository;
 import com.gasmonitor.dao.TenantRepository;
 import com.gasmonitor.dao.UserRepository;
-import com.gasmonitor.entity.Site;
 import com.gasmonitor.entity.Tenant;
 import com.gasmonitor.entity.User;
 import com.gasmonitor.exception.TipsException;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
-
 import java.util.ArrayList;
 import java.util.List;
 

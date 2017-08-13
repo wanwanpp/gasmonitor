@@ -98,7 +98,11 @@ public class DeviceController {
         //新生成的设备
         User user = SessionUtils.getUser(session);
         log.info("usr:{},tenantid:{}开始增加一个设备:{}", user, user.getTenantId(), device);
-        device = deviceService.addDevice(device, user.getTenantId());
+        try {
+            device = deviceService.addDevice(device, user.getTenantId());
+        } catch (TipsException e) {
+            return AjaxResult.ErrorAjaxResult(e.getMessage());
+        }
         return new AjaxResult<>(device);
     }
 

@@ -88,14 +88,12 @@
             <i class="layui-icon" style="position: absolute;">&#xe616;</i>&nbsp; &nbsp; 没有告警
           </a>
         </li>
-        <!--<li class="layui-nav-item">
-          <a href="javascript:;">
-            进入前台
-          </a>
-        </li>-->
         <li class="layui-nav-item">
           <a href="javascript:;">
-            <span sec:authentication="name"></span> | <span sec:authentication="principal.authorities"></span>
+            <span sec:authentication="name"></span> |
+            <span th:if="${session.get('suser').getRole()} == 'ROLE_SYSTEM'">系统管理员</span>
+            <span th:if="${session.get('suser').getRole()} == 'ROLE_TENANT'">操作员</span>
+            <span th:if="${session.get('suser').getRole()} == 'ROLE_TENANTADMIN'">租户管理员</span>
           </a>
           <dl class="layui-nav-child">
             <dd>

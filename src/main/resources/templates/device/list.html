@@ -467,9 +467,12 @@
               , data.field
               , function (data) {
                 console.log("保存数据结束：" + JSON.stringify(data));
-                if (data.code) {
+//                layer.close(index);
+                if (data.code != -1) {
                   layer.alert("保存数据成功");
                   searchList();
+                } else {
+                  layer.alert(data.msg);
                 }
               }
       );
@@ -494,13 +497,13 @@
     });
 
     //第一次加载数据
-      // Start: 如果有 urlSiteId ，则对 select 进行初始化
-      var urlSiteId = mytools.getQueryString('siteId');
-      if(urlSiteId) {
-          $("#search_select_site").val(urlSiteId);
-          form.render();
-      }
-      // End  : 如果有 urlSiteId ，则对 select 进行初始化
+    // Start: 如果有 urlSiteId ，则对 select 进行初始化
+    var urlSiteId = mytools.getQueryString('siteId');
+    if (urlSiteId) {
+      $("#search_select_site").val(urlSiteId);
+      form.render();
+    }
+    // End  : 如果有 urlSiteId ，则对 select 进行初始化
     searchList();
 
 
@@ -539,7 +542,7 @@
         var hardwareId = $(sourceIdSelector).data("hardwareid");
         //
         // window.location.replace(['/device/devices-manage?hardwareId=', hardwareId].join(''));
-          mytools.jumpLeftNavTab(['/device/devices-manage?hardwareId=', hardwareId].join(''));
+        mytools.jumpLeftNavTab(['/device/devices-manage?hardwareId=', hardwareId].join(''));
       });
       $(".device_status").on('click', function () {
         var that = this
@@ -673,11 +676,12 @@
                   form.render('select');
                 }
                 , yes: function (index, layero) {
+                  console.log("点击了取消按钮");
                   layer.close(index);
                 }
                 , btn2: function (index, layero) {
+                  console.log("点击了提交按钮");
                   $("#form_btn_submit").click();
-                  layer.close(index);
                 },
               }
       );
