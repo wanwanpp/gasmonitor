@@ -12,8 +12,8 @@
 
         // Start: 所有被本模块调用的函数定义在此
         function getTodayStartDateTime(offsetTime) {
-            // var date = new Date();
-            var date = new Date(1501833236607); // 测试，定为 8 月 4 日
+            var date = new Date();
+            // var date = new Date(1501833236607); // 测试，定为 8 月 4 日
             // var date = new Date(1501721236607); // 测试，定为 8 月 3 日
             date.setHours(8);
             date.setMinutes(0);
@@ -28,7 +28,8 @@
         function getTodayStartDateTime_compare(offsetTime) {
             // var date = new Date();
             // var date = new Date(1501833236607); // 测试，定为 8 月 4 日
-            var date = new Date(1501721236607); // 测试，定为 8 月 3 日
+            // var date = new Date(1501721236607); // 测试，定为 8 月 3 日
+            var date = getTodayStartDateTime_compare.compareTime;
             date.setHours(8);
             date.setMinutes(0);
             date.setSeconds(0);
@@ -38,6 +39,10 @@
             }
             return date;
         }
+        // compareTime 默认为昨天
+        var now = getTodayStartDateTime();
+        var oneDay = 24 * 3600 * 1000, oneHour = oneDay / 24, oneMin = oneHour / 60, oneSec = oneMin / 60;
+        getTodayStartDateTime_compare.compareTime = getTodayStartDateTime(-oneDay);
 
         /**
          * 检查 timestamp 是否在 startTimestamp 和 EndTimeStamp 中间
@@ -100,8 +105,6 @@
         };
         testRefreshData.index = 1;
         setInterval(testRefreshData, 2000);*/
-        var now = getTodayStartDateTime();
-        var oneDay = 24 * 3600 * 1000, oneHour = oneDay / 24, oneMin = oneHour / 60, oneSec = oneMin / 60;
         var value = Math.random() * 1000;
         function randomData(index_i, isInit) {
             var tmp_now = now;
@@ -301,7 +304,7 @@
                                                     ]
                                                 };
                                             }
-                                            function processMonitorDataArr(arr_monitorData) {
+                                            function processMonitorDataArr_compare(arr_monitorData) {
                                                 var arr_data_compare = [];
                                                 if(arr_monitorData && arr_monitorData.length && arr_monitorData.length > 0) {
                                                     // 先筛除掉 arr_monitorData 中不合格的数据（时间范围不在图中开始结束时间范围以内的）
@@ -322,7 +325,7 @@
                                                             arr_sample_monitorData.push(arr_monitorData[i]);
                                                         }
                                                     }
-                                                    console.log('[device_manage_echarts.js processMonitorDataArr] arr_sample_monitorData.length: ' + arr_sample_monitorData.length);
+                                                    console.log('[device_manage_echarts.js processMonitorDataArr_compare] arr_sample_monitorData.length: ' + arr_sample_monitorData.length);
                                                     // Start: 对 arr_sample_monitorData 中的数据进行排序
                                                     arr_sample_monitorData.sort(function(a_sample_monitorData, b_sample_monitorData) {
                                                         return a_sample_monitorData.gasEvent.pointtime - b_sample_monitorData.gasEvent.pointtime;
@@ -333,10 +336,14 @@
                                                         arr_data_compare.push(processMonitorData_sync_compare(item_monitorData, index_monitorData, true
                                                             , isNot2Render));
                                                     });
+                                                    // 及时关闭 layer.loading
+                                                    if(arr_sample_monitorData.length < 1) {
+                                                        layer.closeAll('loading');
+                                                    }
                                                 }
                                                 return arr_data_compare;
                                             }
-                                            var arr_data_compare = processMonitorDataArr(arr_monitorData);
+                                            var arr_data_compare = processMonitorDataArr_compare(arr_monitorData);
                                             //
                                             renderOptionCompare(arr_data_compare);
                                         };
@@ -953,6 +960,10 @@
                                     processMonitorData_async(item_monitorData, index_monitorData, true
                                         , !(index_monitorData + 1 === arr_monitorData.length));
                                 });
+                                // 及时关闭 layer.loading
+                                if(arr_sample_monitorData.length < 1) {
+                                    layer.closeAll('loading');
+                                }
                             } else {
                                 // arr_monitorData 为空，需要隐藏掉 layer loading
                                 layer.closeAll('loading');
