@@ -233,25 +233,35 @@
                                         var elem_dl_layuiSelectGroup = $('#select-today_echarts_type').next('div.layui-unselect').find('dl.layui-select-group');
                                         elem_dl_layuiSelectGroup.css('margin-top', ['-', 60 + elem_dl_layuiSelectGroup.height(), 'px'].join(''));
                                         // laydate 历史曲线日期
-                                        $('#date-history_echarts').val(laydate.now(checkIsTimestampBetweenStartEnd_compare.getStartTimestamp(), 'YYYY-MM-DD'));
                                         /*laydate({
                                             elem: '#date-history_echarts', //需显示日期的元素选择器
                                             event: 'click', //触发事件
-                                            format: 'YYYY-MM-DD hh:mm:ss', //日期格式
+                                            format: 'YYYY-MM-DD', //日期格式
                                             istime: false, //是否开启时间选择
                                             isclear: true, //是否显示清空
                                             istoday: true, //是否显示今天
                                             issure: true, // 是否显示确认
                                             festival: true, //是否显示节日
                                             min: '1900-01-01 00:00:00', //最小日期
-                                            max: '2099-12-31 23:59:59', //最大日期
-                                            start: '2017-8-2 23:00:00',  //开始日期
+                                            max: laydate.now(checkIsTimestampBetweenStartEnd_compare.getStartTimestamp(), 'YYYY-MM-DD hh:mm:ss'), //最大日期
+                                            start: laydate.now(checkIsTimestampBetweenStartEnd_compare.getStartTimestamp(), 'YYYY-MM-DD hh:mm:ss'),  //开始日期
                                             fixed: false, //是否固定在可视区域
                                             zIndex: 99999999, //css z-index
                                             choose: function(dates){ //选择好日期的回调
-
+                                                debugger;
+                                                console.log('[laydate]dates: ' + dates);
                                             }
                                         });*/
+                                        $('#date-history_echarts').val(laydate.now(checkIsTimestampBetweenStartEnd_compare.getStartTimestamp(), 'YYYY-MM-DD'));
+                                        // #date-history_echarts 绑定的 change 事件在外层，以保证只调用一次
+                                        date_historyEcharts_inputChangeChecker.init();
+                                        date_historyEcharts_inputChangeChecker.startCheck(function(curInputVal) {
+                                            layer.msg(['[历史曲线日期： ', curInputVal, ']'].join(''));
+                                            getTodayStartDateTime_compare.compareTime = new Date(Date.parse(curInputVal.replace(/-/g,  "/")));
+                                            checkIsTimestampBetweenStartEnd_compare.startTime = null;
+                                            checkIsTimestampBetweenStartEnd_compare.endTime = null;
+                                            renderHistoryData2Charts_compare();
+                                        });
                                     });
                                 }
                                 /**
@@ -297,11 +307,16 @@
                                     var option_base = optionsArr[subId];
 
                                     // Start: 从数据库获取 8 月 3 日数据，做对比测试
-                                    function renderHistoryData2Charts_compare() {
+                                    // renderHistoryData2Charts_compare.hardwareId = hardwareId;
+                                    renderHistoryData2Charts_compare = function() {
                                         // $.get('http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00', {}, function(data) {console.log(data)}, 'json')
                                         // 1. 请求 http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00
                                         // var params_history = {hardwareId: 't21s1d1', begin: '2017-08-04:08:00:00', end: '2017-08-05:08:00:00'};
-                                        var params_history_compare = {hardwareId: 't21s1d1', begin: '2017-08-03:08:00:00', end: '2017-08-04:08:00:00'};
+                                        // var params_history_compare = {hardwareId: 't21s1d1', begin: '2017-08-03:08:00:00', end: '2017-08-04:08:00:00'};
+                                        debugger;
+                                        var params_history_compare = {hardwareId: hardwareId
+                                            , begin: laydate.now(checkIsTimestampBetweenStartEnd_compare.getStartTimestamp(), 'YYYY-MM-DD:hh:mm:ss')
+                                            , end: laydate.now(checkIsTimestampBetweenStartEnd_compare.getEndTimestamp(), 'YYYY-MM-DD:hh:mm:ss')};
                                         var url_get_history_compare = '/point/query/history' + tools.serializeParams(params_history_compare);
                                         var max_history_compare = 1000;  // 历史测点的 max 数目
                                         var callback_history_compare = function(data_history_compare) {
@@ -366,13 +381,13 @@
                                                         }
                                                     });
                                                     arr_monitorData = arr_filtered_monitorData;
-                                                    // 先按 max_history 抽样 arr_monitorData
+                                                    // 先按 max_history_compare 抽样 arr_monitorData
                                                     var length_arr_monitorData = arr_monitorData.length
                                                         , arr_sample_monitorData = arr_monitorData;
                                                     if(length_arr_monitorData > max_history_compare) {
                                                         arr_sample_monitorData = [];
-                                                        var step = Math.floor(length_arr_monitorData / max_history);
-                                                        for(var i = 0; i < length_arr_monitorData && arr_sample_monitorData.length <= max_history; i += step) {
+                                                        var step = Math.floor(length_arr_monitorData / max_history_compare);
+                                                        for(var i = 0; i < length_arr_monitorData && arr_sample_monitorData.length <= max_history_compare; i += step) {
                                                             arr_sample_monitorData.push(arr_monitorData[i]);
                                                         }
                                                     }
