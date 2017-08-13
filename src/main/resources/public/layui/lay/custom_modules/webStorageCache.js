@@ -140,7 +140,9 @@ layui.define([], function(exports) {
     /**
      * public 部分 for monitorDataCacheManager ，对外暴露接口
      * monitorDataCache 的结构：
-     * 1.
+     * 1. 统一管理部分 cache_monitorData_key_hardwareIds_map ： hardwareId 到 MonitorDataCache key 的映射
+     * 2. 离散部分 MonitorDataCache ： MonitorDataCache key 到 value 的映射
+     * 避免一个结构太大难以管理，同时又有缓存分散快速的特点
      * @type {{addJsonMonitorData2Cache: addJsonMonitorData2Cache}}
      */
     var monitorDataCacheManager = {
