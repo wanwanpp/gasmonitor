@@ -126,6 +126,57 @@
         }*/
         now = getTodayStartDateTime();
 
+        // Start: #date-history_echarts 绑定 input 或 change 事件，在这里保证只绑定一次
+        var date_historyEcharts_inputChangeChecker = (function() {
+            var _date_historyEcharts_inputChangeChecker = {
+                timerId: 0
+                , inputEleId: '#date-history_echarts'
+                , inputEle: null
+                , curVal: null
+            };
+            var date_historyEcharts_inputChangeChecker = {
+                init: function() {
+                    var private_self = _date_historyEcharts_inputChangeChecker;
+
+                    private_self.timerId = 0;
+                    private_self.inputEleId = '#date-history_echarts';
+                    private_self.inputEle = $(private_self.inputEleId);
+                    private_self.curVal = private_self.inputEle.val();
+                }
+                , startCheck: function(callback) {
+                    debugger;
+                    var self = this, private_self = _date_historyEcharts_inputChangeChecker;
+
+                    if(!$(private_self.inputEleId)) {
+                        debugger;
+                        // clearInterval(self.timerId);
+                        return ;
+                    }
+
+                    var tmpVal = private_self.inputEle.val();
+                    if(tmpVal != private_self.curVal) {
+                        private_self.curVal = tmpVal;
+                        if(callback && callback instanceof Function) {
+                            callback(private_self.curVal);
+                        }
+                    }
+                    //
+                    private_self.timerId = setTimeout(function () {
+                        self.startCheck(callback);
+                    }, 1000);
+                }
+            };
+            /*$(document).on('blur', '#date-history_echarts', function() {
+                layer.msg(['[历史日期： ', $(this).val(), ']'].join(''));
+            });*/
+            return date_historyEcharts_inputChangeChecker;
+        })();
+        // End  : #date-history_echarts 绑定 input 或 change 事件，在这里保证只绑定一次
+
+        // Start: 渲染历史日期数据到折线图
+        var renderHistoryData2Charts_compare;
+        // End  : 渲染历史日期数据到折线图
+
         function genOption(hardwareId, subId, deviceName) {
             // 4 个折线图每个的 title
             var subTitlesArr = ['温度', '压力', '标况流量', '工况流量'];
