@@ -60,6 +60,7 @@
         <th>设备名称</th>
         <th>硬件ID</th>
         <th>站点信息</th>
+        <th>逻辑类型</th>
         <th>逻辑设备</th>
         <th>创建日期</th>
         <th>操作</th>
@@ -73,11 +74,13 @@
         <td>{{item.name}}</td>
         <td>{{item.hardwareId}}</td>
         <td>{{item.siteId}}</td>
+        <td>{{layui.tools.deviceType2des(item.dtype)}}</td>
         <td>{{layui.tools.deviceid2des(item.logic)}}</td>
         <td>{{layui.tools.timestampToString(item.created)}}</td>
         <td>
           <span id="source{{item.id}}"
                 data-id="{{item.id}}"
+                data-dtype="{{item.dtype}}"
                 data-name="{{item.name}}"
                 data-hardwareid="{{item.hardwareId}}"
                 data-siteId="{{item.siteId}}"
@@ -202,19 +205,41 @@
     </div>
 
     <div class="layui-form-item">
-      <div class="layui-inline">
+      <div class="layui-inline unit uisolar">
+        <label class="layui-form-label">太阳能单位</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_usolar" name="usolar" lay-filter="siteid">
+            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
+          </select>
+        </div>
+      </div>
+
+      <div class="layui-inline ">
+        <label class="layui-form-label">类型</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_dtype" name="dtype" lay-filter="devicetype">
+            <option value="1">流量计</option>
+            <option value="2">IC</option>
+            <option value="3">IC&流量计</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="layui-form-item ">
+      <div class="layui-inline  unit uipressure">
         <label class="layui-form-label">压强单位</label>
         <div class="layui-input-inline">
-          <select id="eidt_layer_upressure" name="upressure" lay-verify="required" lay-filter="siteid">
+          <select id="eidt_layer_upressure" name="upressure">
             <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
           </select>
         </div>
       </div>
 
-      <div class="layui-inline">
+      <div class="layui-inline  unit uitemperature">
         <label class="layui-form-label">温度单位</label>
         <div class="layui-input-inline">
-          <select id="eidt_layer_utemperature" name="utemperature" lay-verify="required" lay-filter="siteid">
+          <select id="eidt_layer_utemperature" name="utemperature">
             <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
           </select>
         </div>
@@ -222,154 +247,141 @@
     </div>
 
 
-    <div class="layui-form-item">
-      <div class="layui-inline">
-        <label class="layui-form-label">流量单位</label>
+    <div class="layui-form-item ">
+      <div class="layui-inline unit uistandard">
+        <label class="layui-form-label">表况单位</label>
         <div class="layui-input-inline">
-          <select id="eidt_layer_ustandard" name="ustandard" lay-verify="required" lay-filter="siteid">
+          <select id="eidt_layer_ustandard" name="ustandard">
             <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
           </select>
         </div>
       </div>
 
-      <div class="layui-inline">
-        <label class="layui-form-label">urunning</label>
+      <div class="layui-inline  unit uirunning">
+        <label class="layui-form-label">工况单位</label>
         <div class="layui-input-inline">
-          <select id="eidt_layer_urunning" name="urunning" lay-verify="required" lay-filter="siteid">
+          <select id="eidt_layer_urunning" name="urunning">
             <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
           </select>
         </div>
       </div>
     </div>
 
-    <div class="layui-form-item">
-      <div class="layui-inline">
-        <label class="layui-form-label">usummary</label>
+    <div class="layui-form-item ">
+      <div class="layui-inline unit uisummary">
+        <label class="layui-form-label">总计流量</label>
         <div class="layui-input-inline">
-          <select id="eidt_layer_usummary" name="usummary" lay-verify="required" lay-filter="siteid">
+          <select id="eidt_layer_usummary" name="usummary">
             <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
           </select>
         </div>
       </div>
 
-
-      <div class="layui-inline">
-        <label class="layui-form-label">usurplus</label>
+      <div class="layui-inline  unit uisurprplus">
+        <label class="layui-form-label">剩余流量</label>
         <div class="layui-input-inline">
-          <select id="eidt_layer_usurplus" name="usurplus" lay-verify="required" lay-filter="siteid">
+          <select id="eidt_layer_usurplus" name="usurplus">
             <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
           </select>
         </div>
       </div>
     </div>
-    <div class="layui-form-item">
-      <div class="layui-inline">
-        <label class="layui-form-label">uanalog1</label>
+    <!--<div class="layui-form-item">-->
+    <!--<div class="layui-inline">-->
+    <!--<label class="layui-form-label">uanalog1</label>-->
+    <!--<div class="layui-input-inline">-->
+    <!--<select id="eidt_layer_uanalog1" name="uanalog1">-->
+    <!--<option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>-->
+    <!--</select>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--<div class="layui-inline">-->
+    <!--<label class="layui-form-label">uanalog2</label>-->
+    <!--<div class="layui-input-inline">-->
+    <!--<select id="eidt_layer_uanalog2" name="uanalog2">-->
+    <!--<option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>-->
+    <!--</select>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+
+    <!--<div class="layui-form-item">-->
+    <!--<div class="layui-inline">-->
+    <!--<label class="layui-form-label">uanalog3</label>-->
+    <!--<div class="layui-input-inline">-->
+    <!--<select id="eidt_layer_uanalog3" name="uanalog3">-->
+    <!--<option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>-->
+    <!--</select>-->
+    <!--</div>-->
+    <!--</div>-->
+
+    <!--<div class="layui-inline">-->
+    <!--<label class="layui-form-label">uanalog4</label>-->
+    <!--<div class="layui-input-inline">-->
+    <!--<select id="eidt_layer_uanalog4" name="uanalog4">-->
+    <!--<option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>-->
+    <!--</select>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+
+    <!--<div class="layui-form-item">-->
+    <!--<div class="layui-inline">-->
+    <!--<label class="layui-form-label">uswitch1</label>-->
+    <!--<div class="layui-input-inline">-->
+    <!--<select id="eidt_layer_uswitch1" name="uswitch1">-->
+    <!--<option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>-->
+    <!--</select>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--<div class="layui-inline">-->
+    <!--<label class="layui-form-label">uswitch2</label>-->
+    <!--<div class="layui-input-inline">-->
+    <!--<select id="eidt_layer_uswitch2" name="uswitch2">-->
+    <!--<option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>-->
+    <!--</select>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+
+    <!--<div class="layui-form-item">-->
+    <!--<div class="layui-inline">-->
+    <!--<label class="layui-form-label">uswitch3</label>-->
+    <!--<div class="layui-input-inline">-->
+    <!--<select id="eidt_layer_uswitch3" name="uswitch3">-->
+    <!--<option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>-->
+    <!--</select>-->
+    <!--</div>-->
+    <!--</div>-->
+
+    <!--<div class="layui-inline">-->
+    <!--<label class="layui-form-label">uswitch4</label>-->
+    <!--<div class="layui-input-inline">-->
+    <!--<select id="eidt_layer_uswitch4" name="uswitch4">-->
+    <!--<option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>-->
+    <!--</select>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+
+    <div class="layui-form-item  ">
+      <div class="layui-inline unit uiac220">
+        <label class="layui-form-label">ac220单位</label>
         <div class="layui-input-inline">
-          <select id="eidt_layer_uanalog1" name="uanalog1" lay-verify="required" lay-filter="siteid">
+          <select id="eidt_layer_uac220" name="uac220">
             <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
           </select>
         </div>
       </div>
-      <div class="layui-inline">
-        <label class="layui-form-label">uanalog2</label>
+      <div class="layui-inline  unit uibattery">
+        <label class="layui-form-label">电池单位</label>
         <div class="layui-input-inline">
-          <select id="eidt_layer_uanalog2" name="uanalog2" lay-verify="required" lay-filter="siteid">
+          <select id="eidt_layer_ubattery" name="ubattery">
             <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
           </select>
         </div>
       </div>
     </div>
-    <div class="layui-form-item">
-      <div class="layui-inline">
-        <label class="layui-form-label">uanalog3</label>
-        <div class="layui-input-inline">
-          <select id="eidt_layer_uanalog3" name="uanalog3" lay-verify="required" lay-filter="siteid">
-            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
-          </select>
-        </div>
-      </div>
-
-      <div class="layui-inline">
-        <label class="layui-form-label">uanalog4</label>
-        <div class="layui-input-inline">
-          <select id="eidt_layer_uanalog4" name="uanalog4" lay-verify="required" lay-filter="siteid">
-            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <div class="layui-form-item">
-      <div class="layui-inline">
-        <label class="layui-form-label">uswitch1</label>
-        <div class="layui-input-inline">
-          <select id="eidt_layer_uswitch1" name="uswitch1" lay-verify="required" lay-filter="siteid">
-            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
-          </select>
-        </div>
-      </div>
-      <div class="layui-inline">
-        <label class="layui-form-label">uswitch2</label>
-        <div class="layui-input-inline">
-          <select id="eidt_layer_uswitch2" name="uswitch2" lay-verify="required" lay-filter="siteid">
-            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <div class="layui-form-item">
-
-      <div class="layui-inline">
-        <label class="layui-form-label">uswitch3</label>
-        <div class="layui-input-inline">
-          <select id="eidt_layer_uswitch3" name="uswitch3" lay-verify="required" lay-filter="siteid">
-            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
-          </select>
-        </div>
-      </div>
-
-      <div class="layui-inline">
-        <label class="layui-form-label">uswitch4</label>
-        <div class="layui-input-inline">
-          <select id="eidt_layer_uswitch4" name="uswitch4" lay-verify="required" lay-filter="siteid">
-            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
-          </select>
-        </div>
-      </div>
-
-    </div>
-    <div class="layui-form-item">
-
-      <div class="layui-inline">
-        <label class="layui-form-label">uac220</label>
-        <div class="layui-input-inline">
-          <select id="eidt_layer_uac220" name="uac220" lay-verify="required" lay-filter="siteid">
-            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
-          </select>
-        </div>
-      </div>
-      <div class="layui-inline">
-        <label class="layui-form-label">ubattery</label>
-        <div class="layui-input-inline">
-          <select id="eidt_layer_ubattery" name="ubattery" lay-verify="required" lay-filter="siteid">
-            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
-          </select>
-        </div>
-      </div>
-    </div>
-    <div class="layui-form-item">
-      <div class="layui-inline">
-        <label class="layui-form-label">usolar</label>
-        <div class="layui-input-inline">
-          <select id="eidt_layer_usolar" name="usolar" lay-verify="required" lay-filter="siteid">
-            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
-          </select>
-        </div>
-      </div>
-    </div>
-
 
     <div class="layui-input-block">
       <button type="button" id="form_btn_submit" lay-submit lay-filter="device" style="display: none"></button>
@@ -385,23 +397,23 @@
 
     <div class="layui-form-item">
       <div class="layui-inline">
-        <label class="layui-form-label">standardFlowUpper</label>
+        <label class="layui-form-label">标况上限</label>
         <div class="layui-input-inline">
-          <input class="layui-input" id="eidt_layer_standardFlowUpper" name="standardFlowUpper" lay-verify="required"/>
+          <input class="layui-input" id="eidt_layer_standardFlowUpper" name="standardFlowUpper"/>
         </div>
       </div>
 
       <div class="layui-inline">
-        <label class="layui-form-label">temperatureUpper</label>
+        <label class="layui-form-label">温度上限</label>
         <div class="layui-input-inline">
-          <input class="layui-input" id="eidt_layer_temperatureUpper" name="temperatureUpper" lay-verify="required"/>
+          <input class="layui-input" id="eidt_layer_temperatureUpper" name="temperatureUpper"/>
         </div>
       </div>
     </div>
 
     <div class="layui-form-item">
       <div class="layui-inline">
-        <label class="layui-form-label">temperatureLow</label>
+        <label class="layui-form-label">温度下限</label>
         <div class="layui-input-inline">
           <input id="eidt_layer_temperatureLow" type="text" name="temperatureLow" placeholder="请输入名称"
                  class="layui-input"/>
@@ -409,7 +421,7 @@
       </div>
 
       <div class="layui-inline">
-        <label class="layui-form-label">pressureUpper</label>
+        <label class="layui-form-label">压力上限</label>
         <div class="layui-input-inline">
           <input id="eidt_layer_pressureUpper" type="text" name="pressureUpper" placeholder="" class="layui-input"/>
         </div>
@@ -418,13 +430,12 @@
 
     <div class="layui-form-item">
       <div class="layui-inline">
-        <label class="layui-form-label">pressureLow</label>
+        <label class="layui-form-label">压力下限</label>
         <div class="layui-input-inline">
           <input id="eidt_layer_pressureLow" type="tel" name="pressureLow" placeholder="" class="layui-input"/>
         </div>
       </div>
     </div>
-
 
     <div class="layui-input-block">
       <button type="button" id="form_btn_gaojing_submit" lay-submit lay-filter="gaojing"
@@ -433,6 +444,23 @@
     </div>
   </form>
 </div>
+
+<div id="layer_status_edit" style="display:none;padding: 15px; ">
+  <form id="form_layer_status_edit" class="layui-form" action="">
+    <input type="hidden" id="eidt_status_id" name="id"/>
+    <div class="layui-inline ">
+      <label class="layui-form-label">类型</label>
+      <div class="layui-input-inline">
+        <select id="eidt_layer_status" name="status" lay-filter="devicestatus">
+          <option value="1">正常</option>
+          <option value="2">故障</option>
+          <option value="3">停用</option>
+        </select>
+      </div>
+    </div>
+  </form>
+</div>
+
 
 <script type="text/javascript" src="/layui/layui.js"></script>
 <script type="text/javascript">
@@ -443,6 +471,7 @@
     var getUrl = "/device/ajax/list";
     var addUrl = "/device/ajax/new"
     var editUrl = '/device/ajax/update';
+    var editStatus = '/device/ajax/updateStatus';
     var rmUrl = '/device/ajax/remove';
     var optionUrl = '/device/ajax/listp';
     var updateGaojing = '/device/ajax/gaojing/update'
@@ -452,6 +481,64 @@
     var newTenant = true;//是否新增
     var mytools = layui.tools;
     console.log("得到的第一个 站点的值:[[${sites[0].id}]]");
+
+    //监测更新设备的状态
+    form.on('select(devicestatus)', function (data) {
+      console.log("修改设备的状态:" + data.value);
+      var id = $("#eidt_status_id").val();
+      layer.confirm('是否修改设备的状态?', {icon: 3, title: '提示'}, function (index) {
+        $.post(
+                editStatus
+                , {id: id, status: data.value}
+                , function (data) {
+                  console.log("保存数据结束：" + JSON.stringify(data));
+                  if (data.code != -1) {
+                    layer.msg("修改状态成功");
+                    searchList();
+                  } else {
+                    layer.msg(data.msg);
+                  }
+                }
+        );
+        layer.close(index);
+      });
+    });
+
+    form.on('select(devicetype)', function (data) {
+      initUnitInputShow(data.value);
+    });
+
+    //初始化显示
+    function initUnitInputShow(type) {
+      console.log("显示定制单位..." + type);
+      $(".unit").hide();
+      if (type == 1) {
+        //流量计
+        showliuliangji();
+      } else if (type == 2) {
+        //ic
+        showic();
+      } else if (type == 3) {
+        //ic + 流量计
+        showliuliangji();
+        showic();
+      }
+    }
+
+    function showliuliangji() {
+      $(".unit.uipressure").show();
+      $(".unit.uitemperature").show();
+      $(".unit.uistandard").show();
+      $(".unit.uirunning").show();
+      $(".unit.uisummary").show();
+    }
+
+    function showic() {
+      $(".unit.uisummary").show();
+      $(".unit.uisurprplus").show();//剩余流量
+
+    }
+
 
     form.on('select(siteid)', function (data) {
       console.log("siteid-->select的选择事件" + data.value);
@@ -544,16 +631,10 @@
         // window.location.replace(['/device/devices-manage?hardwareId=', hardwareId].join(''));
         mytools.jumpLeftNavTab(['/device/devices-manage?hardwareId=', hardwareId].join(''));
       });
+
       $(".device_status").on('click', function () {
-        var that = this
-        layer.tips(
-                '<button class="layui-btn" style="margin-bottom: 2px">正常</button><br>' +
-                '<button class="layui-btn" style="margin-bottom: 2px">故障</button><br>' +
-                '<button class="layui-btn" style="margin-bottom: 2px">停用</button>',
-                that, {
-                  tips: [1, '#ffffff'],
-                  time: 4000
-                });
+        var that = this;
+        showStatusEditLayer($(that).data("sourceid"));
       })
 
       $(".tenant_del").on('click', function () {
@@ -621,6 +702,23 @@
       );
     }
 
+    //显示修改状态的界面
+    function showStatusEditLayer(sourceId) {
+      console.log("开始修改设备的状态" + sourceId);
+      layer.open({
+        type: 1
+        , title: "设置状态"
+        , area: ["800px", '80%']
+        , content: $("#layer_status_edit")
+        , success: function (layero, index) {
+          var sourceIdSelector = "#source" + sourceId;
+          $("#eidt_status_id").val($(sourceIdSelector).data("id"));
+          $("#eidt_layer_status").val($(sourceIdSelector).data("status"));
+          form.render('select');
+        }
+      });
+    }
+
     //显示编辑弹出层
     function showEditLayer(sourceId) {
       console.log("开始编辑租户的信息:sourceId" + sourceId);
@@ -633,9 +731,12 @@
                 , content: $('#layer_tenant_edit') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
                 , btn: ['取消', '提交']
                 , success: function (layero, index) {
-                  console.log("打开编辑窗口成功，是否新增？" + newTenant)
+                  console.log("打开编辑窗口成功，是否新增？" + newTenant);
+                  //隐藏所有的单位
+                  $(".unit").hide();
                   if (newTenant) {
                     //这里填充值
+                    initUnitInputShow($("#eidt_layer_dtype").val());
                     renderDeviceParentSelect([[${sites[0].id}]]);
                     form.render('select');
                     $("#form_btn_reset").click();
@@ -647,6 +748,7 @@
                   var siteIdVal = $(sourceIdSelector).data("siteid");
                   renderDeviceParentSelect(siteIdVal) //初始化父辈的select
                   $("#eidt_layer_id").val($(sourceIdSelector).data("id"));
+                  $("#eidt_layer_dtype").val($(sourceIdSelector).data("dtype"));
                   $("#eidt_layer_parent").val($(sourceIdSelector).data("parent"));
                   $("#eidt_layer_name").val($(sourceIdSelector).data("name"));
                   $("#eidt_layer_siteId").val(siteIdVal);
@@ -670,6 +772,8 @@
                   $("#eidt_layer_ubattery").val($(sourceIdSelector).data("ubattery"));
                   $("#eidt_layer_usolar").val($(sourceIdSelector).data("usolar"));
 
+                  //根据类型显示对应设备应该要选择的单位
+                  initUnitInputShow($(sourceIdSelector).data("dtype"))
                   var inputNameLogicElements = $('input[name="logic"]');
                   var logic = $(sourceIdSelector).data("logic");  // logic 数据
                   inputNameLogicElements.filter(['[value=', logic, ']'].join('')).next('div.layui-unselect.layui-form-radio').click();  // 直接触发 click
