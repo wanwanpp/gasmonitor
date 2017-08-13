@@ -7,7 +7,8 @@
  * https://github.com/WQTeam/web-storage-cache
  * (c) 2013-2016 WQTeam, MIT license
  */
-layui.define([], function(exports) {
+layui.define(['jquery'], function(exports) {
+    var $ = layui.jquery;
 
     console.log('【layui.webStorageCache】加载完毕后执行回调');
 
@@ -19,17 +20,13 @@ layui.define([], function(exports) {
     var wsCache = new this.WebStorageCache();
     var MAP_ENUM_WS_CACHE_KEYS = {
         MONITOR_DATA_HARDWARE_IDS_MAP: "cache_monitorData_key_hardwareId_map"
+        , TREE_DATA_ALL_SITES_AND_DEVICES: 'cache_treeData_allSitesAndDevices'
     };
 
     // End  : 使用单例的 wsCache
 
-    // Start: 所有的 function
-    /**
-     * private 部分 for monitorDataCacheManager ，不暴露接口
-     * @type {{getCommonExpireTime: getCommonExpireTime, getCachedMonitorDataKeyHardwareIdsArr: getCachedMonitorDataKeyHardwareIdsArr}}
-     * @private
-     */
-    var _monitorDataCacheManager = {
+    // Start: 所有的 function - 公用 private 部分
+    var _webStorageCache = {
         /**
          * 统一通用的超时时间
          * 注意：访问缓存数据后建议更新超时时间，避免刚访问的数据超时
@@ -45,9 +42,19 @@ layui.define([], function(exports) {
          * @param key
          * @param value
          */
-        saveCacheWithCommonExpire: function(key, value) {
-            wsCache.set(key, value, {exp : _monitorDataCacheManager.getCommonExpireTime()});
-        },
+        saveCacheWithCommonExpire: function(key, value, exp) {
+            wsCache.set(key, value, {exp : exp || _webStorageCache.getCommonExpireTime()});
+        }
+    };
+    // End  : 所有的 function - 公用 private 部分
+
+    // Start: 所有的 function - monitorDataCacheManager
+    /**
+     * private 部分 for monitorDataCacheManager ，不暴露接口
+     * @type {{getCommonExpireTime: getCommonExpireTime, getCachedMonitorDataKeyHardwareIdsArr: getCachedMonitorDataKeyHardwareIdsArr}}
+     * @private
+     */
+    var _monitorDataCacheManager = {
         /**
          * 获取缓存的 monitorData key hardwareId 数组
          * 此数组用于管理已经缓存了的 hardwareId 对应的 monitorData 数组
@@ -56,7 +63,7 @@ layui.define([], function(exports) {
             var cache_monitorData_key_hardwareIds_map = wsCache.get(MAP_ENUM_WS_CACHE_KEYS.MONITOR_DATA_HARDWARE_IDS_MAP);
             if(!cache_monitorData_key_hardwareIds_map) {
                 cache_monitorData_key_hardwareIds_map = {};
-                _monitorDataCacheManager.saveCacheWithCommonExpire(MAP_ENUM_WS_CACHE_KEYS.MONITOR_DATA_HARDWARE_IDS_MAP
+                _webStorageCache.saveCacheWithCommonExpire(MAP_ENUM_WS_CACHE_KEYS.MONITOR_DATA_HARDWARE_IDS_MAP
                     , cache_monitorData_key_hardwareIds_map);
             }
             return cache_monitorData_key_hardwareIds_map;
@@ -94,7 +101,7 @@ layui.define([], function(exports) {
         saveCacheKeyInKeyHardwareIdsMap: function(hardwareId, cache_key_4_a_monitorData_arr) {
             var cache_monitorData_key_hardwareIds_map = _monitorDataCacheManager.getCachedMonitorDataKeyHardwareIdsMap();
             cache_monitorData_key_hardwareIds_map[hardwareId] = cache_key_4_a_monitorData_arr;
-            _monitorDataCacheManager.saveCacheWithCommonExpire(MAP_ENUM_WS_CACHE_KEYS.MONITOR_DATA_HARDWARE_IDS_MAP
+            _webStorageCache.saveCacheWithCommonExpire(MAP_ENUM_WS_CACHE_KEYS.MONITOR_DATA_HARDWARE_IDS_MAP
                 , cache_monitorData_key_hardwareIds_map);
         },
         getCachedMonitorDataArrByKey: function (cache_key_4_a_monitorData_arr) {
@@ -134,7 +141,7 @@ layui.define([], function(exports) {
                 cached_monitorData_Arr = tmp_cached_monitorData_arr;
             }
             // 3. 保存到缓存
-            _monitorDataCacheManager.saveCacheWithCommonExpire(cache_key_4_a_monitorData_arr, cached_monitorData_Arr);
+            _webStorageCache.saveCacheWithCommonExpire(cache_key_4_a_monitorData_arr, cached_monitorData_Arr);
         }
     };
     /**
@@ -169,7 +176,43 @@ layui.define([], function(exports) {
             _monitorDataCacheManager.pushMonitorData2CachedArrByMonitorDataCachekey(cache_key_4_a_monitorData_arr, jsonObj_monitorData);
         }
     };
-    // End  : 所有的 function
+    // End  : 所有的 function - monitorDataCacheManager
+
+    // Start: 所有的 function - sitesAndDevicesTreeCacheManager
+    var sitesAndDevicesTreeCacheManager = {
+        /**
+         * load treeData of allSitesAndDevices , 因为是 all 类型的数据，唯一，所以用一个定义好的 key 缓存即可
+         * @param callback_allSitesAndDevices
+         */
+        loadTreeDataAllSitesAndDevices: function(callback_allSitesAndDevices) {
+            function processCallback(data_allSitesAndDevices) {
+                if(callback_allSitesAndDevices && callback_allSitesAndDevices instanceof Function) {
+                    callback_allSitesAndDevices(data_allSitesAndDevices);
+                }
+            }
+
+            debugger;
+            var cached_data_allSitesAndDevices = wsCache.get(MAP_ENUM_WS_CACHE_KEYS.TREE_DATA_ALL_SITES_AND_DEVICES);
+            if(cached_data_allSitesAndDevices) {
+                processCallback(cached_data_allSitesAndDevices);
+                return cached_data_allSitesAndDevices;
+            }
+
+            // 缓存没有，则重新请求
+            var url_allSitesAndDevices = '/site/ajax/allSitesAndDevices';
+            var params_allSitesAndDevices = {};
+            // Start: cache callback 的定义，先缓存 data_allSitesAndDevices 数据，再进行 callback_allSitesAndDevices 回调
+            function callback_cacheTreeData_allSitesAndDevices(data_allSitesAndDevices) {
+                // 1. 缓存 data_allSitesAndDevices 数据
+                _webStorageCache.saveCacheWithCommonExpire(MAP_ENUM_WS_CACHE_KEYS.TREE_DATA_ALL_SITES_AND_DEVICES, data_allSitesAndDevices, 60);
+                // 2. 进行 callback_allSitesAndDevices 回调
+                processCallback(data_allSitesAndDevices);
+            }
+            // End  : cache callback 的定义，先缓存 data_allSitesAndDevices 数据，再进行 callback_allSitesAndDevices 回调
+            $.get(url_allSitesAndDevices, params_allSitesAndDevices, callback_cacheTreeData_allSitesAndDevices, "json");
+        }
+    };
+    // End  : 所有的 function - sitesAndDevicesTreeCacheManager
 
     // Start: 依赖的 css
 
@@ -179,5 +222,6 @@ layui.define([], function(exports) {
     exports('webStorageCache', {
         wsCache: wsCache
         , monitorDataCacheManager: monitorDataCacheManager
+        , sitesAndDevicesTreeCacheManager: sitesAndDevicesTreeCacheManager
     });
 });

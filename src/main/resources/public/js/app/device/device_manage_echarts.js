@@ -1,12 +1,14 @@
 (function() {
-    layui.use(['jquery', 'oneSocket', 'laytpl', 'layer', 'form', 'tools', 'tree', 'laydate'], function() {
+    layui.use(['jquery', 'oneSocket', 'laytpl', 'layer', 'form', 'tools', 'tree', 'laydate', 'webStorageCache'], function() {
         var $ = layui.jquery
             , oneSocket = layui.oneSocket(/*SockJS, Stomp*/)
             , laytpl = layui.laytpl
             , layer = layui.layer
             , form = layui.form()
             , tools = layui.tools
-            , laydate = layui.laydate;
+            , laydate = layui.laydate
+            , webStorageCache = layui.webStorageCache
+            , sitesAndDevicesTreeCacheManager = webStorageCache.sitesAndDevicesTreeCacheManager;
 
         // Start: 所有被本模块调用的函数定义在此
         function getTodayStartDateTime(offsetTime) {
@@ -702,8 +704,8 @@
         // Start: 请求服务器数据，更新左侧树
         function searchTreeList() {
             // 0. 请求相关的 url 、参数表、回调
-            var url_allSitesAndDevices = '/site/ajax/allSitesAndDevices';
-            var params_allSitesAndDevices = {};
+            /*var url_allSitesAndDevices = '/site/ajax/allSitesAndDevices';
+            var params_allSitesAndDevices = {};*/
             var callback_allSitesAndDevices = function(data_allSitesAndDevices) {
                 console.log("查询到的所有站点设备 tree list 信息:" + JSON.stringify(data_allSitesAndDevices));
                 var data_allSitesAndDevices_sitesArr = data_allSitesAndDevices.data;
@@ -744,7 +746,8 @@
             // 1. 打开 layer loading
             layer.load();
             // 2. $.get 请求服务器 tree list 数据，并调用回调
-            $.get(url_allSitesAndDevices, params_allSitesAndDevices, callback_allSitesAndDevices, "json");
+            // $.get(url_allSitesAndDevices, params_allSitesAndDevices, callback_allSitesAndDevices, "json");
+            sitesAndDevicesTreeCacheManager.loadTreeDataAllSitesAndDevices(callback_allSitesAndDevices);
         }
         // End  : 请求服务器数据，更新左侧树
         /*function searchList(currPage) {
