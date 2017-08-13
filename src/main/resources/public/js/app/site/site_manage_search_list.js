@@ -1,11 +1,16 @@
 (function() {
-    layui.use(['laytpl', 'jquery', 'layer', 'tools', 'form'], function() {
+    layui.use(['laytpl', 'jquery', 'layer', 'tools', 'form', 'webStorageCache'], function() {
         var laytpl = layui.laytpl;
         var $ = layui.jquery;
         var getUrl = "/site/ajax/list";
         var layer = layui.layer;
         var tools = layui.tools;
         var form = layui.form();
+
+        // 经下面几行代码测试成功： 同 domain 下的 cache 可跨 iframe 共享
+        /*debugger;
+        var cache_pandaroid = layui.webStorageCache.wsCache.get('Pandaroid');
+        console.log('cache_pandaroid: ' + cache_pandaroid);*/
 
         // Start: 所有 function 定义
         var sitesId2MarkerMap = {}; // 站点 marker map

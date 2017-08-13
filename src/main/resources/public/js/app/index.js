@@ -19,7 +19,6 @@
             oneSocket.setHandler(oneSocket.Event.GAS_EVENT, handler_gatherGasEventMonitorData);
             // 定义 oneSocket 的 handler
             function handler_gatherGasEventMonitorData(oneSocketMsgBody) {
-                debugger;
                 console.log('[index.js handler_gatherGasEventMonitorData]oneSocketMsgBody: ');
                 console.log(oneSocketMsgBody);
                 // 1. gasEvent
@@ -28,7 +27,8 @@
 
             }
             // 2. 进行一次今日的全量拉取，拉取后 add 到 webStorageCache
-
+            // 经下面这行代码测试成功： 同 domain 下的 cache 可跨 iframe 共享
+            // webStorageCache.wsCache.set('Pandaroid', '王沛', {exp : 300});
             // End  : oneSocket 相关代码
         });
     });
