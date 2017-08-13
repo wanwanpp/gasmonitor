@@ -688,6 +688,7 @@
                   $(".unit").hide();
                   if (newTenant) {
                     //这里填充值
+                    initUnitInputShow($("#eidt_layer_dtype").val());
                     renderDeviceParentSelect([[${sites[0].id}]]);
                     form.render('select');
                     $("#form_btn_reset").click();

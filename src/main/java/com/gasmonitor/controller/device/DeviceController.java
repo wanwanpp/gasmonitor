@@ -111,7 +111,7 @@ public class DeviceController {
     @RequestMapping(value = "/ajax/remove")
     @ResponseBody
     public AjaxResult<Device> ajaxRmDevice(Long id) {
-        deviceRepository.delete(id);
+        deviceService.delete(id);
         return AjaxResult.SuccAjaxResult();
     }
 
