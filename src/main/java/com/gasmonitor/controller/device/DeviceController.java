@@ -123,6 +123,19 @@ public class DeviceController {
         return AjaxResult.AjaxResultWithOne(deviceService.updateDevice(newDevice));
     }
 
+    @RequestMapping(value = "/ajax/updateStatus")
+    @ResponseBody
+    public AjaxResult<Device> ajaxUpdateDevice(Long id, Integer status) {
+        //新生成的设备
+        try {
+            Device ret = deviceService.updateDeviceStatus(id, status);
+            return AjaxResult.AjaxResultWithOne(ret);
+        } catch (TipsException e) {
+            return AjaxResult.ErrorAjaxResult(e.getMessage());
+        }
+    }
+
+
     @RequestMapping(value = "ajax/setstatus")
     public AjaxResult<Device> setstatus(Long deviceId, Integer status) {
         boolean ret = deviceService.setDeviceStatus(deviceId, status);
