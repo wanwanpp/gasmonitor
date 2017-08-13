@@ -17,10 +17,156 @@ layui.define([], function(exports) {
 
     // Start: 使用单例的 wsCache
     var wsCache = new this.WebStorageCache();
+    var MAP_ENUM_WS_CACHE_KEYS = {
+        MONITOR_DATA_HARDWARE_IDS_MAP: "cache_monitorData_key_hardwareId_map"
+    };
+
     // End  : 使用单例的 wsCache
 
     // Start: 所有的 function
-
+    /**
+     * private 部分 for monitorDataCacheManager ，不暴露接口
+     * @type {{getCommonExpireTime: getCommonExpireTime, getCachedMonitorDataKeyHardwareIdsArr: getCachedMonitorDataKeyHardwareIdsArr}}
+     * @private
+     */
+    var _monitorDataCacheManager = {
+        /**
+         * 统一通用的超时时间
+         * 注意：访问缓存数据后建议更新超时时间，避免刚访问的数据超时
+         * @returns {Date}
+         */
+        getCommonExpireTime: function() {
+            var next2Hours = new Date();
+            next2Hours.setHours(next2Hours.getHours() + 2);
+            return next2Hours;
+        },
+        /**
+         * 封装带统一超时的缓存方法
+         * @param key
+         * @param value
+         */
+        saveCacheWithCommonExpire: function(key, value) {
+            wsCache.set(key, value, {exp : _monitorDataCacheManager.getCommonExpireTime()});
+        },
+        /**
+         * 获取缓存的 monitorData key hardwareId 数组
+         * 此数组用于管理已经缓存了的 hardwareId 对应的 monitorData 数组
+         */
+        getCachedMonitorDataKeyHardwareIdsMap: function() {
+            var cache_monitorData_key_hardwareIds_map = wsCache.get(MAP_ENUM_WS_CACHE_KEYS.MONITOR_DATA_HARDWARE_IDS_MAP);
+            if(!cache_monitorData_key_hardwareIds_map) {
+                cache_monitorData_key_hardwareIds_map = {};
+                _monitorDataCacheManager.saveCacheWithCommonExpire(MAP_ENUM_WS_CACHE_KEYS.MONITOR_DATA_HARDWARE_IDS_MAP
+                    , cache_monitorData_key_hardwareIds_map);
+            }
+            return cache_monitorData_key_hardwareIds_map;
+        },
+        /**
+         * 检查 hardwareId 是否在 cache_monitorData_key_hardwareIds_map 的 key 中
+         * @param hardwareId
+         * @param cache_monitorData_key_hardwareIds_map
+         * @returns {boolean}
+         */
+        checkIsMonitorDataInCacheMap: function (hardwareId, cache_monitorData_key_hardwareIds_map) {
+            /*var isMonitorDataInCacheMap = false;
+            for(var cache_monitorData_key_hardwareId in cache_monitorData_key_hardwareIds_map) {
+                console.log('cache_monitorData_key_hardwareId: ' + cache_monitorData_key_hardwareId);
+                if(hardwareId == cache_monitorData_key_hardwareId) {
+                    isMonitorDataInCacheMap = cache_monitorData_key_hardwareIds_map[hardwareId];
+                    break;
+                }
+            }*/
+            return (cache_monitorData_key_hardwareIds_map && cache_monitorData_key_hardwareIds_map[hardwareId]);
+        },
+        /**
+         * 根据 hardwareId 生成 cacheKey
+         * @param hardwareId
+         * @returns {string}
+         */
+        genCacheKeyByHardwareId: function (hardwareId) {
+            return ['cacheKey_monitorData_', hardwareId].join('');
+        },
+        /**
+         * 保存 {hardwareId: cache_key_4_a_monitorData_arr} 到 cache_monitorData_key_hardwareIds_map 中
+         * @param hardwareId
+         * @param cache_key_4_a_monitorData_arr
+         */
+        saveCacheKeyInKeyHardwareIdsMap: function(hardwareId, cache_key_4_a_monitorData_arr) {
+            var cache_monitorData_key_hardwareIds_map = _monitorDataCacheManager.getCachedMonitorDataKeyHardwareIdsMap();
+            cache_monitorData_key_hardwareIds_map[hardwareId] = cache_key_4_a_monitorData_arr;
+            _monitorDataCacheManager.saveCacheWithCommonExpire(MAP_ENUM_WS_CACHE_KEYS.MONITOR_DATA_HARDWARE_IDS_MAP
+                , cache_monitorData_key_hardwareIds_map);
+        },
+        getCachedMonitorDataArrByKey: function (cache_key_4_a_monitorData_arr) {
+            var cached_monitorData_Arr = wsCache.get(cache_key_4_a_monitorData_arr);
+            if(!cached_monitorData_Arr) {
+                cached_monitorData_Arr = [];
+            }
+            return cached_monitorData_Arr;
+        },
+        /**
+         * push 到缓存的 monitorData 数组
+         * @param cache_key_4_a_monitorData_arr     数组缓存 cache key
+         * @param jsonObj_monitorData   要 push 进缓存 cache 的数组的 value
+         */
+        pushMonitorData2CachedArrByMonitorDataCachekey: function(cache_key_4_a_monitorData_arr, jsonObj_monitorData) {
+            debugger;
+            var cached_monitorData_Arr = _monitorDataCacheManager.getCachedMonitorDataArrByKey(cache_key_4_a_monitorData_arr);
+            cached_monitorData_Arr.push(jsonObj_monitorData);
+            // 1. 对 cached_monitorData_Arr 通过 pointtime 进行升序排序
+            cached_monitorData_Arr.sort(function(monitorData1, monitorData2) {
+                if(!(monitorData1 && monitorData1.gasEvent && monitorData1.gasEvent.pointtime
+                    && monitorData2 && monitorData2.gasEvent && monitorData2.gasEvent.pointtime)) {
+                    return -1;
+                }
+                return (monitorData1.gasEvent.pointtime - monitorData2.gasEvent.pointtime);
+            });
+            // 2. 对有序的 cached_monitorData_Arr 通过 pointtime 进行排重
+            var tmp_cached_monitorData_arr = [], len_cached_monitorData_arr = cached_monitorData_Arr.length;
+            if(len_cached_monitorData_arr > 1) {
+                tmp_cached_monitorData_arr.push(cached_monitorData_Arr[0]);
+                for(var i_cached_monitorData_arr = 1; i_cached_monitorData_arr < len_cached_monitorData_arr; ++i_cached_monitorData_arr) {
+                    var cur_cached_monitorData = cached_monitorData_Arr[i_cached_monitorData_arr];
+                    if(tmp_cached_monitorData_arr[tmp_cached_monitorData_arr.length - 1].gasEvent.pointtime != cur_cached_monitorData.gasEvent.pointtime) {
+                        tmp_cached_monitorData_arr.push(cur_cached_monitorData);
+                    }
+                }
+                cached_monitorData_Arr = tmp_cached_monitorData_arr;
+            }
+            // 3. 保存到缓存
+            _monitorDataCacheManager.saveCacheWithCommonExpire(cache_key_4_a_monitorData_arr, cached_monitorData_Arr);
+        }
+    };
+    /**
+     * public 部分 for monitorDataCacheManager ，对外暴露接口
+     * monitorDataCache 的结构：
+     * 1.
+     * @type {{addJsonMonitorData2Cache: addJsonMonitorData2Cache}}
+     */
+    var monitorDataCacheManager = {
+        addJsonMonitorData2Cache: function(jsonObj_monitorData) {
+            debugger;
+            var cache_monitorData_key_hardwareIds_map = _monitorDataCacheManager.getCachedMonitorDataKeyHardwareIdsMap();
+            var jsonObj_gasEvent = jsonObj_monitorData.gasEvent
+                , hardwareId = jsonObj_gasEvent.hardwareId;
+            // 2. jsonObj_gasEvent: {"hardwareId":"t21s1d1","temperature":1212.0,"pressure":781.0,"standard":9061.0
+            // ,"running":758.0,"summary":1929391.0,"surplus":2.1421421E7,"analog1":2.1421421E7,"analog2":2.1421421E7
+            // ,"analog3":2.1421421E7,"analog4":2.1421421E7,"switch1":21421421,"switch2":21421421,"switch3":21421421
+            // ,"switch4":21421421,"ac220":21421421,"battery":21421421,"solar":21421421,"pointtime":1501833236607}
+            // ,"gaojing":true,"msg":"温度太高"}
+            // 1. 检查 jsonObj_monitorData 中的 gasEvent 的 hardwareId 是否在 cache_monitorData_key_hardwareIds_map 中
+            var isMonitorDataInCacheMap = _monitorDataCacheManager.checkIsMonitorDataInCacheMap(hardwareId, cache_monitorData_key_hardwareIds_map);
+            // 2 直接从 cache_monitorData_key_hardwareIds_map 中取出 key
+            var cache_key_4_a_monitorData_arr = cache_monitorData_key_hardwareIds_map[hardwareId];
+            // 2.5 如果不在，则新建一个，并且返回这个 key
+            if(!isMonitorDataInCacheMap) {
+                cache_key_4_a_monitorData_arr = _monitorDataCacheManager.genCacheKeyByHardwareId(hardwareId);
+                _monitorDataCacheManager.saveCacheKeyInKeyHardwareIdsMap(hardwareId, cache_key_4_a_monitorData_arr);
+            }
+            // 3. 根据 key 向缓存中追加 jsonObj_monitorData
+            _monitorDataCacheManager.pushMonitorData2CachedArrByMonitorDataCachekey(cache_key_4_a_monitorData_arr, jsonObj_monitorData);
+        }
+    };
     // End  : 所有的 function
 
     // Start: 依赖的 css
@@ -30,5 +176,6 @@ layui.define([], function(exports) {
     // 导出的模块名和接口函数
     exports('webStorageCache', {
         wsCache: wsCache
+        , monitorDataCacheManager: monitorDataCacheManager
     });
 });
