@@ -1,0 +1,1 @@
+package com.gasmonitor.vo;/** * Created by saplmm on 2017/8/13. */public class SysInfoVo {}
