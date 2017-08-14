@@ -1,6 +1,7 @@
 package com.gasmonitor.controller.point;
 
 import com.gasmonitor.entity.GasEvent;
+import com.gasmonitor.utils.DateTools;
 import com.gasmonitor.vo.AjaxResult;
 import com.gasmonitor.vo.MonitorData;
 import org.apache.commons.beanutils.BeanUtils;
@@ -44,8 +45,8 @@ public class PointController {
         //请求的参数
         MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
         params.set("hardwareId", hardwareId);
-        params.set("begin", begin.getTime() + "");
-        params.set("end", end.getTime() + "");
+        params.set("begin", DateTools.addHour(begin, 8).getTime() + "");
+        params.set("end", DateTools.addHour(end, 8).getTime() + "");
         log.info("请求历史测点的参数:{}", params);
         //请求的结果
 //        ResponseEntity<List> responseEntity = restTemplate.postForEntity(url, params, List.class);
