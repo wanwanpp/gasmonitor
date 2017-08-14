@@ -1,16 +1,20 @@
 (function() {
-    layui.use(['jquery', 'oneSocket', 'laytpl', 'layer', 'form', 'tools', 'tree', 'laydate'], function() {
+    layui.use(['jquery', 'oneSocket', 'laytpl', 'layer', 'form', 'tools', 'tree', 'laydate', 'webStorageCache'], function() {
         var $ = layui.jquery
             , oneSocket = layui.oneSocket(/*SockJS, Stomp*/)
             , laytpl = layui.laytpl
             , layer = layui.layer
             , form = layui.form()
             , tools = layui.tools
-            , laydate = layui.laydate;
+            , laydate = layui.laydate
+            , webStorageCache = layui.webStorageCache
+            , sitesAndDevicesTreeCacheManager = webStorageCache.sitesAndDevicesTreeCacheManager;
 
         // Start: 所有被本模块调用的函数定义在此
         function getTodayStartDateTime(offsetTime) {
             var date = new Date();
+            // var date = new Date(1501833236607); // 测试，定为 8 月 4 日
+            // var date = new Date(1501721236607); // 测试，定为 8 月 3 日
             date.setHours(8);
             date.setMinutes(0);
             date.setSeconds(0);
@@ -20,6 +24,71 @@
             }
             return date;
         }
+
+        function getTodayStartDateTime_compare(offsetTime) {
+            // var date = new Date();
+            // var date = new Date(1501833236607); // 测试，定为 8 月 4 日
+            // var date = new Date(1501721236607); // 测试，定为 8 月 3 日
+            var date = getTodayStartDateTime_compare.compareTime;
+            date.setHours(8);
+            date.setMinutes(0);
+            date.setSeconds(0);
+            date.setMilliseconds(0);
+            if(offsetTime) {
+                date = new Date(date.getTime() + offsetTime);
+            }
+            return date;
+        }
+        // compareTime 默认为昨天
+        var now = getTodayStartDateTime();
+        var oneDay = 24 * 3600 * 1000, oneHour = oneDay / 24, oneMin = oneHour / 60, oneSec = oneMin / 60;
+        getTodayStartDateTime_compare.compareTime = getTodayStartDateTime(-oneDay);
+
+        /**
+         * 检查 timestamp 是否在 startTimestamp 和 EndTimeStamp 中间
+         * @param timestamp
+         * @returns {boolean}
+         */
+        function checkIsTimestampBetweenStartEnd(timestamp) {
+            if(timestamp >= checkIsTimestampBetweenStartEnd.getStartTimestamp()
+                && timestamp <= checkIsTimestampBetweenStartEnd.getEndTimestamp()) {
+                return true;
+            }
+            return false;
+        }
+        checkIsTimestampBetweenStartEnd.getStartTimestamp = function() {
+            if(!checkIsTimestampBetweenStartEnd.startTime) {
+                checkIsTimestampBetweenStartEnd.startTime = getTodayStartDateTime().getTime();
+            }
+            return checkIsTimestampBetweenStartEnd.startTime;
+        };
+        checkIsTimestampBetweenStartEnd.getEndTimestamp = function() {
+            if(!checkIsTimestampBetweenStartEnd.endTime) {
+                checkIsTimestampBetweenStartEnd.endTime = getTodayStartDateTime(oneDay).getTime();
+            }
+            return checkIsTimestampBetweenStartEnd.endTime;
+        };
+
+        function checkIsTimestampBetweenStartEnd_compare(timestamp) {
+            if(timestamp >= checkIsTimestampBetweenStartEnd_compare.getStartTimestamp()
+                && timestamp <= checkIsTimestampBetweenStartEnd_compare.getEndTimestamp()) {
+                return true;
+            }
+            return false;
+        }
+        checkIsTimestampBetweenStartEnd_compare.getStartTimestamp = function() {
+            if(!checkIsTimestampBetweenStartEnd_compare.startTime) {
+                checkIsTimestampBetweenStartEnd_compare.startTime = getTodayStartDateTime_compare().getTime();
+            }
+            return checkIsTimestampBetweenStartEnd_compare.startTime;
+        };
+        checkIsTimestampBetweenStartEnd_compare.getEndTimestamp = function() {
+            if(!checkIsTimestampBetweenStartEnd_compare.endTime) {
+                checkIsTimestampBetweenStartEnd_compare.endTime = getTodayStartDateTime_compare(oneDay).getTime();
+            }
+            return checkIsTimestampBetweenStartEnd_compare.endTime;
+        };
+
         // var data = [];
         // var dataInit = [];
         /*var testRefreshData = function() {
@@ -36,8 +105,6 @@
         };
         testRefreshData.index = 1;
         setInterval(testRefreshData, 2000);*/
-        var now = getTodayStartDateTime();
-        var oneDay = 24 * 3600 * 1000, oneHour = oneDay / 24, oneMin = oneHour / 60, oneSec = oneMin / 60;
         var value = Math.random() * 1000;
         function randomData(index_i, isInit) {
             var tmp_now = now;
@@ -59,11 +126,65 @@
         }*/
         now = getTodayStartDateTime();
 
-        function genOption(hardwareId, subTitle) {
+        // Start: #date-history_echarts 绑定 input 或 change 事件，在这里保证只绑定一次
+        var date_historyEcharts_inputChangeChecker = (function() {
+            var _date_historyEcharts_inputChangeChecker = {
+                timerId: 0
+                , inputEleId: '#date-history_echarts'
+                , inputEle: null
+                , curVal: null
+            };
+            var date_historyEcharts_inputChangeChecker = {
+                init: function() {
+                    var private_self = _date_historyEcharts_inputChangeChecker;
+
+                    private_self.timerId = 0;
+                    private_self.inputEleId = '#date-history_echarts';
+                    private_self.inputEle = $(private_self.inputEleId);
+                    private_self.curVal = private_self.inputEle.val();
+                }
+                , startCheck: function(callback) {
+                    debugger;
+                    var self = this, private_self = _date_historyEcharts_inputChangeChecker;
+
+                    if(!$(private_self.inputEleId)) {
+                        debugger;
+                        // clearInterval(self.timerId);
+                        return ;
+                    }
+
+                    var tmpVal = private_self.inputEle.val();
+                    if(tmpVal != private_self.curVal) {
+                        private_self.curVal = tmpVal;
+                        if(callback && callback instanceof Function) {
+                            callback(private_self.curVal);
+                        }
+                    }
+                    //
+                    private_self.timerId = setTimeout(function () {
+                        self.startCheck(callback);
+                    }, 1000);
+                }
+            };
+            /*$(document).on('blur', '#date-history_echarts', function() {
+                layer.msg(['[历史日期： ', $(this).val(), ']'].join(''));
+            });*/
+            return date_historyEcharts_inputChangeChecker;
+        })();
+        // End  : #date-history_echarts 绑定 input 或 change 事件，在这里保证只绑定一次
+
+        // Start: 渲染历史日期数据到折线图
+        var renderHistoryData2Charts_compare;
+        // End  : 渲染历史日期数据到折线图
+
+        function genOption(hardwareId, subId, deviceName) {
+            // 4 个折线图每个的 title
+            var subTitlesArr = ['温度', '压力', '标况流量', '工况流量'];
+            var subTitle = subTitlesArr[subId];
             var option = {
                 title: {
                     text: subTitle,
-                    subtext: ['[', hardwareId, ']'].join('')
+                    subtext: ['[', hardwareId, ' : ', deviceName, ']'].join('')
                 },
                 backgroundColor: '#CCFFCC',
                 tooltip: {
@@ -102,6 +223,47 @@
                             icon: 'path://M247.1424 794.9824c-1.0752 0-2.176-0.0768-3.2768-0.2304-10.8032-1.3568-19.6096-9.3952-21.9648-20.0448L112.64 282.112c-3.0976-13.952 5.7088-27.7504 19.6608-30.848 13.8752-3.1232 27.7504 5.7088 30.848 19.6608l93.6704 422.3232 218.5472-428.4928c6.5024-12.7232 22.016-17.792 34.7904-11.2896 12.7232 6.5024 17.7664 22.0672 11.2896 34.7904l-251.2384 492.6208C265.7024 789.6064 256.768 794.9824 247.1424 794.9824zM669.184 793.7792c-4.8128 0-9.7024-0.128-14.6176-0.3584-58.4448-3.0976-104.9344-22.912-134.4-57.3696-24.1664-28.2112-34.8416-63.7696-30.848-102.784l0.5888-5.0176c1.9712-14.1568 14.9248-24.0128 29.2096-22.0672 14.1568 1.9712 24.0128 15.0272 22.0672 29.2096l-0.3584 3.1488c-2.5088 24.576 3.9424 46.6432 18.6624 63.8208 20.0704 23.424 53.888 37.0432 97.8432 39.3728 85.9648 4.48 151.8848-41.9584 169.9584-87.9616 18.0736-45.9776-27.6992-74.7776-48.1792-85.0176-10.3424-5.1712-31.4624-10.9056-53.7856-16.9984-65.3312-17.7664-146.6368-39.8848-174.8736-95.0784-12.1088-23.6288-12.8256-49.9968-2.176-78.336 19.0208-50.56 51.1488-86.2464 95.488-106.0096 51.5072-22.9632 119.8848-22.0416 182.8608 2.5344 75.8016 29.568 89.7792 108.3136 86.5792 145.8176-1.2032 14.2336-13.568 24.8064-27.9808 23.6032-14.208-1.2032-24.7296-13.6448-23.6032-27.8528l0 0c0.2304-2.8672 4.5568-70.5792-53.7856-93.3376-50.3552-19.6352-103.7824-20.9664-142.976-3.4816-31.2576 13.9264-54.1696 39.8592-68.1472 76.9792-7.1936 19.072-3.5584 30.0032-0.2048 36.5568 17.792 34.816 92.7488 55.1936 142.3872 68.7104 26.0096 7.0656 48.4352 13.1584 63.36 20.6336 68.1728 34.0992 96.2304 91.648 73.1904 150.2208C851.2256 734.2848 773.4272 793.7792 669.184 793.7792zM1024 214.6048 1024 732.928c0 14.08-11.52 25.6-25.6 25.6s-25.6-11.52-25.6-25.6L972.8 214.6048c0-33.536-28.416-60.928-61.952-60.928L112.128 153.6768C78.592 153.6768 51.2 178.2528 51.2 211.7888l0 597.8624c0 33.536 27.392 60.928 60.928 60.928l742.7584 0c14.08 0 25.6 11.52 25.6 25.6s-11.52 25.6-25.6 25.6L112.128 921.7792c-61.952 0-112.128-50.176-112.128-112.128L0 211.7888c0-61.952 50.176-109.312 112.128-109.312l798.72 0C972.544 102.4768 1024 152.6528 1024 214.6048z',
                             onclick: function () {
                                 // Start: functions
+                                function renderCompareSelectAndLaydate() {
+                                    laytpl(tpl_eCharts_compare_selectAndLaydate.innerHTML).render({}, function(html_compareSelectAndLaydate) {
+                                        $('#echarts-compare').parents('.layui-layer.layui-layer-page').find('.layui-layer-btn').prepend(html_compareSelectAndLaydate);
+                                        //
+                                        $('#select-today_echarts_type').val(subId);
+                                        form.render();
+                                        // 修正 select 的样式为向上弹出
+                                        var elem_dl_layuiSelectGroup = $('#select-today_echarts_type').next('div.layui-unselect').find('dl.layui-select-group');
+                                        elem_dl_layuiSelectGroup.css('margin-top', ['-', 60 + elem_dl_layuiSelectGroup.height(), 'px'].join(''));
+                                        // laydate 历史曲线日期
+                                        /*laydate({
+                                            elem: '#date-history_echarts', //需显示日期的元素选择器
+                                            event: 'click', //触发事件
+                                            format: 'YYYY-MM-DD', //日期格式
+                                            istime: false, //是否开启时间选择
+                                            isclear: true, //是否显示清空
+                                            istoday: true, //是否显示今天
+                                            issure: true, // 是否显示确认
+                                            festival: true, //是否显示节日
+                                            min: '1900-01-01 00:00:00', //最小日期
+                                            max: laydate.now(checkIsTimestampBetweenStartEnd_compare.getStartTimestamp(), 'YYYY-MM-DD hh:mm:ss'), //最大日期
+                                            start: laydate.now(checkIsTimestampBetweenStartEnd_compare.getStartTimestamp(), 'YYYY-MM-DD hh:mm:ss'),  //开始日期
+                                            fixed: false, //是否固定在可视区域
+                                            zIndex: 99999999, //css z-index
+                                            choose: function(dates){ //选择好日期的回调
+                                                debugger;
+                                                console.log('[laydate]dates: ' + dates);
+                                            }
+                                        });*/
+                                        $('#date-history_echarts').val(laydate.now(checkIsTimestampBetweenStartEnd_compare.getStartTimestamp(), 'YYYY-MM-DD'));
+                                        // #date-history_echarts 绑定的 change 事件在外层，以保证只调用一次
+                                        date_historyEcharts_inputChangeChecker.init();
+                                        date_historyEcharts_inputChangeChecker.startCheck(function(curInputVal) {
+                                            layer.msg(['[历史曲线日期： ', curInputVal, ']'].join(''));
+                                            getTodayStartDateTime_compare.compareTime = new Date(Date.parse(curInputVal.replace(/-/g,  "/")));
+                                            checkIsTimestampBetweenStartEnd_compare.startTime = null;
+                                            checkIsTimestampBetweenStartEnd_compare.endTime = null;
+                                            renderHistoryData2Charts_compare();
+                                        });
+                                    });
+                                }
                                 /**
                                  * 打开 layer - 折线图对比
                                  * @param layerContent
@@ -116,7 +278,10 @@
                                         , content: layerContent
                                         , success: function(layero, index){
                                             console.log(layero, index);
-                                            initLayerEChartsCompare();
+                                            initLayerEChartsCompare(hardwareId, deviceName, subId, subTitle);
+                                            // Start: 渲染打开的弹框中的 select ，和 laydate
+                                            renderCompareSelectAndLaydate();
+                                            // End  : 渲染打开的弹框中的 select ，和 laydate
                                         }
                                         , btn: ['关闭']
                                         , yes: function (index, layero) {
@@ -132,97 +297,312 @@
                                 /**
                                  * 初始化 layer 中的 eCharts
                                  */
-                                function initLayerEChartsCompare() {
+                                function initLayerEChartsCompare(hardwareId, deviceName, subId, subTitle) {
+                                    layer.msg(['[initLayerEChartsCompare][hardwareId: ', hardwareId, '][deviceName: '
+                                        , deviceName, '][subId: ', subId, '][subTitle: ', subTitle, ']'].join(''));
+
                                     var myChart_compare = echarts.init(document.getElementById('echarts-compare'));
 
                                     var colors = ['#5793f3', '#d14a61', '#675bba'];
-                                    var option = {
+                                    var option_base = optionsArr[subId];
 
-                                        color: colors,
-
-                                        tooltip: {
-                                            trigger: 'none',
-                                            axisPointer: {
-                                                type: 'cross'
-                                            }
-                                        },
-                                        legend: {
-                                            data:['昨日', '今日']
-                                        },
-                                        grid: {
-                                            top: 70,
-                                            bottom: 50
-                                        },
-                                        xAxis: [
-                                            {
-                                                type: 'category',
-                                                name: '今日',
-                                                boundaryGap: false,
-                                                axisTick: {
-                                                    alignWithLabel: true
-                                                },
-                                                axisLine: {
-                                                    onZero: false,
-                                                    lineStyle: {
-                                                        color: colors[1]
+                                    // Start: 从数据库获取 8 月 3 日数据，做对比测试
+                                    // renderHistoryData2Charts_compare.hardwareId = hardwareId;
+                                    renderHistoryData2Charts_compare = function() {
+                                        // $.get('http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00', {}, function(data) {console.log(data)}, 'json')
+                                        // 1. 请求 http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00
+                                        // var params_history = {hardwareId: 't21s1d1', begin: '2017-08-04:08:00:00', end: '2017-08-05:08:00:00'};
+                                        // var params_history_compare = {hardwareId: 't21s1d1', begin: '2017-08-03:08:00:00', end: '2017-08-04:08:00:00'};
+                                        debugger;
+                                        var params_history_compare = {hardwareId: hardwareId
+                                            , begin: laydate.now(checkIsTimestampBetweenStartEnd_compare.getStartTimestamp(), 'YYYY-MM-DD:hh:mm:ss')
+                                            , end: laydate.now(checkIsTimestampBetweenStartEnd_compare.getEndTimestamp(), 'YYYY-MM-DD:hh:mm:ss')};
+                                        var url_get_history_compare = '/point/query/history' + tools.serializeParams(params_history_compare);
+                                        var max_history_compare = 1000;  // 历史测点的 max 数目
+                                        var callback_history_compare = function(data_history_compare) {
+                                            console.log('[device_manage_echarts.js callback_history_compare] data_history_compare: ');
+                                            console.log(data_history_compare);
+                                            //
+                                            var code = data_history_compare.code, msg = data_history_compare.msg, page = data_history_compare.page
+                                                , total = data_history_compare.total, totalPage = data_history_compare.totalPage
+                                                , arr_monitorData = data_history_compare.data;
+                                            console.log('[device_manage_echarts.js callback_history_compare] code: ' + code);
+                                            console.log('[device_manage_echarts.js callback_history_compare] msg: ' + msg);
+                                            console.log('[device_manage_echarts.js callback_history_compare] page: ' + page);
+                                            console.log('[device_manage_echarts.js callback_history_compare] total: ' + total);
+                                            console.log('[device_manage_echarts.js callback_history_compare] totalPage: ' + totalPage);
+                                            console.log('[device_manage_echarts.js callback_history_compare] arr_monitorData: ');
+                                            console.log(arr_monitorData);
+                                            // 处理 arr_monitorData
+                                            function processMonitorData_sync_compare(item_monitorData, index_monitorData, isJSONObj, isNot2Render) {
+                                                console.log('[device_manage_echarts.js processMonitorData_sync_compare] index_monitorData: ' + index_monitorData);
+                                                console.log('[device_manage_echarts.js processMonitorData_sync_compare] isNot2Render: ' + isNot2Render);
+                                                /*setTimeout(function() {
+                                                    processMonitorData(item_monitorData, isJSONObj, isNot2Render);
+                                                    if(!isNot2Render) {
+                                                        layer.closeAll('loading');   //关闭所有的loading
                                                     }
-                                                },
-                                                axisPointer: {
-                                                    label: {
-                                                        formatter: function (params) {
-                                                            return '' + params.value
-                                                                + (params.seriesData.length ? '：' + params.seriesData[0].data : '');
+                                                }, index_monitorData * 1);*/
+                                                function getJDataFieldVal_compare(subId, item_monitorData) {
+                                                    // .temperature .pressure .standard .running
+                                                    var gasEvent = item_monitorData.gasEvent;
+                                                    var jDataFieldVal = gasEvent.temperature;
+                                                    switch (subId) {
+                                                        case 1:
+                                                            jDataFieldVal = gasEvent.pressure;
+                                                            break;
+                                                        case 2:
+                                                            jDataFieldVal = gasEvent.standard;
+                                                            break;
+                                                        case 3:
+                                                            jDataFieldVal = gasEvent.running;
+                                                            break;
+                                                    }
+                                                    return jDataFieldVal;
+                                                }
+                                                var jDataPointTime = new Date(item_monitorData.gasEvent.pointtime);
+                                                var jDataFieldVal = getJDataFieldVal_compare(subId, item_monitorData);
+                                                return {
+                                                    name: jDataPointTime.toString(),
+                                                    value: [
+                                                        laydate.now(jDataPointTime.getTime(), 'YYYY-MM-DD hh:mm:ss'),
+                                                        Math.round(jDataFieldVal)
+                                                    ]
+                                                };
+                                            }
+                                            function processMonitorDataArr_compare(arr_monitorData) {
+                                                var arr_data_compare = [];
+                                                if(arr_monitorData && arr_monitorData.length && arr_monitorData.length > 0) {
+                                                    // 先筛除掉 arr_monitorData 中不合格的数据（时间范围不在图中开始结束时间范围以内的）
+                                                    var arr_filtered_monitorData = [];
+                                                    arr_monitorData.forEach(function(item_monitorData) {
+                                                        if(checkIsTimestampBetweenStartEnd_compare(item_monitorData.gasEvent.pointtime)) {
+                                                            arr_filtered_monitorData.push(item_monitorData);
+                                                        }
+                                                    });
+                                                    arr_monitorData = arr_filtered_monitorData;
+                                                    // 先按 max_history_compare 抽样 arr_monitorData
+                                                    var length_arr_monitorData = arr_monitorData.length
+                                                        , arr_sample_monitorData = arr_monitorData;
+                                                    if(length_arr_monitorData > max_history_compare) {
+                                                        arr_sample_monitorData = [];
+                                                        var step = Math.floor(length_arr_monitorData / max_history_compare);
+                                                        for(var i = 0; i < length_arr_monitorData && arr_sample_monitorData.length <= max_history_compare; i += step) {
+                                                            arr_sample_monitorData.push(arr_monitorData[i]);
                                                         }
                                                     }
-                                                },
-                                                data: ["8:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00", "24:00", "2:00", "4:00", "6:00", "8:00"]
-                                            },
-                                            {
-                                                type: 'category',
-                                                name: '昨日',
-                                                boundaryGap: false,
-                                                axisTick: {
-                                                    alignWithLabel: true
-                                                },
-                                                axisLine: {
-                                                    onZero: false,
-                                                    lineStyle: {
-                                                        color: colors[0]
+                                                    console.log('[device_manage_echarts.js processMonitorDataArr_compare] arr_sample_monitorData.length: ' + arr_sample_monitorData.length);
+                                                    // Start: 对 arr_sample_monitorData 中的数据进行排序
+                                                    arr_sample_monitorData.sort(function(a_sample_monitorData, b_sample_monitorData) {
+                                                        return a_sample_monitorData.gasEvent.pointtime - b_sample_monitorData.gasEvent.pointtime;
+                                                    });
+                                                    // End  : 对 arr_sample_monitorData 中的数据进行排序
+                                                    arr_sample_monitorData.forEach(function(item_monitorData, index_monitorData) {
+                                                        var isNot2Render = !(index_monitorData + 1 === arr_monitorData.length);
+                                                        arr_data_compare.push(processMonitorData_sync_compare(item_monitorData, index_monitorData, true
+                                                            , isNot2Render));
+                                                    });
+                                                    // 及时关闭 layer.loading
+                                                    if(arr_sample_monitorData.length < 1) {
+                                                        layer.closeAll('loading');
                                                     }
+                                                }
+                                                return arr_data_compare;
+                                            }
+                                            var arr_data_compare = processMonitorDataArr_compare(arr_monitorData);
+                                            //
+                                            renderOptionCompare(arr_data_compare);
+                                        };
+                                        // 2. 发 get 请求
+                                        layer.load();
+                                        $.get(url_get_history_compare, {}, callback_history_compare, 'json');
+                                    }
+                                    renderHistoryData2Charts_compare();
+                                    // End  : 从数据库获取 8 月 3 日数据，做对比测试
+
+                                    function renderOptionCompare(arr_data_compare) {
+                                        var legend_history = ['历史【', subTitle, '】曲线，时间：'
+                                            , laydate.now(checkIsTimestampBetweenStartEnd_compare.getStartTimestamp(), 'YYYY-MM-DD')
+                                            , '，采集点数：', arr_data_compare.length].join('');
+                                        var legend_today = ['今日【', subTitle, '】曲线，时间：'
+                                            , laydate.now(checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD')
+                                            , '，采集点数：', option_base.series[0].data.length].join('');
+                                        var option_compare = {
+                                            title: {
+                                                text: ['设备', deviceName].join('')
+                                            },
+
+                                            color: colors,
+
+                                            tooltip: {
+                                                trigger: 'axis',
+                                                axisPointer: {
+                                                    type: 'cross'
+                                                }
+                                                /*formatter: function (params) {
+                                                    params = params[0];
+                                                    var date = new Date(params.name);
+                                                    return ['[', laydate.now(date.getTime(), 'YYYY-MM-DD hh:mm:ss'), '] : '
+                                                        , params.value[1]].join('');
                                                 },
                                                 axisPointer: {
+                                                    animation: false,
+                                                    type: 'cross',
                                                     label: {
-                                                        formatter: function (params) {
-                                                            return '' + params.value
-                                                                + (params.seriesData.length ? '：' + params.seriesData[0].data : '');
-                                                        }
+                                                        backgroundColor: '#6a7985'
                                                     }
-                                                },
-                                                data: ["8:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00", "24:00", "2:00", "4:00", "6:00", "8:00"]
-                                            }
-                                        ],
-                                        yAxis: [
-                                            {
-                                                type: 'value'
-                                            }
-                                        ],
-                                        series: [
-                                            {
-                                                name:'昨日',
-                                                type:'line',
-                                                xAxisIndex: 1,
-                                                smooth: true,
-                                                data: [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 154.3, 48.7, 18.8, 6.0, 2.3]
+                                                }*/
                                             },
-                                            {
-                                                name:'今日',
-                                                type:'line',
-                                                smooth: true,
-                                                data: [3.9, 5.9, 11.1, 18.7, 48.3, 69.2, 231.6, 122.5, 46.6, 55.4, 18.4, 10.3, 0.7]
-                                            }
-                                        ]
-                                    };
-                                    myChart_compare.setOption(option);
+                                            legend: {
+                                                right: 150,
+                                                data:[legend_history, legend_today]
+                                            },
+                                            toolbox: {
+                                                show: true,
+                                                feature: {
+                                                    dataZoom: {
+                                                        yAxisIndex: 'none'
+                                                    },
+                                                    dataView: {readOnly: false},
+                                                    // magicType: {type: ['line', 'bar']},
+                                                    restore: {},
+                                                    saveAsImage: {}
+                                                }
+                                            },
+                                            /*dataZoom: {
+                                                show: false,
+                                                start: 0,
+                                                end: 100
+                                            },*/
+                                            grid: {
+                                                left: 8,
+                                                right: 28,
+                                                bottom: 30,
+                                                top: 45,
+                                                containLabel: true
+                                            },
+                                            xAxis: [
+                                                {
+                                                    type: 'time',
+                                                    /*splitLine: {
+                                                        show: false
+                                                    },*/
+                                                    min: laydate.now(checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
+                                                    max: laydate.now(checkIsTimestampBetweenStartEnd.getEndTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
+
+                                                    // type: 'category',
+                                                    name: legend_today,
+                                                    nameLocation: 'middle',
+                                                    nameGap: 38,
+                                                    boundaryGap: false,
+                                                    axisTick: {
+                                                        alignWithLabel: true
+                                                    },
+                                                    axisLine: {
+                                                        onZero: false,
+                                                        lineStyle: {
+                                                            color: colors[1]
+                                                        }
+                                                    },
+                                                    axisPointer: {
+                                                        label: {
+                                                            formatter: function (params) {
+                                                                /*params = params[0];
+                                                                var date = new Date(params.name);
+                                                                return ['[', laydate.now(date.getTime(), 'YYYY-MM-DD hh:mm:ss'), '] : '
+                                                                    , params.value[1]].join('');*/
+
+                                                                return '' + laydate.now(params.value, 'YYYY-MM-DD hh:mm:ss')
+                                                                    + (params.seriesData.length ? '：' + params.seriesData[0].data.value[1] : '');
+                                                            }
+                                                        }
+                                                    }// ,
+                                                    // data: ["8:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00", "24:00", "2:00", "4:00", "6:00", "8:00"]
+                                                },
+                                                {
+                                                    // type: 'category',
+                                                    type: 'time',
+                                                    /*splitLine: {
+                                                        show: false
+                                                    },*/
+                                                    min: laydate.now(checkIsTimestampBetweenStartEnd_compare.getStartTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
+                                                    max: laydate.now(checkIsTimestampBetweenStartEnd_compare.getEndTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
+
+                                                    name: legend_history,
+                                                    nameLocation: 'middle',
+                                                    nameGap: 38,
+                                                    boundaryGap: false,
+                                                    axisTick: {
+                                                        alignWithLabel: true
+                                                    },
+                                                    axisLine: {
+                                                        onZero: false,
+                                                        lineStyle: {
+                                                            color: colors[0]
+                                                        }
+                                                    },
+                                                    axisPointer: {
+                                                        label: {
+                                                            formatter: function (params) {
+                                                                /*params = params[0];
+                                                                var date = new Date(params.name);
+                                                                return ['[', laydate.now(date.getTime(), 'YYYY-MM-DD hh:mm:ss'), '] : '
+                                                                    , params.value[1]].join('');*/
+
+                                                                return '' + laydate.now(params.value, 'YYYY-MM-DD hh:mm:ss')
+                                                                    + (params.seriesData.length ? '：' + params.seriesData[0].data.value[1] : '');
+                                                            }
+                                                        }
+                                                    },
+                                                    // data: ["8:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00", "24:00", "2:00", "4:00", "6:00", "8:00"]
+                                                }
+                                            ],
+                                            yAxis: [
+                                                {
+                                                    type: 'value'
+                                                    /*boundaryGap: [0, '100%'],
+                                                    splitLine: {
+                                                        show: false
+                                                    },
+
+                                                    type: 'value',
+                                                    scale: true,
+                                                    // name: [subTitle, '值'].join(''),
+                                                    nameGap: 8,
+                                                    min: 0*/
+                                                    // boundaryGap: [0.2, 0.2]
+                                                }
+                                            ],
+                                            series: [
+                                                {
+                                                    /*showSymbol: false,
+                                                    hoverAnimation: false,*/
+                                                    name: legend_history,
+                                                    type:'line',
+                                                    xAxisIndex: 1,
+                                                    smooth: true,
+                                                    data: arr_data_compare // [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 154.3, 48.7, 18.8, 6.0, 2.3]
+                                                },
+                                                {
+                                                    /*showSymbol: false,
+                                                    hoverAnimation: false,*/
+                                                    name: legend_today,
+                                                    type:'line',
+                                                    smooth: true,
+                                                    /*{
+                                                     name: jDataPointTime.toString(),
+                                                     value: [
+                                                     laydate.now(jDataPointTime.getTime(), 'YYYY-MM-DD hh:mm:ss'),
+                                                     Math.round(jDataFieldVal)
+                                                     ]
+                                                     }*/
+                                                    data: option_base.series[0].data// [3.9, 5.9, 11.1, 18.7, 48.3, 69.2, 231.6, 122.5, 46.6, 55.4, 18.4, 10.3, 0.7]
+                                                }
+                                            ]
+                                        };
+                                        myChart_compare.setOption(option_compare);
+                                        layer.closeAll('loading');   //关闭所有的loading
+                                    }
                                 }
                                 // End  : functions
                                 laytpl(tpl_eCharts_compare.innerHTML).render({}, function(html_tpl_eCharts_compare) {
@@ -252,8 +632,8 @@
                         show: false
                     },
                     name: '时间',
-                    min: laydate.now(getTodayStartDateTime().getTime(), 'YYYY-MM-DD hh:mm:ss'),
-                    max: laydate.now(getTodayStartDateTime(oneDay).getTime(), 'YYYY-MM-DD hh:mm:ss'),
+                    min: laydate.now(checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
+                    max: laydate.now(checkIsTimestampBetweenStartEnd.getEndTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
                     boundaryGap: false/*,
                     data: (function (){
                         var now = getTodayStartDateTime();
@@ -319,7 +699,7 @@
         }
         // render function
         function renderUpdatedData2Charts(myChart2Render, myChart2RenderOption, jDataHardwareId, jDataFieldVal
-                                          , jDataSummaryVal, jDataPointTimeVal) {
+                                          , jDataSummaryVal, jDataPointTimeVal, isNot2Render) {
             if(!myChart2Render || !myChart2RenderOption || !jDataHardwareId || (!jDataFieldVal && jDataFieldVal !== 0)
                 || (!jDataSummaryVal && jDataSummaryVal !== 0) || (!jDataPointTimeVal && jDataPointTimeVal !== 0)) {
                 console.error('[renderUpdatedData2Charts] 参数检查有误：');
@@ -348,13 +728,16 @@
                 ]
             });
 
-            myChart2Render.setOption({
-                series: [
-                    {
-                        data: data0
-                    }
-                ]
-            });
+            console.log('[device_manage_echarts.js renderUpdatedData2Charts] isNot2Render: ' + isNot2Render);
+            if(!isNot2Render) {
+                myChart2Render.setOption({
+                    series: [
+                        {
+                            data: data0
+                        }
+                    ]
+                });
+            }
 
             // var data1 = myChart2RenderOption.series[1].data;
 
@@ -394,8 +777,8 @@
         // Start: 请求服务器数据，更新左侧树
         function searchTreeList() {
             // 0. 请求相关的 url 、参数表、回调
-            var url_allSitesAndDevices = '/site/ajax/allSitesAndDevices';
-            var params_allSitesAndDevices = {};
+            /*var url_allSitesAndDevices = '/site/ajax/allSitesAndDevices';
+            var params_allSitesAndDevices = {};*/
             var callback_allSitesAndDevices = function(data_allSitesAndDevices) {
                 console.log("查询到的所有站点设备 tree list 信息:" + JSON.stringify(data_allSitesAndDevices));
                 var data_allSitesAndDevices_sitesArr = data_allSitesAndDevices.data;
@@ -406,20 +789,26 @@
                 // Start: 测试渲染树
                 layui.tree({
                     elem: '#devicesTreeList' //指定元素
-                    ,target: '_blank' //是否新选项卡打开（比如节点返回href才有效）
-                    ,click: function(item) { //点击节点回调
-                        layer.msg('当前节名称：'+ item.name + '<br>全部参数：'+ JSON.stringify(item));
+                    , target: '_blank' //是否新选项卡打开（比如节点返回href才有效）
+                    , click: function(item) { //点击节点回调
+                        layer.msg(['当前选中设备：', item.name, '，hardwareId： ', item.hardwareId].join(''));
+                        console.log(['[device_manage_echarts.js layui.tree]当前被点击选中节点名称：', item.name, '全部参数：', JSON.stringify(item)].join(''));
                         console.log(item);
                         // Start: 根据用户的点击，清空折线图，然后重新 setStationId
                         if(item && item.hardwareId) {
-                            refreshECharts(item.hardwareId);
+                            layer.load();
+                            refreshECharts(item.hardwareId, item.name);
                             createDevicesTreeListNodes.renderSelectSearchDevicesOptions(item.hardwareId);
+                            // 关闭所有的 loading
+                            // layer.closeAll('loading');
                         }
                         // End  : 根据用户的点击，清空折线图，然后重新 setStationId
                     }
-                    ,nodes: createDevicesTreeListNodes(data_allSitesAndDevices_sitesArr, urlHardwareId)
+                    , nodes: createDevicesTreeListNodes(data_allSitesAndDevices_sitesArr, urlHardwareId)
                 });
                 // End  : 测试渲染树
+                // 关闭所有的 loading
+                // layer.closeAll('loading');
                 // Start: 触发相应 device 节点的 click
                 createDevicesTreeListNodes.triggerDeviceNodeClick(createDevicesTreeListNodes.urlHardwareId);
                 // End  : 触发相应 device 节点的 click
@@ -430,10 +819,11 @@
             // 1. 打开 layer loading
             layer.load();
             // 2. $.get 请求服务器 tree list 数据，并调用回调
-            $.get(url_allSitesAndDevices, params_allSitesAndDevices, callback_allSitesAndDevices, "json");
+            // $.get(url_allSitesAndDevices, params_allSitesAndDevices, callback_allSitesAndDevices, "json");
+            sitesAndDevicesTreeCacheManager.loadTreeDataAllSitesAndDevices(callback_allSitesAndDevices);
         }
         // End  : 请求服务器数据，更新左侧树
-        function searchList(currPage) {
+        /*function searchList(currPage) {
             console.log("开始查询设备 list 的信息 ...");
             layer.load();   // loading
             $.get(
@@ -470,7 +860,7 @@
                 },
                 "json"
             );
-        }
+        }*/
         // Start: 展示 layerContent_tpl 于 layer 中
         function showLayerContentTplInLayer(title, content) {
             laytpl(layerContent_tpl.innerHTML).render(content, function(html) {
@@ -493,18 +883,15 @@
                         //按钮【按钮二】的回调
                         //return false 开启该代码可禁止点击该按钮关闭
                     }
-                    ,
                 });
             });
         }
         // End  : 展示 layerContent_tpl 于 layer 中
         // 刷新折线图
         var myChartsArr;    // 用于记录有哪些 eChartsInstance
-        function refreshECharts(hardwareId) {
+        var optionsArr;
+        function refreshECharts(hardwareId, deviceName) {
             // var hardwareId = 's1';
-
-            // 4 个折线图每个的 title
-            var subTitlesArr = ['温度', '压力', 'standard', 'running'];
 
             // 基于准备好的dom，初始化echarts实例
             var myChart0 = echarts.init(document.getElementById('echarts-0'));
@@ -514,16 +901,12 @@
             myChartsArr = [myChart0, myChart1, myChart2, myChart3];
 
             // 指定图表的配置项和数据
-            var option0 = genOption(hardwareId, subTitlesArr[0]);
-            var option1 = genOption(hardwareId, subTitlesArr[1]);
-            var option2 = genOption(hardwareId, subTitlesArr[2]);
-            var option3 = genOption(hardwareId, subTitlesArr[3]);
-            var optionsArr = [option0, option1, option2, option3];
+            var option0 = genOption(hardwareId, 0, deviceName);
+            var option1 = genOption(hardwareId, 1, deviceName);
+            var option2 = genOption(hardwareId, 2, deviceName);
+            var option3 = genOption(hardwareId, 3, deviceName);
+            optionsArr = [option0, option1, option2, option3];
 
-            // 测试 demo ： 定时刷新
-            /*setInterval(function (){
-             renderUpdatedData2Charts();
-             }, 3000);*/
             // 实际： 监听事件进行刷新
             $(function() {
                 renderInitData2Charts(myChartsArr[0], optionsArr[0]);
@@ -532,42 +915,134 @@
                 renderInitData2Charts(myChartsArr[3], optionsArr[3]);
 
                 // var oneSocketEvent = oneSocket.EVENT;
-                oneSocket.setHandler(oneSocket.Event.GAS_EVENT, function(data) {
+                /**
+                 * 处理 monitorData
+                 * @param data  monitorData
+                 */
+                function processMonitorData(data, isJSONObj, isNot2Render) {
                     console.log('[documentEvent oneSocketEvent] data: ');
                     console.log(data);
-                    var jData = JSON.parse(data);
+                    var jData = data;
+                    if(!isJSONObj) {
+                        jData = JSON.parse(data);
+                    }
                     console.log('[documentEvent oneSocketEvent] jData: ');
                     var jDataGasEvent = jData.gasEvent;
                     console.log(jDataGasEvent);
-                    /*myChartsArr.forEach(function(myChartItem) {
-                     renderUpdatedData2Charts(myChartItem, jData);
-                     });*/
+
                     // Start: 判断 hardwareId 相符，才进行刷新
                     console.info(['[documentEvent oneSocketEvent][hardwareId: ', hardwareId, '][jDataGasEvent.hardwareId: ', jDataGasEvent.hardwareId, '] 不相等？： ', hardwareId != jDataGasEvent.hardwareId].join(''));
                     if(hardwareId != jDataGasEvent.hardwareId) {
+                        console.warn('[device_manage_echarts.js processMonitorData] hardwareId 不符');
                         return ;
                     }
                     // End  : 判断 hardwareId 相符，才进行刷新
+
+                    // 判断 jDataGasEvent 的 pointtime 是否在有效时间范围内
+                    if(!checkIsTimestampBetweenStartEnd(jDataGasEvent.pointtime)) {
+                        console.warn('[device_manage_echarts.js processMonitorData] jDataGasEvent 的 pointtime 不在有效时间范围内');
+                        return ;
+                    }
+
                     renderUpdatedData2Charts(myChartsArr[0], optionsArr[0], jDataGasEvent.hardwareId, jDataGasEvent.temperature
-                        , jDataGasEvent.summary, jDataGasEvent.pointtime);
+                        , jDataGasEvent.summary, jDataGasEvent.pointtime, isNot2Render);
                     renderUpdatedData2Charts(myChartsArr[1], optionsArr[1], jDataGasEvent.hardwareId, jDataGasEvent.pressure
-                        , jDataGasEvent.summary, jDataGasEvent.pointtime);
+                        , jDataGasEvent.summary, jDataGasEvent.pointtime, isNot2Render);
                     renderUpdatedData2Charts(myChartsArr[2], optionsArr[2], jDataGasEvent.hardwareId, jDataGasEvent.standard
-                        , jDataGasEvent.summary, jDataGasEvent.pointtime);
+                        , jDataGasEvent.summary, jDataGasEvent.pointtime, isNot2Render);
                     renderUpdatedData2Charts(myChartsArr[3], optionsArr[3], jDataGasEvent.hardwareId, jDataGasEvent.running
-                        , jDataGasEvent.summary, jDataGasEvent.pointtime);
-                });
-                oneSocket.setStation(hardwareId);
-                /*$(oneSocket.EventEmitter).on(oneSocketEvent.GM_EVENT_handleNotifications, '', function(event, data) {
-                 console.log(['[documentEvent oneSocketEvent ', oneSocketEvent.GM_EVENT_handleNotifications, '] data: '].join(''));
-                 console.log(data);
-                 renderUpdatedData2Charts(JSON.parse(data));
-                 });*/
+                        , jDataGasEvent.summary, jDataGasEvent.pointtime, isNot2Render);
+                }
+                oneSocket.setHandler(oneSocket.Event.GAS_EVENT, processMonitorData);
+                // oneSocket.setStation(hardwareId);
+
                 // 最后，固定 echarts 容器宽度，并指定父容器滚动
                 var deviceEchartsContainerEle = $('#device-echarts-container');
                 // deviceEchartsContainerEle.css('width', deviceEchartsContainerEle.width());
                 deviceEchartsContainerEle.css('width', '100%');
                 deviceEchartsContainerEle.parent().css('overflow-x', 'auto');
+                // Start: 请求 history 信息
+                /**
+                 * 请求历史 monitorData ，并渲染到 eCharts
+                 */
+                function renderHistoryData2Charts() {
+                    // $.get('http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00', {}, function(data) {console.log(data)}, 'json')
+                    // 1. 请求 http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00
+                    var params_history = {hardwareId: 't21s1d1', begin: '2017-08-04:08:00:00', end: '2017-08-05:08:00:00'};
+                    // var params_history = {hardwareId: 't21s1d1', begin: '2017-08-03:08:00:00', end: '2017-08-04:08:00:00'};
+                    var url_get_history = '/point/query/history' + tools.serializeParams(params_history);
+                    var max_history = 1000;  // 历史测点的 max 数目
+                    var callback_history = function(data_history) {
+                        console.log('[device_manage_echarts.js callback_history] data_history: ');
+                        console.log(data_history);
+                        //
+                        var code = data_history.code, msg = data_history.msg, page = data_history.page
+                            , total = data_history.total, totalPage = data_history.totalPage, arr_monitorData = data_history.data;
+                        console.log('[device_manage_echarts.js callback_history] code: ' + code);
+                        console.log('[device_manage_echarts.js callback_history] msg: ' + msg);
+                        console.log('[device_manage_echarts.js callback_history] page: ' + page);
+                        console.log('[device_manage_echarts.js callback_history] total: ' + total);
+                        console.log('[device_manage_echarts.js callback_history] totalPage: ' + totalPage);
+                        console.log('[device_manage_echarts.js callback_history] arr_monitorData: ');
+                        console.log(arr_monitorData);
+                        // 处理 arr_monitorData
+                        function processMonitorData_async(item_monitorData, index_monitorData, isJSONObj, isNot2Render) {
+                            console.log('[device_manage_echarts.js processMonitorData_async] index_monitorData: ' + index_monitorData);
+                            console.log('[device_manage_echarts.js processMonitorData_async] isNot2Render: ' + isNot2Render);
+                            setTimeout(function() {
+                                processMonitorData(item_monitorData, isJSONObj, isNot2Render);
+                                if(!isNot2Render) {
+                                    layer.closeAll('loading');   //关闭所有的loading
+                                }
+                            }, index_monitorData * 1);
+                        }
+                        function processMonitorDataArr(arr_monitorData) {
+                            if(arr_monitorData && arr_monitorData.length && arr_monitorData.length > 0) {
+                                // 先筛除掉 arr_monitorData 中不合格的数据（时间范围不在图中开始结束时间范围以内的）
+                                var arr_filtered_monitorData = [];
+                                arr_monitorData.forEach(function(item_monitorData) {
+                                    if(checkIsTimestampBetweenStartEnd(item_monitorData.gasEvent.pointtime)) {
+                                        arr_filtered_monitorData.push(item_monitorData);
+                                    }
+                                });
+                                arr_monitorData = arr_filtered_monitorData;
+                                // 先按 max_history 抽样 arr_monitorData
+                                var length_arr_monitorData = arr_monitorData.length
+                                    , arr_sample_monitorData = arr_monitorData;
+                                if(length_arr_monitorData > max_history) {
+                                    arr_sample_monitorData = [];
+                                    var step = Math.floor(length_arr_monitorData / max_history);
+                                    for(var i = 0; i < length_arr_monitorData && arr_sample_monitorData.length <= max_history; i += step) {
+                                        arr_sample_monitorData.push(arr_monitorData[i]);
+                                    }
+                                }
+                                console.log('[device_manage_echarts.js processMonitorDataArr] arr_sample_monitorData.length: ' + arr_sample_monitorData.length);
+                                // Start: 对 arr_sample_monitorData 中的数据进行排序
+                                arr_sample_monitorData.sort(function(a_sample_monitorData, b_sample_monitorData) {
+                                    return a_sample_monitorData.gasEvent.pointtime - b_sample_monitorData.gasEvent.pointtime;
+                                });
+                                // End  : 对 arr_sample_monitorData 中的数据进行排序
+                                arr_sample_monitorData.forEach(function(item_monitorData, index_monitorData) {
+                                    processMonitorData_async(item_monitorData, index_monitorData, true
+                                        , !(index_monitorData + 1 === arr_monitorData.length));
+                                });
+                                // 及时关闭 layer.loading
+                                if(arr_sample_monitorData.length < 1) {
+                                    layer.closeAll('loading');
+                                }
+                            } else {
+                                // arr_monitorData 为空，需要隐藏掉 layer loading
+                                layer.closeAll('loading');
+                            }
+                        }
+                        processMonitorDataArr(arr_monitorData);
+                    };
+                    // 2. 发 get 请求
+                    layer.load();
+                    $.get(url_get_history, {}, callback_history, 'json');
+                }
+                renderHistoryData2Charts();
+                // End  : 请求 history 信息
             });
         }
         // 调用以创建 layui.tree nodes
@@ -592,7 +1067,8 @@
                         console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device siteId: ' + siteId);
                         console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device name: ' + name);
                         console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device logic: ' + logic);
-                        var node_siteChildrenDevice = {name: name, id: id, hardwareId: hardwareId, alias: name, children: createSiteChildrenDevices(children)};
+                        var node_siteChildrenDevice = {name: ['[', hardwareId, ' : ', name, ']'].join(''), id: id
+                            , hardwareId: hardwareId, alias: name, children: createSiteChildrenDevices(children)};
                         arr_siteChildrenDevices.push(node_siteChildrenDevice);
                         //
                         createDevicesTreeListNodes.arr_sitesAndDevicesNodes.push(node_siteChildrenDevice);
@@ -879,7 +1355,7 @@
         // End  : 所有被本模块调用的函数定义在此
 
         //第一次加载数据
-        searchList();
+        // searchList();
         // 第一次加载左侧 tree list 数据
         $(function() {
             searchTreeList();
@@ -909,7 +1385,7 @@
             console.log(['设备信息[deviceId: ', deviceId, '][hardwareId: ', hardwareId, '][tokenId: ', tokenId, '][deviceName: ', deviceName, '][logic: ', logic,
                 '][watcher: ', watcher, '][phone: ', phone, '][created: ', created, '][status: ', status, '][parent: ', parent, '][siteId: ', siteId, ']'].join(''));
             // Start: 根据用户的点击，清空折线图，然后重新 setStationId
-            refreshECharts(hardwareId);
+            refreshECharts(hardwareId, deviceName);
             // End  : 根据用户的点击，清空折线图，然后重新 setStationId
         });
         // End  : [设备列表]中某设备被点击

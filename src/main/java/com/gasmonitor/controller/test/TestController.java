@@ -5,6 +5,7 @@ import com.gasmonitor.dao.TenantRepository;
 import com.gasmonitor.entity.Device;
 import com.gasmonitor.entity.Tenant;
 import com.gasmonitor.pros.HazelCastPros;
+import com.gasmonitor.service.bas.BasDataUnitService;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import org.slf4j.Logger;
@@ -15,8 +16,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.thymeleaf.context.WebEngineContext;
 
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
@@ -44,6 +45,9 @@ public class TestController {
 
     @Autowired
     private HazelCastPros hazelCastPros;
+
+    @Autowired
+    private BasDataUnitService basDataUnitService;
 
     @RequestMapping(value = "/device/list")
     public Object findDevice(@RequestParam("siteId") long siteId) {
@@ -99,10 +103,10 @@ public class TestController {
         return hazelcastInstance.getMap("tenant");
     }
 
-    @RequestMapping(value = "hz/showmapuser")
-    public Object showHazelcastmapuser() {
-        return hazelcastInstance.getMap(hazelCastPros.getMapuserall());
-    }
+//    @RequestMapping(value = "hz/showmapuser")
+//    public Object showHazelcastmapuser() {
+//        return hazelcastInstance.getMap(hazelCastPros.getMapuserall());
+//    }
 
     @RequestMapping(value = "hz/showmapdevice")
     public Object showHazelcastmapdevice() {
@@ -141,5 +145,18 @@ public class TestController {
         logger.info("获取到的时间信息:{}", date);
         return date;
     }
+
+    @RequestMapping("/basdata/unit/findall")
+    @ResponseBody
+    public Object unitFindall() {
+        return basDataUnitService.findAll();
+    }
+
+    @RequestMapping("/basdata/unit/findone/{id}")
+    @ResponseBody
+    public Object unitFindone(@PathVariable("id") Long id) {
+        return basDataUnitService.findOne(id);
+    }
+
 
 }

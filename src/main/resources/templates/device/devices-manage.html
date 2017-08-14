@@ -57,7 +57,11 @@
       </select>
     </div>
     <!-- End  : 搜索 -->
-    <div id="devicesListTableView"></div>
+    <div id="devicesListTableView">
+      <div style="display: inline-block; width: 100%; height: 100%; padding: 10px;">
+        <ul id="devicesTreeList"></ul>
+      </div>
+    </div>
   </div>
   <div class="sysNotice col right-details">
     <blockquote class="layui-elem-quote title">设备曲线<i class="iconfont icon-new1"></i></blockquote>
@@ -140,7 +144,7 @@
 <!-- End  : echarts -->
 
 <!-- Start: layui template 模板 -->
-<script id="devicesList" type="text/html">
+<!--<script id="devicesList" type="text/html">
   <table class="layui-table" lay-skin="line">
     <colgroup>
       <col width="110">
@@ -158,7 +162,7 @@
     </tbody>
   </table>
   <ul id="devicesTreeList"></ul>
-</script>
+</script>-->
 <script id="layerContent_tpl" type="text/html">
   <div style="width: 96%; text-align: center; margin: 10px auto;">{{d}}</div>
 </script>
@@ -166,6 +170,40 @@
   <div class="row" style="height: 100%; background-color: #ccffcc;">
     <div id="echarts-compare" class="sysNotice col" style="width: 100%; height: 100%;"></div>
   </div>
+</script>
+<script id="tpl_eCharts_compare_selectAndLaydate" type="text/html">
+  <!--Start: 增加两个 inline 的 select ，用于选择对比曲线类型和时间-->
+  <div class="layui-form" style="position: absolute; bottom: 0; margin-bottom: -10px;">
+
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label" style="width: 100px;">今日曲线类型：</label>
+        <div class="layui-input-inline">
+          <select id="select-today_echarts_type" name="select_todayEChartsType">
+            <!--<option value="-1">- 请选择今日曲线类型 -</option>-->
+            <optgroup label="IC / IC+流量计">
+              <option value="2">标况流量</option>
+              <option value="3">工况流量</option>
+              <option value="4">累计流量</option>
+            </optgroup>
+            <optgroup label="简单流量计">
+              <option value="0">温度</option>
+              <option value="1">压力</option>
+              <option value="5">电池</option>
+            </optgroup>
+          </select>
+        </div>
+      </div>
+      <div class="layui-inline">
+        <label class="layui-form-label" style="width: 100px;">历史曲线日期：</label>
+        <div class="layui-input-inline">
+          <input type="text" name="date_historyECharts" id="date-history_echarts" lay-verify="date" placeholder="yyyy-mm-dd" autocomplete="off" class="layui-input" onclick="layui.laydate({elem: this})">
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!--End  : 增加两个 inline 的 select ，用于选择对比曲线类型和时间-->
 </script>
 <!-- End  : layui template 模板 -->
 <script src="/js/app/device/device_manage_echarts.js"></script>

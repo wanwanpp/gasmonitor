@@ -98,7 +98,11 @@ public class DeviceController {
         //新生成的设备
         User user = SessionUtils.getUser(session);
         log.info("usr:{},tenantid:{}开始增加一个设备:{}", user, user.getTenantId(), device);
-        device = deviceService.addDevice(device, user.getTenantId());
+        try {
+            device = deviceService.addDevice(device, user.getTenantId());
+        } catch (TipsException e) {
+            return AjaxResult.ErrorAjaxResult(e.getMessage());
+        }
         return new AjaxResult<>(device);
     }
 
@@ -107,7 +111,7 @@ public class DeviceController {
     @RequestMapping(value = "/ajax/remove")
     @ResponseBody
     public AjaxResult<Device> ajaxRmDevice(Long id) {
-        deviceRepository.delete(id);
+        deviceService.delete(id);
         return AjaxResult.SuccAjaxResult();
     }
 
@@ -116,8 +120,21 @@ public class DeviceController {
     @ResponseBody
     public AjaxResult<Device> ajaxUpdateDevice(Device newDevice) {
         //新生成的设备
-        return deviceService.updateDevice(newDevice);
+        return AjaxResult.AjaxResultWithOne(deviceService.updateDevice(newDevice));
     }
+
+    @RequestMapping(value = "/ajax/updateStatus")
+    @ResponseBody
+    public AjaxResult<Device> ajaxUpdateDevice(Long id, Integer status) {
+        //新生成的设备
+        try {
+            Device ret = deviceService.updateDeviceStatus(id, status);
+            return AjaxResult.AjaxResultWithOne(ret);
+        } catch (TipsException e) {
+            return AjaxResult.ErrorAjaxResult(e.getMessage());
+        }
+    }
+
 
     @RequestMapping(value = "ajax/setstatus")
     public AjaxResult<Device> setstatus(Long deviceId, Integer status) {

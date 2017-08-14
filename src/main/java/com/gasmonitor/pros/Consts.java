@@ -1,0 +1,1 @@
+package com.gasmonitor.pros;/** * Created by saplmm on 2017/8/13. */public class Consts {    public static final String CACHE_TENANT = "c_tenant";  //租户的缓存    public static final String CACHE_USER = "c_user";  //user缓存    public static final String CACHE_DEVICE = "c_device";  //设备缓存    public static final String CACHE_BASDEVICEUNIT = "c_basdeviceunit";  //设备缓存}

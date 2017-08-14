@@ -3,16 +3,17 @@ package com.gasmonitor.controller.tenant;
 import com.gasmonitor.dao.SiteRepository;
 import com.gasmonitor.dao.TenantRepository;
 import com.gasmonitor.dao.UserRepository;
-import com.gasmonitor.entity.Site;
 import com.gasmonitor.entity.Tenant;
 import com.gasmonitor.entity.User;
 import com.gasmonitor.exception.TipsException;
 import com.gasmonitor.pros.Role;
+import com.gasmonitor.service.device.DeviceService;
 import com.gasmonitor.service.tenant.TenantService;
 import com.gasmonitor.service.user.UserService;
 import com.gasmonitor.utils.PageUtils;
 import com.gasmonitor.utils.SessionUtils;
 import com.gasmonitor.vo.AjaxResult;
+import com.gasmonitor.vo.TenantInfoVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,9 +50,26 @@ public class TenantController {
     @Autowired
     private SiteRepository siteRepository;
 
+    @Autowired
+    private DeviceService deviceService;
+
 
     @RequestMapping(value = "/info")
-    public String info() {
+    public String info(HttpServletRequest request, HttpSession session, ModelMap modelMap) {
+        User user = SessionUtils.getUser(session);
+        if (user == null) {
+            try {
+                request.logout();
+            } catch (Exception e) {
+
+            }
+        } else {
+            TenantInfoVo vo = new TenantInfoVo();
+            vo.setSiteCount(siteRepository.countByTenantId(user.getTenantId()));
+            vo.setDeviceCount(deviceService.countByTenantId(user.getTenantId()));
+            vo.setMsg("暂无告警");
+            modelMap.addAttribute("vo", vo);
+        }
         return "tenant/info";
     }
 
@@ -113,6 +131,15 @@ public class TenantController {
     @RequestMapping(value = "/settings")
     public String settings() {
         return "tenant/settings";
+    }
+
+    /**
+     * 总表
+     * @return
+     */
+    @RequestMapping(value = "/sum-table")
+    public String sumTable() {
+        return "tenant/sum-table";
     }
     // End  : 20170625 这里好像是对租户的增删改查？租户的菜单跳转暂时也先放这里吧
 

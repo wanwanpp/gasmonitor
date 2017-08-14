@@ -22,9 +22,10 @@ public class Device implements Serializable {
     private String hardwareId;  //硬件Id
     private Long siteId;
     private String name;    //设备名称
+    private String factory;//生产厂家
     private String tokenId;
     private Integer logic;
-    private Integer type;//设备类型，目前只有三种设备类型
+    private Integer dtype;//设备类型，目前只有三种设备类型
     private Long watcher;   //由谁来监控
     private Date created;
     private Integer status;
@@ -33,8 +34,8 @@ public class Device implements Serializable {
     private Long upressure;
     private Long ustandard;
     private Long urunning;
-    private Long usummary;
-    private Long usurplus;
+    private Long usummary;//总计流量
+    private Long usurplus;//剩余流量
     private Long uanalog1;
     private Long uanalog2;
     private Long uanalog3;
@@ -112,13 +113,6 @@ public class Device implements Serializable {
         this.logic = logic;
     }
 
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
 
     public Date getCreated() {
         return created;
@@ -328,6 +322,22 @@ public class Device implements Serializable {
         this.pressureLow = pressureLow;
     }
 
+    public String getFactory() {
+        return factory;
+    }
+
+    public void setFactory(String factory) {
+        this.factory = factory;
+    }
+
+    public Integer getDtype() {
+        return dtype;
+    }
+
+    public void setDtype(Integer dtype) {
+        this.dtype = dtype;
+    }
+
     @Override
     public String toString() {
         return "Device{" +
@@ -335,10 +345,11 @@ public class Device implements Serializable {
                 ", hardwareId='" + hardwareId + '\'' +
                 ", siteId=" + siteId +
                 ", name='" + name + '\'' +
+                ", factory='" + factory + '\'' +
                 ", tokenId='" + tokenId + '\'' +
                 ", logic=" + logic +
-                ", type=" + type +
-                ", watcher='" + watcher + '\'' +
+                ", dtype=" + dtype +
+                ", watcher=" + watcher +
                 ", created=" + created +
                 ", status=" + status +
                 ", parent=" + parent +
@@ -359,6 +370,11 @@ public class Device implements Serializable {
                 ", uac220=" + uac220 +
                 ", ubattery=" + ubattery +
                 ", usolar=" + usolar +
+                ", standardFlowUpper=" + standardFlowUpper +
+                ", temperatureUpper=" + temperatureUpper +
+                ", temperatureLow=" + temperatureLow +
+                ", pressureUpper=" + pressureUpper +
+                ", pressureLow=" + pressureLow +
                 ", children=" + children +
                 '}';
     }
