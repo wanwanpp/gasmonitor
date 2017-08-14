@@ -144,11 +144,9 @@
                     private_self.curVal = private_self.inputEle.val();
                 }
                 , startCheck: function(callback) {
-                    debugger;
                     var self = this, private_self = _date_historyEcharts_inputChangeChecker;
 
                     if(!$(private_self.inputEleId)) {
-                        debugger;
                         // clearInterval(self.timerId);
                         return ;
                     }
@@ -248,7 +246,6 @@
                                             fixed: false, //是否固定在可视区域
                                             zIndex: 99999999, //css z-index
                                             choose: function(dates){ //选择好日期的回调
-                                                debugger;
                                                 console.log('[laydate]dates: ' + dates);
                                             }
                                         });*/
@@ -313,7 +310,6 @@
                                         // 1. 请求 http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00
                                         // var params_history = {hardwareId: 't21s1d1', begin: '2017-08-04:08:00:00', end: '2017-08-05:08:00:00'};
                                         // var params_history_compare = {hardwareId: 't21s1d1', begin: '2017-08-03:08:00:00', end: '2017-08-04:08:00:00'};
-                                        debugger;
                                         var params_history_compare = {hardwareId: hardwareId
                                             , begin: laydate.now(checkIsTimestampBetweenStartEnd_compare.getStartTimestamp(), 'YYYY-MM-DD:hh:mm:ss')
                                             , end: laydate.now(checkIsTimestampBetweenStartEnd_compare.getEndTimestamp(), 'YYYY-MM-DD:hh:mm:ss')};
@@ -512,8 +508,14 @@
                                                                 return ['[', laydate.now(date.getTime(), 'YYYY-MM-DD hh:mm:ss'), '] : '
                                                                     , params.value[1]].join('');*/
 
-                                                                return '' + laydate.now(params.value, 'YYYY-MM-DD hh:mm:ss')
-                                                                    + (params.seriesData.length ? '：' + params.seriesData[0].data.value[1] : '');
+                                                                var seriesDataVal = '';
+                                                                if(params.seriesData && params.seriesData.length
+                                                                    && params.seriesData[0] && params.seriesData[0].data
+                                                                    && params.seriesData[0].data.value && params.seriesData[0].data.value[1]) {
+                                                                    seriesDataVal = '：' + params.seriesData[0].data.value[1];
+                                                                }
+
+                                                                return '' + laydate.now(params.value, 'YYYY-MM-DD hh:mm:ss') + seriesDataVal;
                                                             }
                                                         }
                                                     }// ,
