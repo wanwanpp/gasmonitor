@@ -180,6 +180,25 @@ layui.define(['jquery'], function(exports) {
 
     // Start: 所有的 function - sitesAndDevicesTreeCacheManager
     var sitesAndDevicesTreeCacheManager = {
+        loadTreeDataAllSitesAndDevices_sumTreeTable: function(callback_sumTreeTableDataLoaded) {
+            debugger;
+            // 1. loadTreeDataAllSitesAndDevices 获取到最新的 treeData_allSitesAndDevices 数据结构
+            sitesAndDevicesTreeCacheManager.loadTreeDataAllSitesAndDevices(callback_processTreeData_allSitesAndDevices);
+            // 2. 遍历 treeData_allSitesAndDevices ，将 cache 中的 device 数据最新一条付给它们
+            function callback_processTreeData_allSitesAndDevices(treeData_allSitesAndDevices) {
+                debugger;
+                console.log('[callback_processTreeData_allSitesAndDevices]treeData_allSitesAndDevices: ');
+                console.log(treeData_allSitesAndDevices);
+                // 暂时将带最新数据的 treeData_allSitesAndDevices_sumTreeTable 赋值为 treeData_allSitesAndDevices ，
+                // debug 分析数据后再进一步完善逻辑
+                var treeData_allSitesAndDevices_sumTreeTable = treeData_allSitesAndDevices;
+                // 3. 将带最新数据的 treeData_allSitesAndDevices_sumTreeTable 作为参数回调 callback_sumTreeTableDataLoaded
+                if(callback_sumTreeTableDataLoaded && callback_sumTreeTableDataLoaded instanceof Function) {
+                    callback_sumTreeTableDataLoaded(treeData_allSitesAndDevices_sumTreeTable);
+                }
+            }
+
+        },
         /**
          * load treeData of allSitesAndDevices , 因为是 all 类型的数据，唯一，所以用一个定义好的 key 缓存即可
          * @param callback_allSitesAndDevices
@@ -191,7 +210,6 @@ layui.define(['jquery'], function(exports) {
                 }
             }
 
-            debugger;
             var cached_data_allSitesAndDevices = wsCache.get(MAP_ENUM_WS_CACHE_KEYS.TREE_DATA_ALL_SITES_AND_DEVICES);
             if(cached_data_allSitesAndDevices) {
                 processCallback(cached_data_allSitesAndDevices);
@@ -204,7 +222,7 @@ layui.define(['jquery'], function(exports) {
             // Start: cache callback 的定义，先缓存 data_allSitesAndDevices 数据，再进行 callback_allSitesAndDevices 回调
             function callback_cacheTreeData_allSitesAndDevices(data_allSitesAndDevices) {
                 // 1. 缓存 data_allSitesAndDevices 数据
-                _webStorageCache.saveCacheWithCommonExpire(MAP_ENUM_WS_CACHE_KEYS.TREE_DATA_ALL_SITES_AND_DEVICES, data_allSitesAndDevices, 60);
+                _webStorageCache.saveCacheWithCommonExpire(MAP_ENUM_WS_CACHE_KEYS.TREE_DATA_ALL_SITES_AND_DEVICES, data_allSitesAndDevices, 5);
                 // 2. 进行 callback_allSitesAndDevices 回调
                 processCallback(data_allSitesAndDevices);
             }
