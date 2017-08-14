@@ -382,8 +382,9 @@
                                                         , arr_sample_monitorData = arr_monitorData;
                                                     if(length_arr_monitorData > max_history_compare) {
                                                         arr_sample_monitorData = [];
-                                                        var step = Math.floor(length_arr_monitorData / max_history_compare);
-                                                        for(var i = 0; i < length_arr_monitorData && arr_sample_monitorData.length <= max_history_compare; i += step) {
+                                                        // var step = Math.floor(length_arr_monitorData / max_history_compare);
+                                                        var step = length_arr_monitorData / max_history_compare;
+                                                        for(var i = 0, i_step = 0; i < length_arr_monitorData && arr_sample_monitorData.length < max_history_compare; i = Math.round(i_step += step)) {
                                                             arr_sample_monitorData.push(arr_monitorData[i]);
                                                         }
                                                     }
@@ -394,7 +395,7 @@
                                                     });
                                                     // End  : 对 arr_sample_monitorData 中的数据进行排序
                                                     arr_sample_monitorData.forEach(function(item_monitorData, index_monitorData) {
-                                                        var isNot2Render = !(index_monitorData + 1 === arr_monitorData.length);
+                                                        var isNot2Render = !(index_monitorData + 1 === arr_sample_monitorData.length);
                                                         arr_data_compare.push(processMonitorData_sync_compare(item_monitorData, index_monitorData, true
                                                             , isNot2Render));
                                                     });
@@ -1025,8 +1026,9 @@
                                     , arr_sample_monitorData = arr_monitorData;
                                 if(length_arr_monitorData > max_history) {
                                     arr_sample_monitorData = [];
-                                    var step = Math.floor(length_arr_monitorData / max_history);
-                                    for(var i = 0; i < length_arr_monitorData && arr_sample_monitorData.length <= max_history; i += step) {
+                                    // var step = Math.floor(length_arr_monitorData / max_history);
+                                    var step = length_arr_monitorData / max_history;
+                                    for(var i = 0, i_step = 0; i < length_arr_monitorData && arr_sample_monitorData.length < max_history; i = Math.round(i_step += step)) {
                                         arr_sample_monitorData.push(arr_monitorData[i]);
                                     }
                                 }
@@ -1037,8 +1039,9 @@
                                 });
                                 // End  : 对 arr_sample_monitorData 中的数据进行排序
                                 arr_sample_monitorData.forEach(function(item_monitorData, index_monitorData) {
+                                    var isNot2Render = !(index_monitorData + 1 === arr_sample_monitorData.length);
                                     processMonitorData_async(item_monitorData, index_monitorData, true
-                                        , !(index_monitorData + 1 === arr_monitorData.length));
+                                        , isNot2Render);
                                 });
                                 // 及时关闭 layer.loading
                                 if(arr_sample_monitorData.length < 1) {
