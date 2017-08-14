@@ -1,17 +1,19 @@
 (function() {
-    layui.use(['jquery', 'oneSocket', 'laytpl', 'layer', 'form', 'tools', 'tree', 'laydate'], function() {
+    layui.use(['jquery', 'oneSocket', 'laytpl', 'layer', 'form', 'tools', 'tree', 'laydate', 'webStorageCache'], function() {
         var $ = layui.jquery
             , oneSocket = layui.oneSocket(/*SockJS, Stomp*/)
             , laytpl = layui.laytpl
             , layer = layui.layer
             , form = layui.form()
             , tools = layui.tools
-            , laydate = layui.laydate;
+            , laydate = layui.laydate
+            , webStorageCache = layui.webStorageCache
+            , sitesAndDevicesTreeCacheManager = webStorageCache.sitesAndDevicesTreeCacheManager;
 
         // Start: 所有被本模块调用的函数定义在此
         function getTodayStartDateTime(offsetTime) {
-            // var date = new Date();
-            var date = new Date(1501833236607); // 测试，定为 8 月 4 日
+            var date = new Date();
+            // var date = new Date(1501833236607); // 测试，定为 8 月 4 日
             // var date = new Date(1501721236607); // 测试，定为 8 月 3 日
             date.setHours(8);
             date.setMinutes(0);
@@ -26,7 +28,8 @@
         function getTodayStartDateTime_compare(offsetTime) {
             // var date = new Date();
             // var date = new Date(1501833236607); // 测试，定为 8 月 4 日
-            var date = new Date(1501721236607); // 测试，定为 8 月 3 日
+            // var date = new Date(1501721236607); // 测试，定为 8 月 3 日
+            var date = getTodayStartDateTime_compare.compareTime;
             date.setHours(8);
             date.setMinutes(0);
             date.setSeconds(0);
@@ -36,6 +39,10 @@
             }
             return date;
         }
+        // compareTime 默认为昨天
+        var now = getTodayStartDateTime();
+        var oneDay = 24 * 3600 * 1000, oneHour = oneDay / 24, oneMin = oneHour / 60, oneSec = oneMin / 60;
+        getTodayStartDateTime_compare.compareTime = getTodayStartDateTime(-oneDay);
 
         /**
          * 检查 timestamp 是否在 startTimestamp 和 EndTimeStamp 中间
@@ -98,8 +105,6 @@
         };
         testRefreshData.index = 1;
         setInterval(testRefreshData, 2000);*/
-        var now = getTodayStartDateTime();
-        var oneDay = 24 * 3600 * 1000, oneHour = oneDay / 24, oneMin = oneHour / 60, oneSec = oneMin / 60;
         var value = Math.random() * 1000;
         function randomData(index_i, isInit) {
             var tmp_now = now;
@@ -120,6 +125,57 @@
             dataInit.push(randomData(i, true));
         }*/
         now = getTodayStartDateTime();
+
+        // Start: #date-history_echarts 绑定 input 或 change 事件，在这里保证只绑定一次
+        var date_historyEcharts_inputChangeChecker = (function() {
+            var _date_historyEcharts_inputChangeChecker = {
+                timerId: 0
+                , inputEleId: '#date-history_echarts'
+                , inputEle: null
+                , curVal: null
+            };
+            var date_historyEcharts_inputChangeChecker = {
+                init: function() {
+                    var private_self = _date_historyEcharts_inputChangeChecker;
+
+                    private_self.timerId = 0;
+                    private_self.inputEleId = '#date-history_echarts';
+                    private_self.inputEle = $(private_self.inputEleId);
+                    private_self.curVal = private_self.inputEle.val();
+                }
+                , startCheck: function(callback) {
+                    debugger;
+                    var self = this, private_self = _date_historyEcharts_inputChangeChecker;
+
+                    if(!$(private_self.inputEleId)) {
+                        debugger;
+                        // clearInterval(self.timerId);
+                        return ;
+                    }
+
+                    var tmpVal = private_self.inputEle.val();
+                    if(tmpVal != private_self.curVal) {
+                        private_self.curVal = tmpVal;
+                        if(callback && callback instanceof Function) {
+                            callback(private_self.curVal);
+                        }
+                    }
+                    //
+                    private_self.timerId = setTimeout(function () {
+                        self.startCheck(callback);
+                    }, 1000);
+                }
+            };
+            /*$(document).on('blur', '#date-history_echarts', function() {
+                layer.msg(['[历史日期： ', $(this).val(), ']'].join(''));
+            });*/
+            return date_historyEcharts_inputChangeChecker;
+        })();
+        // End  : #date-history_echarts 绑定 input 或 change 事件，在这里保证只绑定一次
+
+        // Start: 渲染历史日期数据到折线图
+        var renderHistoryData2Charts_compare;
+        // End  : 渲染历史日期数据到折线图
 
         function genOption(hardwareId, subId, deviceName) {
             // 4 个折线图每个的 title
@@ -177,25 +233,35 @@
                                         var elem_dl_layuiSelectGroup = $('#select-today_echarts_type').next('div.layui-unselect').find('dl.layui-select-group');
                                         elem_dl_layuiSelectGroup.css('margin-top', ['-', 60 + elem_dl_layuiSelectGroup.height(), 'px'].join(''));
                                         // laydate 历史曲线日期
-                                        $('#date-history_echarts').val(laydate.now(checkIsTimestampBetweenStartEnd_compare.getStartTimestamp(), 'YYYY-MM-DD'));
                                         /*laydate({
                                             elem: '#date-history_echarts', //需显示日期的元素选择器
                                             event: 'click', //触发事件
-                                            format: 'YYYY-MM-DD hh:mm:ss', //日期格式
+                                            format: 'YYYY-MM-DD', //日期格式
                                             istime: false, //是否开启时间选择
                                             isclear: true, //是否显示清空
                                             istoday: true, //是否显示今天
                                             issure: true, // 是否显示确认
                                             festival: true, //是否显示节日
                                             min: '1900-01-01 00:00:00', //最小日期
-                                            max: '2099-12-31 23:59:59', //最大日期
-                                            start: '2017-8-2 23:00:00',  //开始日期
+                                            max: laydate.now(checkIsTimestampBetweenStartEnd_compare.getStartTimestamp(), 'YYYY-MM-DD hh:mm:ss'), //最大日期
+                                            start: laydate.now(checkIsTimestampBetweenStartEnd_compare.getStartTimestamp(), 'YYYY-MM-DD hh:mm:ss'),  //开始日期
                                             fixed: false, //是否固定在可视区域
                                             zIndex: 99999999, //css z-index
                                             choose: function(dates){ //选择好日期的回调
-
+                                                debugger;
+                                                console.log('[laydate]dates: ' + dates);
                                             }
                                         });*/
+                                        $('#date-history_echarts').val(laydate.now(checkIsTimestampBetweenStartEnd_compare.getStartTimestamp(), 'YYYY-MM-DD'));
+                                        // #date-history_echarts 绑定的 change 事件在外层，以保证只调用一次
+                                        date_historyEcharts_inputChangeChecker.init();
+                                        date_historyEcharts_inputChangeChecker.startCheck(function(curInputVal) {
+                                            layer.msg(['[历史曲线日期： ', curInputVal, ']'].join(''));
+                                            getTodayStartDateTime_compare.compareTime = new Date(Date.parse(curInputVal.replace(/-/g,  "/")));
+                                            checkIsTimestampBetweenStartEnd_compare.startTime = null;
+                                            checkIsTimestampBetweenStartEnd_compare.endTime = null;
+                                            renderHistoryData2Charts_compare();
+                                        });
                                     });
                                 }
                                 /**
@@ -241,11 +307,16 @@
                                     var option_base = optionsArr[subId];
 
                                     // Start: 从数据库获取 8 月 3 日数据，做对比测试
-                                    function renderHistoryData2Charts_compare() {
+                                    // renderHistoryData2Charts_compare.hardwareId = hardwareId;
+                                    renderHistoryData2Charts_compare = function() {
                                         // $.get('http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00', {}, function(data) {console.log(data)}, 'json')
                                         // 1. 请求 http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00
                                         // var params_history = {hardwareId: 't21s1d1', begin: '2017-08-04:08:00:00', end: '2017-08-05:08:00:00'};
-                                        var params_history_compare = {hardwareId: 't21s1d1', begin: '2017-08-03:08:00:00', end: '2017-08-04:08:00:00'};
+                                        // var params_history_compare = {hardwareId: 't21s1d1', begin: '2017-08-03:08:00:00', end: '2017-08-04:08:00:00'};
+                                        debugger;
+                                        var params_history_compare = {hardwareId: hardwareId
+                                            , begin: laydate.now(checkIsTimestampBetweenStartEnd_compare.getStartTimestamp(), 'YYYY-MM-DD:hh:mm:ss')
+                                            , end: laydate.now(checkIsTimestampBetweenStartEnd_compare.getEndTimestamp(), 'YYYY-MM-DD:hh:mm:ss')};
                                         var url_get_history_compare = '/point/query/history' + tools.serializeParams(params_history_compare);
                                         var max_history_compare = 1000;  // 历史测点的 max 数目
                                         var callback_history_compare = function(data_history_compare) {
@@ -299,7 +370,7 @@
                                                     ]
                                                 };
                                             }
-                                            function processMonitorDataArr(arr_monitorData) {
+                                            function processMonitorDataArr_compare(arr_monitorData) {
                                                 var arr_data_compare = [];
                                                 if(arr_monitorData && arr_monitorData.length && arr_monitorData.length > 0) {
                                                     // 先筛除掉 arr_monitorData 中不合格的数据（时间范围不在图中开始结束时间范围以内的）
@@ -310,17 +381,17 @@
                                                         }
                                                     });
                                                     arr_monitorData = arr_filtered_monitorData;
-                                                    // 先按 max_history 抽样 arr_monitorData
+                                                    // 先按 max_history_compare 抽样 arr_monitorData
                                                     var length_arr_monitorData = arr_monitorData.length
                                                         , arr_sample_monitorData = arr_monitorData;
                                                     if(length_arr_monitorData > max_history_compare) {
                                                         arr_sample_monitorData = [];
-                                                        var step = Math.floor(length_arr_monitorData / max_history);
-                                                        for(var i = 0; i < length_arr_monitorData && arr_sample_monitorData.length <= max_history; i += step) {
+                                                        var step = Math.floor(length_arr_monitorData / max_history_compare);
+                                                        for(var i = 0; i < length_arr_monitorData && arr_sample_monitorData.length <= max_history_compare; i += step) {
                                                             arr_sample_monitorData.push(arr_monitorData[i]);
                                                         }
                                                     }
-                                                    console.log('[device_manage_echarts.js processMonitorDataArr] arr_sample_monitorData.length: ' + arr_sample_monitorData.length);
+                                                    console.log('[device_manage_echarts.js processMonitorDataArr_compare] arr_sample_monitorData.length: ' + arr_sample_monitorData.length);
                                                     // Start: 对 arr_sample_monitorData 中的数据进行排序
                                                     arr_sample_monitorData.sort(function(a_sample_monitorData, b_sample_monitorData) {
                                                         return a_sample_monitorData.gasEvent.pointtime - b_sample_monitorData.gasEvent.pointtime;
@@ -331,10 +402,14 @@
                                                         arr_data_compare.push(processMonitorData_sync_compare(item_monitorData, index_monitorData, true
                                                             , isNot2Render));
                                                     });
+                                                    // 及时关闭 layer.loading
+                                                    if(arr_sample_monitorData.length < 1) {
+                                                        layer.closeAll('loading');
+                                                    }
                                                 }
                                                 return arr_data_compare;
                                             }
-                                            var arr_data_compare = processMonitorDataArr(arr_monitorData);
+                                            var arr_data_compare = processMonitorDataArr_compare(arr_monitorData);
                                             //
                                             renderOptionCompare(arr_data_compare);
                                         };
@@ -702,8 +777,8 @@
         // Start: 请求服务器数据，更新左侧树
         function searchTreeList() {
             // 0. 请求相关的 url 、参数表、回调
-            var url_allSitesAndDevices = '/site/ajax/allSitesAndDevices';
-            var params_allSitesAndDevices = {};
+            /*var url_allSitesAndDevices = '/site/ajax/allSitesAndDevices';
+            var params_allSitesAndDevices = {};*/
             var callback_allSitesAndDevices = function(data_allSitesAndDevices) {
                 console.log("查询到的所有站点设备 tree list 信息:" + JSON.stringify(data_allSitesAndDevices));
                 var data_allSitesAndDevices_sitesArr = data_allSitesAndDevices.data;
@@ -744,7 +819,8 @@
             // 1. 打开 layer loading
             layer.load();
             // 2. $.get 请求服务器 tree list 数据，并调用回调
-            $.get(url_allSitesAndDevices, params_allSitesAndDevices, callback_allSitesAndDevices, "json");
+            // $.get(url_allSitesAndDevices, params_allSitesAndDevices, callback_allSitesAndDevices, "json");
+            sitesAndDevicesTreeCacheManager.loadTreeDataAllSitesAndDevices(callback_allSitesAndDevices);
         }
         // End  : 请求服务器数据，更新左侧树
         /*function searchList(currPage) {
@@ -878,7 +954,7 @@
                         , jDataGasEvent.summary, jDataGasEvent.pointtime, isNot2Render);
                 }
                 oneSocket.setHandler(oneSocket.Event.GAS_EVENT, processMonitorData);
-                oneSocket.setStation(hardwareId);
+                // oneSocket.setStation(hardwareId);
 
                 // 最后，固定 echarts 容器宽度，并指定父容器滚动
                 var deviceEchartsContainerEle = $('#device-echarts-container');
@@ -950,6 +1026,10 @@
                                     processMonitorData_async(item_monitorData, index_monitorData, true
                                         , !(index_monitorData + 1 === arr_monitorData.length));
                                 });
+                                // 及时关闭 layer.loading
+                                if(arr_sample_monitorData.length < 1) {
+                                    layer.closeAll('loading');
+                                }
                             } else {
                                 // arr_monitorData 为空，需要隐藏掉 layer loading
                                 layer.closeAll('loading');
