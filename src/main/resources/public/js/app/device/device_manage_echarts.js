@@ -980,8 +980,10 @@
                 function renderHistoryData2Charts() {
                     // $.get('http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00', {}, function(data) {console.log(data)}, 'json')
                     // 1. 请求 http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00
-                    var params_history = {hardwareId: 't21s1d1', begin: '2017-08-04:08:00:00', end: '2017-08-05:08:00:00'};
+                    // var params_history = {hardwareId: 't21s1d1', begin: '2017-08-04:08:00:00', end: '2017-08-05:08:00:00'};
                     // var params_history = {hardwareId: 't21s1d1', begin: '2017-08-03:08:00:00', end: '2017-08-04:08:00:00'};
+                    var params_history = {hardwareId: hardwareId, begin: laydate.now(checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD:hh:mm:ss')
+                        , end: laydate.now(checkIsTimestampBetweenStartEnd.getEndTimestamp(), 'YYYY-MM-DD:hh:mm:ss')};
                     var url_get_history = '/point/query/history' + tools.serializeParams(params_history);
                     var max_history = 1000;  // 历史测点的 max 数目
                     var callback_history = function(data_history) {
