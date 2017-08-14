@@ -417,12 +417,12 @@
                                     // End  : 从数据库获取 8 月 3 日数据，做对比测试
 
                                     function renderOptionCompare(arr_data_compare) {
-                                        var legend_history = ['历史【', subTitle, '】曲线，时间：'
+                                        var legend_history = ['[历史【', subTitle, '】曲线，时间：'
                                             , laydate.now(checkIsTimestampBetweenStartEnd_compare.getStartTimestamp(), 'YYYY-MM-DD')
-                                            , '，采集点数：', arr_data_compare.length].join('');
-                                        var legend_today = ['今日【', subTitle, '】曲线，时间：'
+                                            , '，采集点数：', arr_data_compare.length, ']'].join('');
+                                        var legend_today = ['[今日【', subTitle, '】曲线，时间：'
                                             , laydate.now(checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD')
-                                            , '，采集点数：', option_base.series[0].data.length].join('');
+                                            , '，采集点数：', option_base.series[0].data.length, ']'].join('');
                                         var option_compare = {
                                             title: {
                                                 text: ['设备', deviceName].join('')
@@ -435,6 +435,10 @@
                                                 axisPointer: {
                                                     type: 'cross'
                                                 }
+                                                /*, formatter: function(params) {
+                                                    console.log(params);
+                                                    return ['[', params[0].seriesName, ']: ', params[0].value[1]].join('');
+                                                }*/
                                                 /*formatter: function (params) {
                                                     params = params[0];
                                                     var date = new Date(params.name);
@@ -515,7 +519,7 @@
                                                                     seriesDataVal = '：' + params.seriesData[0].data.value[1];
                                                                 }
 
-                                                                return '' + laydate.now(params.value, 'YYYY-MM-DD hh:mm:ss') + seriesDataVal;
+                                                                return ['[', laydate.now(params.value, 'YYYY-MM-DD hh:mm:ss'), ']', seriesDataVal].join('');
                                                             }
                                                         }
                                                     }// ,
@@ -551,8 +555,14 @@
                                                                 return ['[', laydate.now(date.getTime(), 'YYYY-MM-DD hh:mm:ss'), '] : '
                                                                     , params.value[1]].join('');*/
 
-                                                                return '' + laydate.now(params.value, 'YYYY-MM-DD hh:mm:ss')
-                                                                    + (params.seriesData.length ? '：' + params.seriesData[0].data.value[1] : '');
+                                                                var seriesDataVal = '';
+                                                                if(params.seriesData && params.seriesData.length
+                                                                    && params.seriesData[0] && params.seriesData[0].data
+                                                                    && params.seriesData[0].data.value && params.seriesData[0].data.value[1]) {
+                                                                    seriesDataVal = '：' + params.seriesData[0].data.value[1];
+                                                                }
+
+                                                                return ['[', laydate.now(params.value, 'YYYY-MM-DD hh:mm:ss'), ']', seriesDataVal].join('');
                                                             }
                                                         }
                                                     },
