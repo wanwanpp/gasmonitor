@@ -226,9 +226,18 @@ layui.define(['jquery', 'layer', 'element'], function (exports) {
     }
 
     var todayStartEndDateTimeTool = {
-        CommonTime: {
-            ONE_DAY: 24 * 3600 * 1000
-        }
+        CommonTime: (function () {
+            var ONE_SEC = 1000
+                , ONE_MIN = 60 * ONE_SEC
+                , ONE_HOUR = 60 * ONE_MIN
+                , ONE_DAY = 24 * ONE_HOUR
+            return {
+                ONE_SEC: ONE_SEC
+                , ONE_MIN: ONE_MIN
+                , ONE_HOUR: ONE_HOUR
+                , ONE_DAY: ONE_DAY
+            };
+        })()
         , getTodayStartDateTime: function(offsetTime) {
             var date = new Date();
             // var date = new Date(1501833236607); // 测试，定为 8 月 4 日
@@ -244,6 +253,11 @@ layui.define(['jquery', 'layer', 'element'], function (exports) {
         }
         , checkIsTimestampBetweenStartEnd: checkIsTimestampBetweenStartEnd
     };
+    /**
+     * 检查 timestamp 是否在 startTimestamp 和 EndTimeStamp 中间
+     * @param timestamp
+     * @returns {boolean}
+     */
     function checkIsTimestampBetweenStartEnd(timestamp) {
         if(timestamp >= checkIsTimestampBetweenStartEnd.getStartTimestamp()
             && timestamp <= checkIsTimestampBetweenStartEnd.getEndTimestamp()) {

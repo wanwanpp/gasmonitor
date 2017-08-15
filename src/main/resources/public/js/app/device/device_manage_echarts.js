@@ -6,24 +6,12 @@
             , layer = layui.layer
             , form = layui.form()
             , tools = layui.tools
+            , todayStartEndDateTimeTool = tools.todayStartEndDateTimeTool
             , laydate = layui.laydate
             , webStorageCache = layui.webStorageCache
             , sitesAndDevicesTreeCacheManager = webStorageCache.sitesAndDevicesTreeCacheManager;
 
         // Start: 所有被本模块调用的函数定义在此
-        function getTodayStartDateTime(offsetTime) {
-            var date = new Date();
-            // var date = new Date(1501833236607); // 测试，定为 8 月 4 日
-            // var date = new Date(1501721236607); // 测试，定为 8 月 3 日
-            date.setHours(8);
-            date.setMinutes(0);
-            date.setSeconds(0);
-            date.setMilliseconds(0);
-            if(offsetTime) {
-                date = new Date(date.getTime() + offsetTime);
-            }
-            return date;
-        }
 
         function getTodayStartDateTime_compare(offsetTime) {
             // var date = new Date();
@@ -40,34 +28,9 @@
             return date;
         }
         // compareTime 默认为昨天
-        var now = getTodayStartDateTime();
-        var oneDay = 24 * 3600 * 1000, oneHour = oneDay / 24, oneMin = oneHour / 60, oneSec = oneMin / 60;
-        getTodayStartDateTime_compare.compareTime = getTodayStartDateTime(-oneDay);
+        var now = todayStartEndDateTimeTool.getTodayStartDateTime();
+        getTodayStartDateTime_compare.compareTime = todayStartEndDateTimeTool.getTodayStartDateTime(-todayStartEndDateTimeTool.CommonTime.ONE_DAY);
 
-        /**
-         * 检查 timestamp 是否在 startTimestamp 和 EndTimeStamp 中间
-         * @param timestamp
-         * @returns {boolean}
-         */
-        function checkIsTimestampBetweenStartEnd(timestamp) {
-            if(timestamp >= checkIsTimestampBetweenStartEnd.getStartTimestamp()
-                && timestamp <= checkIsTimestampBetweenStartEnd.getEndTimestamp()) {
-                return true;
-            }
-            return false;
-        }
-        checkIsTimestampBetweenStartEnd.getStartTimestamp = function() {
-            if(!checkIsTimestampBetweenStartEnd.startTime) {
-                checkIsTimestampBetweenStartEnd.startTime = getTodayStartDateTime().getTime();
-            }
-            return checkIsTimestampBetweenStartEnd.startTime;
-        };
-        checkIsTimestampBetweenStartEnd.getEndTimestamp = function() {
-            if(!checkIsTimestampBetweenStartEnd.endTime) {
-                checkIsTimestampBetweenStartEnd.endTime = getTodayStartDateTime(oneDay).getTime();
-            }
-            return checkIsTimestampBetweenStartEnd.endTime;
-        };
 
         function checkIsTimestampBetweenStartEnd_compare(timestamp) {
             if(timestamp >= checkIsTimestampBetweenStartEnd_compare.getStartTimestamp()
@@ -84,7 +47,7 @@
         };
         checkIsTimestampBetweenStartEnd_compare.getEndTimestamp = function() {
             if(!checkIsTimestampBetweenStartEnd_compare.endTime) {
-                checkIsTimestampBetweenStartEnd_compare.endTime = getTodayStartDateTime_compare(oneDay).getTime();
+                checkIsTimestampBetweenStartEnd_compare.endTime = getTodayStartDateTime_compare(todayStartEndDateTimeTool.CommonTime.ONE_DAY).getTime();
             }
             return checkIsTimestampBetweenStartEnd_compare.endTime;
         };
@@ -108,7 +71,7 @@
         var value = Math.random() * 1000;
         function randomData(index_i, isInit) {
             var tmp_now = now;
-            now = new Date(+now + (isInit ? oneDay : oneMin) * (isInit ? 1 : index_i));
+            now = new Date(+now + (isInit ? todayStartEndDateTimeTool.CommonTime.ONE_DAY : todayStartEndDateTimeTool.CommonTime.ONE_MIN) * (isInit ? 1 : index_i));
             value = isInit ? 0 : (value + Math.random() * 21 - 10);
             return {
                 name: tmp_now.toString(),
@@ -124,7 +87,7 @@
         /*for (var i = 0, max_i = 2/!* * 60 * 60*!/; i <= max_i; i++) {
             dataInit.push(randomData(i, true));
         }*/
-        now = getTodayStartDateTime();
+        now = todayStartEndDateTimeTool.getTodayStartDateTime();
 
         // Start: #date-history_echarts 绑定 input 或 change 事件，在这里保证只绑定一次
         var date_historyEcharts_inputChangeChecker = (function() {
@@ -422,7 +385,7 @@
                                             , laydate.now(checkIsTimestampBetweenStartEnd_compare.getStartTimestamp(), 'YYYY-MM-DD')
                                             , '，采集点数：', arr_data_compare.length, ']'].join('');
                                         var legend_today = ['[今日【', subTitle, '】曲线，时间：'
-                                            , laydate.now(checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD')
+                                            , laydate.now(todayStartEndDateTimeTool.checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD')
                                             , '，采集点数：', option_base.series[0].data.length, ']'].join('');
                                         var option_compare = {
                                             title: {
@@ -488,8 +451,8 @@
                                                     /*splitLine: {
                                                         show: false
                                                     },*/
-                                                    min: laydate.now(checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
-                                                    max: laydate.now(checkIsTimestampBetweenStartEnd.getEndTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
+                                                    min: laydate.now(todayStartEndDateTimeTool.checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
+                                                    max: laydate.now(todayStartEndDateTimeTool.checkIsTimestampBetweenStartEnd.getEndTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
 
                                                     // type: 'category',
                                                     name: legend_today,
@@ -645,16 +608,16 @@
                         show: false
                     },
                     name: '时间',
-                    min: laydate.now(checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
-                    max: laydate.now(checkIsTimestampBetweenStartEnd.getEndTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
+                    min: laydate.now(todayStartEndDateTimeTool.checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
+                    max: laydate.now(todayStartEndDateTimeTool.checkIsTimestampBetweenStartEnd.getEndTimestamp(), 'YYYY-MM-DD hh:mm:ss'),
                     boundaryGap: false/*,
                     data: (function (){
-                        var now = getTodayStartDateTime();
+                        var now = todayStartEndDateTimeTool.getTodayStartDateTime();
                         var res = [];
                         var len = 25;
                         while (len--) {
                             res.push(laydate.now(now.getTime(), 'YYYY-MM-DD hh:mm:ss'));
-                            now = new Date(+now + oneHour);
+                            now = new Date(+now + todayStartEndDateTimeTool.CommonTime.ONE_HOUR);
                         }
                         return res;
                     })()*/
@@ -952,7 +915,7 @@
                     // End  : 判断 hardwareId 相符，才进行刷新
 
                     // 判断 jDataGasEvent 的 pointtime 是否在有效时间范围内
-                    if(!checkIsTimestampBetweenStartEnd(jDataGasEvent.pointtime)) {
+                    if(!todayStartEndDateTimeTool.checkIsTimestampBetweenStartEnd(jDataGasEvent.pointtime)) {
                         console.warn('[device_manage_echarts.js processMonitorData] jDataGasEvent 的 pointtime 不在有效时间范围内');
                         return ;
                     }
@@ -983,8 +946,8 @@
                     // 1. 请求 http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00
                     // var params_history = {hardwareId: 't21s1d1', begin: '2017-08-04:08:00:00', end: '2017-08-05:08:00:00'};
                     // var params_history = {hardwareId: 't21s1d1', begin: '2017-08-03:08:00:00', end: '2017-08-04:08:00:00'};
-                    var params_history = {hardwareId: hardwareId, begin: laydate.now(checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD:hh:mm:ss')
-                        , end: laydate.now(checkIsTimestampBetweenStartEnd.getEndTimestamp(), 'YYYY-MM-DD:hh:mm:ss')};
+                    var params_history = {hardwareId: hardwareId, begin: laydate.now(todayStartEndDateTimeTool.checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD:hh:mm:ss')
+                        , end: laydate.now(todayStartEndDateTimeTool.checkIsTimestampBetweenStartEnd.getEndTimestamp(), 'YYYY-MM-DD:hh:mm:ss')};
                     var url_get_history = '/point/query/history' + tools.serializeParams(params_history);
                     var max_history = 1000;  // 历史测点的 max 数目
                     var callback_history = function(data_history) {
@@ -1016,7 +979,7 @@
                                 // 先筛除掉 arr_monitorData 中不合格的数据（时间范围不在图中开始结束时间范围以内的）
                                 var arr_filtered_monitorData = [];
                                 arr_monitorData.forEach(function(item_monitorData) {
-                                    if(checkIsTimestampBetweenStartEnd(item_monitorData.gasEvent.pointtime)) {
+                                    if(todayStartEndDateTimeTool.checkIsTimestampBetweenStartEnd(item_monitorData.gasEvent.pointtime)) {
                                         arr_filtered_monitorData.push(item_monitorData);
                                     }
                                 });
