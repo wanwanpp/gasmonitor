@@ -9,7 +9,8 @@
             , todayStartEndDateTimeTool = tools.todayStartEndDateTimeTool
             , laydate = layui.laydate
             , webStorageCache = layui.webStorageCache
-            , sitesAndDevicesTreeCacheManager = webStorageCache.sitesAndDevicesTreeCacheManager;
+            , sitesAndDevicesTreeCacheManager = webStorageCache.sitesAndDevicesTreeCacheManager
+            , monitorDataCacheManager = webStorageCache.monitorDataCacheManager;
 
         // Start: 所有被本模块调用的函数定义在此
 
@@ -942,13 +943,10 @@
                  * 请求历史 monitorData ，并渲染到 eCharts
                  */
                 function renderHistoryData2Charts() {
-                    // $.get('http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00', {}, function(data) {console.log(data)}, 'json')
-                    // 1. 请求 http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00
-                    // var params_history = {hardwareId: 't21s1d1', begin: '2017-08-04:08:00:00', end: '2017-08-05:08:00:00'};
-                    // var params_history = {hardwareId: 't21s1d1', begin: '2017-08-03:08:00:00', end: '2017-08-04:08:00:00'};
-                    var params_history = {hardwareId: hardwareId, begin: laydate.now(todayStartEndDateTimeTool.checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD:hh:mm:ss')
+                    // 1. 请求
+                    /*var params_history = {hardwareId: hardwareId, begin: laydate.now(todayStartEndDateTimeTool.checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD:hh:mm:ss')
                         , end: laydate.now(todayStartEndDateTimeTool.checkIsTimestampBetweenStartEnd.getEndTimestamp(), 'YYYY-MM-DD:hh:mm:ss')};
-                    var url_get_history = '/point/query/history' + tools.serializeParams(params_history);
+                    var url_get_history = '/point/query/history' + tools.serializeParams(params_history);*/
                     var max_history = 1000;  // 历史测点的 max 数目
                     var callback_history = function(data_history) {
                         console.log('[device_manage_echarts.js callback_history] data_history: ');
@@ -1019,7 +1017,21 @@
                     };
                     // 2. 发 get 请求
                     layer.load();
-                    $.get(url_get_history, {}, callback_history, 'json');
+                    // $.get(url_get_history, {}, callback_history, 'json');
+                    // 从 cache 中获取数据
+                    var cachedMonitorDataArr = monitorDataCacheManager.loadCachedMonitorDataArrByHardwareId(hardwareId);
+                    function adapter_4_callback_history(cachedMonitorDataArr) {
+                        var data_history = {
+                            code: 0
+                            , msg: '从缓存加载成功'
+                            , page: 1
+                            , total: cachedMonitorDataArr.length
+                            , totalPage: 1
+                            , data: cachedMonitorDataArr
+                        };
+                        callback_history(data_history);
+                    }
+                    adapter_4_callback_history(cachedMonitorDataArr);
                 }
                 renderHistoryData2Charts();
                 // End  : 请求 history 信息

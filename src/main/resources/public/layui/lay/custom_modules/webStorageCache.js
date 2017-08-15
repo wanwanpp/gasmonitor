@@ -64,14 +64,15 @@ layui.define(['jquery', 'layer', 'tools', 'laydate'], function(exports) {
          * @param hardwareId
          */
         loadLatestMonitorDataByHardwareId: function(hardwareId) {
-            var cache_key_4_a_monitorData_arr = _monitorDataCacheManager.genCacheKeyByHardwareId(hardwareId);
-            var cached_monitorData_Arr = _monitorDataCacheManager.getCachedMonitorDataArrByKey(cache_key_4_a_monitorData_arr);
+            /*var cache_key_4_a_monitorData_arr = _monitorDataCacheManager.genCacheKeyByHardwareId(hardwareId);
+            var cached_monitorData_arr = _monitorDataCacheManager.getCachedMonitorDataArrByKey(cache_key_4_a_monitorData_arr);*/
+            var cached_monitorData_arr = monitorDataCacheManager.loadCachedMonitorDataArrByHardwareId(hardwareId);
             //
-            if(!cached_monitorData_Arr || !cached_monitorData_Arr.length || cached_monitorData_Arr.length < 1) {
-                console.log('[loadLatestMonitorDataByHardwareId]cached_monitorData_Arr 为空，故返回最新的 monitorData 也为空');
+            if(!cached_monitorData_arr || !cached_monitorData_arr.length || cached_monitorData_arr.length < 1) {
+                console.log('[loadLatestMonitorDataByHardwareId]cached_monitorData_arr 为空，故返回最新的 monitorData 也为空');
                 return null;
             }
-            return cached_monitorData_Arr[cached_monitorData_Arr.length - 1];
+            return cached_monitorData_arr[cached_monitorData_arr.length - 1];
         },
         /**
          * 获取缓存的 monitorData key hardwareId 数组
@@ -170,6 +171,14 @@ layui.define(['jquery', 'layer', 'tools', 'laydate'], function(exports) {
      * @type {{addJsonMonitorData2Cache: addJsonMonitorData2Cache}}
      */
     var monitorDataCacheManager = {
+        loadCachedMonitorDataArrByHardwareId: function (hardwareId) {
+            var cache_key_4_a_monitorData_arr = _monitorDataCacheManager.genCacheKeyByHardwareId(hardwareId);
+            var cached_monitorData_arr = _monitorDataCacheManager.getCachedMonitorDataArrByKey(cache_key_4_a_monitorData_arr);
+            if(!cached_monitorData_arr || !cached_monitorData_arr.length || cached_monitorData_arr.length < 1) {
+                cached_monitorData_arr = [];
+            }
+            return cached_monitorData_arr;
+        },
         loadHistoryMonitorData2Cache: function() {
             layer.load();
             // Start: 请求历史数据，并加入缓存，最后再关闭 loading layer
