@@ -225,6 +225,44 @@ layui.define(['jquery', 'layer', 'element'], function (exports) {
         return arr_str_params.join('');
     }
 
+    var todayStartEndDateTimeTool = {
+        CommonTime: {
+            ONE_DAY: 24 * 3600 * 1000
+        }
+        , getTodayStartDateTime: function(offsetTime) {
+            var date = new Date();
+            // var date = new Date(1501833236607); // 测试，定为 8 月 4 日
+            // var date = new Date(1501721236607); // 测试，定为 8 月 3 日
+            date.setHours(8);
+            date.setMinutes(0);
+            date.setSeconds(0);
+            date.setMilliseconds(0);
+            if(offsetTime) {
+                date = new Date(date.getTime() + offsetTime);
+            }
+            return date;
+        }
+        , checkIsTimestampBetweenStartEnd: checkIsTimestampBetweenStartEnd
+    };
+    function checkIsTimestampBetweenStartEnd(timestamp) {
+        if(timestamp >= checkIsTimestampBetweenStartEnd.getStartTimestamp()
+            && timestamp <= checkIsTimestampBetweenStartEnd.getEndTimestamp()) {
+            return true;
+        }
+        return false;
+    }
+    checkIsTimestampBetweenStartEnd.getStartTimestamp = function() {
+        if(!checkIsTimestampBetweenStartEnd.startTime) {
+            checkIsTimestampBetweenStartEnd.startTime = todayStartEndDateTimeTool.getTodayStartDateTime().getTime();
+        }
+        return checkIsTimestampBetweenStartEnd.startTime;
+    };
+    checkIsTimestampBetweenStartEnd.getEndTimestamp = function() {
+        if(!checkIsTimestampBetweenStartEnd.endTime) {
+            checkIsTimestampBetweenStartEnd.endTime = todayStartEndDateTimeTool.getTodayStartDateTime(todayStartEndDateTimeTool.CommonTime.ONE_DAY).getTime();
+        }
+        return checkIsTimestampBetweenStartEnd.endTime;
+    };
     // End  : 所有的 function
 
     // 导出的模块名和接口函数
@@ -239,5 +277,7 @@ layui.define(['jquery', 'layer', 'element'], function (exports) {
         , timestampToString: timestampToString
         , serializeParams: serializeParams
         , deviceType2des: deviceType2des
+        //
+        , todayStartEndDateTimeTool: todayStartEndDateTimeTool
     });
 });

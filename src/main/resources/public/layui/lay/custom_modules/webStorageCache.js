@@ -11,6 +11,7 @@ layui.define(['jquery', 'layer', 'tools', 'laydate'], function(exports) {
     var $ = layui.jquery
         , layer = layui.layer
         , tools = layui.tools
+        , todayStartEndDateTimeTool = tools.todayStartEndDateTimeTool
         , laydate = layui.laydate;
 
     console.log('【layui.webStorageCache】加载完毕后执行回调');
@@ -181,7 +182,6 @@ layui.define(['jquery', 'layer', 'tools', 'laydate'], function(exports) {
                 processSitesArr(data_sitesArr, 0);
             }
             function processSitesArr(data_sitesArr, index_sitesArr) {
-                debugger;
                 if(!data_sitesArr || !data_sitesArr.length || !data_sitesArr.length > 0) {
                     return ;
                 }
@@ -202,7 +202,6 @@ layui.define(['jquery', 'layer', 'tools', 'laydate'], function(exports) {
             }
             function processDevice(devicesArr, index_devicesArr, callback_processSitesArr) {
                 if(index_devicesArr >= devicesArr.length) {
-                    debugger;
                     if(callback_processSitesArr && callback_processSitesArr instanceof Function) {
                         callback_processSitesArr();
                     }
@@ -215,43 +214,9 @@ layui.define(['jquery', 'layer', 'tools', 'laydate'], function(exports) {
             }
             //
             // 3. 根据每个 hardwareId 去请求 /point/query/history 今天的数据
-            var oneDay = 24 * 3600 * 1000;
-            function getTodayStartDateTime(offsetTime) {
-                var date = new Date();
-                // var date = new Date(1501833236607); // 测试，定为 8 月 4 日
-                // var date = new Date(1501721236607); // 测试，定为 8 月 3 日
-                date.setHours(8);
-                date.setMinutes(0);
-                date.setSeconds(0);
-                date.setMilliseconds(0);
-                if(offsetTime) {
-                    date = new Date(date.getTime() + offsetTime);
-                }
-                return date;
-            }
-            function checkIsTimestampBetweenStartEnd(timestamp) {
-                if(timestamp >= checkIsTimestampBetweenStartEnd.getStartTimestamp()
-                    && timestamp <= checkIsTimestampBetweenStartEnd.getEndTimestamp()) {
-                    return true;
-                }
-                return false;
-            }
-            checkIsTimestampBetweenStartEnd.getStartTimestamp = function() {
-                if(!checkIsTimestampBetweenStartEnd.startTime) {
-                    checkIsTimestampBetweenStartEnd.startTime = getTodayStartDateTime().getTime();
-                }
-                return checkIsTimestampBetweenStartEnd.startTime;
-            };
-            checkIsTimestampBetweenStartEnd.getEndTimestamp = function() {
-                if(!checkIsTimestampBetweenStartEnd.endTime) {
-                    checkIsTimestampBetweenStartEnd.endTime = getTodayStartDateTime(oneDay).getTime();
-                }
-                return checkIsTimestampBetweenStartEnd.endTime;
-            };
-
             function queryHistoryMonitorDataByHardwareId(hardwareId, callback_processDevice) {
-                var params_history = {hardwareId: hardwareId, begin: laydate.now(checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD:hh:mm:ss')
-                    , end: laydate.now(checkIsTimestampBetweenStartEnd.getEndTimestamp(), 'YYYY-MM-DD:hh:mm:ss')};
+                var params_history = {hardwareId: hardwareId, begin: laydate.now(todayStartEndDateTimeTool.checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD:hh:mm:ss')
+                    , end: laydate.now(todayStartEndDateTimeTool.checkIsTimestampBetweenStartEnd.getEndTimestamp(), 'YYYY-MM-DD:hh:mm:ss')};
                 var url_get_history = '/point/query/history' + tools.serializeParams(params_history);
                 var callback_history = function(data_history) {
                     console.log('[webStorageCache.js queryHistoryMonitorDataByHardwareId callback_history] data_history: ');
