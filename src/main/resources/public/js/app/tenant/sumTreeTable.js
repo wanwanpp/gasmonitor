@@ -10,7 +10,6 @@
         $(function () {
             // Start: 使用 webStorageCache 请求站点设备树信息
             function callback_sumTreeTableDataLoaded(data_allSitesAndDevices_sumTreeTable) {
-                debugger;
                 console.log('[callback_sumTreeTableDataLoaded]data_allSitesAndDevices_sumTreeTable: ');
                 console.log(data_allSitesAndDevices_sumTreeTable);
                 // 处理总表信息的第一次初始化
@@ -19,6 +18,8 @@
                         console.log('[processSumTreeTableSiteArr]data_siteArr 为空，不继续处理');
                         return ;
                     }
+                    // 先清空 treeTable
+                    tbody_sumTable.innerHTML = '';
                     // 处理每一个 site
                     function processSumTreeTableSite(data_siteArr, index_data_siteArr) {
                         if(!data_siteArr || !data_siteArr.length || data_siteArr.length < 1) {
@@ -28,6 +29,14 @@
                         var len_data_siteArr = data_siteArr.length;
                         if(index_data_siteArr >= len_data_siteArr) {
                             console.log('[processSumTreeTableSite](index_data_siteArr >= len_data_siteArr): 为 true ，不继续处理，但要执行 initSumTreeTable()');
+                            // 如果是最后一个 site (进此处的判断条件已说明)，且没有 devices ，则执行 initSumTreeTable
+                            /*initSumTreeTable.isLastSite = true;
+                            var lastSite = data_siteArr[len_data_siteArr - 1];
+                            // 判断是否没有 devices
+                            if(!lastSite || !lastSite.devices || !lastSite.devices.length || lastSite.devices.length < 1) {
+                                // 没有 devices ，执行 initSumTreeTable();
+                                initSumTreeTable();
+                            }*/
                             initSumTreeTable();
                             return ;
                         }
@@ -41,7 +50,59 @@
                         };
                         laytpl(tpl_sumTreeTableTr.innerHTML).render(renderData_site, function(html_tpl_sumTreeTableTr) {
                             tbody_sumTable.innerHTML += html_tpl_sumTreeTableTr;
-                            processSumTreeTableSite(data_siteArr, index_data_siteArr + 1);
+                            // Start: 处理 site 下的 devices
+                            function processSumTreeTableDevicesArr(devices_arr, index_devices_arr, callback_processSumTreeTableDevicesArr) {
+                                if(!devices_arr || !devices_arr.length || devices_arr.length < 1) {
+                                    console.log('[processSumTreeTableDevicesArr]devices_arr 为空，不继续处理');
+                                    return ;
+                                }
+                                var len_devices_arr = devices_arr.length;
+                                if(index_devices_arr >= len_devices_arr) {
+                                    console.log('[processSumTreeTableDevicesArr](index_devices_arr >= len_devices_arr): 为 true ，不继续处理，但要执行 processSumTreeTableSite(data_siteArr, index_data_siteArr + 1)');
+                                    //
+                                    /*if(initSumTreeTable.isLastSite) {
+                                        // last site ，判断是否 initSumTreeTable()
+                                        // 看是否是 last device ： 1. 当前 devices 的最后一个(进入此分支此条件已成立)； 2. 而且没有 children
+                                        var lastDevice = devices_arr[devices_arr.length - 1];
+                                        if(!lastDevice || !lastDevice.children || !lastDevice.children.length || lastDevice.children.length < 1) {
+                                            initSumTreeTable();
+                                        } else {
+                                            // 还有 children devices ，继续处理
+                                            processSumTreeTableDevicesArr(lastDevice.children, 0);
+                                        }
+                                    } else {
+                                        // 并非 last site ，继续处理下一个 site
+                                        processSumTreeTableSite(data_siteArr, index_data_siteArr + 1);
+                                    }*/
+                                    if(callback_processSumTreeTableDevicesArr && callback_processSumTreeTableDevicesArr instanceof Function) {
+                                        callback_processSumTreeTableDevicesArr();
+                                    } else {
+                                        processSumTreeTableSite(data_siteArr, index_data_siteArr + 1);
+                                    }
+                                    return ;
+                                }
+                                var data_device = devices_arr[index_devices_arr];
+                                var renderData_device = {
+                                    id: data_device.id
+                                    , name: data_device.name
+                                    , pointtime_timeStr: laydate.now(data_device.pointtime, 'YYYY-MM-DD hh:mm:ss')
+                                    , isBranch: (data_device && data_device.children && data_device.children && data_device.children > 0)
+                                    , parentId: data_device.siteId
+                                };
+                                laytpl(tpl_sumTreeTableTr.innerHTML).render(renderData_device, function(html_tpl_sumTreeTableTr) {
+                                    tbody_sumTable.innerHTML += html_tpl_sumTreeTableTr;
+                                    if(data_device && data_device.children && data_device.children.length && data_device.children.length > 0) {
+                                        // 还有 children devices ，继续处理
+                                        processSumTreeTableDevicesArr(data_device.children, 0, function() {
+                                            processSumTreeTableDevicesArr(devices_arr, index_devices_arr + 1, callback_processSumTreeTableDevicesArr);
+                                        });
+                                    } else {
+                                        processSumTreeTableDevicesArr(devices_arr, index_devices_arr + 1, callback_processSumTreeTableDevicesArr);
+                                    }
+                                });
+                            }
+                            processSumTreeTableDevicesArr(data_site.devices, 0);
+                            // End  : 处理 site 下的 devices
                         });
                     }
                     processSumTreeTableSite(data_siteArr, 0);
@@ -51,29 +112,22 @@
                  tbody_sumTable.innerHTML += html_tpl_sumTreeTableTrs;
                  });*/
             }
-            debugger;
             sitesAndDevicesTreeCacheManager.loadTreeDataAllSitesAndDevices_sumTreeTable(callback_sumTreeTableDataLoaded);
             // End  : 使用 webStorageCache 请求站点设备树信息
 
             // Start: treeTable 初始化相关
             function initSumTreeTable() {
+                var ele_treeTable_sum = $("#tree_table-sum");
+
                 // initialize treeTable
-                $("#tree_table-sum").treetable({
+                ele_treeTable_sum.treetable({
                     expandable:     true,
                     onNodeExpand:   nodeExpand,
                     onNodeCollapse: nodeCollapse
                 });
 
-
                 // expand node with ID "1" by default
-                $("#tree_table-sum").treetable("reveal", '1');
-
-
-                // Highlight a row when selected
-                $("#tree_table-sum tbody").on("mousedown", "tr", function() {
-                    $(".selected").not(this).removeClass("selected");
-                    $(this).toggleClass("selected");
-                });
+                ele_treeTable_sum.treetable("reveal", '1');
 
                 function nodeExpand () {
                     // alert("Expanded: " + this.id);
@@ -81,12 +135,17 @@
                     // getNodeViaAjax(this.id);
                 }
 
-
                 function nodeCollapse () {
                     // alert("Collapsed: " + this.id);
                 }
             }
             // End  : treeTable 初始化相关
+
+            // Highlight a row when selected
+            $(document).on("mousedown", "#tree_table-sum tbody", "tr", function() {
+                $(".selected").not(this).removeClass("selected");
+                $(this).toggleClass("selected");
+            });
 
             // Start: 全部展开 和 全部收拢 按钮
             $(document).on('click', '#btn-expand_all', function () {
