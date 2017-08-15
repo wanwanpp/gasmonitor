@@ -29,6 +29,7 @@
             // 2. 进行一次今日的全量拉取，拉取后 add 到 webStorageCache
             // 经下面这行代码测试成功： 同 domain 下的 cache 可跨 iframe 共享
             // webStorageCache.wsCache.set('Pandaroid', '王沛', {exp : 300});
+            monitorDataCacheManager.loadHistoryMonitorData2Cache();
             // End  : oneSocket 相关代码
         });
     });

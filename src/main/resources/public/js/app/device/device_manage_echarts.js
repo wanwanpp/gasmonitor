@@ -144,11 +144,9 @@
                     private_self.curVal = private_self.inputEle.val();
                 }
                 , startCheck: function(callback) {
-                    debugger;
                     var self = this, private_self = _date_historyEcharts_inputChangeChecker;
 
                     if(!$(private_self.inputEleId)) {
-                        debugger;
                         // clearInterval(self.timerId);
                         return ;
                     }
@@ -248,7 +246,6 @@
                                             fixed: false, //是否固定在可视区域
                                             zIndex: 99999999, //css z-index
                                             choose: function(dates){ //选择好日期的回调
-                                                debugger;
                                                 console.log('[laydate]dates: ' + dates);
                                             }
                                         });*/
@@ -313,7 +310,6 @@
                                         // 1. 请求 http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00
                                         // var params_history = {hardwareId: 't21s1d1', begin: '2017-08-04:08:00:00', end: '2017-08-05:08:00:00'};
                                         // var params_history_compare = {hardwareId: 't21s1d1', begin: '2017-08-03:08:00:00', end: '2017-08-04:08:00:00'};
-                                        debugger;
                                         var params_history_compare = {hardwareId: hardwareId
                                             , begin: laydate.now(checkIsTimestampBetweenStartEnd_compare.getStartTimestamp(), 'YYYY-MM-DD:hh:mm:ss')
                                             , end: laydate.now(checkIsTimestampBetweenStartEnd_compare.getEndTimestamp(), 'YYYY-MM-DD:hh:mm:ss')};
@@ -386,8 +382,9 @@
                                                         , arr_sample_monitorData = arr_monitorData;
                                                     if(length_arr_monitorData > max_history_compare) {
                                                         arr_sample_monitorData = [];
-                                                        var step = Math.floor(length_arr_monitorData / max_history_compare);
-                                                        for(var i = 0; i < length_arr_monitorData && arr_sample_monitorData.length <= max_history_compare; i += step) {
+                                                        // var step = Math.floor(length_arr_monitorData / max_history_compare);
+                                                        var step = length_arr_monitorData / max_history_compare;
+                                                        for(var i = 0, i_step = 0; i < length_arr_monitorData && arr_sample_monitorData.length < max_history_compare; i = Math.round(i_step += step)) {
                                                             arr_sample_monitorData.push(arr_monitorData[i]);
                                                         }
                                                     }
@@ -398,7 +395,7 @@
                                                     });
                                                     // End  : 对 arr_sample_monitorData 中的数据进行排序
                                                     arr_sample_monitorData.forEach(function(item_monitorData, index_monitorData) {
-                                                        var isNot2Render = !(index_monitorData + 1 === arr_monitorData.length);
+                                                        var isNot2Render = !(index_monitorData + 1 === arr_sample_monitorData.length);
                                                         arr_data_compare.push(processMonitorData_sync_compare(item_monitorData, index_monitorData, true
                                                             , isNot2Render));
                                                     });
@@ -421,12 +418,12 @@
                                     // End  : 从数据库获取 8 月 3 日数据，做对比测试
 
                                     function renderOptionCompare(arr_data_compare) {
-                                        var legend_history = ['历史【', subTitle, '】曲线，时间：'
+                                        var legend_history = ['[历史【', subTitle, '】曲线，时间：'
                                             , laydate.now(checkIsTimestampBetweenStartEnd_compare.getStartTimestamp(), 'YYYY-MM-DD')
-                                            , '，采集点数：', arr_data_compare.length].join('');
-                                        var legend_today = ['今日【', subTitle, '】曲线，时间：'
+                                            , '，采集点数：', arr_data_compare.length, ']'].join('');
+                                        var legend_today = ['[今日【', subTitle, '】曲线，时间：'
                                             , laydate.now(checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD')
-                                            , '，采集点数：', option_base.series[0].data.length].join('');
+                                            , '，采集点数：', option_base.series[0].data.length, ']'].join('');
                                         var option_compare = {
                                             title: {
                                                 text: ['设备', deviceName].join('')
@@ -439,6 +436,10 @@
                                                 axisPointer: {
                                                     type: 'cross'
                                                 }
+                                                /*, formatter: function(params) {
+                                                    console.log(params);
+                                                    return ['[', params[0].seriesName, ']: ', params[0].value[1]].join('');
+                                                }*/
                                                 /*formatter: function (params) {
                                                     params = params[0];
                                                     var date = new Date(params.name);
@@ -512,8 +513,14 @@
                                                                 return ['[', laydate.now(date.getTime(), 'YYYY-MM-DD hh:mm:ss'), '] : '
                                                                     , params.value[1]].join('');*/
 
-                                                                return '' + laydate.now(params.value, 'YYYY-MM-DD hh:mm:ss')
-                                                                    + (params.seriesData.length ? '：' + params.seriesData[0].data.value[1] : '');
+                                                                var seriesDataVal = '';
+                                                                if(params.seriesData && params.seriesData.length
+                                                                    && params.seriesData[0] && params.seriesData[0].data
+                                                                    && params.seriesData[0].data.value && params.seriesData[0].data.value[1]) {
+                                                                    seriesDataVal = '：' + params.seriesData[0].data.value[1];
+                                                                }
+
+                                                                return ['[', laydate.now(params.value, 'YYYY-MM-DD hh:mm:ss'), ']', seriesDataVal].join('');
                                                             }
                                                         }
                                                     }// ,
@@ -549,8 +556,14 @@
                                                                 return ['[', laydate.now(date.getTime(), 'YYYY-MM-DD hh:mm:ss'), '] : '
                                                                     , params.value[1]].join('');*/
 
-                                                                return '' + laydate.now(params.value, 'YYYY-MM-DD hh:mm:ss')
-                                                                    + (params.seriesData.length ? '：' + params.seriesData[0].data.value[1] : '');
+                                                                var seriesDataVal = '';
+                                                                if(params.seriesData && params.seriesData.length
+                                                                    && params.seriesData[0] && params.seriesData[0].data
+                                                                    && params.seriesData[0].data.value && params.seriesData[0].data.value[1]) {
+                                                                    seriesDataVal = '：' + params.seriesData[0].data.value[1];
+                                                                }
+
+                                                                return ['[', laydate.now(params.value, 'YYYY-MM-DD hh:mm:ss'), ']', seriesDataVal].join('');
                                                             }
                                                         }
                                                     },
@@ -968,8 +981,10 @@
                 function renderHistoryData2Charts() {
                     // $.get('http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00', {}, function(data) {console.log(data)}, 'json')
                     // 1. 请求 http://localhost:9099/point/query/history?hardwareId=t21s1d1&begin=2017-08-03:08:00:00&end=2017-08-04:08:00:00
-                    var params_history = {hardwareId: 't21s1d1', begin: '2017-08-04:08:00:00', end: '2017-08-05:08:00:00'};
+                    // var params_history = {hardwareId: 't21s1d1', begin: '2017-08-04:08:00:00', end: '2017-08-05:08:00:00'};
                     // var params_history = {hardwareId: 't21s1d1', begin: '2017-08-03:08:00:00', end: '2017-08-04:08:00:00'};
+                    var params_history = {hardwareId: hardwareId, begin: laydate.now(checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD:hh:mm:ss')
+                        , end: laydate.now(checkIsTimestampBetweenStartEnd.getEndTimestamp(), 'YYYY-MM-DD:hh:mm:ss')};
                     var url_get_history = '/point/query/history' + tools.serializeParams(params_history);
                     var max_history = 1000;  // 历史测点的 max 数目
                     var callback_history = function(data_history) {
@@ -1011,8 +1026,9 @@
                                     , arr_sample_monitorData = arr_monitorData;
                                 if(length_arr_monitorData > max_history) {
                                     arr_sample_monitorData = [];
-                                    var step = Math.floor(length_arr_monitorData / max_history);
-                                    for(var i = 0; i < length_arr_monitorData && arr_sample_monitorData.length <= max_history; i += step) {
+                                    // var step = Math.floor(length_arr_monitorData / max_history);
+                                    var step = length_arr_monitorData / max_history;
+                                    for(var i = 0, i_step = 0; i < length_arr_monitorData && arr_sample_monitorData.length < max_history; i = Math.round(i_step += step)) {
                                         arr_sample_monitorData.push(arr_monitorData[i]);
                                     }
                                 }
@@ -1023,8 +1039,9 @@
                                 });
                                 // End  : 对 arr_sample_monitorData 中的数据进行排序
                                 arr_sample_monitorData.forEach(function(item_monitorData, index_monitorData) {
+                                    var isNot2Render = !(index_monitorData + 1 === arr_sample_monitorData.length);
                                     processMonitorData_async(item_monitorData, index_monitorData, true
-                                        , !(index_monitorData + 1 === arr_monitorData.length));
+                                        , isNot2Render);
                                 });
                                 // 及时关闭 layer.loading
                                 if(arr_sample_monitorData.length < 1) {
