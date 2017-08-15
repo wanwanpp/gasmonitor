@@ -56,6 +56,20 @@ layui.define(['jquery'], function(exports) {
      */
     var _monitorDataCacheManager = {
         /**
+         * 根据 hardwareId 加载最新的 monitorData
+         * @param hardwareId
+         */
+        loadLatestMonitorDataByHardwareId: function(hardwareId) {
+            var cache_key_4_a_monitorData_arr = _monitorDataCacheManager.genCacheKeyByHardwareId(hardwareId);
+            var cached_monitorData_Arr = _monitorDataCacheManager.getCachedMonitorDataArrByKey(cache_key_4_a_monitorData_arr);
+            //
+            if(!cached_monitorData_Arr || !cached_monitorData_Arr.length || cached_monitorData_Arr.length < 1) {
+                console.log('[loadLatestMonitorDataByHardwareId]cached_monitorData_Arr 为空，故返回最新的 monitorData 也为空');
+                return null;
+            }
+            return cached_monitorData_Arr[cached_monitorData_Arr.length - 1];
+        },
+        /**
          * 获取缓存的 monitorData key hardwareId 数组
          * 此数组用于管理已经缓存了的 hardwareId 对应的 monitorData 数组
          */
@@ -117,7 +131,6 @@ layui.define(['jquery'], function(exports) {
          * @param jsonObj_monitorData   要 push 进缓存 cache 的数组的 value
          */
         pushMonitorData2CachedArrByMonitorDataCachekey: function(cache_key_4_a_monitorData_arr, jsonObj_monitorData) {
-            debugger;
             var cached_monitorData_Arr = _monitorDataCacheManager.getCachedMonitorDataArrByKey(cache_key_4_a_monitorData_arr);
             cached_monitorData_Arr.push(jsonObj_monitorData);
             // 1. 对 cached_monitorData_Arr 通过 pointtime 进行升序排序
@@ -154,7 +167,6 @@ layui.define(['jquery'], function(exports) {
      */
     var monitorDataCacheManager = {
         addJsonMonitorData2Cache: function(jsonObj_monitorData) {
-            debugger;
             var cache_monitorData_key_hardwareIds_map = _monitorDataCacheManager.getCachedMonitorDataKeyHardwareIdsMap();
             var jsonObj_gasEvent = jsonObj_monitorData.gasEvent
                 , hardwareId = jsonObj_gasEvent.hardwareId;
@@ -179,6 +191,53 @@ layui.define(['jquery'], function(exports) {
     // End  : 所有的 function - monitorDataCacheManager
 
     // Start: 所有的 function - sitesAndDevicesTreeCacheManager
+    var _sitesAndDevicesTreeCacheManager = {
+        /**
+         * 给 devices 附加最新的 monitorData
+         * @param treeData_allSitesAndDevices
+         * @returns {*}
+         */
+        attachLatestMonitorData2Devices: function(treeData_allSitesAndDevices) {
+            debugger;
+            // 1. 遍历 treeData_allSitesAndDevices ，区分出其中的 device
+            if(!treeData_allSitesAndDevices) {
+                console.log('[attachLatestMonitorData2Devices]treeData_allSitesAndDevices 为空');
+                return ;
+            }
+            var data_treeData_allSitesAndDevices = treeData_allSitesAndDevices.data;
+            if(!data_treeData_allSitesAndDevices || !data_treeData_allSitesAndDevices.length || data_treeData_allSitesAndDevices.length < 1) {
+                console.log('[attachLatestMonitorData2Devices]data_treeData_allSitesAndDevices 数组为空');
+                return ;
+            }
+            // 开始遍历
+            data_treeData_allSitesAndDevices.forEach(function(item_site) {
+                var devices_arr = item_site.devices;
+                // 处理 devices_arr ， attach 最新数据
+                processDevicesArr(devices_arr);
+            });
+            // 遍历处理当前 devices_arr
+            function processDevicesArr(devices_arr) {
+                if(!devices_arr || !devices_arr.length || devices_arr.length < 1) {
+                    console.log('[processDevicesArr]devices_arr 数组为空');
+                    return ;
+                }
+                devices_arr.forEach(function (item_device) {
+                    attachLatestData2Device(item_device);
+                    // 处理 item_device 的 children
+                    var children_item_device = item_device.children;
+                    processDevicesArr(children_item_device);
+                });
+            }
+            // 2. 用 device 去调用另一个 function 附加 latest 最新数据
+            function attachLatestData2Device(device) {
+                // 2.1 从 cache 中读取 device.hardwareId 对应的最新数据
+                var latestMonitorData = _monitorDataCacheManager.loadLatestMonitorDataByHardwareId(device.hardwareId);
+                device.latestMonitorData = latestMonitorData;
+            }
+            // 3. return treeData_allSitesAndDevices_sumTreeTable
+            return treeData_allSitesAndDevices;
+        }
+    };
     var sitesAndDevicesTreeCacheManager = {
         loadTreeDataAllSitesAndDevices_sumTreeTable: function(callback_sumTreeTableDataLoaded) {
             debugger;
@@ -191,7 +250,8 @@ layui.define(['jquery'], function(exports) {
                 console.log(treeData_allSitesAndDevices);
                 // 暂时将带最新数据的 treeData_allSitesAndDevices_sumTreeTable 赋值为 treeData_allSitesAndDevices ，
                 // debug 分析数据后再进一步完善逻辑
-                var treeData_allSitesAndDevices_sumTreeTable = treeData_allSitesAndDevices;
+                // var treeData_allSitesAndDevices_sumTreeTable = treeData_allSitesAndDevices;
+                var treeData_allSitesAndDevices_sumTreeTable = _sitesAndDevicesTreeCacheManager.attachLatestMonitorData2Devices(treeData_allSitesAndDevices);
                 // 3. 将带最新数据的 treeData_allSitesAndDevices_sumTreeTable 作为参数回调 callback_sumTreeTableDataLoaded
                 if(callback_sumTreeTableDataLoaded && callback_sumTreeTableDataLoaded instanceof Function) {
                     callback_sumTreeTableDataLoaded(treeData_allSitesAndDevices_sumTreeTable);
