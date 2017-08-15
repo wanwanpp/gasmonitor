@@ -7,8 +7,11 @@
  * https://github.com/WQTeam/web-storage-cache
  * (c) 2013-2016 WQTeam, MIT license
  */
-layui.define(['jquery'], function(exports) {
-    var $ = layui.jquery;
+layui.define(['jquery', 'layer', 'tools', 'laydate'], function(exports) {
+    var $ = layui.jquery
+        , layer = layui.layer
+        , tools = layui.tools
+        , laydate = layui.laydate;
 
     console.log('【layui.webStorageCache】加载完毕后执行回调');
 
@@ -166,6 +169,123 @@ layui.define(['jquery'], function(exports) {
      * @type {{addJsonMonitorData2Cache: addJsonMonitorData2Cache}}
      */
     var monitorDataCacheManager = {
+        loadHistoryMonitorData2Cache: function() {
+            layer.load();
+            // Start: 请求历史数据，并加入缓存，最后再关闭 loading layer
+            // 1. 调用 sitesAndDevicesTreeCacheManager.loadTreeDataAllSitesAndDevices ，在回调 callback_allSitesAndDevices 中，
+            //    处理 data_allSitesAndDevices
+            sitesAndDevicesTreeCacheManager.loadTreeDataAllSitesAndDevices(callback_processDevicesHardwareIds);
+            // 2. 回调处理 data_allSitesAndDevices ，其实是得到 devices 列表，从而得到 hardwareIds 列表
+            function callback_processDevicesHardwareIds(data_sitesAndDevices) {
+                var data_sitesArr = data_sitesAndDevices.data;
+                processSitesArr(data_sitesArr, 0);
+            }
+            function processSitesArr(data_sitesArr, index_sitesArr) {
+                debugger;
+                if(!data_sitesArr || !data_sitesArr.length || !data_sitesArr.length > 0) {
+                    return ;
+                }
+                if(index_sitesArr >= data_sitesArr.length) {
+                    layer.closeAll('loading');
+                    return ;
+                }
+                var item_site = data_sitesArr[index_sitesArr];
+                processSite_loadHistoryMonitorData(item_site, function() {
+                    processSitesArr(data_sitesArr, index_sitesArr + 1);
+                });
+            }
+            //
+            // 处理每一个 site ，设备列表 site.devices
+            function processSite_loadHistoryMonitorData(site, callback_processSitesArr) {
+                var devicesArr = site.devices;
+                processDevice(devicesArr, 0, callback_processSitesArr);
+            }
+            function processDevice(devicesArr, index_devicesArr, callback_processSitesArr) {
+                if(index_devicesArr >= devicesArr.length) {
+                    debugger;
+                    if(callback_processSitesArr && callback_processSitesArr instanceof Function) {
+                        callback_processSitesArr();
+                    }
+                    return ;
+                }
+                var item_device = devicesArr[index_devicesArr];
+                queryHistoryMonitorDataByHardwareId(item_device.hardwareId, function() {
+                    processDevice(devicesArr, index_devicesArr + 1, callback_processSitesArr);
+                });
+            }
+            //
+            // 3. 根据每个 hardwareId 去请求 /point/query/history 今天的数据
+            var oneDay = 24 * 3600 * 1000;
+            function getTodayStartDateTime(offsetTime) {
+                var date = new Date();
+                // var date = new Date(1501833236607); // 测试，定为 8 月 4 日
+                // var date = new Date(1501721236607); // 测试，定为 8 月 3 日
+                date.setHours(8);
+                date.setMinutes(0);
+                date.setSeconds(0);
+                date.setMilliseconds(0);
+                if(offsetTime) {
+                    date = new Date(date.getTime() + offsetTime);
+                }
+                return date;
+            }
+            function checkIsTimestampBetweenStartEnd(timestamp) {
+                if(timestamp >= checkIsTimestampBetweenStartEnd.getStartTimestamp()
+                    && timestamp <= checkIsTimestampBetweenStartEnd.getEndTimestamp()) {
+                    return true;
+                }
+                return false;
+            }
+            checkIsTimestampBetweenStartEnd.getStartTimestamp = function() {
+                if(!checkIsTimestampBetweenStartEnd.startTime) {
+                    checkIsTimestampBetweenStartEnd.startTime = getTodayStartDateTime().getTime();
+                }
+                return checkIsTimestampBetweenStartEnd.startTime;
+            };
+            checkIsTimestampBetweenStartEnd.getEndTimestamp = function() {
+                if(!checkIsTimestampBetweenStartEnd.endTime) {
+                    checkIsTimestampBetweenStartEnd.endTime = getTodayStartDateTime(oneDay).getTime();
+                }
+                return checkIsTimestampBetweenStartEnd.endTime;
+            };
+
+            function queryHistoryMonitorDataByHardwareId(hardwareId, callback_processDevice) {
+                var params_history = {hardwareId: hardwareId, begin: laydate.now(checkIsTimestampBetweenStartEnd.getStartTimestamp(), 'YYYY-MM-DD:hh:mm:ss')
+                    , end: laydate.now(checkIsTimestampBetweenStartEnd.getEndTimestamp(), 'YYYY-MM-DD:hh:mm:ss')};
+                var url_get_history = '/point/query/history' + tools.serializeParams(params_history);
+                var callback_history = function(data_history) {
+                    console.log('[webStorageCache.js queryHistoryMonitorDataByHardwareId callback_history] data_history: ');
+                    console.log(data_history);
+                    //
+                    var code = data_history.code, msg = data_history.msg, page = data_history.page
+                        , total = data_history.total, totalPage = data_history.totalPage, arr_monitorData = data_history.data;
+                    console.log('[webStorageCache.js queryHistoryMonitorDataByHardwareId callback_history] code: ' + code);
+                    console.log('[webStorageCache.js queryHistoryMonitorDataByHardwareId callback_history] msg: ' + msg);
+                    console.log('[webStorageCache.js queryHistoryMonitorDataByHardwareId callback_history] page: ' + page);
+                    console.log('[webStorageCache.js queryHistoryMonitorDataByHardwareId callback_history] total: ' + total);
+                    console.log('[webStorageCache.js queryHistoryMonitorDataByHardwareId callback_history] totalPage: ' + totalPage);
+                    console.log('[webStorageCache.js queryHistoryMonitorDataByHardwareId callback_history] arr_monitorData: ');
+                    console.log(arr_monitorData);
+                    // 处理 arr_monitorData
+                    processMonitorDataArr(arr_monitorData, 0, callback_processDevice);
+                };
+                // 2. 发 get 请求
+                $.get(url_get_history, {}, callback_history, 'json');
+            }
+            // 4. 调用接口，将请求下来的数据全部 add 到 cache ，并 close loading layer
+            function processMonitorDataArr(arr_monitorData, index_arr_monitorData, callback_processDevice) {
+                if(index_arr_monitorData >= arr_monitorData.length) {
+                    if(callback_processDevice && callback_processDevice instanceof Function) {
+                        callback_processDevice();
+                    }
+                    return ;
+                }
+                var item_monitorData = arr_monitorData[index_arr_monitorData];
+                monitorDataCacheManager.addJsonMonitorData2Cache(item_monitorData);
+                processMonitorDataArr(arr_monitorData, index_arr_monitorData + 1, callback_processDevice);
+            }
+            // End  : 请求历史数据，并加入缓存，最后再关闭 loading layer
+        },
         addJsonMonitorData2Cache: function(jsonObj_monitorData) {
             var cache_monitorData_key_hardwareIds_map = _monitorDataCacheManager.getCachedMonitorDataKeyHardwareIdsMap();
             var jsonObj_gasEvent = jsonObj_monitorData.gasEvent
@@ -198,7 +318,6 @@ layui.define(['jquery'], function(exports) {
          * @returns {*}
          */
         attachLatestMonitorData2Devices: function(treeData_allSitesAndDevices) {
-            debugger;
             // 1. 遍历 treeData_allSitesAndDevices ，区分出其中的 device
             if(!treeData_allSitesAndDevices) {
                 console.log('[attachLatestMonitorData2Devices]treeData_allSitesAndDevices 为空');
@@ -240,12 +359,10 @@ layui.define(['jquery'], function(exports) {
     };
     var sitesAndDevicesTreeCacheManager = {
         loadTreeDataAllSitesAndDevices_sumTreeTable: function(callback_sumTreeTableDataLoaded) {
-            debugger;
             // 1. loadTreeDataAllSitesAndDevices 获取到最新的 treeData_allSitesAndDevices 数据结构
             sitesAndDevicesTreeCacheManager.loadTreeDataAllSitesAndDevices(callback_processTreeData_allSitesAndDevices);
             // 2. 遍历 treeData_allSitesAndDevices ，将 cache 中的 device 数据最新一条付给它们
             function callback_processTreeData_allSitesAndDevices(treeData_allSitesAndDevices) {
-                debugger;
                 console.log('[callback_processTreeData_allSitesAndDevices]treeData_allSitesAndDevices: ');
                 console.log(treeData_allSitesAndDevices);
                 // 暂时将带最新数据的 treeData_allSitesAndDevices_sumTreeTable 赋值为 treeData_allSitesAndDevices ，

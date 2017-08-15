@@ -273,18 +273,18 @@
 <!-- Start: 模板 laytpl -->
 <script id="tpl_sumTreeTableTr" type="text/html">
 
-  <tr data-tt-id="{{ d.id }}" data-tt-branch='{{ d.isBranch }}' data-tt-parent-id="{{ d.parentId }}">
+  <tr data-tt-id="{{ d.id }}" data-tt-branch='{{ d.isBranch }}' data-tt-parent-id="{{ d.parentId }}" class="{{ d.gaoJingClass || '' }}">
     <td>{{ d.name }}</td>
-    <td>{{ d.pointtime_timeStr }}</td>
-    <td>1_{{ d.id }}</td>
-    <td>2_{{ d.id }}</td>
-    <td>3_{{ d.id }}</td>
-    <td>4_{{ d.id }}</td>
-    <td>5_{{ d.id }}</td>
-    <td>6_{{ d.id }}</td>
-    <td>7_{{ d.id }}</td>
-    <td>8_{{ d.id }}</td>
-    <td>9_{{ d.id }}</td>
+    <td>{{ d.pointtime_timeStr || '' }}</td>
+    <td>{{ d.running || '' }}</td>
+    <td>{{ d.standard || '' }}</td>
+    <td>{{ d.summary || '' }}</td>
+    <td>{{ d.surplus || '' }}</td>
+    <td>{{ d.pressure || '' }}</td>
+    <td>{{ d.temperature || '' }}</td>
+    <td>{{ d.ac220 || '' }}</td>
+    <td>{{ d.battery || '' }}</td>
+    <td>{{ d.solar || '' }}</td>
     <td>10_{{ d.id }}</td>
     <td>11_{{ d.id }}</td>
   </tr>
@@ -293,9 +293,9 @@
   <tr data-tt-id="{{ d.id }}.0"  data-tt-parent-id="{{ d.id }}" class="color-red">
     <td>分表合计</td>
     <td></td>
-    <td>1073.77</td>
-    <td>3755.99</td>
-    <td>115999355.13</td>
+    <td></td>
+    <td></td>
+    <td></td>
     <td></td>
     <td></td>
     <td></td>
