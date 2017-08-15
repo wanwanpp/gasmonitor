@@ -44,7 +44,7 @@
       <th>仪表厂家</th>
     </tr>
     </thead>
-    <tbody>
+    <tbody id="tbody_sumTable">
     <tr data-tt-id="1">
       <td>辛忠驿总计量西</td>
       <td>2017-8-11 18:34:44</td>
@@ -270,67 +270,44 @@
 <!-- Start: treeTable 的 js -->
 <script type="text/javascript" src="/layui/layui.js"></script>
 <!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-treetable/3.2.0/jquery.treetable.min.js"></script>-->
-<script>
-    (function () {
-        layui.use(['treeTable', 'webStorageCache'], function() {
-            var $ = layui.jquery
-                , treeTable = layui.treeTable
-                , webStorageCache = layui.webStorageCache
-                , sitesAndDevicesTreeCacheManager = webStorageCache.sitesAndDevicesTreeCacheManager;
+<!-- Start: 模板 laytpl -->
+<script id="tpl_sumTreeTableTr" type="text/html">
 
-            $(function () {
-                // Start: 使用 webStorageCache 请求站点设备树信息
-                function callback_sumTreeTableDataLoaded(data_allSitesAndDevices_sumTreeTable) {
-                    debugger;
-                    console.log('[callback_sumTreeTableDataLoaded]data_allSitesAndDevices_sumTreeTable: ');
-                    console.log(data_allSitesAndDevices_sumTreeTable);
-                    // 处理总表信息的第一次初始化
+  <tr data-tt-id="{{ d.id }}" data-tt-branch='{{ d.isBranch }}' data-tt-parent-id="{{ d.parentId }}">
+    <td>{{ d.name }}</td>
+    <td>{{ d.pointtime_timeStr }}</td>
+    <td>1_{{ d.id }}</td>
+    <td>2_{{ d.id }}</td>
+    <td>3_{{ d.id }}</td>
+    <td>4_{{ d.id }}</td>
+    <td>5_{{ d.id }}</td>
+    <td>6_{{ d.id }}</td>
+    <td>7_{{ d.id }}</td>
+    <td>8_{{ d.id }}</td>
+    <td>9_{{ d.id }}</td>
+    <td>10_{{ d.id }}</td>
+    <td>11_{{ d.id }}</td>
+  </tr>
 
-                }
-                debugger;
-                sitesAndDevicesTreeCacheManager.loadTreeDataAllSitesAndDevices_sumTreeTable(callback_sumTreeTableDataLoaded);
-                // End  : 使用 webStorageCache 请求站点设备树信息
+  {{# if(d.isBranch) { }}
+  <tr data-tt-id="{{ d.id }}.0"  data-tt-parent-id="{{ d.id }}" class="color-red">
+    <td>分表合计</td>
+    <td></td>
+    <td>1073.77</td>
+    <td>3755.99</td>
+    <td>115999355.13</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  {{# } }}
 
-                // Start: treeTable 初始化相关
-                // initialize treeTable
-                $("#tree_table-sum").treetable({
-                    expandable:     true,
-                    onNodeExpand:   nodeExpand,
-                    onNodeCollapse: nodeCollapse
-                });
-
-
-                // expand node with ID "1" by default
-                $("#tree_table-sum").treetable("reveal", '1');
-
-
-                // Highlight a row when selected
-                $("#tree_table-sum tbody").on("mousedown", "tr", function() {
-                    $(".selected").not(this).removeClass("selected");
-                    $(this).toggleClass("selected");
-                });
-
-                function nodeExpand () {
-                    // alert("Expanded: " + this.id);
-                    // http://jsfiddle.net/djlerman/bbj8k9pe/
-                    // getNodeViaAjax(this.id);
-                }
-
-
-                function nodeCollapse () {
-                    // alert("Collapsed: " + this.id);
-                }
-                // End  : treeTable 初始化相关
-
-                // Start: 全部展开 和 全部收拢 按钮
-                $(document).on('click', '#btn-expand_all', function () {
-                    layui.treeTable.jQuery('#tree_table-sum').treetable('expandAll');
-                }).on('click', '#btn-collapse_all', function () {
-                    layui.treeTable.jQuery('#tree_table-sum').treetable('collapseAll');
-                });
-                // End  : 全部展开 和 全部收拢 按钮
-            });
-        });
-    })();
 </script>
+<!-- End  : 模板 laytpl -->
+<script type="text/javascript" src="/js/app/tenant/sumTreeTable.js"></script>
 <!-- End  : treeTable 的 js -->
