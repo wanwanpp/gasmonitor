@@ -85,10 +85,26 @@
                                 var renderData_device = {
                                     id: data_device.id
                                     , name: data_device.name
-                                    , pointtime_timeStr: laydate.now(data_device.pointtime, 'YYYY-MM-DD hh:mm:ss')
                                     , isBranch: (data_device && data_device.children && data_device.children && data_device.children > 0)
                                     , parentId: data_device.siteId
                                 };
+                                //
+                                var latestMonitorData = data_device.latestMonitorData;
+                                if(latestMonitorData) {
+                                    var latestGasEvent = latestMonitorData.gasEvent;
+                                    renderData_device['pointtime_timeStr'] = laydate.now(latestGasEvent.pointtime, 'YYYY-MM-DD hh:mm:ss');
+                                    renderData_device['gaoJingClass'] = latestMonitorData.gaojing ? 'color-red' : '';
+                                    renderData_device['running'] = latestGasEvent.running;
+                                    renderData_device['standard'] = latestGasEvent.standard;
+                                    renderData_device['ac220'] = latestGasEvent.ac220;
+                                    renderData_device['battery'] = latestGasEvent.battery;
+                                    renderData_device['pressure'] = latestGasEvent.pressure;
+                                    renderData_device['solar'] = latestGasEvent.solar;
+                                    renderData_device['summary'] = latestGasEvent.summary;
+                                    renderData_device['temperature'] = latestGasEvent.temperature;
+                                    renderData_device['surplus'] = latestGasEvent.surplus;
+                                }
+                                //
                                 laytpl(tpl_sumTreeTableTr.innerHTML).render(renderData_device, function(html_tpl_sumTreeTableTr) {
                                     tbody_sumTable.innerHTML += html_tpl_sumTreeTableTr;
                                     if(data_device && data_device.children && data_device.children.length && data_device.children.length > 0) {
@@ -127,7 +143,7 @@
                 });
 
                 // expand node with ID "1" by default
-                ele_treeTable_sum.treetable("reveal", '1');
+                // ele_treeTable_sum.treetable("reveal", '1');
 
                 function nodeExpand () {
                     // alert("Expanded: " + this.id);
@@ -142,7 +158,7 @@
             // End  : treeTable 初始化相关
 
             // Highlight a row when selected
-            $(document).on("mousedown", "#tree_table-sum tbody", "tr", function() {
+            $(document).on("mousedown", "#tree_table-sum tbody tr", function() {
                 $(".selected").not(this).removeClass("selected");
                 $(this).toggleClass("selected");
             });
