@@ -83,10 +83,13 @@
                                 }
                                 var data_device = devices_arr[index_devices_arr];
                                 var renderData_device = {
-                                    id: data_device.id
+                                    // id 用 d_ 开头，避免与 siteId 重复造成问题
+                                    id: 'd_' + data_device.id
                                     , name: data_device.name
                                     , isBranch: (data_device && data_device.children && data_device.children && data_device.children > 0)
-                                    , parentId: data_device.siteId
+                                    // parentId 这里考虑了第三级的情况，callback_processSumTreeTableDevicesArr 不存在为第一级，
+                                    // 第一级 device 的父元素是 site 直接 id 就是 siteId ，第二级开始父元素 device 都是 d_ 开头
+                                    , parentId: callback_processSumTreeTableDevicesArr ? 'd_' + data_device.siteId : data_device.siteId
                                 };
                                 //
                                 var latestMonitorData = data_device.latestMonitorData;
