@@ -4,6 +4,7 @@ import com.gasmonitor.dao.DeviceRepository;
 import com.gasmonitor.dao.TenantRepository;
 import com.gasmonitor.entity.Device;
 import com.gasmonitor.entity.Tenant;
+import com.gasmonitor.pros.Consts;
 import com.gasmonitor.pros.HazelCastPros;
 import com.gasmonitor.service.bas.BasDataUnitService;
 import com.hazelcast.core.HazelcastInstance;
@@ -11,6 +12,8 @@ import com.hazelcast.core.IMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,6 +53,9 @@ public class TestController {
     @Autowired
     private BasDataUnitService basDataUnitService;
 
+    @Autowired
+    private CacheManager cacheManager;
+
     private IMap<String, String> map;
 
     @PostConstruct
@@ -75,24 +81,35 @@ public class TestController {
 
 
     @RequestMapping(value = "/device/save")
-    public Object saveDevice() {
-        Device device = new Device();
-        device.setSiteId((long) 999);
-        device.setLogic(1);
-        device.setName("name");
-        device.setCreated(new Date());
-        device.setWatcher((long) 21);
-        device.setTokenId("tokendId");
-        device.setStatus(1);
+    public Object saveDevice(Long id) {
+        Device device = deviceRepository.findOne(id);
+        logger.info("test/device/save/{}" + device);
         return deviceRepository.save(device);
     }
 
-    @RequestMapping(value = "/device/get/{id}")
-    public Object getDevice(@PathVariable(value = "id") long id) {
-        Device device = deviceRepository.findOne(id);
-        logger.info("查询到id{}的device{}", id, device);
-        return device;
+    @RequestMapping("device/getDeviceById")
+    public Object getDeviceById(Long id) {
+        return deviceRepository.findOne(id);
     }
+
+    @RequestMapping("device/findByHardwareId")
+    public Object findByHardwareId(String id) {
+        return deviceRepository.findByHardwareId(id);
+    }
+
+
+    @RequestMapping("device/removecacheh")
+    @CacheEvict(value = Consts.CACHE_DEVICE, key = "'" + Consts.CACHE_DEVICE_HARDWAREID + "'+#p0")
+    public Object removecacheh(String id) {
+        return "完成";
+    }
+
+    @RequestMapping("device/removeallcache")
+    @CacheEvict(value = Consts.CACHE_DEVICE, allEntries = true)
+    public Object removeallcache(String id) {
+        return "完成";
+    }
+
 
     //暂时设置为get方便测试
     @RequestMapping(value = "/tenant/update")
@@ -169,4 +186,10 @@ public class TestController {
     }
 
 
+    @RequestMapping("/cache/all")
+    @ResponseBody
+    public Object cacheAll() {
+        return cacheManager.getCache(Consts.CACHE_DEVICE).toString();
+    }
 }
+

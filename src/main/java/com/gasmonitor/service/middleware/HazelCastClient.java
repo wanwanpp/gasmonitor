@@ -50,7 +50,7 @@ public class HazelCastClient implements CommandLineRunner {
                 hazelCastPros.getName(), hazelCastPros.getNametopic());
 
         tenantService.initTenantMap();   //初始化tenant-->device 的映射
-        deviceService.loadDeviceMap();//load所有的设备
+//        deviceService.loadDeviceMap();//load所有的设备
 //        userService.loadAllUserMap();//load 所有的User
         this.initMsgListener();//初始化消息监听器
     }

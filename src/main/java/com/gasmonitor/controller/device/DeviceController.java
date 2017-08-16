@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -72,7 +73,7 @@ public class DeviceController {
         try {
             devices = deviceRepository.findBySiteId(siteId);
         } catch (Exception e) {
-            devices = null;
+            devices = new ArrayList<>();
         }
         log.info("通过站点{}查询到的所有设备的信息{}", siteId, devices);
         return AjaxResult.AjaxResultWithList(devices);
@@ -104,7 +105,7 @@ public class DeviceController {
         User user = SessionUtils.getUser(session);
         log.info("usr:{},tenantid:{}开始增加一个设备:{}", user, user.getTenantId(), device);
         try {
-            device = deviceService.addDevice(device, user.getTenantId());
+            device = deviceService.addDevice(device, user.getTenantId(), user.getId());
         } catch (TipsException e) {
             return AjaxResult.ErrorAjaxResult(e.getMessage());
         }
@@ -116,6 +117,7 @@ public class DeviceController {
     @RequestMapping(value = "/ajax/remove")
     @ResponseBody
     public AjaxResult<Device> ajaxRmDevice(Long id) {
+
         deviceService.delete(id);
         return AjaxResult.SuccAjaxResult();
     }
