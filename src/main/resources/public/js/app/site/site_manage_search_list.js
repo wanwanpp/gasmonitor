@@ -1,5 +1,5 @@
 (function() {
-    layui.use(['laytpl', 'jquery', 'layer', 'tools', 'form', 'webStorageCache'], function() {
+    layui.use(['laytpl', 'jquery', 'layer', 'tools', 'form', 'webStorageCache', 'laydate'], function() {
         var laytpl = layui.laytpl;
         var $ = layui.jquery;
         var getUrl = "/site/ajax/list";
@@ -18,15 +18,47 @@
 
         // Start: 地图相关 functions
         var opts = {
-            width : 250,     // 信息窗口宽度
-            height: 80,     // 信息窗口高度
-            title : "信息窗口" , // 信息窗口标题
-            enableMessage:true//设置允许信息窗发送短息
+            width : 0,     // 信息窗口宽度
+            height: 0,     // 信息窗口高度
+            title : "<h4 style='font-weight: bold; font-size: 16px; margin: -3px 0 3px;'>站点包含的设备</h4>" , // 信息窗口标题
+            enableMessage:false // 设置不允许信息窗发送短息
         };
-        function addClickHandler(content, marker) {
-            marker.addEventListener("click",function(e){
-                openInfo(content,e)}
-            );
+        function addClickHandler(content, marker, siteId) {
+            console.log('[addClickHandler]marker: ');
+            console.log(marker);
+            marker.addEventListener("click", function(e) {
+                console.log('[addEventListener]e: ');
+                console.log(e);
+                // 1. 请求 /device/ajax/list?siteId=1 ，得到设备列表
+                var DeviceAjaxListGetter = (function(siteId) {
+                    var _url = '/device/ajax/list'
+                        , _params = {siteId: siteId};
+                    return {
+                        execute: function(callbackSuccess) {
+                            var urlWithParams = _url + tools.serializeParams(_params);
+                            $.get(urlWithParams, {}, callbackSuccess, 'json');
+                        }
+                    };
+                })(siteId);
+                // 2. 设备列表数据渲染 laytpl ，得到 content_html
+                var callback_renderDevicesListTpl = function(data_deviceAjaxList) {
+                    debugger;
+                    if(!data_deviceAjaxList) {
+                        return ;
+                    }
+                    var devicesArr = data_deviceAjaxList.data;
+                    if(!devicesArr) {
+                        return ;
+                    }
+                    laytpl(tpl_bMapOpenInfoWindow_content.innerHTML).render(devicesArr, function(html_tpl_bMapOpenInfoWindow_content) {
+                        debugger;
+                        // 3. openInfo 显示 content_html
+                        openInfo(html_tpl_bMapOpenInfoWindow_content, e);
+                    });
+                };
+                debugger;
+                DeviceAjaxListGetter.execute(callback_renderDevicesListTpl);
+            });
         }
         function openInfo(content, e){
             var p = e.target;
@@ -104,8 +136,11 @@
                             markersArr.push(marker);
                             sitesId2MarkerMap[siteDataItem.id] = marker;
                             // Start: marker 点击后的弹出层
-                            addClickHandler(['[站点 id ： ', siteDataItem.id, '][站点 name ： ', siteDataItem.name, '][站点经度： ',
-                                siteDataItem.longitude, '][站点纬度： ', siteDataItem.latitude, ']'].join(''), marker);
+                            /*addClickHandler(['[站点 id ： ', siteDataItem.id, '][站点 name ： ', siteDataItem.name, '][站点经度： ',
+                                siteDataItem.longitude, '][站点纬度： ', siteDataItem.latitude, ']'].join(''), marker);*/
+                            addClickHandler((function() {
+                                return ['站点： ', siteDataItem.name].join('');
+                            })(), marker, siteDataItem.id);
                             // End  : marker 点击后的弹出层
                         });
                     }
