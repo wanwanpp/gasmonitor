@@ -1,0 +1,1 @@
+INSERT INTO gasmonitor.user (address, createdate, lastlogin, mobile, password, role, status, tenant_id, username) VALUES (null, null, '2017-08-16 19:41:57', null, '123', 'ROLE_SYSTEM', null, null, 'system');
