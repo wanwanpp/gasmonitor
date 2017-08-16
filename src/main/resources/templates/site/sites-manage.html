@@ -365,6 +365,44 @@
     <td>{{d.siteParent}}</td>
   </tr>-->
 </script>
+<script id="tpl_bMapOpenInfoWindow_content" type="text/html">
+  <div class="layui-form">
+    <table class="layui-table">
+      <colgroup>
+        <col>
+        <col>
+        <col>
+        <col>
+        <col>
+      </colgroup>
+      <thead>
+      <tr>
+        <th>序号</th>
+        <th>ID</th>
+        <th>设备名</th>
+        <th>硬件 ID</th>
+        <th>创建时间</th>
+      </tr>
+      </thead>
+      <tbody>
+      {{# if(!d || !d.length || d.length < 1) { }}
+      <tr>
+        <td colspan="5">站点下没有设备</td>
+      </tr>
+      {{# } }}
+      {{# layui.each(d, function(index_device, item_device){ }}
+      <tr>
+        <td>{{index_device + 1}}</td>
+        <td>{{item_device.id}}</td>
+        <td>{{item_device.name}}</td>
+        <td>{{item_device.hardwareId}}</td>
+        <td>{{layui.laydate.now(item_device.created, 'YYYY-MM-DD hh:mm:ss')}}</td>
+      </tr>
+      {{# }); }}
+      </tbody>
+    </table>
+  </div>
+</script>
 <script type="text/javascript" src="/js/app/site/site_manage_search_list.js"></script>
 <!-- End  : 与服务器交互 ajax -->
 

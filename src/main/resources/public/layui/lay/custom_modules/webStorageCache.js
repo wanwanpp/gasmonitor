@@ -192,6 +192,7 @@ layui.define(['jquery', 'layer', 'tools', 'laydate'], function(exports) {
             }
             function processSitesArr(data_sitesArr, index_sitesArr) {
                 if(!data_sitesArr || !data_sitesArr.length || !data_sitesArr.length > 0) {
+                    layer.closeAll('loading');
                     return ;
                 }
                 if(index_sitesArr >= data_sitesArr.length) {
