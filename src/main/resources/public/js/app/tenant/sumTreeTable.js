@@ -54,7 +54,12 @@
                             function processSumTreeTableDevicesArr(devices_arr, index_devices_arr, callback_processSumTreeTableDevicesArr) {
                                 if(!devices_arr || !devices_arr.length || devices_arr.length < 1) {
                                     console.log('[processSumTreeTableDevicesArr]devices_arr 为空，不继续处理，继续处理下一个 site');
-                                    processSumTreeTableSite(data_siteArr, index_data_siteArr + 1);
+                                    if(callback_processSumTreeTableDevicesArr
+                                        && callback_processSumTreeTableDevicesArr instanceof Function) {
+                                        callback_processSumTreeTableDevicesArr();
+                                    } else {
+                                        processSumTreeTableSite(data_siteArr, index_data_siteArr + 1);
+                                    }
                                     return ;
                                 }
                                 var len_devices_arr = devices_arr.length;
