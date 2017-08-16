@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.Date;
@@ -48,6 +49,15 @@ public class TestController {
 
     @Autowired
     private BasDataUnitService basDataUnitService;
+
+    private IMap<String, String> map;
+
+    @PostConstruct
+    public void init() {
+        logger.info("初始化TestController 的时候调用....");
+        map = hazelcastInstance.getMap("tenant");
+
+    }
 
     @RequestMapping(value = "/device/list")
     public Object findDevice(@RequestParam("siteId") long siteId) {
@@ -100,7 +110,7 @@ public class TestController {
 
     @RequestMapping(value = "hz/showmap")
     public Object showHazelcastmap() {
-        return hazelcastInstance.getMap("tenant");
+        return map;
     }
 
 //    @RequestMapping(value = "hz/showmapuser")
