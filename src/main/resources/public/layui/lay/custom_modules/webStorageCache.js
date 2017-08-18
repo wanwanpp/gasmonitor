@@ -191,7 +191,7 @@ layui.define(['jquery', 'layer', 'tools', 'laydate'], function(exports) {
                 processSitesArr(data_sitesArr, 0);
             }
             function processSitesArr(data_sitesArr, index_sitesArr) {
-                if(!data_sitesArr || !data_sitesArr.length || !data_sitesArr.length > 0) {
+                if(!data_sitesArr || !data_sitesArr.length || data_sitesArr.length < 1) {
                     layer.closeAll('loading');
                     return ;
                 }
@@ -211,10 +211,18 @@ layui.define(['jquery', 'layer', 'tools', 'laydate'], function(exports) {
                 processDevice(devicesArr, 0, callback_processSitesArr);
             }
             function processDevice(devicesArr, index_devicesArr, callback_processSitesArr) {
-                if(index_devicesArr >= devicesArr.length) {
+                var processCallback = function() {
                     if(callback_processSitesArr && callback_processSitesArr instanceof Function) {
                         callback_processSitesArr();
                     }
+                };
+                //
+                if(!devicesArr || !devicesArr.length || devicesArr.length < 1) {
+                    processCallback();
+                    return ;
+                }
+                if(index_devicesArr >= devicesArr.length) {
+                    processCallback();
                     return ;
                 }
                 var item_device = devicesArr[index_devicesArr];
@@ -249,10 +257,18 @@ layui.define(['jquery', 'layer', 'tools', 'laydate'], function(exports) {
             }
             // 4. 调用接口，将请求下来的数据全部 add 到 cache ，并 close loading layer
             function processMonitorDataArr(arr_monitorData, index_arr_monitorData, callback_processDevice) {
-                if(index_arr_monitorData >= arr_monitorData.length) {
+                var processCallback = function() {
                     if(callback_processDevice && callback_processDevice instanceof Function) {
                         callback_processDevice();
                     }
+                };
+                //
+                if(!arr_monitorData || !arr_monitorData.length || arr_monitorData.length < 1) {
+                    processCallback();
+                    return ;
+                }
+                if(index_arr_monitorData >= arr_monitorData.length) {
+                    processCallback();
                     return ;
                 }
                 var item_monitorData = arr_monitorData[index_arr_monitorData];
