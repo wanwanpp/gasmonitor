@@ -24,7 +24,7 @@ public class HazelcastCacheConfig {
         Config config = new Config(hazelCastPros.getNameinstance());
         NetworkConfig networkConfig = new NetworkConfig();
         networkConfig.setPublicAddress("localhost");
-        config.setProperty("hazelcast.initial.min.cluster.size","2");
+//        config.setProperty("hazelcast.initial.min.cluster.size","2");
         config.setNetworkConfig(networkConfig);
         return config;
     }
