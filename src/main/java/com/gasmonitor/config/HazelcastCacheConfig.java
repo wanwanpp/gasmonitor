@@ -2,6 +2,7 @@ package com.gasmonitor.config;
 
 import com.gasmonitor.pros.HazelCastPros;
 import com.hazelcast.config.Config;
+import com.hazelcast.config.NetworkConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,10 @@ public class HazelcastCacheConfig {
     @Bean
     public Config hazelCastConfig() {
         Config config = new Config(hazelCastPros.getNameinstance());
+        NetworkConfig networkConfig = new NetworkConfig();
+        networkConfig.setPublicAddress("localhost");
+        config.setProperty("hazelcast.initial.min.cluster.size","2");
+        config.setNetworkConfig(networkConfig);
         return config;
     }
 }
