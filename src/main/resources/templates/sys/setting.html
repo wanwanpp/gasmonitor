@@ -14,10 +14,35 @@
 
 </head>
 <body class="childrenBody">
-系统概览(显示部分运营数据)
-1，租户 的数量
-2，报警信息，提示
-3，设备的数量，站点的数量统计
-4，新增的租户等信息
+<div class="layui-form" style="padding: 15px;">
+  <table class="layui-table">
+    <colgroup>
+      <col width="150">
+      <col width="200">
+      <col>
+    </colgroup>
+    <tbody>
+    <tr>
+      <td>租户的数量</td>
+      <td th:text="${vo.tenantCount}"></td>
+      <td>备注：当前租户所有的站点数量</td>
+    </tr>
+    <tr>
+      <td>设备数量</td>
+      <td th:text="${vo.deviceCount}"></td>
+      <td>备注：当前租户所有的设备数量</td>
+    </tr>
+    <tr>
+      <td> 报警信息</td>
+      <td th:text="${vo.msg}"></td>
+      <td>备注：</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<script>
+  layui.use('form', function () {
+  });
+</script>
 </body>
 </html>

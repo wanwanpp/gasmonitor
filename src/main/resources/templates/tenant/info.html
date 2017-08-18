@@ -1,1 +1,41 @@
-<!DOCTYPE html><html xmlns:th="http://www.thymeleaf.org"><head>  <meta charset="UTF-8"/>  <title>租户的信息</title>  <link rel="stylesheet" href="/layui/css/layui.css" media="all"/>  <link rel="stylesheet" href="/css/me.css" media="all"/></head><body><div class="layui-form" style="padding: 15px;">  <table class="layui-table">    <colgroup>      <col width="150">      <col width="200">      <col>    </colgroup>    <thead>    <tr>      <th>站点数量</th>      <th th:text="${vo.siteCount}"></th>      <th>备注：当前租户所有的站点数量</th>    </tr>    </thead>    <tbody>    <tr>      <td>设备数量</td>      <td th:text="${vo.deviceCount}"></td>      <td>备注：当前租户所有的设备数量</td>    </tr>    <tr>      <td> 报警信息</td>      <td th:text="${vo.msg}"></td>      <td>备注：</td>    </tr>    </tbody>  </table></div><script>  layui.use('form', function () {  });</script></body></html>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>租户的信息</title>
+  <link rel="stylesheet" href="/layui/css/layui.css" media="all"/>
+  <link rel="stylesheet" href="/css/me.css" media="all"/>
+</head>
+<body>
+<div class="layui-form" style="padding: 15px;">
+  <table class="layui-table">
+    <colgroup>
+      <col width="150">
+      <col width="200">
+      <col>
+    </colgroup>
+    <tbody>
+    <tr>
+      <td>站点数量</td>
+      <td th:text="${vo.siteCount}"></td>
+      <td>备注：当前租户所有的站点数量</td>
+    </tr>
+    <tr>
+      <td>设备数量</td>
+      <td th:text="${vo.deviceCount}"></td>
+      <td>备注：当前租户所有的设备数量</td>
+    </tr>
+    <tr>
+      <td> 报警信息</td>
+      <td th:text="${vo.msg}"></td>
+      <td>备注：</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<script>
+  layui.use('form', function () {
+  });
+</script>
+</body>
+</html>
