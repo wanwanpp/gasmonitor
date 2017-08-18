@@ -34,11 +34,11 @@
         <i class="layui-icon">&#xe608;</i> 添加
       </button>
     </div>
-    <div class="layui-inline">
-      <button type="button" class="layui-btn layui-btn-danger batchDel" disabled="true">
-        <i class="layui-icon">&#xe640;</i>批量删除
-      </button>
-    </div>
+    <!--<div class="layui-inline">-->
+    <!--<button type="button" class="layui-btn layui-btn-danger batchDel" disabled="true">-->
+    <!--<i class="layui-icon">&#xe640;</i>批量删除-->
+    <!--</button>-->
+    <!--</div>-->
   </blockquote>
 </form>
 
@@ -458,6 +458,20 @@
         </select>
       </div>
     </div>
+
+
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+      <legend>*备注</legend>
+    </fieldset>
+    <fieldset class="layui-elem-field">
+      <legend>状态说明</legend>
+      <div class="layui-field-box">
+        <p>正常：设备正常工作中</p>
+        <p>正常：设备故障</p>
+        <p>停用：管理员停用设备，恢复故障后可重启</p>
+      </div>
+    </fieldset>
+
   </form>
 </div>
 

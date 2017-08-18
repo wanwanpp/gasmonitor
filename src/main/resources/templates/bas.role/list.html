@@ -38,20 +38,15 @@
   <div class="layui-form news_list">
     <table class="layui-table">
       <colgroup>
-        <col width="5%"/>
-        <col width="5%"/>
-        <col width="5%"/>
-        <col width="10%"/>
-        <col width="10%"/>
-        <col width="10%"/>
-        <col width="20%"/>
+        <col width="15%"/>
+        <col width="15%"/>
+        <col width="15%"/>
       </colgroup>
       <thead>
       <tr>
         <th><input type="checkbox" name="" lay-skin="primary" lay-filter="allChoose" id="allChoose"/></th>
-        <th>设备名称</th>
-        <th>单位描述</th>
-        <th>更新日期</th>
+        <th>角色</th>
+        <th>角色描述</th>
       </tr>
       </thead>
 
@@ -59,13 +54,13 @@
       {{# layui.each(d.data, function(index, item){ }}
       <tr>
         <td>{{index}}</td>
-        <td>{{item.unint}}</td>
-        <td>{{layui.tools.timestampToString(item.updatedate)}}</td>
+        <td>{{item.role}}</td>
+        <td>{{item.roledes}}</td>
         <td>
           <span id="source{{item.id}}"
                 data-id="{{item.id}}"
-                data-unint="{{item.unint}}"
-                data-updatedate="{{item.updatedate}}"
+                data-role="{{item.role}}"
+                data-roledes="{{item.roledes}}"
                 style="display: none">
           </span>
           <button class="layui-btn layui-btn-mini tenant_edit" data-sourceid="{{item.id}}">
@@ -124,15 +119,13 @@
     console.log("开始执行渲染模板");
     var laytpl = layui.laytpl;
     var $ = layui.jquery;
-    var getUrl = "/bas/unit/ajax/list";
-    var addUrl = "/bas/unit/ajax/new"
-    var editUrl = '/bas/unit/ajax/update';
-    var rmUrl = '/bas/unit/ajax/delet';
+    var getUrl = "/bas/role/ajax/list";
+    var addUrl = "/bas/role/ajax/new"
+    var editUrl = '/bas/role/ajax/update';
+    var rmUrl = '/bas/role/ajax/delet';
     var layer = layui.layer;
-    var laypage = layui.laypage;
     var form = layui.form();
     var newDate = true;//是否新增
-    var mytools = layui.tools;
 
     //监听提交
     form.on('submit', function (data) {
