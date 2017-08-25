@@ -8,6 +8,20 @@
             , laydate = layui.laydate;
 
         $(function () {
+            // Start: 测试 vue 渲染
+            var vueRenderSumTable = new Vue({
+                el: '#vue_render-table',
+                data: {
+                    message: 'Hello Sum Table!'
+                    , isHaveSumTableData: false
+                    , sumTreeTableDatasArr: []
+                }
+            });
+            setTimeout(function() {
+                vueRenderSumTable.message = 'Hello, Pandaroid Word!';
+                vueRenderSumTable.isHaveSumTableData = true;
+            }, 5000);
+            // End  : 测试 vue 渲染
             // Start: 使用 webStorageCache 请求站点设备树信息
             function callback_sumTreeTableDataLoaded(data_allSitesAndDevices_sumTreeTable) {
                 console.log('[callback_sumTreeTableDataLoaded]data_allSitesAndDevices_sumTreeTable: ');
@@ -48,6 +62,7 @@
                             , isBranch: (data_site && data_site.devices && data_site.devices.length && data_site.devices.length > 0)
                             , parentId: null
                         };
+                        vueRenderSumTable.sumTreeTableDatasArr.push(renderData_site);
                         laytpl(tpl_sumTreeTableTr.innerHTML).render(renderData_site, function(html_tpl_sumTreeTableTr) {
                             tbody_sumTable.innerHTML += html_tpl_sumTreeTableTr;
                             // Start: 处理 site 下的 devices
