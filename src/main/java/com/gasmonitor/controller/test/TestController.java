@@ -98,19 +98,6 @@ public class TestController {
     }
 
 
-    @RequestMapping("device/removecacheh")
-    @CacheEvict(value = Consts.CACHE_DEVICE, key = "'" + Consts.CACHE_DEVICE_HARDWAREID + "'+#p0")
-    public Object removecacheh(String id) {
-        return "完成";
-    }
-
-    @RequestMapping("device/removeallcache")
-    @CacheEvict(value = Consts.CACHE_DEVICE, allEntries = true)
-    public Object removeallcache(String id) {
-        return "完成";
-    }
-
-
     //暂时设置为get方便测试
     @RequestMapping(value = "/tenant/update")
     @Transactional

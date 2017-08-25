@@ -47,11 +47,9 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
 
     @Override
     @Caching(evict = {
-            @CacheEvict(key = "'" + Consts.CACHE_DEVICE_LIST_SITE + "'+#p0.siteId"),
-            @CacheEvict(key = "'" + Consts.CACHE_DEVICE_HARDWAREID + "'+#p0.hardwareId", condition = "#p0.hardwareId !=null"),
-            @CacheEvict(key = "'" + Consts.CACHE_DEVICE_ID + "'+#p0.id", condition = "#p0.id !=null")
+            @CacheEvict(key = "'" + Consts.CACHE_DEVICE_LIST_SITE + "'" + "+#p0.siteId"),
+            @CacheEvict(key = "'" + Consts.CACHE_DEVICE_HARDWAREID + "'" + "+#p0.hardwareId", condition = "#p0.hardwareId !=null"),
+            @CacheEvict(key = "'" + Consts.CACHE_DEVICE_ID + "'" + "+#p0.id", condition = "#p0.id !=null")
     })
     Device save(Device device);
-
-
 }
