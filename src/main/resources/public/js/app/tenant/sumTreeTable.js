@@ -24,7 +24,7 @@
             var Vue_SumTreeTableDatasManager = {
                 sumTreeTableDatasObj: {}
                 , genVueLabel4Laytpl: function(id_siteOrDevice, fieldName_siteOrDevice) {
-                    return ['{{ sumTreeTableDatasObj[', id_siteOrDevice, '].', fieldName_siteOrDevice, ' }}'].join('');
+                    return ['{{ sumTreeTableDatasObj["', id_siteOrDevice, '"].', fieldName_siteOrDevice, ' }}'].join('');
                 }
             };
             // End  : 测试 vue 渲染
@@ -66,14 +66,16 @@
                         var renderData_site = {
                             id: data_site.id
                             , name: data_site.name
-                            , pointtime_timeStr: laydate.now(data_site.createdate, 'YYYY-MM-DD hh:mm:ss')
+                            , pointtime_timeStr: Vue_SumTreeTableDatasManager.genVueLabel4Laytpl(data_site.id, 'pointtime_timeStr')
                             , isBranch: (data_site && data_site.devices && data_site.devices.length && data_site.devices.length > 0)
                             , parentId: null
                             , address: Vue_SumTreeTableDatasManager.genVueLabel4Laytpl(data_site.id, 'address')
                             , vender: Vue_SumTreeTableDatasManager.genVueLabel4Laytpl(data_site.id, 'vender')
                         };
+                        // 变化的部分都放在下面数据结构里，上面用 Vue_SumTreeTableDatasManager.genVueLabel4Laytpl 占位
                         Vue_SumTreeTableDatasManager.sumTreeTableDatasObj[data_site.id] = {
-                            address: 'vue_地址_' + data_site.id
+                            pointtime_timeStr: laydate.now(data_site.createdate, 'YYYY-MM-DD hh:mm:ss')
+                            , address: 'vue_地址_' + data_site.id
                             , vender: 'vue_厂家_' + data_site.id
                         };
                         vueRenderSumTable.sumTreeTableDatasArr.push(renderData_site);
@@ -117,20 +119,28 @@
                                     return ;
                                 }
                                 var data_device = devices_arr[index_devices_arr];
+                                var deviceId_treeTable = 'd_' + data_device.id;
                                 var renderData_device = {
                                     // id 用 d_ 开头，避免与 siteId 重复造成问题
-                                    id: 'd_' + data_device.id
+                                    id: deviceId_treeTable
                                     , name: data_device.name
                                     , isBranch: (data_device && data_device.children && data_device.children && data_device.children > 0)
                                     // parentId 这里考虑了第三级的情况，callback_processSumTreeTableDevicesArr 不存在为第一级，
                                     // 第一级 device 的父元素是 site 直接 id 就是 siteId ，第二级开始父元素 device 都是 d_ 开头
                                     , parentId: callback_processSumTreeTableDevicesArr ? 'd_' + data_device.siteId : data_device.siteId
+                                    , address: Vue_SumTreeTableDatasManager.genVueLabel4Laytpl(deviceId_treeTable, 'address')
+                                    , vender: Vue_SumTreeTableDatasManager.genVueLabel4Laytpl(deviceId_treeTable, 'vender')
+                                };
+                                // 第一部分（Device）： 变化的部分都放在下面数据结构里，上面用 Vue_SumTreeTableDatasManager.genVueLabel4Laytpl 占位
+                                Vue_SumTreeTableDatasManager.sumTreeTableDatasObj[deviceId_treeTable] = {
+                                    address: 'vue_地址_d_' + data_site.id
+                                    , vender: 'vue_厂家_d_' + data_site.id
                                 };
                                 //
                                 var latestMonitorData = data_device.latestMonitorData;
                                 if(latestMonitorData) {
                                     var latestGasEvent = latestMonitorData.gasEvent;
-                                    renderData_device['pointtime_timeStr'] = laydate.now(latestGasEvent.pointtime, 'YYYY-MM-DD hh:mm:ss');
+                                    renderData_device['pointtime_timeStr'] = Vue_SumTreeTableDatasManager.genVueLabel4Laytpl(deviceId_treeTable, 'pointtime_timeStr');
                                     renderData_device['gaoJingClass'] = latestMonitorData.gaojing ? 'color-red' : '';
                                     renderData_device['running'] = latestGasEvent.running;
                                     renderData_device['standard'] = latestGasEvent.standard;
@@ -141,6 +151,8 @@
                                     renderData_device['summary'] = latestGasEvent.summary;
                                     renderData_device['temperature'] = latestGasEvent.temperature;
                                     renderData_device['surplus'] = latestGasEvent.surplus;
+                                    // 第二部分（Device）： 变化的部分都放在下面数据结构里，上面用 Vue_SumTreeTableDatasManager.genVueLabel4Laytpl 占位
+                                    Vue_SumTreeTableDatasManager.sumTreeTableDatasObj[deviceId_treeTable].pointtime_timeStr = laydate.now(latestGasEvent.pointtime, 'YYYY-MM-DD hh:mm:ss');
                                 }
                                 //
                                 vueRenderSumTable.sumTreeTableDatasArr.push(renderData_device);
@@ -179,6 +191,10 @@
                         sumTreeTableDatasObj: Vue_SumTreeTableDatasManager.sumTreeTableDatasObj
                     }
                 });
+                // 测试
+                setTimeout(function() {
+                    vueRenderSumTableWithLaytpl.sumTreeTableDatasObj['d_4'].vender = '测试：修改厂家 by Vue';
+                }, 5000);
                 // End  : 初始化其中 vue 的数据
 
                 var ele_treeTable_sum = $("#tree_table-sum");
