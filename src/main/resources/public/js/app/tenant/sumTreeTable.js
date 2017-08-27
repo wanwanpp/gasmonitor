@@ -129,6 +129,7 @@
                                     renderData_device['surplus'] = latestGasEvent.surplus;
                                 }
                                 //
+                                vueRenderSumTable.sumTreeTableDatasArr.push(renderData_device);
                                 laytpl(tpl_sumTreeTableTr.innerHTML).render(renderData_device, function(html_tpl_sumTreeTableTr) {
                                     tbody_sumTable.innerHTML += html_tpl_sumTreeTableTr;
                                     if(data_device && data_device.children && data_device.children.length && data_device.children.length > 0) {
