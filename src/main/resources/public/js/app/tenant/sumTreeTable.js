@@ -13,14 +13,15 @@
                 el: '#vue_render-table',
                 data: {
                     message: 'Hello Sum Table!'
-                    , isHaveSumTableData: false
+                    , isHaveSumTableData: true
                     , sumTreeTableDatasArr: []
                 }
             });
-            setTimeout(function() {
+            /*setTimeout(function() {
                 vueRenderSumTable.message = 'Hello, Pandaroid Word!';
                 vueRenderSumTable.isHaveSumTableData = true;
-            }, 5000);
+            }, 5000);*/
+            var sumTreeTableDatasObj = {};
             // End  : 测试 vue 渲染
             // Start: 使用 webStorageCache 请求站点设备树信息
             function callback_sumTreeTableDataLoaded(data_allSitesAndDevices_sumTreeTable) {
@@ -30,6 +31,7 @@
                 function processSumTreeTableSiteArr(data_siteArr) {
                     if(!data_siteArr || !data_siteArr.length || data_siteArr.length < 1) {
                         console.log('[processSumTreeTableSiteArr]data_siteArr 为空，不继续处理');
+                        vueRenderSumTable.isHaveSumTableData = false;
                         return ;
                     }
                     // 先清空 treeTable
@@ -38,6 +40,7 @@
                     function processSumTreeTableSite(data_siteArr, index_data_siteArr) {
                         if(!data_siteArr || !data_siteArr.length || data_siteArr.length < 1) {
                             console.log('[processSumTreeTableSite]data_siteArr 为空，不继续处理');
+                            vueRenderSumTable.isHaveSumTableData = false;
                             return ;
                         }
                         var len_data_siteArr = data_siteArr.length;
@@ -61,6 +64,12 @@
                             , pointtime_timeStr: laydate.now(data_site.createdate, 'YYYY-MM-DD hh:mm:ss')
                             , isBranch: (data_site && data_site.devices && data_site.devices.length && data_site.devices.length > 0)
                             , parentId: null
+                            , address: ['{{ sumTreeTableDatasObj[', data_site.id, '].address }}'].join('')
+                            , vender: ['{{ sumTreeTableDatasObj[', data_site.id, '].vender }}'].join('')
+                        };
+                        sumTreeTableDatasObj[data_site.id] = {
+                            address: 'vue_地址_' + data_site.id
+                            , vender: 'vue_厂家_' + data_site.id
                         };
                         vueRenderSumTable.sumTreeTableDatasArr.push(renderData_site);
                         laytpl(tpl_sumTreeTableTr.innerHTML).render(renderData_site, function(html_tpl_sumTreeTableTr) {
@@ -158,6 +167,15 @@
 
             // Start: treeTable 初始化相关
             function initSumTreeTable() {
+                // Start: 初始化其中 vue 的数据
+                var vueRenderSumTableWithLaytpl = new Vue({
+                    el: '#tbody_sumTable',
+                    data: {
+                        sumTreeTableDatasObj: sumTreeTableDatasObj
+                    }
+                });
+                // End  : 初始化其中 vue 的数据
+
                 var ele_treeTable_sum = $("#tree_table-sum");
 
                 // initialize treeTable
@@ -179,6 +197,7 @@
                 function nodeCollapse () {
                     // alert("Collapsed: " + this.id);
                 }
+
             }
             // End  : treeTable 初始化相关
 

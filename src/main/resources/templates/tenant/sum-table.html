@@ -303,10 +303,22 @@
         </thead>
         <tbody id="tbody_sumTable-vue_render">
         <tr v-if="!isHaveSumTableData">
-            <td colspan="13">暂无总表数据</td>
+            <td colspan="13">暂无总表数据可显示</td>
         </tr>
-        <tr v-for="sumTreeTableData in sumTreeTableDatasArr">
-            <td colspan="13">{{ sumTreeTableData.name }}</td>
+        <tr v-for="sumTreeTableData in sumTreeTableDatasArr" data-tt-id="{{ sumTreeTableData.id }}" data-tt-branch='{{ sumTreeTableData.isBranch }}' data-tt-parent-id="{{ sumTreeTableData.parentId }}" class="{{ sumTreeTableData.gaoJingClass || '' }}">
+            <td>{{ sumTreeTableData.name }}</td>
+            <td>{{ sumTreeTableData.pointtime_timeStr }}</td>
+            <td>{{ sumTreeTableData.running }}</td>
+            <td>{{ sumTreeTableData.standard }}</td>
+            <td>{{ sumTreeTableData.sum }}</td>
+            <td>{{ sumTreeTableData.surplus }}</td>
+            <td>{{ sumTreeTableData.pressure || '' }}</td>
+            <td>{{ sumTreeTableData.temperature || '' }}</td>
+            <td>{{ sumTreeTableData.ac220 || '' }}</td>
+            <td>{{ sumTreeTableData.battery || '' }}</td>
+            <td>{{ sumTreeTableData.solar || '' }}</td>
+            <td>地址_{{ sumTreeTableData.id }}</td>
+            <td>厂家_{{ sumTreeTableData.id }}</td>
         </tr>
         </tbody>
     </table>
@@ -333,8 +345,8 @@
         <td>{{ d.ac220 || '' }}</td>
         <td>{{ d.battery || '' }}</td>
         <td>{{ d.solar || '' }}</td>
-        <td>10_{{ d.id }}</td>
-        <td>11_{{ d.id }}</td>
+        <td>地址_{{ d.address || d.id }}</td>
+        <td>厂家_{{ d.vender || d.id }}</td>
     </tr>
 
     {{# if(d.isBranch) { }}
