@@ -21,7 +21,12 @@
                 vueRenderSumTable.message = 'Hello, Pandaroid Word!';
                 vueRenderSumTable.isHaveSumTableData = true;
             }, 5000);*/
-            var sumTreeTableDatasObj = {};
+            var Vue_SumTreeTableDatasManager = {
+                sumTreeTableDatasObj: {}
+                , genVueLabel4Laytpl: function(id_siteOrDevice, fieldName_siteOrDevice) {
+                    return ['{{ sumTreeTableDatasObj[', id_siteOrDevice, '].', fieldName_siteOrDevice, ' }}'].join('');
+                }
+            };
             // End  : 测试 vue 渲染
             // Start: 使用 webStorageCache 请求站点设备树信息
             function callback_sumTreeTableDataLoaded(data_allSitesAndDevices_sumTreeTable) {
@@ -64,10 +69,10 @@
                             , pointtime_timeStr: laydate.now(data_site.createdate, 'YYYY-MM-DD hh:mm:ss')
                             , isBranch: (data_site && data_site.devices && data_site.devices.length && data_site.devices.length > 0)
                             , parentId: null
-                            , address: ['{{ sumTreeTableDatasObj[', data_site.id, '].address }}'].join('')
-                            , vender: ['{{ sumTreeTableDatasObj[', data_site.id, '].vender }}'].join('')
+                            , address: Vue_SumTreeTableDatasManager.genVueLabel4Laytpl(data_site.id, 'address')
+                            , vender: Vue_SumTreeTableDatasManager.genVueLabel4Laytpl(data_site.id, 'vender')
                         };
-                        sumTreeTableDatasObj[data_site.id] = {
+                        Vue_SumTreeTableDatasManager.sumTreeTableDatasObj[data_site.id] = {
                             address: 'vue_地址_' + data_site.id
                             , vender: 'vue_厂家_' + data_site.id
                         };
@@ -171,7 +176,7 @@
                 var vueRenderSumTableWithLaytpl = new Vue({
                     el: '#tbody_sumTable',
                     data: {
-                        sumTreeTableDatasObj: sumTreeTableDatasObj
+                        sumTreeTableDatasObj: Vue_SumTreeTableDatasManager.sumTreeTableDatasObj
                     }
                 });
                 // End  : 初始化其中 vue 的数据
