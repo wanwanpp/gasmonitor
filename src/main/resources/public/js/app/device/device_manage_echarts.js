@@ -146,7 +146,7 @@
             var option = {
                 title: {
                     text: subTitle,
-                    subtext: ['[', hardwareId, ' : ', deviceName, ']'].join('')
+                    subtext: deviceName/*['[', hardwareId, ' : ', deviceName, ']'].join('')*/
                 },
                 backgroundColor: '#CCFFCC',
                 tooltip: {

@@ -5,12 +5,15 @@
 // Start: 在父页面初始化 oneSocket
 (function() {
     layui.use(['oneSocket', 'tools', 'webStorageCache'], function() {
-        // 初始化左侧菜单和顶部 tab
-        layui.tools.indexLeftNavTopTab();
         // 处理 oneSocket
         var $ = layui.jquery
+            , tools = layui.tools
             , webStorageCache = layui.webStorageCache
             , monitorDataCacheManager = webStorageCache.monitorDataCacheManager;
+
+        // 初始化左侧菜单和顶部 tab
+        tools.indexLeftNavTopTab();
+
         $(function() {
             // Start: oneSocket 相关代码
             var oneSocket = layui.oneSocket;
@@ -32,6 +35,12 @@
             monitorDataCacheManager.loadHistoryMonitorData2Cache();
             // End  : oneSocket 相关代码
         });
+
+        // Start: 绑定右上角告警事件处理提示点击事件
+        $(document).on('click', '#a_alarmEventManage', function () {
+            tools.jumpLeftNavTab('/tenant/alarmEventManage');
+        });
+        // End  : 绑定右上角告警事件处理提示点击事件
     });
 })();
 // End  : 在父页面初始化 oneSocket

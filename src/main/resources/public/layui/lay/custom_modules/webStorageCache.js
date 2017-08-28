@@ -14,6 +14,15 @@ layui.define(['jquery', 'layer', 'tools', 'laydate'], function(exports) {
         , todayStartEndDateTimeTool = tools.todayStartEndDateTimeTool
         , laydate = layui.laydate;
 
+    /*if(window && window.parent && (window !== window.parent)
+        && window.parent.layui && window.parent.layui.webStorageCache) {
+        console.log('【webStorageCache】父元素已经初始化了 webStorageCache');
+        // 本页面的 layui.webStorageCache 继承父页面的
+        layui.webStorageCache = window.parent.layui.webStorageCache;
+        // layui.oneSocket.EventEmitter = window.parent.document;
+        exports('webStorageCache', layui.webStorageCache);
+        return ;
+    }*/
     console.log('【layui.webStorageCache】加载完毕后执行回调');
 
     // Start: webStorageCache 源码
@@ -299,6 +308,8 @@ layui.define(['jquery', 'layer', 'tools', 'laydate'], function(exports) {
             _monitorDataCacheManager.pushMonitorData2CachedArrByMonitorDataCachekey(cache_key_4_a_monitorData_arr, jsonObj_monitorData);
         }
     };
+    // 开始监听
+    // oneSocket.setHandler(oneSocket.Event.GAS_EVENT, monitorDataCacheManager.processMonitorData_oneSocket_webStorageCache);
     // End  : 所有的 function - monitorDataCacheManager
 
     // Start: 所有的 function - sitesAndDevicesTreeCacheManager
@@ -396,6 +407,50 @@ layui.define(['jquery', 'layer', 'tools', 'laydate'], function(exports) {
             }
             // End  : cache callback 的定义，先缓存 data_allSitesAndDevices 数据，再进行 callback_allSitesAndDevices 回调
             $.get(url_allSitesAndDevices, params_allSitesAndDevices, callback_cacheTreeData_allSitesAndDevices, "json");
+        },
+        parseDeviceIdFromHardwareId: function(hardwareId, callback) {
+            var deviceId_fin = null;
+            var doCallback = function(deviceId) {
+                if(callback && callback instanceof Function) {
+                    callback(deviceId);
+                }
+            };
+            var processDevicesArr_parseDeviceIdFromHardwareId = function(devicesArr) {
+                if(deviceId_fin) {
+                    return ;
+                }
+                if(!devicesArr || !devicesArr.length || devicesArr.length < 1) {
+                    doCallback(null);
+                    return ;
+                }
+                devicesArr.forEach(function(item_device) {
+                    if(hardwareId == item_device.hardwareId) {
+                        deviceId_fin = item_device.id;
+                        doCallback(deviceId_fin);
+                        return ;
+                    }
+                    var item_device_children = item_device.children;
+                    processDevicesArr_parseDeviceIdFromHardwareId(item_device_children);
+                });
+            };
+            sitesAndDevicesTreeCacheManager.loadTreeDataAllSitesAndDevices(function(data_allSitesAndDevices) {
+                console.log('[parseDeviceIdFromHardwareId] data_allSitesAndDevices: ');
+                console.log(data_allSitesAndDevices);
+                var sitesArr = data_allSitesAndDevices.data;
+                console.log('[parseDeviceIdFromHardwareId] sitesArr: ');
+                console.log(sitesArr);
+                if(!sitesArr || !sitesArr.length || sitesArr.length < 1) {
+                    doCallback(null);
+                    return ;
+                }
+                sitesArr.forEach(function(item_site) {
+                    if(deviceId_fin) {
+                        return ;
+                    }
+                    var devicesArr = item_site.devices;
+                    processDevicesArr_parseDeviceIdFromHardwareId(devicesArr);
+                });
+            });
         }
     };
     // End  : 所有的 function - sitesAndDevicesTreeCacheManager

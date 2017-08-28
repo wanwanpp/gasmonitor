@@ -1,63 +1,63 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8"/>
-  <title>租户 - 总表</title>
-  <meta name="renderer" content="webkit"/>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-  <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
-  <meta name="apple-mobile-web-app-capable" content="yes"/>
-  <meta name="format-detection" content="telephone=no"/>
-  <link rel="stylesheet" href="/layui/css/layui.css" media="all"/>
-  <link rel="stylesheet" href="/css/me.css" media="all"/>
+    <meta charset="utf-8"/>
+    <title>租户 - 总表</title>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all"/>
+    <link rel="stylesheet" href="/css/me.css" media="all"/>
 
-  <!-- Start: treeTable 的 css -->
-  <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-treetable/3.2.0/css/jquery.treetable.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-treetable/3.2.0/css/jquery.treetable.theme.default.min.css">-->
-  <!-- End  : treeTable 的 css -->
-  <style>
-    .color-red { color: #CC0033; }
-  </style>
+    <!-- Start: treeTable 的 css -->
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-treetable/3.2.0/css/jquery.treetable.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-treetable/3.2.0/css/jquery.treetable.theme.default.min.css">-->
+    <!-- End  : treeTable 的 css -->
+    <style>
+        .color-red { color: #CC0033; }
+    </style>
 </head>
 <body class="childrenBody">
-  <blockquote class="layui-elem-quote news_search">
+<blockquote class="layui-elem-quote news_search">
     <div class="layui-inline">
-      <button class="layui-btn" id="btn-expand_all">
-        <i class="layui-icon">&#xe624;</i> 全部展开
-      </button>
+        <button class="layui-btn" id="btn-expand_all">
+            <i class="layui-icon">&#xe624;</i> 全部展开
+        </button>
     </div>
     <div class="layui-inline">
-      <button class="layui-btn" id="btn-collapse_all">
-        <i class="layui-icon">&#xe622;</i> 全部收拢
-      </button>
+        <button class="layui-btn" id="btn-collapse_all">
+            <i class="layui-icon">&#xe622;</i> 全部收拢
+        </button>
     </div>
-  </blockquote>
-  <!-- Start: table html -->
-  <table id="tree_table-sum" class="layui-table">
+</blockquote>
+<!-- Start: table html -->
+<table id="tree_table-sum" class="layui-table">
     <caption>
 
     </caption>
     <thead>
     <tr>
-      <th>站点名称</th>
-      <th>监测时间</th>
-      <th>工况流量（m³/h）</th>
-      <th>标况流量（Nm³/h）</th>
-      <th>累计流量（立方米）</th>
-      <th>剩余流量（立方米）</th>
-      <th>压力（KPa）</th>
-      <th>温度（℃）</th>
-      <th>市电状态</th>
-      <th>电池电压（V）</th>
-      <th>太阳能电压（V）</th>
-      <th>仪表地址</th>
-      <th>仪表厂家</th>
+        <th>站点名称</th>
+        <th>监测时间</th>
+        <th>工况流量（m³/h）</th>
+        <th>标况流量（Nm³/h）</th>
+        <th>累计流量（立方米）</th>
+        <th>剩余流量（立方米）</th>
+        <th>压力（KPa）</th>
+        <th>温度（℃）</th>
+        <th>市电状态</th>
+        <th>电池电压（V）</th>
+        <th>太阳能电压（V）</th>
+        <th>仪表地址</th>
+        <th>仪表厂家</th>
     </tr>
     </thead>
     <tbody id="tbody_sumTable">
     <tr>
-      <td colspan="13">暂无总表数据</td>
+        <td colspan="13">暂无总表数据</td>
     </tr>
     <!--<tr data-tt-id="1">
       <td>辛忠驿总计量西</td>
@@ -276,8 +276,54 @@
       <td>天信CPU卡</td>
     </tr>-->
     </tbody>
-  </table>
-  <!-- End  : table html -->
+</table>
+<!-- End  : table html -->
+<!-- Start: vue render table -->
+<!--<div id="vue_render-table">
+    <table id="tree_table-sum-vue_render" class="layui-table">
+        <caption>
+            {{ message }}
+        </caption>
+        <thead>
+        <tr>
+            <th>站点名称</th>
+            <th>监测时间</th>
+            <th>工况流量（m³/h）</th>
+            <th>标况流量（Nm³/h）</th>
+            <th>累计流量（立方米）</th>
+            <th>剩余流量（立方米）</th>
+            <th>压力（KPa）</th>
+            <th>温度（℃）</th>
+            <th>市电状态</th>
+            <th>电池电压（V）</th>
+            <th>太阳能电压（V）</th>
+            <th>仪表地址</th>
+            <th>仪表厂家</th>
+        </tr>
+        </thead>
+        <tbody id="tbody_sumTable-vue_render">
+        <tr v-if="!isHaveSumTableData">
+            <td colspan="13">暂无总表数据可显示</td>
+        </tr>
+        <tr v-for="sumTreeTableData in sumTreeTableDatasArr" data-tt-id="{{ sumTreeTableData.id }}" data-tt-branch='{{ sumTreeTableData.isBranch }}' data-tt-parent-id="{{ sumTreeTableData.parentId }}" class="{{ sumTreeTableData.gaoJingClass || '' }}">
+            <td>{{ sumTreeTableData.name }}</td>
+            <td>{{ sumTreeTableData.pointtime_timeStr }}</td>
+            <td>{{ sumTreeTableData.running }}</td>
+            <td>{{ sumTreeTableData.standard }}</td>
+            <td>{{ sumTreeTableData.sum }}</td>
+            <td>{{ sumTreeTableData.surplus }}</td>
+            <td>{{ sumTreeTableData.pressure || '' }}</td>
+            <td>{{ sumTreeTableData.temperature || '' }}</td>
+            <td>{{ sumTreeTableData.ac220 || '' }}</td>
+            <td>{{ sumTreeTableData.battery || '' }}</td>
+            <td>{{ sumTreeTableData.solar || '' }}</td>
+            <td>地址_{{ sumTreeTableData.id }}</td>
+            <td>厂家_{{ sumTreeTableData.id }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>-->
+<!-- End  : vue render table -->
 </body>
 </html>
 
@@ -287,41 +333,42 @@
 <!-- Start: 模板 laytpl -->
 <script id="tpl_sumTreeTableTr" type="text/html">
 
-  <tr data-tt-id="{{ d.id }}" data-tt-branch='{{ d.isBranch }}' data-tt-parent-id="{{ d.parentId }}" class="{{ d.gaoJingClass || '' }}">
-    <td>{{ d.name }}</td>
-    <td>{{ d.pointtime_timeStr || '' }}</td>
-    <td>{{ d.running || '' }}</td>
-    <td>{{ d.standard || '' }}</td>
-    <td>{{ d.summary || '' }}</td>
-    <td>{{ d.surplus || '' }}</td>
-    <td>{{ d.pressure || '' }}</td>
-    <td>{{ d.temperature || '' }}</td>
-    <td>{{ d.ac220 || '' }}</td>
-    <td>{{ d.battery || '' }}</td>
-    <td>{{ d.solar || '' }}</td>
-    <td>10_{{ d.id }}</td>
-    <td>11_{{ d.id }}</td>
-  </tr>
+    <tr data-tt-id="{{ d.id }}" data-tt-branch='{{ d.isBranch }}' data-tt-parent-id="{{ d.parentId }}" class="{{ d.gaoJingClass || '' }}">
+        <td>{{ d.name }}</td>
+        <td>{{ d.pointtime_timeStr || '' }}</td>
+        <td>{{ d.running || '' }}</td>
+        <td>{{ d.standard || '' }}</td>
+        <td>{{ d.summary || '' }}</td>
+        <td>{{ d.surplus || '' }}</td>
+        <td>{{ d.pressure || '' }}</td>
+        <td>{{ d.temperature || '' }}</td>
+        <td>{{ d.ac220 || '' }}</td>
+        <td>{{ d.battery || '' }}</td>
+        <td>{{ d.solar || '' }}</td>
+        <td>地址_{{ d.address || d.id }}</td>
+        <td>厂家_{{ d.vender || d.id }}</td>
+    </tr>
 
-  {{# if(d.isBranch) { }}
-  <tr data-tt-id="d_{{ d.id }}.0"  data-tt-parent-id="{{ d.id }}" class="color-red">
-    <td>分表合计</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-  </tr>
-  {{# } }}
+    {{# if(d.isBranch) { }}
+    <tr data-tt-id="d_{{ d.id }}.0"  data-tt-parent-id="{{ d.id }}" class="color-red">
+        <td>分表合计</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    {{# } }}
 
 </script>
 <!-- End  : 模板 laytpl -->
+<script type="text/javascript" src="/js/vue.min.js"></script>
 <script type="text/javascript" src="/js/app/tenant/sumTreeTable.js"></script>
 <!-- End  : treeTable 的 js -->
