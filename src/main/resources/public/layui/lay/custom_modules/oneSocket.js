@@ -3,8 +3,10 @@
  * (c) 2017 Payne Pandaroid Wang
  * 封装对 socket 使用，处理跨父子页面共用 socket 的差异。接收分发协议、被调用发送协议。
  */
-layui.define(function(exports) {
+layui.define(['webStorageCache'], function(exports) {
     console.log('【oneSocket】加载完毕后执行回调');
+    var webStorageCache = layui.webStorageCache
+        , monitorDataCacheManager = webStorageCache.monitorDataCacheManager;
     // 导出的模块名和接口函数
     exports('oneSocket', function(SockJS, Stomp) {
         console.log('【oneSocket】调用模块接口');
@@ -63,6 +65,11 @@ layui.define(function(exports) {
                         handlerFunc(message.body);
                     }
                 });
+                // Start: 插入 webStorageCache 的回调
+                if(layui.oneSocket.Event.GAS_EVENT == oneSocketEvent) {
+                    layui.oneSocket.processMonitorData_oneSocket_webStorageCache(message.body);
+                }
+                // End  : 插入 webStorageCache 的回调
             }
         }
 
@@ -92,6 +99,43 @@ layui.define(function(exports) {
             stomp.send("/setStations", {}, stationName);
         };
         // End  : oneSocket 对外暴露的接口
+
+        // Start: 暂时， oneSocket 唯一的全局单例，代理 webStorageCache 中需要单例跨父子 iframe 的方法
+        /**
+         * 处理 data - MonitorData 数据，过程：
+         * 1. 先解析数据
+         * 2. 将数据通过接口 monitorDataCacheManager.addJsonMonitorData2Cache(json_monitorData) 加入缓存（借此查重排序）
+         * 3. 通知监听的回调（具体用户调用时指定）
+         * @param data  socket 推送来的 MonitorData 数据
+         */
+        layui.oneSocket.processMonitorData_oneSocket_webStorageCache = function(data) {
+
+            // 1. 解析数据
+            console.log('[processMonitorData_sumTreeTable] data: ');
+            console.log(data);
+
+            var json_monitorData = JSON.parse(data);
+            console.log('[processMonitorData_sumTreeTable] json_monitorData: ');
+            console.log(json_monitorData);
+
+            var jDataGasEvent = json_monitorData.gasEvent;
+            console.log('[processMonitorData_sumTreeTable] jDataGasEvent: ');
+            console.log(jDataGasEvent);
+
+            // 2. 将数据通过接口 monitorDataCacheManager.addJsonMonitorData2Cache(json_monitorData) 加入缓存（借此查重排序）
+            monitorDataCacheManager.addJsonMonitorData2Cache(json_monitorData);
+
+            // 3. 通知监听的回调（具体用户调用时指定）
+            var callback = monitorDataCacheManager.callback_onHandle_processMonitorData_oneSocket_webStorageCache;
+            console.log('[webStorageCache] callback instanceof Function: ' + callback instanceof Function);
+            if(callback/* && callback instanceof Function*/) {
+                callback(data);
+            }
+        };
+        layui.oneSocket.setCallback_onHandle_processMonitorData_oneSocket_webStorageCache = function(callback) {
+            monitorDataCacheManager.callback_onHandle_processMonitorData_oneSocket_webStorageCache = callback;
+        };
+        // End  : 暂时， oneSocket 唯一的全局单例，代理 webStorageCache 中需要单例跨父子 iframe 的方法
 
         return layui.oneSocket;
     });

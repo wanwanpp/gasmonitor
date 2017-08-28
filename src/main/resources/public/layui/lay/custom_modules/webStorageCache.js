@@ -411,13 +411,11 @@ layui.define(['jquery', 'layer', 'tools', 'laydate'], function(exports) {
         parseDeviceIdFromHardwareId: function(hardwareId, callback) {
             var deviceId_fin = null;
             var doCallback = function(deviceId) {
-                debugger;
                 if(callback && callback instanceof Function) {
                     callback(deviceId);
                 }
             };
             var processDevicesArr_parseDeviceIdFromHardwareId = function(devicesArr) {
-                debugger;
                 if(deviceId_fin) {
                     return ;
                 }
@@ -435,9 +433,7 @@ layui.define(['jquery', 'layer', 'tools', 'laydate'], function(exports) {
                     processDevicesArr_parseDeviceIdFromHardwareId(item_device_children);
                 });
             };
-            debugger;
             sitesAndDevicesTreeCacheManager.loadTreeDataAllSitesAndDevices(function(data_allSitesAndDevices) {
-                debugger;
                 console.log('[parseDeviceIdFromHardwareId] data_allSitesAndDevices: ');
                 console.log(data_allSitesAndDevices);
                 var sitesArr = data_allSitesAndDevices.data;
@@ -448,7 +444,6 @@ layui.define(['jquery', 'layer', 'tools', 'laydate'], function(exports) {
                     return ;
                 }
                 sitesArr.forEach(function(item_site) {
-                    debugger;
                     if(deviceId_fin) {
                         return ;
                     }
