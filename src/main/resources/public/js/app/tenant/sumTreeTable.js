@@ -1,11 +1,13 @@
 (function () {
-    layui.use(['treeTable', 'webStorageCache', 'laytpl', 'laydate'], function() {
+    layui.use(['treeTable', 'webStorageCache', 'laytpl', 'laydate', 'oneSocket'], function() {
         var $ = layui.jquery
             , treeTable = layui.treeTable
             , webStorageCache = layui.webStorageCache
+            , monitorDataCacheManager = webStorageCache.monitorDataCacheManager
             , sitesAndDevicesTreeCacheManager = webStorageCache.sitesAndDevicesTreeCacheManager
             , laytpl = layui.laytpl
-            , laydate = layui.laydate;
+            , laydate = layui.laydate
+            , oneSocket = layui.oneSocket();
 
         $(function () {
             // Start: 测试 vue 渲染
@@ -183,9 +185,10 @@
             // End  : 使用 webStorageCache 请求站点设备树信息
 
             // Start: treeTable 初始化相关
+
             function initSumTreeTable() {
                 // Start: 初始化其中 vue 的数据
-                var vueRenderSumTableWithLaytpl = new Vue({
+                Vue_SumTreeTableDatasManager.vueRenderSumTableWithLaytpl = new Vue({
                     el: '#tbody_sumTable',
                     data: {
                         sumTreeTableDatasObj: Vue_SumTreeTableDatasManager.sumTreeTableDatasObj
@@ -236,6 +239,40 @@
                 layui.treeTable.jQuery('#tree_table-sum').treetable('collapseAll');
             });
             // End  : 全部展开 和 全部收拢 按钮
+
+            // Start: 订阅和处理 MointorData.GasEvent 数据更新
+            // 订阅 monitorDataCacheManager 的数据更新回调
+            var callback_onHandle_processMonitorData_oneSocket_webStorageCache = function(data) {
+                console.log('[sumTreeTable] monitorDataCacheManager 数据更新后回调， data： ');
+                console.log(data);
+                // 1. 解析 data ，取得 hardwareId （现在只刷新了 device 的）
+                var json_monitorData = JSON.parse(data);
+                console.log('[sumTreeTable] monitorDataCacheManager 数据更新后回调， json_monitorData： ');
+                console.log(json_monitorData);
+                // 1.5 取得 gasEvent
+                var gasEvent = json_monitorData.gasEvent;
+                console.log('[sumTreeTable] monitorDataCacheManager 数据更新后回调， gasEvent： ');
+                console.log(gasEvent);
+                // 1.7  取得 hardwareId
+                var hardwareId = gasEvent.hardwareId;
+                console.log('[sumTreeTable] monitorDataCacheManager 数据更新后回调， hardwareId： ' + hardwareId);
+                // 1.8 取得 deviceId
+                sitesAndDevicesTreeCacheManager.parseDeviceIdFromHardwareId(hardwareId, function(deviceId) {
+                    if(!deviceId || deviceId < 1) {
+                        console.warn('[callback_onHandle_processMonitorData_oneSocket_webStorageCache] deviceId 有問題。 deviceId: ' + deviceId);
+                        return ;
+                    }
+                    console.log('[sumTreeTable] monitorDataCacheManager 数据更新后回调， deviceId： ' + deviceId);
+                    // 2. 只需要更新 Vue 绑定的数据
+                    // 2.2 得到设备在 sumTreeTableDatasObj 中的 entry
+                    var entry_sumTreeTableDataObj = ['d_', deviceId].join('');
+                    var target__sumTreeTableDataObj = Vue_SumTreeTableDatasManager.vueRenderSumTableWithLaytpl.sumTreeTableDatasObj[entry_sumTreeTableDataObj];
+                    // 開始同步數據
+                    target__sumTreeTableDataObj.pointtime_timeStr = laydate.now(gasEvent.pointtime, 'YYYY-MM-DD hh:mm:ss');
+                });
+            };
+            oneSocket.setCallback_onHandle_processMonitorData_oneSocket_webStorageCache(callback_onHandle_processMonitorData_oneSocket_webStorageCache);
+            // End  : 订阅和处理 MointorData.GasEvent 数据更新
         });
     });
 })();
