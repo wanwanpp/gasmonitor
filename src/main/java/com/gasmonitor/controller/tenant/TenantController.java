@@ -133,6 +133,11 @@ public class TenantController {
         return "tenant/settings";
     }
 
+    @RequestMapping(value = "/alarmEventManage")
+    public String alarmEventManage() {
+        return "tenant/alarmEventManage";
+    }
+
     /**
      * 总表
      * @return
