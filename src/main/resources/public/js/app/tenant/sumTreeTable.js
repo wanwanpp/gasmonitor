@@ -9,14 +9,14 @@
 
         $(function () {
             // Start: 测试 vue 渲染
-            var vueRenderSumTable = new Vue({
+            /*var vueRenderSumTable = new Vue({
                 el: '#vue_render-table',
                 data: {
                     message: 'Hello Sum Table!'
                     , isHaveSumTableData: true
                     , sumTreeTableDatasArr: []
                 }
-            });
+            });*/
             /*setTimeout(function() {
                 vueRenderSumTable.message = 'Hello, Pandaroid Word!';
                 vueRenderSumTable.isHaveSumTableData = true;
@@ -36,7 +36,7 @@
                 function processSumTreeTableSiteArr(data_siteArr) {
                     if(!data_siteArr || !data_siteArr.length || data_siteArr.length < 1) {
                         console.log('[processSumTreeTableSiteArr]data_siteArr 为空，不继续处理');
-                        vueRenderSumTable.isHaveSumTableData = false;
+                        // vueRenderSumTable.isHaveSumTableData = false;
                         return ;
                     }
                     // 先清空 treeTable
@@ -45,7 +45,7 @@
                     function processSumTreeTableSite(data_siteArr, index_data_siteArr) {
                         if(!data_siteArr || !data_siteArr.length || data_siteArr.length < 1) {
                             console.log('[processSumTreeTableSite]data_siteArr 为空，不继续处理');
-                            vueRenderSumTable.isHaveSumTableData = false;
+                            // vueRenderSumTable.isHaveSumTableData = false;
                             return ;
                         }
                         var len_data_siteArr = data_siteArr.length;
@@ -78,7 +78,7 @@
                             , address: 'vue_地址_' + data_site.id
                             , vender: 'vue_厂家_' + data_site.id
                         };
-                        vueRenderSumTable.sumTreeTableDatasArr.push(renderData_site);
+                        // vueRenderSumTable.sumTreeTableDatasArr.push(renderData_site);
                         laytpl(tpl_sumTreeTableTr.innerHTML).render(renderData_site, function(html_tpl_sumTreeTableTr) {
                             tbody_sumTable.innerHTML += html_tpl_sumTreeTableTr;
                             // Start: 处理 site 下的 devices
@@ -133,8 +133,8 @@
                                 };
                                 // 第一部分（Device）： 变化的部分都放在下面数据结构里，上面用 Vue_SumTreeTableDatasManager.genVueLabel4Laytpl 占位
                                 Vue_SumTreeTableDatasManager.sumTreeTableDatasObj[deviceId_treeTable] = {
-                                    address: 'vue_地址_d_' + data_site.id
-                                    , vender: 'vue_厂家_d_' + data_site.id
+                                    address: 'vue_地址_' + deviceId_treeTable
+                                    , vender: 'vue_厂家_' + deviceId_treeTable
                                 };
                                 //
                                 var latestMonitorData = data_device.latestMonitorData;
@@ -155,7 +155,7 @@
                                     Vue_SumTreeTableDatasManager.sumTreeTableDatasObj[deviceId_treeTable].pointtime_timeStr = laydate.now(latestGasEvent.pointtime, 'YYYY-MM-DD hh:mm:ss');
                                 }
                                 //
-                                vueRenderSumTable.sumTreeTableDatasArr.push(renderData_device);
+                                // vueRenderSumTable.sumTreeTableDatasArr.push(renderData_device);
                                 laytpl(tpl_sumTreeTableTr.innerHTML).render(renderData_device, function(html_tpl_sumTreeTableTr) {
                                     tbody_sumTable.innerHTML += html_tpl_sumTreeTableTr;
                                     if(data_device && data_device.children && data_device.children.length && data_device.children.length > 0) {
@@ -192,9 +192,10 @@
                     }
                 });
                 // 测试
-                setTimeout(function() {
-                    vueRenderSumTableWithLaytpl.sumTreeTableDatasObj['d_4'].vender = '测试：修改厂家 by Vue';
-                }, 5000);
+                /*setTimeout(function() {
+                    vueRenderSumTableWithLaytpl.sumTreeTableDatasObj['d_4'].vender = '测试【d_4】：修改厂家 by Vue';
+                    vueRenderSumTableWithLaytpl.sumTreeTableDatasObj['d_5'].vender = '测试【d_5】：修改厂家 by Vue';
+                }, 5000);*/
                 // End  : 初始化其中 vue 的数据
 
                 var ele_treeTable_sum = $("#tree_table-sum");
