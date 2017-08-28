@@ -37,7 +37,7 @@ public class SiteService {
             }
         }
         //返回最终的结果
-        return AjaxResult.AjaxResultWithList(sites);
+        return AjaxResult.NewAjaxResult(sites);
     }
 
 
@@ -53,7 +53,7 @@ public class SiteService {
             }
         }
         //返回最终的结果
-        return AjaxResult.AjaxResultWithList(sites);
+        return AjaxResult.NewAjaxResult(sites);
     }
 
 

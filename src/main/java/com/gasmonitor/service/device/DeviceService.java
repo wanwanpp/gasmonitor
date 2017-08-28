@@ -89,6 +89,7 @@ public class DeviceService {
     }
 
 
+    //todo 处理成可用状态的时候，需要判断是否有预警已经处理完了，如果没有处理完，那么提示先把警告处理完成才能继续操作更新状态
     public Device updateDeviceStatus(Long id, Integer status) {
         Device d = deviceRepository.findOne(id);
         if (d == null) {

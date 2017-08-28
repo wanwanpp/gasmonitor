@@ -42,11 +42,11 @@ public class AjaxResult<T> {
 
 
     //
-    public static <T> AjaxResult<T> AjaxResultWithOne(T data) {
+    public static <T> AjaxResult<T> NewAjaxResult(T data) {
         return new AjaxResult<T>(data);
     }
 
-    public static <T> AjaxResult<T> AjaxResultWithList(List<T> data) {
+    public static <T> AjaxResult<T> NewAjaxResult(List<T> data) {
         AjaxResult<T> r = new AjaxResult<T>();
         r.data = data;
         r.setPage(1);

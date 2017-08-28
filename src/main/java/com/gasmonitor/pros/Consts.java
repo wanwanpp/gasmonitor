@@ -15,4 +15,12 @@ public class Consts {
     public static final String CACHE_DEVICE_LIST_SITE = "c_device_list_site";  //设备列表通过站点
 
     public static final String CACHE_BASDEVICEUNIT = "c_basdeviceunit";  //设备缓存
+    
+    //警告状态
+    public static class WARNDEVICE_STATUS {
+        public static final int INIT = 1;
+        public static final int DOEN = 2;
+        public static final int IGNORE = 3;
+
+    }
 }
