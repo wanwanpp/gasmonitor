@@ -290,6 +290,11 @@
                     // 開始同步數據
                     target_sumTreeTableDataObj.pointtime_timeStr = laydate.now(latestGasEvent.pointtime, 'YYYY-MM-DD hh:mm:ss');
                     // target_sumTreeTableDataObj.gaoJingClass = latestMonitorData.gaojing ? 'color-red' : '';
+                    if(latestMonitorData.gaojing) {
+                        $(['tr[data-tt-id=', entry_sumTreeTableDataObj, ']'].join('')).addClass('color-red');
+                    } else {
+                        $(['tr[data-tt-id=', entry_sumTreeTableDataObj, ']'].join('')).removeClass('color-red');
+                    }
                     target_sumTreeTableDataObj.running = latestGasEvent.running;
                     target_sumTreeTableDataObj.standard = latestGasEvent.standard;
                     target_sumTreeTableDataObj.ac220 = latestGasEvent.ac220;
