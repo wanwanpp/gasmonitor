@@ -144,17 +144,28 @@
                                     var latestGasEvent = latestMonitorData.gasEvent;
                                     renderData_device['pointtime_timeStr'] = Vue_SumTreeTableDatasManager.genVueLabel4Laytpl(deviceId_treeTable, 'pointtime_timeStr');
                                     renderData_device['gaoJingClass'] = latestMonitorData.gaojing ? 'color-red' : '';
-                                    renderData_device['running'] = latestGasEvent.running;
-                                    renderData_device['standard'] = latestGasEvent.standard;
-                                    renderData_device['ac220'] = latestGasEvent.ac220;
-                                    renderData_device['battery'] = latestGasEvent.battery;
-                                    renderData_device['pressure'] = latestGasEvent.pressure;
-                                    renderData_device['solar'] = latestGasEvent.solar;
-                                    renderData_device['summary'] = latestGasEvent.summary;
-                                    renderData_device['temperature'] = latestGasEvent.temperature;
-                                    renderData_device['surplus'] = latestGasEvent.surplus;
+                                    renderData_device['running'] = Vue_SumTreeTableDatasManager.genVueLabel4Laytpl(deviceId_treeTable, 'running');
+                                    renderData_device['standard'] = Vue_SumTreeTableDatasManager.genVueLabel4Laytpl(deviceId_treeTable, 'standard');
+                                    renderData_device['ac220'] = Vue_SumTreeTableDatasManager.genVueLabel4Laytpl(deviceId_treeTable, 'ac220');
+                                    renderData_device['battery'] = Vue_SumTreeTableDatasManager.genVueLabel4Laytpl(deviceId_treeTable, 'battery');
+                                    renderData_device['pressure'] = Vue_SumTreeTableDatasManager.genVueLabel4Laytpl(deviceId_treeTable, 'pressure');
+                                    renderData_device['solar'] = Vue_SumTreeTableDatasManager.genVueLabel4Laytpl(deviceId_treeTable, 'solar');
+                                    renderData_device['summary'] = Vue_SumTreeTableDatasManager.genVueLabel4Laytpl(deviceId_treeTable, 'summary');
+                                    renderData_device['temperature'] = Vue_SumTreeTableDatasManager.genVueLabel4Laytpl(deviceId_treeTable, 'temperature');
+                                    renderData_device['surplus'] = Vue_SumTreeTableDatasManager.genVueLabel4Laytpl(deviceId_treeTable, 'surplus');
                                     // 第二部分（Device）： 变化的部分都放在下面数据结构里，上面用 Vue_SumTreeTableDatasManager.genVueLabel4Laytpl 占位
-                                    Vue_SumTreeTableDatasManager.sumTreeTableDatasObj[deviceId_treeTable].pointtime_timeStr = laydate.now(latestGasEvent.pointtime, 'YYYY-MM-DD hh:mm:ss');
+                                    var vue_sumTreeTableDataObj = Vue_SumTreeTableDatasManager.sumTreeTableDatasObj[deviceId_treeTable];
+                                    vue_sumTreeTableDataObj.pointtime_timeStr = laydate.now(latestGasEvent.pointtime, 'YYYY-MM-DD hh:mm:ss');
+                                    // vue_sumTreeTableDataObj.gaoJingClass = latestMonitorData.gaojing ? 'color-red' : '';
+                                    vue_sumTreeTableDataObj.running = latestGasEvent.running;
+                                    vue_sumTreeTableDataObj.standard = latestGasEvent.standard;
+                                    vue_sumTreeTableDataObj.ac220 = latestGasEvent.ac220;
+                                    vue_sumTreeTableDataObj.battery = latestGasEvent.battery;
+                                    vue_sumTreeTableDataObj.pressure = latestGasEvent.pressure;
+                                    vue_sumTreeTableDataObj.solar = latestGasEvent.solar;
+                                    vue_sumTreeTableDataObj.summary = latestGasEvent.summary;
+                                    vue_sumTreeTableDataObj.temperature = latestGasEvent.temperature;
+                                    vue_sumTreeTableDataObj.surplus = latestGasEvent.surplus;
                                 }
                                 //
                                 // vueRenderSumTable.sumTreeTableDatasArr.push(renderData_device);
@@ -264,11 +275,30 @@
                     }
                     console.log('[sumTreeTable] monitorDataCacheManager 数据更新后回调， deviceId： ' + deviceId);
                     // 2. 只需要更新 Vue 绑定的数据
+                    // 2.1 获取 latest MonitorData
+                    var latestMonitorData = monitorDataCacheManager.loadLatestMonitorDataByHardwareId(hardwareId);
+                    if(!latestMonitorData) {
+                        return ;
+                    }
+                    var latestGasEvent = latestMonitorData.gasEvent;
+                    if(!latestGasEvent) {
+                        return ;
+                    }
                     // 2.2 得到设备在 sumTreeTableDatasObj 中的 entry
                     var entry_sumTreeTableDataObj = ['d_', deviceId].join('');
-                    var target__sumTreeTableDataObj = Vue_SumTreeTableDatasManager.vueRenderSumTableWithLaytpl.sumTreeTableDatasObj[entry_sumTreeTableDataObj];
+                    var target_sumTreeTableDataObj = Vue_SumTreeTableDatasManager.vueRenderSumTableWithLaytpl.sumTreeTableDatasObj[entry_sumTreeTableDataObj];
                     // 開始同步數據
-                    target__sumTreeTableDataObj.pointtime_timeStr = laydate.now(gasEvent.pointtime, 'YYYY-MM-DD hh:mm:ss');
+                    target_sumTreeTableDataObj.pointtime_timeStr = laydate.now(latestGasEvent.pointtime, 'YYYY-MM-DD hh:mm:ss');
+                    // target_sumTreeTableDataObj.gaoJingClass = latestMonitorData.gaojing ? 'color-red' : '';
+                    target_sumTreeTableDataObj.running = latestGasEvent.running;
+                    target_sumTreeTableDataObj.standard = latestGasEvent.standard;
+                    target_sumTreeTableDataObj.ac220 = latestGasEvent.ac220;
+                    target_sumTreeTableDataObj.battery = latestGasEvent.battery;
+                    target_sumTreeTableDataObj.pressure = latestGasEvent.pressure;
+                    target_sumTreeTableDataObj.solar = latestGasEvent.solar;
+                    target_sumTreeTableDataObj.summary = latestGasEvent.summary;
+                    target_sumTreeTableDataObj.temperature = latestGasEvent.temperature;
+                    target_sumTreeTableDataObj.surplus = latestGasEvent.surplus;
                 });
             };
             oneSocket.setCallback_onHandle_processMonitorData_oneSocket_webStorageCache(callback_onHandle_processMonitorData_oneSocket_webStorageCache);

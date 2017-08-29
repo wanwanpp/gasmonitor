@@ -306,6 +306,9 @@ layui.define(['jquery', 'layer', 'tools', 'laydate'], function(exports) {
             }
             // 3. 根据 key 向缓存中追加 jsonObj_monitorData
             _monitorDataCacheManager.pushMonitorData2CachedArrByMonitorDataCachekey(cache_key_4_a_monitorData_arr, jsonObj_monitorData);
+        },
+        loadLatestMonitorDataByHardwareId: function(hardwareId) {
+            return _monitorDataCacheManager.loadLatestMonitorDataByHardwareId(hardwareId);
         }
     };
     // 开始监听
