@@ -34,11 +34,6 @@
         <i class="layui-icon">&#xe608;</i> 添加
       </button>
     </div>
-    <!--<div class="layui-inline">-->
-    <!--<button type="button" class="layui-btn layui-btn-danger batchDel" disabled="true">-->
-    <!--<i class="layui-icon">&#xe640;</i>批量删除-->
-    <!--</button>-->
-    <!--</div>-->
   </blockquote>
 </form>
 
@@ -125,7 +120,6 @@
           <button class="layui-btn layui-btn-danger layui-btn-mini device_status" data-sourceid="{{item.id}}">
             <i class="layui-icon">&#xe640;</i>状态
           </button>
-
 
           <button class="layui-btn layui-btn-danger layui-btn-mini tenant_del" data-sourceid="{{item.id}}">
             <i class="layui-icon">&#xe640;</i>删除
@@ -218,9 +212,9 @@
         <label class="layui-form-label">类型</label>
         <div class="layui-input-inline">
           <select id="eidt_layer_dtype" name="dtype" lay-filter="devicetype">
-            <option value="1">流量计</option>
-            <option value="2">IC</option>
-            <option value="3">IC&流量计</option>
+            <option value="1">标准工况表</option>
+            <option value="2">简洁工况表</option>
+            <option value="3">IC流量计</option>
           </select>
         </div>
       </div>
@@ -286,102 +280,113 @@
         </div>
       </div>
     </div>
-    <!--<div class="layui-form-item">-->
-    <!--<div class="layui-inline">-->
-    <!--<label class="layui-form-label">uanalog1</label>-->
-    <!--<div class="layui-input-inline">-->
-    <!--<select id="eidt_layer_uanalog1" name="uanalog1">-->
-    <!--<option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>-->
-    <!--</select>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--<div class="layui-inline">-->
-    <!--<label class="layui-form-label">uanalog2</label>-->
-    <!--<div class="layui-input-inline">-->
-    <!--<select id="eidt_layer_uanalog2" name="uanalog2">-->
-    <!--<option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>-->
-    <!--</select>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-
-    <!--<div class="layui-form-item">-->
-    <!--<div class="layui-inline">-->
-    <!--<label class="layui-form-label">uanalog3</label>-->
-    <!--<div class="layui-input-inline">-->
-    <!--<select id="eidt_layer_uanalog3" name="uanalog3">-->
-    <!--<option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>-->
-    <!--</select>-->
-    <!--</div>-->
-    <!--</div>-->
-
-    <!--<div class="layui-inline">-->
-    <!--<label class="layui-form-label">uanalog4</label>-->
-    <!--<div class="layui-input-inline">-->
-    <!--<select id="eidt_layer_uanalog4" name="uanalog4">-->
-    <!--<option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>-->
-    <!--</select>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-
-    <!--<div class="layui-form-item">-->
-    <!--<div class="layui-inline">-->
-    <!--<label class="layui-form-label">uswitch1</label>-->
-    <!--<div class="layui-input-inline">-->
-    <!--<select id="eidt_layer_uswitch1" name="uswitch1">-->
-    <!--<option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>-->
-    <!--</select>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--<div class="layui-inline">-->
-    <!--<label class="layui-form-label">uswitch2</label>-->
-    <!--<div class="layui-input-inline">-->
-    <!--<select id="eidt_layer_uswitch2" name="uswitch2">-->
-    <!--<option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>-->
-    <!--</select>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-
-    <!--<div class="layui-form-item">-->
-    <!--<div class="layui-inline">-->
-    <!--<label class="layui-form-label">uswitch3</label>-->
-    <!--<div class="layui-input-inline">-->
-    <!--<select id="eidt_layer_uswitch3" name="uswitch3">-->
-    <!--<option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>-->
-    <!--</select>-->
-    <!--</div>-->
-    <!--</div>-->
-
-    <!--<div class="layui-inline">-->
-    <!--<label class="layui-form-label">uswitch4</label>-->
-    <!--<div class="layui-input-inline">-->
-    <!--<select id="eidt_layer_uswitch4" name="uswitch4">-->
-    <!--<option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>-->
-    <!--</select>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-
-    <div class="layui-form-item  ">
-      <div class="layui-inline unit uiac220">
-        <label class="layui-form-label">ac220单位</label>
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">模拟量1</label>
         <div class="layui-input-inline">
-          <select id="eidt_layer_uac220" name="uac220">
+          <select id="eidt_layer_uanalog1" name="uanalog1">
             <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
           </select>
         </div>
       </div>
-      <div class="layui-inline  unit uibattery">
-        <label class="layui-form-label">电池单位</label>
+      <div class="layui-inline">
+        <label class="layui-form-label">模拟量2</label>
         <div class="layui-input-inline">
-          <select id="eidt_layer_ubattery" name="ubattery">
+          <select id="eidt_layer_uanalog2" name="uanalog2">
             <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
           </select>
         </div>
       </div>
     </div>
+
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">模拟量3</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_uanalog3" name="uanalog3">
+            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
+          </select>
+        </div>
+      </div>
+
+      <div class="layui-inline">
+        <label class="layui-form-label">模拟量4</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_uanalog4" name="uanalog4">
+            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">开关量1</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_uswitch1" name="uswitch1">
+            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
+          </select>
+        </div>
+      </div>
+      <div class="layui-inline">
+        <label class="layui-form-label">开关量2</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_uswitch2" name="uswitch2">
+            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">开关量3</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_uswitch3" name="uswitch3">
+            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
+          </select>
+        </div>
+      </div>
+      <div class="layui-inline">
+        <label class="layui-form-label">开关量4</label>
+        <div class="layui-input-inline">
+          <select id="eidt_layer_uswitch4" name="uswitch4">
+            <option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!--电池都设置默认值-->
+    <!--<div class="layui-form-item ">-->
+    <!--<div class="layui-inline uiac220">-->
+    <!--<label class="layui-form-label">ac220</label>-->
+    <!--<div class="layui-input-inline">-->
+    <!--<select id="eidt_layer_uac220" name="uac220">-->
+    <!--<option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>-->
+    <!--</select>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--<div class="layui-inline uibattery">-->
+    <!--<label class="layui-form-label">电池单位</label>-->
+    <!--<div class="layui-input-inline">-->
+    <!--<select id="eidt_layer_ubattery" name="ubattery">-->
+    <!--<option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>-->
+    <!--</select>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+
+    <!--<div class="layui-form-item ">-->
+    <!--<div class="layui-inline uiac220">-->
+    <!--<label class="layui-form-label">太阳能</label>-->
+    <!--<div class="layui-input-inline">-->
+    <!--<select id="eidt_layer_usolar" name="usolar">-->
+    <!--<option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>-->
+    <!--</select>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
 
     <div class="layui-input-block">
       <button type="button" id="form_btn_submit" lay-submit lay-filter="device" style="display: none"></button>
@@ -436,6 +441,72 @@
         </div>
       </div>
     </div>
+
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">模拟量1</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_uanalog1Floor" type="text" name="uanalog1Floor" placeholder="请输入名称"
+                 class="layui-input"/>
+        </div>
+      </div>
+
+      <div class="layui-inline">
+        <label class="layui-form-label">模拟量1</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_uanalog1Upper" type="text" name="uanalog1Upper" placeholder="" class="layui-input"/>
+        </div>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">模拟量2</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_uanalog2Floor" type="text" name="uanalog2Floor" placeholder="请输入名称"
+                 class="layui-input"/>
+        </div>
+      </div>
+
+      <div class="layui-inline">
+        <label class="layui-form-label">模拟量2</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_uanalog2Upper" type="text" name="uanalog2Upper" placeholder="" class="layui-input"/>
+        </div>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">模拟量3</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_tuanalog3Floor" type="text" name="uanalog3Floor" placeholder="请输入名称"
+                 class="layui-input"/>
+        </div>
+      </div>
+
+      <div class="layui-inline">
+        <label class="layui-form-label">模拟量3</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_uanalog3Upper" type="text" name="uanalog3Upper" placeholder="" class="layui-input"/>
+        </div>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">模拟量4下限</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_uanalog4Floor" type="text" name="uanalog4Floor" placeholder="请输入名称"
+                 class="layui-input"/>
+        </div>
+      </div>
+
+      <div class="layui-inline">
+        <label class="layui-form-label">模拟量4上限</label>
+        <div class="layui-input-inline">
+          <input id="eidt_layer_uanalog4Upper" type="text" name="uanalog4Upper" placeholder="" class="layui-input"/>
+        </div>
+      </div>
+    </div>
+
 
     <div class="layui-input-block">
       <button type="button" id="form_btn_gaojing_submit" lay-submit lay-filter="gaojing"
@@ -528,31 +599,41 @@
       $(".unit").hide();
       if (type == 1) {
         //流量计
-        showliuliangji();
+        showBiaoKuang();
       } else if (type == 2) {
         //ic
-        showic();
+        showJianJie();
       } else if (type == 3) {
         //ic + 流量计
-        showliuliangji();
         showic();
       }
     }
 
-    function showliuliangji() {
+    //具有温度、压力、工况、标况、累积、剩余流量和4个模拟量、4个开关量
+    function showBiaoKuang() {
       $(".unit.uipressure").show();
       $(".unit.uitemperature").show();
       $(".unit.uistandard").show();
       $(".unit.uirunning").show();
+      $(".unit.uisummary").show();    //累计流量计
+      $(".unit.uisurprplus").show();  //剩余流量
+
+    }
+
+    //简洁流量表  标况流量位置上传一个流量值，被称为瞬间流量，其他的还有：累积流量和温度。4个模拟量、4个开关量
+    function showJianJie() {
+//      $(".unit.uipressure").show();
+      $(".unit.uitemperature").show();
+      $(".unit.uistandard").show(); //这里叫做瞬间流量
+//      $(".unit.uirunning").show();
       $(".unit.uisummary").show();
     }
 
+    //有剩余流量、累积流量4个模拟量、4个开关量
     function showic() {
       $(".unit.uisummary").show();
       $(".unit.uisurprplus").show();//剩余流量
-
     }
-
 
     form.on('select(siteid)', function (data) {
       console.log("siteid-->select的选择事件" + data.value);

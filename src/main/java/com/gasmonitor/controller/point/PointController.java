@@ -60,7 +60,7 @@ public class PointController {
 //            for (GasEvent e : json) {
 //                datas.add(MonitorData.NewByGasEvent(e));
 //            }
-//            return AjaxResult.AjaxResultWithList(datas);
+//            return AjaxResult.NewAjaxResult(datas);
 //        } else {
 //            return AjaxResult.ErrorAjaxResult();
 //        }
@@ -74,7 +74,7 @@ public class PointController {
                 BeanUtils.populate(gasEvent, e);
                 datas.add(MonitorData.NewByGasEvent(gasEvent));
             }
-            return AjaxResult.AjaxResultWithList(datas);
+            return AjaxResult.NewAjaxResult(datas);
         } catch (Exception e) {
             log.info("出现错误:{}", e);
             e.printStackTrace();

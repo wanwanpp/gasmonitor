@@ -48,22 +48,24 @@ public class Device implements Serializable {
     private Long ubattery;
     private Long usolar;
 
-    private Integer standardFlowUpper;
-    private Integer temperatureUpper;
-    private Integer temperatureLow;
-    private Integer pressureUpper;
-    private Integer pressureLow;
+    private Double standardFlowUpper;
+    private Double temperatureUpper;
+    private Double temperatureLow;
+    private Double pressureUpper;
+    private Double pressureLow;
+
+    private Double uanalog1Upper;
+    private Double uanalog2Upper;
+    private Double uanalog3Upper;
+    private Double uanalog4Upper;
+    private Double uanalog1Floor;
+    private Double uanalog2Floor;
+    private Double uanalog3Floor;
+    private Double uanalog4Floor;
+
 
     @Transient
     private List<Device> children;
-
-    public Long getWatcher() {
-        return watcher;
-    }
-
-    public void setWatcher(Long watcher) {
-        this.watcher = watcher;
-    }
 
     public Long getId() {
         return id;
@@ -97,6 +99,14 @@ public class Device implements Serializable {
         this.name = name;
     }
 
+    public String getFactory() {
+        return factory;
+    }
+
+    public void setFactory(String factory) {
+        this.factory = factory;
+    }
+
     public String getTokenId() {
         return tokenId;
     }
@@ -113,6 +123,21 @@ public class Device implements Serializable {
         this.logic = logic;
     }
 
+    public Integer getDtype() {
+        return dtype;
+    }
+
+    public void setDtype(Integer dtype) {
+        this.dtype = dtype;
+    }
+
+    public Long getWatcher() {
+        return watcher;
+    }
+
+    public void setWatcher(Long watcher) {
+        this.watcher = watcher;
+    }
 
     public Date getCreated() {
         return created;
@@ -274,109 +299,116 @@ public class Device implements Serializable {
         this.usolar = usolar;
     }
 
+    public Double getStandardFlowUpper() {
+        return standardFlowUpper;
+    }
+
+    public void setStandardFlowUpper(Double standardFlowUpper) {
+        this.standardFlowUpper = standardFlowUpper;
+    }
+
+    public Double getTemperatureUpper() {
+        return temperatureUpper;
+    }
+
+    public void setTemperatureUpper(Double temperatureUpper) {
+        this.temperatureUpper = temperatureUpper;
+    }
+
+    public Double getTemperatureLow() {
+        return temperatureLow;
+    }
+
+    public void setTemperatureLow(Double temperatureLow) {
+        this.temperatureLow = temperatureLow;
+    }
+
+    public Double getPressureUpper() {
+        return pressureUpper;
+    }
+
+    public void setPressureUpper(Double pressureUpper) {
+        this.pressureUpper = pressureUpper;
+    }
+
+    public Double getPressureLow() {
+        return pressureLow;
+    }
+
+    public void setPressureLow(Double pressureLow) {
+        this.pressureLow = pressureLow;
+    }
+
+    public Double getUanalog1Upper() {
+        return uanalog1Upper;
+    }
+
+    public void setUanalog1Upper(Double uanalog1Upper) {
+        this.uanalog1Upper = uanalog1Upper;
+    }
+
+    public Double getUanalog2Upper() {
+        return uanalog2Upper;
+    }
+
+    public void setUanalog2Upper(Double uanalog2Upper) {
+        this.uanalog2Upper = uanalog2Upper;
+    }
+
+    public Double getUanalog3Upper() {
+        return uanalog3Upper;
+    }
+
+    public void setUanalog3Upper(Double uanalog3Upper) {
+        this.uanalog3Upper = uanalog3Upper;
+    }
+
+    public Double getUanalog4Upper() {
+        return uanalog4Upper;
+    }
+
+    public void setUanalog4Upper(Double uanalog4Upper) {
+        this.uanalog4Upper = uanalog4Upper;
+    }
+
+    public Double getUanalog1Floor() {
+        return uanalog1Floor;
+    }
+
+    public void setUanalog1Floor(Double uanalog1Floor) {
+        this.uanalog1Floor = uanalog1Floor;
+    }
+
+    public Double getUanalog2Floor() {
+        return uanalog2Floor;
+    }
+
+    public void setUanalog2Floor(Double uanalog2Floor) {
+        this.uanalog2Floor = uanalog2Floor;
+    }
+
+    public Double getUanalog3Floor() {
+        return uanalog3Floor;
+    }
+
+    public void setUanalog3Floor(Double uanalog3Floor) {
+        this.uanalog3Floor = uanalog3Floor;
+    }
+
+    public Double getUanalog4Floor() {
+        return uanalog4Floor;
+    }
+
+    public void setUanalog4Floor(Double uanalog4Floor) {
+        this.uanalog4Floor = uanalog4Floor;
+    }
+
     public List<Device> getChildren() {
         return children;
     }
 
     public void setChildren(List<Device> children) {
         this.children = children;
-    }
-
-    public Integer getStandardFlowUpper() {
-        return standardFlowUpper;
-    }
-
-    public void setStandardFlowUpper(Integer standardFlowUpper) {
-        this.standardFlowUpper = standardFlowUpper;
-    }
-
-    public Integer getTemperatureUpper() {
-        return temperatureUpper;
-    }
-
-    public void setTemperatureUpper(Integer temperatureUpper) {
-        this.temperatureUpper = temperatureUpper;
-    }
-
-    public Integer getTemperatureLow() {
-        return temperatureLow;
-    }
-
-    public void setTemperatureLow(Integer temperatureLow) {
-        this.temperatureLow = temperatureLow;
-    }
-
-    public Integer getPressureUpper() {
-        return pressureUpper;
-    }
-
-    public void setPressureUpper(Integer pressureUpper) {
-        this.pressureUpper = pressureUpper;
-    }
-
-    public Integer getPressureLow() {
-        return pressureLow;
-    }
-
-    public void setPressureLow(Integer pressureLow) {
-        this.pressureLow = pressureLow;
-    }
-
-    public String getFactory() {
-        return factory;
-    }
-
-    public void setFactory(String factory) {
-        this.factory = factory;
-    }
-
-    public Integer getDtype() {
-        return dtype;
-    }
-
-    public void setDtype(Integer dtype) {
-        this.dtype = dtype;
-    }
-
-    @Override
-    public String toString() {
-        return "Device{" +
-                "id=" + id +
-                ", hardwareId='" + hardwareId + '\'' +
-                ", siteId=" + siteId +
-                ", name='" + name + '\'' +
-                ", factory='" + factory + '\'' +
-                ", tokenId='" + tokenId + '\'' +
-                ", logic=" + logic +
-                ", dtype=" + dtype +
-                ", watcher=" + watcher +
-                ", created=" + created +
-                ", status=" + status +
-                ", parent=" + parent +
-                ", utemperature=" + utemperature +
-                ", upressure=" + upressure +
-                ", ustandard=" + ustandard +
-                ", urunning=" + urunning +
-                ", usummary=" + usummary +
-                ", usurplus=" + usurplus +
-                ", uanalog1=" + uanalog1 +
-                ", uanalog2=" + uanalog2 +
-                ", uanalog3=" + uanalog3 +
-                ", uanalog4=" + uanalog4 +
-                ", uswitch1=" + uswitch1 +
-                ", uswitch2=" + uswitch2 +
-                ", uswitch3=" + uswitch3 +
-                ", uswitch4=" + uswitch4 +
-                ", uac220=" + uac220 +
-                ", ubattery=" + ubattery +
-                ", usolar=" + usolar +
-                ", standardFlowUpper=" + standardFlowUpper +
-                ", temperatureUpper=" + temperatureUpper +
-                ", temperatureLow=" + temperatureLow +
-                ", pressureUpper=" + pressureUpper +
-                ", pressureLow=" + pressureLow +
-                ", children=" + children +
-                '}';
     }
 }
 

@@ -76,7 +76,7 @@ public class DeviceController {
             devices = new ArrayList<>();
         }
         log.info("通过站点{}查询到的所有设备的信息{}", siteId, devices);
-        return AjaxResult.AjaxResultWithList(devices);
+        return AjaxResult.NewAjaxResult(devices);
     }
 
     @RequestMapping(value = "/ajax/listtree")
@@ -84,7 +84,7 @@ public class DeviceController {
     public AjaxResult<Device> ajaxList(@RequestParam(value = "siteId", defaultValue = "0") Long siteId) {
         List<Device> devices = deviceService.findDeviceBySiteId(siteId);
         log.info("通过站点{}查询到的所有设备的信息{}", siteId, devices);
-        return AjaxResult.AjaxResultWithList(devices);
+        return AjaxResult.NewAjaxResult(devices);
     }
 
 
@@ -93,7 +93,7 @@ public class DeviceController {
     @ResponseBody
     public AjaxResult<Device> ajaxListp(Long siteId) {
         List<Device> devices = deviceRepository.findBySiteIdAndParent(siteId, new Long(0));
-        return AjaxResult.AjaxResultWithList(devices);
+        return AjaxResult.NewAjaxResult(devices);
     }
 
 
@@ -127,7 +127,7 @@ public class DeviceController {
     @ResponseBody
     public AjaxResult<Device> ajaxUpdateDevice(Device newDevice) {
         //新生成的设备
-        return AjaxResult.AjaxResultWithOne(deviceService.updateDevice(newDevice));
+        return AjaxResult.NewAjaxResult(deviceService.updateDevice(newDevice));
     }
 
     @RequestMapping(value = "/ajax/updateStatus")
@@ -136,7 +136,7 @@ public class DeviceController {
         //新生成的设备
         try {
             Device ret = deviceService.updateDeviceStatus(id, status);
-            return AjaxResult.AjaxResultWithOne(ret);
+            return AjaxResult.NewAjaxResult(ret);
         } catch (TipsException e) {
             return AjaxResult.ErrorAjaxResult(e.getMessage());
         }

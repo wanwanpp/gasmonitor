@@ -7,6 +7,7 @@ import com.gasmonitor.entity.Tenant;
 import com.gasmonitor.pros.Consts;
 import com.gasmonitor.pros.HazelCastPros;
 import com.gasmonitor.service.bas.BasDataUnitService;
+import com.gasmonitor.service.warn.WarnEventService;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import org.slf4j.Logger;
@@ -177,6 +178,15 @@ public class TestController {
     @ResponseBody
     public Object cacheAll() {
         return cacheManager.getCache(Consts.CACHE_DEVICE).toString();
+    }
+
+
+    @Autowired
+    WarnEventService warnEventService;
+
+    @RequestMapping("testsession")
+    public Object testSession() {
+        return warnEventService.findByTenantId();
     }
 }
 
