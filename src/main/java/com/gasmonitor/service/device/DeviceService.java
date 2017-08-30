@@ -140,7 +140,7 @@ public class DeviceService {
 
     public AjaxResult<Device> updateDeviceGaoJing(Device newDevice) {
         Device old = deviceRepository.findOne(newDevice.getId());
-        old.setStandardFlowUpper(newDevice.getStandardFlowUpper());
+//        old.setda(newDevice.getStandardFlowUpper());
         old.setTemperatureUpper(newDevice.getTemperatureUpper());
         old.setTemperatureLow(newDevice.getTemperatureLow());
         old.setPressureUpper(newDevice.getPressureUpper());

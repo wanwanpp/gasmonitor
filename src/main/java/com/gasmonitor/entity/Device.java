@@ -48,7 +48,17 @@ public class Device implements Serializable {
     private Long ubattery;
     private Long usolar;
 
-    private Double standardFlowUpper;
+    private Double standardUpper;
+    private Double standardFloor;
+
+    private Double runningUpper;
+    private Double runningFloor;
+    private Double summaryUpper;
+    private Double summaryFloor;
+
+    private Double surplusUpper;
+    private Double surplusFloor;
+
     private Double temperatureUpper;
     private Double temperatureLow;
     private Double pressureUpper;
@@ -62,6 +72,10 @@ public class Device implements Serializable {
     private Double uanalog2Floor;
     private Double uanalog3Floor;
     private Double uanalog4Floor;
+
+    private Long uac220Floor;
+    private Long ubatteryFloor;
+    private Long usolarFloor;
 
 
     @Transient
@@ -299,14 +313,6 @@ public class Device implements Serializable {
         this.usolar = usolar;
     }
 
-    public Double getStandardFlowUpper() {
-        return standardFlowUpper;
-    }
-
-    public void setStandardFlowUpper(Double standardFlowUpper) {
-        this.standardFlowUpper = standardFlowUpper;
-    }
-
     public Double getTemperatureUpper() {
         return temperatureUpper;
     }
@@ -409,6 +415,46 @@ public class Device implements Serializable {
 
     public void setChildren(List<Device> children) {
         this.children = children;
+    }
+
+    public Long getUac220Floor() {
+        return uac220Floor;
+    }
+
+    public void setUac220Floor(Long uac220Floor) {
+        this.uac220Floor = uac220Floor;
+    }
+
+    public Long getUbatteryFloor() {
+        return ubatteryFloor;
+    }
+
+    public void setUbatteryFloor(Long ubatteryFloor) {
+        this.ubatteryFloor = ubatteryFloor;
+    }
+
+    public Long getUsolarFloor() {
+        return usolarFloor;
+    }
+
+    public void setUsolarFloor(Long usolarFloor) {
+        this.usolarFloor = usolarFloor;
+    }
+
+    public Double getStandardUpper() {
+        return standardUpper;
+    }
+
+    public void setStandardUpper(Double standardUpper) {
+        this.standardUpper = standardUpper;
+    }
+
+    public Double getStandardFloor() {
+        return standardFloor;
+    }
+
+    public void setStandardFloor(Double standardFloor) {
+        this.standardFloor = standardFloor;
     }
 }
 
