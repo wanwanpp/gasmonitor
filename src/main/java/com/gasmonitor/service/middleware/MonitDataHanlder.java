@@ -84,7 +84,11 @@ public class MonitDataHanlder {
     @Async
     public void handlerMonitor(MonitorData data) {
         Device d = deviceRepository.findByHardwareId(data.getGasEvent().getHardwareId());
-        String userName = userService.findOne(d.getWatcher()).getUsername();
+        Long watch = d.getWatcher();
+        if (watch == null) {
+            log.info("data:{}对应设备的warch为null", data);
+        }
+        String userName = userService.findOne(watch).getUsername();
         log.info("handlrMOnitor开始处理data:{},device:{}，发送给user:{}", data, d, userName);
         try {
             doGaoJjing(data, d);        //构造报警信息
