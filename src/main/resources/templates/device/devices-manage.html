@@ -104,26 +104,12 @@
       <!--<tr>
         <td>数据加载中，请稍候 。。。</td>
       </tr>-->
-      <tr>
-        <td>2010-12-03 21:40:28</td>
-        <td>801 东风锻造厂</td>
-        <td>0</td>
-        <td>149.02</td>
-        <td>16.15</td>
-        <td>356.4</td>
-        <td>449710.44</td>
+      <tr v-if="!monitorDataArr || monitorDataArr.length < 1">
+        <td colspan="7">暂无可显示的设备数据 。。。</td>
       </tr>
-      <tr>
-        <td>2010-12-03 21:38:27</td>
-        <td>801 东风锻造厂</td>
-        <td>0</td>
-        <td>161.22</td>
-        <td>16.15</td>
-        <td>355.66</td>
-        <td>449705.44</td>
-      </tr>
-      <tr>
-        <td>2010-12-03 21:36:26</td>
+      <!-- Start: Vue 渲染 -->
+      <tr v-for="monitorData in monitorDataArr">
+        <td>{{ monitorData.gasEvent.pointtime }}</td>
         <td>801 东风锻造厂</td>
         <td>0</td>
         <td>147.72</td>
@@ -131,6 +117,7 @@
         <td>356.4</td>
         <td>449700.03</td>
       </tr>
+      <!-- End  : Vue 渲染 -->
       </tbody>
     </table>
   </div>
@@ -142,6 +129,7 @@
 <!-- Start: echarts -->
 <script src="/js/echarts.min.js"></script>
 <!-- End  : echarts -->
+<script type="text/javascript" src="/js/vue.min.js"></script>
 
 <!-- Start: layui template 模板 -->
 <!--<script id="devicesList" type="text/html">
