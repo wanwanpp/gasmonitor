@@ -864,6 +864,17 @@
             });
         }
         // End  : 展示 layerContent_tpl 于 layer 中
+        // Start: Vue 渲染列表
+        // arr_sample_monitorData
+        debugger;
+        console.log('[processMonitorDataArr] vue_deviceMonitorDatasListTable 初始化');
+        var vue_deviceMonitorDatasListTable = new Vue({
+            el: '#siteDetailInfo',
+            data: {
+                monitorDataArr: []
+            }
+        });
+        // End  : Vue 渲染列表
         // 刷新折线图
         var myChartsArr;    // 用于记录有哪些 eChartsInstance
         var optionsArr;
@@ -973,17 +984,6 @@
                             }, index_monitorData * 1);
                         }
                         function processMonitorDataArr(arr_monitorData) {
-                            // Start: Vue 渲染列表
-                            // arr_sample_monitorData
-                            debugger;
-                            console.log('[processMonitorDataArr] vue_deviceMonitorDatasListTable 初始化');
-                            var vue_deviceMonitorDatasListTable = new Vue({
-                                el: '#siteDetailInfo',
-                                data: {
-                                    monitorDataArr: []
-                                }
-                            });
-                            // End  : Vue 渲染列表
                             if(arr_monitorData && arr_monitorData.length && arr_monitorData.length > 0) {
                                 // 先筛除掉 arr_monitorData 中不合格的数据（时间范围不在图中开始结束时间范围以内的）
                                 var arr_filtered_monitorData = [];
@@ -1020,6 +1020,7 @@
                                     layer.closeAll('loading');
                                 }
                                 //
+                                debugger;
                                 vue_deviceMonitorDatasListTable.monitorDataArr = arr_sample_monitorData;
                             } else {
                                 // arr_monitorData 为空，需要隐藏掉 layer loading
