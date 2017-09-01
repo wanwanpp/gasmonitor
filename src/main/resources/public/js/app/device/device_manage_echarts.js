@@ -760,6 +760,12 @@
                 console.log("查询到的所有站点设备 tree list 信息:" + JSON.stringify(data_allSitesAndDevices));
                 var data_allSitesAndDevices_sitesArr = data_allSitesAndDevices.data;
                 console.log('查询到的所有站点 tree list 信息 data_allSitesAndDevices_sitesArr： ' + JSON.stringify(data_allSitesAndDevices_sitesArr));
+                //
+                if(!data_allSitesAndDevices_sitesArr || !data_allSitesAndDevices_sitesArr.length || data_allSitesAndDevices_sitesArr.length < 1) {
+                    layer.closeAll('loading');
+                    alert('请先添加站点信息 ^_^');
+                    return ;
+                }
                 // Start: 触发第一个设备的 click
                 var urlHardwareId = tools.getQueryString('hardwareId');
                 // End  : 触发第一个设备的 click
