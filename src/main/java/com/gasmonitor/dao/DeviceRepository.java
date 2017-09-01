@@ -38,8 +38,8 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
     List<Device> findBySiteIdAndParent(Long siteId, Long parent);
 
     //    通过租户ID找到他所有的设备
-    @Query("select a from Device as a where a.siteId in (select id from Site as s where s.tenantId = ?1)")
-    List<Device> findByTenantId(Long tenantId);
+    @Query("select a from Device as a where a.siteId in (select id from Site as s where s.tenantId = :tenantId)")
+    List<Device> findByTenantId(@Param("tenantId") Long tenantId);
 
     @Modifying
     @Query("update  Device set status = :s where id = :did")
