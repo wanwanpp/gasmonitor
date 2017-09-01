@@ -763,7 +763,7 @@
                 //
                 if(!data_allSitesAndDevices_sitesArr || !data_allSitesAndDevices_sitesArr.length || data_allSitesAndDevices_sitesArr.length < 1) {
                     layer.closeAll('loading');
-                    alert('请先添加站点信息 ^_^');
+                    layer.alert('请先添加站点信息 ^_^');
                     return ;
                 }
                 // Start: 触发第一个设备的 click
