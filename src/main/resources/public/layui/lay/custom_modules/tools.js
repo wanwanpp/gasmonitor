@@ -78,7 +78,8 @@ layui.define(['jquery', 'layer', 'element'], function (exports) {
              */
             element.on('nav(' + navfilter + ')', function (elem) {
                 var a = elem.children('a');
-                var title = a.text();
+                // var title = a.text();
+                var title = a.html();
                 var src = elem.children('a').attr('data-url');
                 var id = elem.children('a').attr('data-id');
                 var iframe = tabcontent.find('iframe[data-id=' + id + ']').eq(0);
