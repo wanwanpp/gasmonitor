@@ -1,0 +1,1 @@
+--1，运行 sysdatainit 自动生成user--2,出书啊paran =null 的数据 parant =0update device set parent = 0 where isnull(parent);--3,初始化device的watcherUPDATE device AS a SET a.watcher = (SELECT b.id FROM user AS b WHERE b.tenant_id = (SELECT c.tenant_id from site AS c WHERE c.id = a.site_id));

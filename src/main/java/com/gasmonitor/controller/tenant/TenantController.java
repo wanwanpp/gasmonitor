@@ -140,6 +140,7 @@ public class TenantController {
 
     /**
      * 总表
+     *
      * @return
      */
     @RequestMapping(value = "/sum-table")

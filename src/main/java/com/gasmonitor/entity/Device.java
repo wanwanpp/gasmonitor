@@ -1,9 +1,6 @@
 package com.gasmonitor.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +16,7 @@ public class Device implements Serializable {
     @Id
     @GeneratedValue
     private Long id;  //设备Id
+    @Column(unique = true)
     private String hardwareId;  //硬件Id
     private Long siteId;
     private String name;    //设备名称
