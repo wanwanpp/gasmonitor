@@ -760,6 +760,12 @@
                 console.log("查询到的所有站点设备 tree list 信息:" + JSON.stringify(data_allSitesAndDevices));
                 var data_allSitesAndDevices_sitesArr = data_allSitesAndDevices.data;
                 console.log('查询到的所有站点 tree list 信息 data_allSitesAndDevices_sitesArr： ' + JSON.stringify(data_allSitesAndDevices_sitesArr));
+                //
+                if(!data_allSitesAndDevices_sitesArr || !data_allSitesAndDevices_sitesArr.length || data_allSitesAndDevices_sitesArr.length < 1) {
+                    layer.closeAll('loading');
+                    layer.alert('请先添加站点信息 ^_^');
+                    return ;
+                }
                 // Start: 触发第一个设备的 click
                 var urlHardwareId = tools.getQueryString('hardwareId');
                 // End  : 触发第一个设备的 click
@@ -864,6 +870,17 @@
             });
         }
         // End  : 展示 layerContent_tpl 于 layer 中
+        // Start: Vue 渲染列表
+        // arr_sample_monitorData
+        debugger;
+        console.log('[processMonitorDataArr] vue_deviceMonitorDatasListTable 初始化');
+        var vue_deviceMonitorDatasListTable = new Vue({
+            el: '#siteDetailInfo',
+            data: {
+                monitorDataArr: []
+            }
+        });
+        // End  : Vue 渲染列表
         // 刷新折线图
         var myChartsArr;    // 用于记录有哪些 eChartsInstance
         var optionsArr;
@@ -973,17 +990,6 @@
                             }, index_monitorData * 1);
                         }
                         function processMonitorDataArr(arr_monitorData) {
-                            // Start: Vue 渲染列表
-                            // arr_sample_monitorData
-                            debugger;
-                            console.log('[processMonitorDataArr] vue_deviceMonitorDatasListTable 初始化');
-                            var vue_deviceMonitorDatasListTable = new Vue({
-                                el: '#siteDetailInfo',
-                                data: {
-                                    monitorDataArr: []
-                                }
-                            });
-                            // End  : Vue 渲染列表
                             if(arr_monitorData && arr_monitorData.length && arr_monitorData.length > 0) {
                                 // 先筛除掉 arr_monitorData 中不合格的数据（时间范围不在图中开始结束时间范围以内的）
                                 var arr_filtered_monitorData = [];
@@ -1020,6 +1026,7 @@
                                     layer.closeAll('loading');
                                 }
                                 //
+                                debugger;
                                 vue_deviceMonitorDatasListTable.monitorDataArr = arr_sample_monitorData;
                             } else {
                                 // arr_monitorData 为空，需要隐藏掉 layer loading

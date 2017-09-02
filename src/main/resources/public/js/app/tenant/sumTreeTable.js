@@ -34,6 +34,10 @@
             function callback_sumTreeTableDataLoaded(data_allSitesAndDevices_sumTreeTable) {
                 console.log('[callback_sumTreeTableDataLoaded]data_allSitesAndDevices_sumTreeTable: ');
                 console.log(data_allSitesAndDevices_sumTreeTable);
+                //
+                if(!data_allSitesAndDevices_sumTreeTable) {
+                    return ;
+                }
                 // 处理总表信息的第一次初始化
                 function processSumTreeTableSiteArr(data_siteArr) {
                     if(!data_siteArr || !data_siteArr.length || data_siteArr.length < 1) {

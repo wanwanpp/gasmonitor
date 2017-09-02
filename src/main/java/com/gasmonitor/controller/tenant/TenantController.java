@@ -114,7 +114,8 @@ public class TenantController {
     @ResponseBody
     @RequestMapping(value = "/ajax/list")
     public AjaxResult<Tenant> ajaxList(int currPage, String searchKey) {
-        Page<Tenant> page = tenantRepository.findByNameContainingOrCompanyContaining(searchKey, searchKey, p(currPage));
+        // Page<Tenant> page = tenantRepository.findByNameContainingOrCompanyContaining(searchKey, searchKey, p(currPage));
+        Page<Tenant> page = tenantRepository.findByNameContainingOrCompanyContainingOrderByCreatedateDesc(searchKey, searchKey, p(currPage));
         AjaxResult<Tenant> result = AjaxResult.NewAjaxResult(page);
         logger.info("找到的所有租户{}", result);
         return result;

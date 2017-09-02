@@ -4,6 +4,8 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="UTF-8"/>
+  <meta name="renderer" content="webkit" />
+  <meta name="force-rendering" content="webkit" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
   <meta name="Generator" content="EditPlus®"/>
   <meta name="Author" content="saplmm"/>
@@ -33,10 +35,11 @@
       /*animation: layui-button-scale 1s infinite;*/
       transition: all .4s;
       position: absolute;
-      top: 50%;
-      left: 175px;
-      z-index: 999;
+      top: 11px;
+      left: 160px;
+      z-index: 1000;
       padding: 0;
+      background-color: transparent;
     }
 
     #layui-left-menu-toggle img {
@@ -44,12 +47,18 @@
     }
 
     #layui-left-menu-toggle.layui-left-menu-toggle-hide {
-      left: -15.5px;
+      left: 95px;
+      transform: rotate(-90deg);
     }
 
     #layui-left-menu-toggle:hover {
       transform: scale(1.2);
       animation: none;
+    }
+
+    #layui-left-menu-toggle.layui-left-menu-toggle-hide:hover {
+      transform: scale(1.2);
+      transform: rotate(-90deg);
     }
 
     /* 左侧菜单栏相关 */
@@ -58,8 +67,15 @@
     }
 
     .layui-layout-admin .layui-side.layui-side-hide {
-      width: 0;
+      width: 40px;
     }
+
+    .layui-layout-admin .layui-side.layui-side-hide .layui-nav .layui-nav-item a {
+      padding: 0 10px;
+    }
+
+    .pandaroid-layui-nav-label { transition: opacity .4s; }
+    .layui-side-hide .pandaroid-layui-nav-label { opacity: 0; }
 
     /* 右侧 body 相关 */
     .layui-layout-admin .layui-body {
@@ -67,7 +83,7 @@
     }
 
     .layui-layout-admin .layui-body.layui-body-on-side-hide {
-      left: 0;
+      left: 40px;
     }
   </style>
   <!-- End  : 侧边栏显示隐藏相关 css -->
@@ -124,23 +140,23 @@
         <!-- Start: 整理后的左侧菜单 -->
         <li class="layui-nav-item  layui-nav-itemed" sec:authorize="hasRole('ROLE_SYSTEM')">
           <a href="javascript:;">
-            公司
+            <i class="layui-icon">&#xe613;</i> <span class="pandaroid-layui-nav-label">公司</span>
           </a>
           <dl class="layui-nav-child">
             <dd>
               <a href="javascript:;" data-url="/sys/setting" data-id="1" title="租户的人数，系统性能参数等">
-                系统概述
+                <i class="layui-icon">&#xe613;</i> <span class="pandaroid-layui-nav-label">系统概述</span>
               </a>
             </dd>
             <dd>
               <a href="javascript:;" data-url="/tenant/list" data-id="2" title="管理租户，增删改查">
-                租户管理
+                <i class="layui-icon">&#xe613;</i> <span class="pandaroid-layui-nav-label">租户管理</span>
               </a>
             </dd>
             <dl class="layui-nav-child">
               <dd>
                 <a href="javascript:;" data-url="/tenant/user/list" data-id="10" title="管理租户，增删改查">
-                  人员管理
+                  <i class="layui-icon">&#xe613;</i> <span class="pandaroid-layui-nav-label">人员管理</span>
                 </a>
               </dd>
             </dl>
@@ -149,22 +165,22 @@
 
         <li class="layui-nav-item  layui-nav-itemed" sec:authorize="hasRole('ROLE_SYSTEM')">
           <a href="javascript:;">
-            基础数据
+            <i class="layui-icon">&#xe613;</i> <span class="pandaroid-layui-nav-label">基础数据</span>
           </a>
           <dl class="layui-nav-child">
             <dd>
               <a href="javascript:;" data-url="/bas/setting" data-id="11" title="设备类型">
-                设备类型
+                <i class="layui-icon">&#xe613;</i> <span class="pandaroid-layui-nav-label">设备类型</span>
               </a>
             </dd>
             <dd>
               <a href="javascript:;" data-url="/bas/unit/list" data-id="23" title="测点单位">
-                测点单位
+                <i class="layui-icon">&#xe613;</i> <span class="pandaroid-layui-nav-label">测点单位</span>
               </a>
             </dd>
             <dd>
               <a href="javascript:;" data-url="/bas/role/list" data-id="22" title="角色">
-                角色
+                <i class="layui-icon">&#xe613;</i> <span class="pandaroid-layui-nav-label">角色</span>
               </a>
             </dd>
           </dl>
@@ -172,12 +188,12 @@
 
         <li class="layui-nav-item  layui-nav-itemed" sec:authorize="hasAnyRole('ROLE_TENANTADMIN')">
           <a href="javascript:;">
-            人员管理
+            <i class="layui-icon">&#xe613;</i> <span class="pandaroid-layui-nav-label">人员管理</span>
           </a>
           <dl class="layui-nav-child">
             <dd>
               <a href="javascript:;" data-url="/tenant/user/list" data-id="10" title="管理租户，增删改查">
-                人员管理
+                <i class="layui-icon">&#xe612;</i> <span class="pandaroid-layui-nav-label">人员管理</span>
               </a>
             </dd>
           </dl>
@@ -185,50 +201,50 @@
 
         <li class="layui-nav-item  layui-nav-itemed" sec:authorize="hasAnyRole('ROLE_TENANTADMIN','ROLE_TENANT')">
           <a href="javascript:;">
-            租户
+            <i class="layui-icon">&#xe63c;</i> <span class="pandaroid-layui-nav-label">租户</span>
           </a>
           <dl class="layui-nav-child">
             <dd>
               <a href="javascript:;" data-url="/tenant/info" data-id="3">
-                租户概览
+                <i class="layui-icon">&#xe60a;</i> <span class="pandaroid-layui-nav-label">租户概览</span>
               </a>
             </dd>
             <dd>
               <a href="javascript:;" data-url="/tenant/sum-table" data-id="9">
-                总表
+                <i class="layui-icon">&#xe62d;</i> <span class="pandaroid-layui-nav-label">总表</span>
               </a>
             </dd>
 
             <dd>
               <a href="javascript:;" data-url="/site/list" data-id="4">
-                站点管理(列表)
+                <i class="layui-icon">&#xe630;</i> <span class="pandaroid-layui-nav-label">站点管理(列表)</span>
               </a>
             </dd>
             <dd>
               <a href="javascript:;" data-url="/site/sites-manage" data-id="5">
-                站点管理(详情)
+                <i class="layui-icon">&#xe632;</i> <span class="pandaroid-layui-nav-label">站点管理(详情)</span>
               </a>
             </dd>
 
             <dd sec:authorize="hasRole('ROLE_TENANTADMIN')">
               <a href="javascript:;" data-url="/device/list" data-id="6">
-                设备管理(列表)
+                <i class="layui-icon">&#xe631;</i> <span class="pandaroid-layui-nav-label">设备管理(列表)</span>
               </a>
             </dd>
 
             <dd>
               <a href="javascript:;" data-url="/device/devices-manage" data-id="7">
-                设备管理(详情)
+                <i class="layui-icon">&#xe629;</i> <span class="pandaroid-layui-nav-label">设备管理(详情)</span>
               </a>
             </dd>
             <dd>
               <a href="javascript:;" data-url="/tenant/settings" data-id="8">
-                设置
+                <i class="layui-icon">&#xe614;</i> <span class="pandaroid-layui-nav-label">设置</span>
               </a>
             </dd>
             <dd>
               <a href="javascript:;" data-url="/warn/list" data-id="12">
-                告警事件处理
+                <i class="layui-icon">&#xe645;</i> <span class="pandaroid-layui-nav-label">告警事件处理</span>
               </a>
             </dd>
           </dl>
@@ -247,8 +263,10 @@
   </div>
 
   <!-- Start: 收缩展开侧边栏菜单的按钮 -->
-  <button id="layui-left-menu-toggle" class="layui-btn layui-btn-primary">
-    <img src="/img/collapser.png" alt="展开/收拢菜单">
+  <button id="layui-left-menu-toggle" class="layui-btn">
+    <!--<img src="/img/collapser.png" alt="展开/收拢菜单">-->
+    <!--<img src="/img/collapser1.png" alt="展开/收拢菜单">-->
+    <svg t="1504286251697" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3147" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32"><defs><style type="text/css"></style></defs><path d="M832.2 264.6H192.3c-35.2 0-64-28.8-64-64s28.8-64 64-64h639.8c35.2 0 64 28.8 64 64 0.1 35.2-28.7 64-63.9 64zM832.2 577.9H196.1c-35.2 0-64-28.8-64-64s28.8-64 64-64h636.1c35.2 0 64 28.8 64 64s-28.8 64-64 64zM832.2 896.9H192.3c-35.2 0-64-28.8-64-64s28.8-64 64-64h639.8c35.2 0 64 28.8 64 64 0.1 35.2-28.7 64-63.9 64z" fill="#ffffff" p-id="3148"></path></svg>
   </button>
   <!-- End  : 收缩展开侧边栏菜单的按钮 -->
 
