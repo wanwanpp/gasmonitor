@@ -186,7 +186,7 @@ public class TestController {
 
     @RequestMapping("testsession")
     public Object testSession() {
-        return warnEventService.findByTenantId();
+        return warnEventService.findByTenantId(0);
     }
 }
 
