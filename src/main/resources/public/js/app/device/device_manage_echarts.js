@@ -545,9 +545,10 @@
         };
         // End  : 在折线图被点击和右上角 compare 按钮被点击后，执行下面 function 展示 compare layer
 
+        // 4 个折线图每个的 title
+        var subTitlesArr = ['温度', '压力', '标况流量', '工况流量'];
+
         function genOption(hardwareId, subId, deviceName) {
-            // 4 个折线图每个的 title
-            var subTitlesArr = ['温度', '压力', '标况流量', '工况流量'];
             var subTitle = subTitlesArr[subId];
             var option = {
                 title: {
@@ -907,7 +908,29 @@
             var myChart1 = echarts.init(document.getElementById('echarts-1'));
             var myChart2 = echarts.init(document.getElementById('echarts-2'));
             var myChart3 = echarts.init(document.getElementById('echarts-3'));
+
+            // Start: 检查 myChartsArr ，如果有元素且元素有 onClickCallbackFunc ，则都 off click
+            if(myChartsArr && myChartsArr.length && myChartsArr.length > 0) {
+                myChartsArr.forEach(function (item_myChart, index_myChart) {
+                    if(item_myChart.onClickCallbackFunc) {
+                        item_myChart.off('click', item_myChart.onClickCallbackFunc);
+                    }
+                });
+            }
+            // End  : 检查 myChartsArr ，如果有元素且元素有 onClickCallbackFunc ，则都 off click
+
             myChartsArr = [myChart0, myChart1, myChart2, myChart3];
+
+            // Start: 测试绑定 click 事件给 eCharts
+            if(myChartsArr && myChartsArr.length && myChartsArr.length > 0) {
+                myChartsArr.forEach(function (item_myChart, index_myChart) {
+                    item_myChart.onClickCallbackFunc = function() {
+                        onClick2ShowCompareLayer(hardwareId, index_myChart, subTitlesArr[index_myChart], deviceName);
+                    };
+                    item_myChart.on('click', item_myChart.onClickCallbackFunc);
+                });
+            }
+            // End  : 测试绑定 click 事件给 eCharts
 
             // 指定图表的配置项和数据
             var option0 = genOption(hardwareId, 0, deviceName);
