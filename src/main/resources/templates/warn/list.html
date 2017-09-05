@@ -93,6 +93,9 @@
             var layer = layui.layer;
             var laypage = layui.laypage;
             var form = layui.form();
+            var layuitools = layui.tools;
+            var HANDLER_TYPE_OK = 1;  //处理告警
+            var HANDLER_TYPE_IGNORE = 2;//忽略告警
 
             //第一次加载数据
             searchList();
@@ -105,10 +108,9 @@
             function initClickEvent() {
               //为按钮设置事件
               $(".tenant_edit").on('click', function () {
-                var that = this;
-                showEditLayer(false, $(that).data("sourceid"));
+                var that = $(this);
+                showEditLayer(that.data("sourceid"));
               });
-
             }
 
             //显示编辑弹出层
@@ -124,24 +126,18 @@
                         , btn: ['确认告警', '忽略告警', '取消']
                         , success: function (layero, index) {
                           //这里填充值
-//                          $("#eidt_layer_id").val($("#source" + sourceId).data("id"));
-//                          $("#eidt_layer_name").val($("#source" + sourceId).data("name"));
-//                          $("#eidt_layer_mobile").val($("#source" + sourceId).data("mobile"));
-//                          $("#eidt_layer_address").val($("#source" + sourceId).data("address"));
-//                          $("#eidt_layer_company").val($("#source" + sourceId).data("company"));
-//                          $("#eidt_layer_user_upper").val($("#source" + sourceId).data("user_upper"));
-//                          $("#eidt_layer_device_upper").val($("#source" + sourceId).data("device_upper"));
-//                          $("#eidt_layer_site_upper").val($("#source" + sourceId).data("site_upper"));
+                          var src = $("#source" + sourceId);
+                          $("#eidt_layer_hardwareid").val(src.data("deviceid"));
+                          $("#eidt_layer_createTime").val(layuitools.timestampToString(src.data("createtime")));
+                          $("#eidt_layer_des").val(src.data("des"));
                         }
                         , yes: function (index, layero) {
                           console.log("点击了确认警告");
+                          doWarn(HANDLER_TYPE_OK, sourceId, $("#eidt_layer_msg").val());
                         }
                         , btn2: function (index, layero) {
                           console.log("点击了忽略警告");
-                        }
-                        , btn3: function () {
-                          console.log("点击了取消按钮警告");
-                          $("#eidt_layer_submit").click();
+                          doWarn(HANDLER_TYPE_IGNORE, sourceId, $("#eidt_layer_msg").val());
                         }
                       }
               );
@@ -151,9 +147,9 @@
               console.log("开始查询租户list的信息...");
               layer.load();   //loading
               $.get(
-                      getUrl,
-                      {"currPage": currPage || 1, "searchKey": $(".search_input").val()},
-                      function (data) {
+                      getUrl
+                      , {"currPage": currPage || 1, "searchKey": $(".search_input").val()}
+                      , function (data) {
                         console.log("查询到的玩家的list信息:" + JSON.stringify(data));
                         laytpl(slist.innerHTML).render(data, function (html) {
                           tableview.innerHTML = html;
@@ -172,8 +168,21 @@
                           });
                           layer.closeAll('loading');   //关闭所有的loading
                         });
-                      },
-                      "json"
+                      }
+                      , "json"
+              );
+            }
+
+            //处理报警事件
+            function doWarn(dotype, id, msg) {
+              $.post(
+                      doURL
+                      , {"handlerType": dotype, "warnId": id, "msg": msg}
+                      , function (data) {
+                        console.log("处理报警事件完成");
+
+                      }
+                      , "json"
               );
             }
           }
@@ -187,28 +196,32 @@
 
     <input type="text" id="eidt_layer_id" name="id" style="display: none;"/>
     <div class="layui-form-item">
-      <label class="layui-form-label">设备id</label>
+
+      <label class="layui-form-label">硬件ID</label>
       <div class="layui-input-inline">
-        <input id="eidt_layer_deviceId" type="text" name="deviceId" lay-verify="title" class="layui-input"/>
+        <input id="eidt_layer_hardwareid" type="text" readonly="readonly" class="layui-input"/>
       </div>
+
       <label class="layui-form-label">创建时间</label>
       <div class="layui-input-inline">
-        <input id="eidt_layer_createTime" type="text" name="createTime" lay-verify="title" class="layui-input"/>
+        <input id="eidt_layer_createTime" type="text" readonly="readonly" lay-verify="title" class="layui-input"/>
       </div>
     </div>
 
-    <div class="layui-form-item">
-      <label class="layui-form-label">预警值</label>
-      <div class="layui-input-inline">
-        <input id="eidt_layer_device_upper" class="layui-input" type="warnValue" name="device_upper" lay-verify="number"
-               placeholder="请输入设备上限"/>
-      </div>
-      <label class="layui-form-label">描述</label>
-      <div class="layui-input-inline">
-        <input id="eidt_layer_site_upper" class="layui-input" type="text" name="des" lay-verify="number"
-               placeholder="请输入站点上限"/>
+    <div class="layui-form-item layui-form-text">
+      <label class="layui-form-label">报警详情</label>
+      <div class="layui-input-block">
+        <textarea id="eidt_layer_des" name="desc" readonly="readonly" class="layui-textarea"></textarea>
       </div>
     </div>
+
+    <div class="layui-form-item layui-form-text">
+      <label class="layui-form-label">处理意见</label>
+      <div class="layui-input-block">
+        <textarea id="chulijieguo" name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+      </div>
+    </div>
+
     <button hidden id="eidt_layer_reset" type="reset"></button>
   </form>
 </div>

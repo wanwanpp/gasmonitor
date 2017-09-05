@@ -53,7 +53,6 @@ public class WsClientPool {
     }
 
     public boolean sendMonitorData(MonitorData data) {
-        log.info("sendMonitorData：{}", data);
         monitDataHanlder.handlerMonitor(data);
 //        for (Iterator<String> iterator = clients.keySet().iterator(); iterator.hasNext(); ) {
 //            String key = iterator.next();
