@@ -109,13 +109,13 @@
       </tr>
       <!-- Start: Vue 渲染 -->
       <tr v-for="monitorData in monitorDataArr">
-        <td>{{ monitorData.gasEvent.pointtime }}</td>
-        <td>801 东风锻造厂</td>
-        <td>0</td>
-        <td>147.72</td>
-        <td>16.14</td>
-        <td>356.4</td>
-        <td>449700.03</td>
+        <td>{{ monitorData.gasEvent.pointtime | formatTimeStr }}</td>
+        <td>{{ monitorData.deviceName }}</td>
+        <td>{{ monitorData.gasEvent.running }}</td>
+        <td>{{ monitorData.gasEvent.standard }}</td>
+        <td>{{ monitorData.gasEvent.temperature }}</td>
+        <td>{{ monitorData.gasEvent.pressure }}</td>
+        <td>{{ monitorData.gasEvent.summary }}</td>
       </tr>
       <!-- End  : Vue 渲染 -->
       </tbody>

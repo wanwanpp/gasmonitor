@@ -872,12 +872,21 @@
         // End  : 展示 layerContent_tpl 于 layer 中
         // Start: Vue 渲染列表
         // arr_sample_monitorData
-        debugger;
         console.log('[processMonitorDataArr] vue_deviceMonitorDatasListTable 初始化');
         var vue_deviceMonitorDatasListTable = new Vue({
             el: '#siteDetailInfo',
             data: {
                 monitorDataArr: []
+            },
+            filters: {
+                capitalize: function (value) {
+                    if (!value) return '';
+                    value = value.toString();
+                    return value.charAt(0).toUpperCase() + value.slice(1);
+                },
+                formatTimeStr: function(timestamp) {
+                    return laydate.now(timestamp, 'YYYY-MM-DD hh:mm:ss');
+                }
             }
         });
         // End  : Vue 渲染列表
@@ -946,6 +955,10 @@
                         , jDataGasEvent.summary, jDataGasEvent.pointtime, isNot2Render);
                     renderUpdatedData2Charts(myChartsArr[3], optionsArr[3], jDataGasEvent.hardwareId, jDataGasEvent.running
                         , jDataGasEvent.summary, jDataGasEvent.pointtime, isNot2Render);
+
+                    // 向 vue_deviceMonitorDatasListTable.monitorDataArr 中推送最新数据
+                    jData.deviceName = deviceName;
+                    vue_deviceMonitorDatasListTable.monitorDataArr.push(jData);
                 }
                 oneSocket.setHandler(oneSocket.Event.GAS_EVENT, processMonitorData);
                 // oneSocket.setStation(hardwareId);
@@ -1025,9 +1038,8 @@
                                 if(arr_sample_monitorData.length < 1) {
                                     layer.closeAll('loading');
                                 }
-                                //
-                                debugger;
-                                vue_deviceMonitorDatasListTable.monitorDataArr = arr_sample_monitorData;
+                                // 统一在 processMonitorData 中处理了，这里就不再赋值 arr_sample_monitorData
+                                // vue_deviceMonitorDatasListTable.monitorDataArr = arr_sample_monitorData;
                             } else {
                                 // arr_monitorData 为空，需要隐藏掉 layer loading
                                 layer.closeAll('loading');
