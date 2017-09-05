@@ -502,5 +502,64 @@ public class Device implements Serializable {
     public void setChildren(List<Device> children) {
         this.children = children;
     }
+
+    @Override
+    public String toString() {
+        return "Device{" +
+                "id=" + id +
+                ", hardwareId='" + hardwareId + '\'' +
+                ", siteId=" + siteId +
+                ", name='" + name + '\'' +
+                ", factory='" + factory + '\'' +
+                ", tokenId='" + tokenId + '\'' +
+                ", logic=" + logic +
+                ", dtype=" + dtype +
+                ", watcher=" + watcher +
+                ", created=" + created +
+                ", status=" + status +
+                ", parent=" + parent +
+                ", utemperature='" + utemperature + '\'' +
+                ", upressure='" + upressure + '\'' +
+                ", ustandard='" + ustandard + '\'' +
+                ", urunning='" + urunning + '\'' +
+                ", usummary='" + usummary + '\'' +
+                ", usurplus='" + usurplus + '\'' +
+                ", uanalog1='" + uanalog1 + '\'' +
+                ", uanalog2='" + uanalog2 + '\'' +
+                ", uanalog3='" + uanalog3 + '\'' +
+                ", uanalog4='" + uanalog4 + '\'' +
+                ", uswitch1='" + uswitch1 + '\'' +
+                ", uswitch2='" + uswitch2 + '\'' +
+                ", uswitch3='" + uswitch3 + '\'' +
+                ", uswitch4='" + uswitch4 + '\'' +
+                ", uac220='" + uac220 + '\'' +
+                ", ubattery='" + ubattery + '\'' +
+                ", usolar='" + usolar + '\'' +
+                ", standardUpper=" + standardUpper +
+                ", standardFloor=" + standardFloor +
+                ", runningUpper=" + runningUpper +
+                ", runningFloor=" + runningFloor +
+                ", summaryUpper=" + summaryUpper +
+                ", summaryFloor=" + summaryFloor +
+                ", surplusUpper=" + surplusUpper +
+                ", surplusFloor=" + surplusFloor +
+                ", temperatureUpper=" + temperatureUpper +
+                ", temperatureLow=" + temperatureLow +
+                ", pressureUpper=" + pressureUpper +
+                ", pressureLow=" + pressureLow +
+                ", uanalog1Upper=" + uanalog1Upper +
+                ", uanalog2Upper=" + uanalog2Upper +
+                ", uanalog3Upper=" + uanalog3Upper +
+                ", uanalog4Upper=" + uanalog4Upper +
+                ", uanalog1Floor=" + uanalog1Floor +
+                ", uanalog2Floor=" + uanalog2Floor +
+                ", uanalog3Floor=" + uanalog3Floor +
+                ", uanalog4Floor=" + uanalog4Floor +
+                ", uac220Floor=" + uac220Floor +
+                ", ubatteryFloor=" + ubatteryFloor +
+                ", usolarFloor=" + usolarFloor +
+                ", children=" + children +
+                '}';
+    }
 }
 
