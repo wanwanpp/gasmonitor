@@ -14,7 +14,15 @@
 
 </head>
 <body class="childrenBody">
-<blockquote class="layui-elem-quote news_search">
+<blockquote class="layui-elem-quote news_search layui-form">
+  <div class="layui-input-inline">
+    <select id="search_select_status" name="status" lay-verify="required">
+      <option value="1">未处理</option>
+      <option value="2">已处理</option>
+      <option value="3">已忽略</option>
+    </select>
+  </div>
+
   <div class="layui-inline">
     <div class="layui-input-inline">
       <input type="text" value="" placeholder="请输入关键字" class="layui-input search_input"/>
@@ -94,8 +102,8 @@
             var laypage = layui.laypage;
             var form = layui.form();
             var layuitools = layui.tools;
-            var HANDLER_TYPE_OK = 1;  //处理告警
-            var HANDLER_TYPE_IGNORE = 2;//忽略告警
+            var HANDLER_TYPE_OK = 2;  //处理告警
+            var HANDLER_TYPE_IGNORE = 3;//忽略告警
 
             //第一次加载数据
             searchList();
@@ -134,21 +142,27 @@
                         , yes: function (index, layero) {
                           console.log("点击了确认警告");
                           doWarn(HANDLER_TYPE_OK, sourceId, $("#eidt_layer_msg").val());
+                          layer.closeAll();
                         }
                         , btn2: function (index, layero) {
                           console.log("点击了忽略警告");
                           doWarn(HANDLER_TYPE_IGNORE, sourceId, $("#eidt_layer_msg").val());
+                          layer.closeAll();
                         }
                       }
               );
             }
 
             function searchList(currPage) {
-              console.log("开始查询租户list的信息...");
+              console.log("开始查询租户list的信息stats:" + $("#search_select_status").val());
               layer.load();   //loading
               $.get(
                       getUrl
-                      , {"currPage": currPage || 1, "searchKey": $(".search_input").val()}
+                      , {
+                        "currPage": currPage || 1,
+                        "searchKey": $(".search_input").val(),
+                        "s": $("#search_select_status").val()
+                      }
                       , function (data) {
                         console.log("查询到的玩家的list信息:" + JSON.stringify(data));
                         laytpl(slist.innerHTML).render(data, function (html) {
@@ -180,7 +194,7 @@
                       , {"handlerType": dotype, "warnId": id, "msg": msg}
                       , function (data) {
                         console.log("处理报警事件完成");
-
+                        searchList()
                       }
                       , "json"
               );
