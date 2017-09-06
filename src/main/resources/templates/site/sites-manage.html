@@ -403,6 +403,41 @@
     </table>
   </div>
 </script>
+<script id="tpl_bMapOpenInfoWindow_content_vue" type="text/html">
+  <div class="layui-form">
+    <table class="layui-table">
+      <colgroup>
+        <col>
+        <col>
+        <col>
+        <col>
+        <col>
+      </colgroup>
+      <thead>
+      <tr>
+        <th>序号</th>
+        <th>ID</th>
+        <th>设备名</th>
+        <th>硬件 ID</th>
+        <th>创建时间</th>
+      </tr>
+      </thead>
+      <tbody id="tpl_bMapOpenInfoWindow_content_vue-tbody">
+      <tr v-if="!devicesArr || !devicesArr.length || devicesArr.length < 1">
+        <td colspan="5">站点下没有设备</td>
+      </tr>
+      <tr v-for="(item_device, index_device) in devicesArr">
+        <td>Vue_{{ index_device + 1 }}</td>
+        <td>{{ item_device.id }}</td>
+        <td>{{ item_device.name }}</td>
+        <td>{{ item_device.hardwareId }}</td>
+        <td>{{ item_device.created | formatTimeStr }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</script>
+<script type="text/javascript" src="/js/vue.min.js"></script>
 <script type="text/javascript" src="/js/app/site/site_manage_search_list.js"></script>
 <!-- End  : 与服务器交互 ajax -->
 

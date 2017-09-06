@@ -42,7 +42,6 @@
                 })(siteId);
                 // 2. 设备列表数据渲染 laytpl ，得到 content_html
                 var callback_renderDevicesListTpl = function(data_deviceAjaxList) {
-                    debugger;
                     if(!data_deviceAjaxList) {
                         return ;
                     }
@@ -50,20 +49,49 @@
                     if(!devicesArr) {
                         return ;
                     }
-                    laytpl(tpl_bMapOpenInfoWindow_content.innerHTML).render(devicesArr, function(html_tpl_bMapOpenInfoWindow_content) {
-                        debugger;
+                    /*laytpl(tpl_bMapOpenInfoWindow_content.innerHTML).render(devicesArr, function(html_tpl_bMapOpenInfoWindow_content) {
                         // 3. openInfo 显示 content_html
                         openInfo(html_tpl_bMapOpenInfoWindow_content, e);
+                    });*/
+                    // 3. openInfo 显示 content_html
+                    openInfo(tpl_bMapOpenInfoWindow_content_vue.innerHTML, e, function() {
+                        // layer.alert('eventFucntionOpen 触发 Vue 初始化');
+                        // 下面的手动释放代码有问题，经测试自动释放没有问题， n 次 new Vue 后内存无过多上升
+                        /*if(openInfo.vue_bMapOpenInfoWindow_content_tbody) {
+                            openInfo.vue_bMapOpenInfoWindow_content_tbody.delete();
+                        }*/
+                        openInfo.vue_bMapOpenInfoWindow_content_tbody = new Vue({
+                            el: '#tpl_bMapOpenInfoWindow_content_vue-tbody',
+                            data: {
+                                devicesArr: devicesArr
+                            },
+                            filters: {
+                                capitalize: function (value) {
+                                    if (!value) return '';
+                                    value = value.toString();
+                                    return value.charAt(0).toUpperCase() + value.slice(1);
+                                },
+                                formatTimeStr: function(timestamp) {
+                                    return laydate.now(timestamp, 'YYYY-MM-DD hh:mm:ss');
+                                }
+                            }
+                        });
                     });
                 };
-                debugger;
                 DeviceAjaxListGetter.execute(callback_renderDevicesListTpl);
             });
         }
-        function openInfo(content, e){
+        function openInfo(content, e, eventFunctionOpen){
             var p = e.target;
             var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat + 0.009);
             var infoWindow = new BMap.InfoWindow(content, opts);  // 创建信息窗口对象
+            // Start: 测试 infoWindow addEventListener open
+            infoWindow.addEventListener('open', function() {
+                if(eventFunctionOpen && eventFunctionOpen instanceof Function) {
+                    eventFunctionOpen();
+                }
+            });
+            // End  : 测试 infoWindow addEventListener open
             layui.SitesManageGlobal['map'].openInfoWindow(infoWindow, point); //开启信息窗口
         }
         // End  : 地图相关 functions
