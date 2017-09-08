@@ -207,7 +207,9 @@ public class TenantController {
     //增加租户
     @RequestMapping(value = "/user/ajax/new")
     @ResponseBody
-    public AjaxResult<User> ajaxUserNew(User user) {
+    public AjaxResult<User> ajaxUserNew(User user, HttpSession session) {
+        User sessionUser = SessionUtils.getUser(session);
+        user.setTenantId(sessionUser.getTenantId());
         return userSerevice.newUser(user);
     }
 }
