@@ -10,14 +10,13 @@ import com.hazelcast.core.HazelcastInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by saplmm on 2017/7/24.
@@ -62,7 +61,8 @@ public class UserService {
 
 
     //新增一个操作员
-    @CacheEvict(allEntries = true)  //清空所有的缓存
+    @CacheEvict(key = "'" + Consts.CACHE_USER_TENANT + "'" + "+#p0")
+//    @CachePut(key = "'" + Consts.CACHE_USER_TENANT + "'" + "+#p0")
     public AjaxResult<User> newUser(User user) {
         //新增加一个操作员
         user.setCreatedate(new Date());
@@ -75,29 +75,22 @@ public class UserService {
     }
 
     //删除一个操作员
-    @CacheEvict(allEntries = true)  //清空所有的缓存
+    @CacheEvict(key = "'" + Consts.CACHE_USER_TENANT + "'" + "+#p0")
+//    @CachePut(key = "'" + Consts.CACHE_USER_TENANT + "'" + "+#p0")
     public AjaxResult<User> remove(Long id) {
-        //todo 目前暂时直接从数据库删除，删除之前 需要删除其他的级联?
         userRepository.delete(id);
         return AjaxResult.SuccAjaxResult();
     }
-
-//    public void loadUserMap(User u) {
-//        IMap<Long, User> userIMap = hazelcastInstance.getMap(hazelCastPros.getMapuserall());
-//        userIMap.set(u.getId(), u);
-//    }
-//
-//
-//    public void loadAllUserMap() {
-//        IMap<Long, User> userIMap = hazelcastInstance.getMap(hazelCastPros.getMapuserall());
-//        List<User> users = userRepository.findAll();
-//        for (User u : users) {
-//            userIMap.set(u.getId(), u);
-//        }
-//    }
 
     @Cacheable(key = "#p0", condition = "#p0!=null")
     public User findOne(Long id) {
         return userRepository.findOne(id);
     }
+
+    //通过tenant缓存的user
+    @Cacheable(key = "'" + Consts.CACHE_USER_TENANT + "'+#p0")
+    public List<User> findUserByTenantId(Long tenantId) {
+        return userRepository.findByTenantId(tenantId);
+    }
 }
+

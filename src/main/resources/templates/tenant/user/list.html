@@ -74,8 +74,8 @@
         <td>{{item.username}}</td>
         <td>{{item.address||''}}</td>
         <td>{{item.mobile||''}}</td>
-        <td>{{item.status}}</td>
-        <td>{{item.role}}</td>
+        <td>{{layui.tools.userstatusDes(item.status)}}</td>
+        <td>{{layui.tools.roleDes(item.role)}}</td>
         <td>{{layui.tools.timestampToString(item.createdate)}}</td>
         <td>{{layui.tools.timestampToString(item.lastlogin)}}</td>
         <td>

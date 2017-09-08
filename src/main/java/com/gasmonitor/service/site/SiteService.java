@@ -4,8 +4,11 @@ import com.gasmonitor.dao.DeviceRepository;
 import com.gasmonitor.dao.SiteRepository;
 import com.gasmonitor.entity.Device;
 import com.gasmonitor.entity.Site;
+import com.gasmonitor.pros.Consts;
 import com.gasmonitor.vo.AjaxResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +20,7 @@ import java.util.List;
  */
 
 @Service
+@CacheConfig(cacheNames = Consts.CACHE.DEVICE)
 public class SiteService {
 
     @Autowired
@@ -63,5 +67,10 @@ public class SiteService {
         site.setCreatedate(new Date());
         site = siteRepository.save(site);   //保存一个站点
         return new AjaxResult<Site>(site);
+    }
+    
+    @Cacheable(key = "'" + Consts.CACHE.DEVICE_ID + "'+#p0")
+    public Site findOne(Long id) {
+        return siteRepository.findOne(id);
     }
 }

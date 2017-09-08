@@ -10,6 +10,13 @@ var DEVICE_TYPE_LIULIANG = 1;
 var DEVICE_TYPE_IC = 2;
 var DEVICE_TYPE_ICLIULIANG = 3;
 
+var USER_STATUS_NORMAL = 1;
+
+
+var ROLE_SYSTEM = "ROLE_SYSTEM";
+var ROLE_TENANTADMIN = "ROLE_TENANTADMIN";
+var ROLE_TENANT = "ROLE_TENANT";
+
 
 layui.define(['jquery', 'layer', 'element'], function (exports) {
     var $ = layui.jquery;
@@ -198,6 +205,26 @@ layui.define(['jquery', 'layer', 'element'], function (exports) {
         return new Date(parseInt(tm)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ")
     }
 
+    //转义user的status
+    function userstatusDes(s) {
+        if (s == USER_STATUS_NORMAL) {
+            return "正常";
+        } else {
+            return "不正常";
+        }
+    }
+
+    //转义角色
+    function roleDes(s) {
+        if (s == ROLE_TENANTADMIN) {
+            return "租户管理员";
+        } else if (s == ROLE_TENANT) {
+            return "操作员";
+        } else if (s == ROLE_SYSTEM) {
+            return "管理员";
+        }
+    }
+
     /**
      * 将【参数对象：obj_params】序列化为"?param_a=value_a&param_b=value_b"的形式
      * @param obj_params    参数对象
@@ -239,7 +266,7 @@ layui.define(['jquery', 'layer', 'element'], function (exports) {
                 , ONE_DAY: ONE_DAY
             };
         })()
-        , getTodayStartDateTime: function(offsetTime) {
+        , getTodayStartDateTime: function (offsetTime) {
             var date = new Date();
             // var date = new Date(1501833236607); // 测试，定为 8 月 4 日
             // var date = new Date(1501721236607); // 测试，定为 8 月 3 日
@@ -247,33 +274,35 @@ layui.define(['jquery', 'layer', 'element'], function (exports) {
             date.setMinutes(0);
             date.setSeconds(0);
             date.setMilliseconds(0);
-            if(offsetTime) {
+            if (offsetTime) {
                 date = new Date(date.getTime() + offsetTime);
             }
             return date;
         }
         , checkIsTimestampBetweenStartEnd: checkIsTimestampBetweenStartEnd
     };
+
     /**
      * 检查 timestamp 是否在 startTimestamp 和 EndTimeStamp 中间
      * @param timestamp
      * @returns {boolean}
      */
     function checkIsTimestampBetweenStartEnd(timestamp) {
-        if(timestamp >= checkIsTimestampBetweenStartEnd.getStartTimestamp()
+        if (timestamp >= checkIsTimestampBetweenStartEnd.getStartTimestamp()
             && timestamp <= checkIsTimestampBetweenStartEnd.getEndTimestamp()) {
             return true;
         }
         return false;
     }
-    checkIsTimestampBetweenStartEnd.getStartTimestamp = function() {
-        if(!checkIsTimestampBetweenStartEnd.startTime) {
+
+    checkIsTimestampBetweenStartEnd.getStartTimestamp = function () {
+        if (!checkIsTimestampBetweenStartEnd.startTime) {
             checkIsTimestampBetweenStartEnd.startTime = todayStartEndDateTimeTool.getTodayStartDateTime().getTime();
         }
         return checkIsTimestampBetweenStartEnd.startTime;
     };
-    checkIsTimestampBetweenStartEnd.getEndTimestamp = function() {
-        if(!checkIsTimestampBetweenStartEnd.endTime) {
+    checkIsTimestampBetweenStartEnd.getEndTimestamp = function () {
+        if (!checkIsTimestampBetweenStartEnd.endTime) {
             checkIsTimestampBetweenStartEnd.endTime = todayStartEndDateTimeTool.getTodayStartDateTime(todayStartEndDateTimeTool.CommonTime.ONE_DAY).getTime();
         }
         return checkIsTimestampBetweenStartEnd.endTime;
@@ -294,5 +323,8 @@ layui.define(['jquery', 'layer', 'element'], function (exports) {
         , deviceType2des: deviceType2des
         //
         , todayStartEndDateTimeTool: todayStartEndDateTimeTool
+        , userstatusDes: userstatusDes
+        , roleDes: roleDes
+
     });
 });

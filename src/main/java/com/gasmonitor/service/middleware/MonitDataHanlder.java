@@ -6,7 +6,9 @@ import com.gasmonitor.dao.SiteRepository;
 import com.gasmonitor.entity.Device;
 import com.gasmonitor.entity.DeviceWarnEvent;
 import com.gasmonitor.entity.Site;
+import com.gasmonitor.entity.User;
 import com.gasmonitor.pros.Consts;
+import com.gasmonitor.service.site.SiteService;
 import com.gasmonitor.service.user.UserService;
 import com.gasmonitor.service.warn.WarnEventService;
 import com.gasmonitor.vo.MonitorData;
@@ -18,6 +20,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by saplmm on 2017/7/29.
@@ -33,6 +36,9 @@ public class MonitDataHanlder {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private SiteService siteService;
 
     @Autowired
     private DeviceRepository deviceRepository;
@@ -191,9 +197,12 @@ public class MonitDataHanlder {
         if (watch == null) {
             log.info("data:{}对应设备的warch为null", data);
         }
-        String userName = userService.findOne(watch).getUsername();
-        log.info("handlrMOnitor开始处理data:{},device:{}，发送给user:{}", data, d, userName);
 
-        template.convertAndSendToUser(userName, "/queue/notifications", data);
+        //这里应该是把所有的操作员都找到，然后发送出去
+        List<User> users = userService.findUserByTenantId(siteService.findOne(d.getSiteId()).getTenantId());
+        for (User u : users) {
+            log.info("handlrMOnitor开始处理data:{},device:{}，发送给user:{}", data, d, u.getUsername());
+            template.convertAndSendToUser(u.getUsername(), "/queue/notifications", data);
+        }
     }
 }
