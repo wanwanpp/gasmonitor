@@ -6,6 +6,8 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,8 +22,8 @@ import java.util.List;
 public interface DeviceRepository extends JpaRepository<Device, Long> {
 
     //通过站点找到所有的设备
-    @Cacheable(key = "'" + Consts.CACHE_DEVICE_LIST_SITE + "'+#p0")
-    List<Device> findBySiteId(Long siteId);
+//    @Cacheable(key = "'" + Consts.CACHE_DEVICE_LIST_SITE + "'+#p0")
+    Page<Device> findBySiteId(Long siteId, Pageable pageable);
 
     @Cacheable(key = "'" + Consts.CACHE_DEVICE_HARDWAREID + "'+#p0")
     Device findByHardwareId(String hardwareId);

@@ -1,6 +1,7 @@
 package com.gasmonitor.dao;
 
 import com.gasmonitor.entity.Device;
+import com.gasmonitor.utils.PageUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -43,7 +44,7 @@ public class DeviceRepositoryTest {
         }
 
         deviceRepository.flush();
-        List<Device> devices = deviceRepository.findBySiteId((long) 999);
+        List<Device> devices = deviceRepository.findBySiteId((long) 999, PageUtils.p(1)).getContent();
         logger.info("查询到的所有的device:{}", devices);
 //        assertThat(devices).extracting(device::getSiteId).containsOnly(device.getSiteId());
     }

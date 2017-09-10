@@ -66,13 +66,6 @@ public class TestController {
 
     }
 
-    @RequestMapping(value = "/device/list")
-    public Object findDevice(@RequestParam("siteId") long siteId) {
-        List<Device> devices = deviceRepository.findBySiteId(siteId);
-        logger.info("测试，找到的devices:{}", devices);
-        return devices;
-    }
-
 
     @RequestMapping(value = "device/dao")
     public Object deviceDao() {

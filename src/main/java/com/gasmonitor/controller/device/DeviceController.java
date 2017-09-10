@@ -9,11 +9,13 @@ import com.gasmonitor.entity.User;
 import com.gasmonitor.exception.TipsException;
 import com.gasmonitor.service.bas.BasDataUnitService;
 import com.gasmonitor.service.device.DeviceService;
+import com.gasmonitor.utils.PageUtils;
 import com.gasmonitor.utils.SessionUtils;
 import com.gasmonitor.vo.AjaxResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,13 +71,8 @@ public class DeviceController {
     public AjaxResult<Device> ajaxList(@RequestParam(value = "siteId", defaultValue = "0") Long siteId,
                                        @RequestParam(value = "searchKey", defaultValue = "") String searchKey,
                                        Integer currPage) {
-        List<Device> devices;
-        try {
-            devices = deviceRepository.findBySiteId(siteId);
-        } catch (Exception e) {
-            devices = new ArrayList<>();
-        }
-        log.info("通过站点{}查询到的所有设备的信息{}", siteId, devices);
+        Page<Device> devices = deviceRepository.findBySiteId(siteId, PageUtils.p(currPage));
+        log.info("通过站点{},currpage:{}查询到的所有设备的信息{}", siteId, currPage, devices);
         return AjaxResult.NewAjaxResult(devices);
     }
 

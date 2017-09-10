@@ -61,15 +61,6 @@ public class AjaxResult<T> {
         return r;
     }
 
-    public static <M> AjaxResult<M> NewAjaxResult(List<M> t, long total, int page) {
-        AjaxResult<M> r = new AjaxResult<M>();
-        r.setData(t);
-        r.setTotal(total);
-        r.setPage(page);
-        return r;
-    }
-
-
     public static <M> AjaxResult<M> NewAjaxResult(Page<M> page) {
         AjaxResult<M> r = new AjaxResult<M>();
         if (page != null) {

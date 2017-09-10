@@ -65,7 +65,7 @@
       <tbody class="news_content">
       {{# layui.each(d.data, function(index, item){ }}
       <tr>
-        <td>{{(index+1)+(d.page-1)*d.pageSize}}</td>
+        <td>{{(index+1)+d.page*d.pageSize}}</td>
         <td>{{item.name}}</td>
         <td>{{item.hardwareId}}</td>
         <td>{{item.siteId}}</td>
@@ -767,18 +767,18 @@
       console.log("开始查询租户list的信息...");
       layer.load();   //loading
       $.get(
-              getUrl,
-              {
+              getUrl
+              , {
                 "siteId": $("#search_select_site").val(),
                 "currPage": currPage || 1,
                 "searchKey": $(".search_input").val()
-              },
-              function (data) {
+              }
+              , function (data) {
                 console.log("查询到的玩家的list信息:" + JSON.stringify(data));
                 laytpl(slist.innerHTML).render(data, function (html) {
                   tableview.innerHTML = html;
                   initClickEvent();   //渲染之后才能初始化按钮的信息，不然没有作用
-                  //分页
+                  //分页 组件
                   laypage({
                     cont: 'pageView'
                     , pages: data.totalPage
