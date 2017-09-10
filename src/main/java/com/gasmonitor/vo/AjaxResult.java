@@ -10,7 +10,7 @@ import java.util.List;
  * Created by saplmm on 2017/6/23.
  */
 public class AjaxResult<T> {
-    public static Integer PAGE_SIZE = 5;
+    public static Integer PAGE_SIZE = 10;
     public final static int CODE_ERROR = -1;
     public final static int CODE_SUCC = 1;
     public final static String MSG_ERROR = "失败";
@@ -20,6 +20,7 @@ public class AjaxResult<T> {
     private String msg;
     private long total;
     private int page;
+    private int pageSize;
     private long totalPage;
     private List<T> data;
 
@@ -27,6 +28,7 @@ public class AjaxResult<T> {
     public AjaxResult() {
         this.setCode(CODE_SUCC);
         this.setMsg(MSG_SUCC);
+        this.setPageSize(PAGE_SIZE);
     }
 
     public AjaxResult(T data) {
@@ -163,5 +165,13 @@ public class AjaxResult<T> {
 
     public void setMsg(String msg) {
         this.msg = msg;
+    }
+
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
     }
 }

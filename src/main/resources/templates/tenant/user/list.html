@@ -32,11 +32,6 @@
       <i class="layui-icon">&#xe608;</i> 添加
     </button>
   </div>
-  <!--<div class="layui-inline" sec:authorize="hasRole('ROLE_TENANTADMIN')">-->
-  <!--<a class="layui-btn layui-btn-danger batchDel" disabled="true">-->
-  <!--<i class="layui-icon">&#xe640;</i>批量删除-->
-  <!--</a>-->
-  <!--</div>-->
 </blockquote>
 
 <script id="slist" type="text/html">
@@ -70,7 +65,7 @@
       <tbody class="news_content">
       {{# layui.each(d.data, function(index, item){ }}
       <tr>
-        <td>{{index}}</td>
+        <td>{{(index+1)+d.page*d.pageSize}}</td>
         <td>{{item.username}}</td>
         <td>{{item.address||''}}</td>
         <td>{{item.mobile||''}}</td>

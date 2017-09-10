@@ -65,7 +65,7 @@
       <tbody class="news_content">
       {{# layui.each(d.data, function(index, item){ }}
       <tr>
-        <td>{{index}}</td>
+        <td>{{(index+1)+(d.page-1)*d.pageSize}}</td>
         <td>{{item.name}}</td>
         <td>{{item.hardwareId}}</td>
         <td>{{item.siteId}}</td>
