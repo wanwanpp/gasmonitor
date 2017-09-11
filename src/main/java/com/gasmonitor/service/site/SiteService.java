@@ -20,7 +20,7 @@ import java.util.List;
  */
 
 @Service
-@CacheConfig(cacheNames = Consts.CACHE.DEVICE)
+@CacheConfig(cacheNames = Consts.CACHE.SITE.NAME)
 public class SiteService {
 
     @Autowired
@@ -69,7 +69,7 @@ public class SiteService {
         return new AjaxResult<Site>(site);
     }
 
-    @Cacheable(key = "'" + Consts.CACHE.DEVICE_ID + "'+#p0")
+    @Cacheable(key = "'" + Consts.CACHE.SITE.ID + "'+#p0")
     public Site findOne(Long id) {
         return siteRepository.findOne(id);
     }

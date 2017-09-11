@@ -21,8 +21,10 @@ public class Consts {
 
     //缓存站点
     public static class CACHE {
-        public static final String DEVICE = "c_device";  //站点缓存名字
-        public static final String DEVICE_ID = "c_device_id";  //通过ID缓存站点
+        public static class SITE {
+            public static final String NAME = "c_site";  //站点缓存名字
+            public static final String ID = "c_site_id";  //通过ID缓存站点
+        }
     }
 
     //缓存基本数据
