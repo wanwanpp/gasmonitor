@@ -68,7 +68,7 @@ public class SiteService {
         site = siteRepository.save(site);   //保存一个站点
         return new AjaxResult<Site>(site);
     }
-    
+
     @Cacheable(key = "'" + Consts.CACHE.DEVICE_ID + "'+#p0")
     public Site findOne(Long id) {
         return siteRepository.findOne(id);
