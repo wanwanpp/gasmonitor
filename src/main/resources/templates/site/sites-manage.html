@@ -133,16 +133,20 @@
       </select>
     </div>
     <!-- End  : 搜索 -->
-    <div id="sitesListTableView"></div>
+    <div id="sitesListTableView"
+         style="border: 1px solid #e6e6e6; margin-left: 4px; margin-top: 2px;">
+    </div>
   </div>
 
   <div class="sysNotice col right-details">
     <blockquote class="layui-elem-quote title">
       站点地图<i class="iconfont icon-new1"></i>
       <div class="pandaroid-layui_elem_quote_title-btn-container">
-        <button id="" class="layui-btn">查看设备</button>
-        <button id="button-edit_site_pos_in_map" class="layui-btn">点击编辑当前站点位置（在地图中拖动）</button>
-        <button id="button-submit_site_pos_in_map" class="layui-btn layui-btn-normal hide">提交已编辑的站点位置（在地图中拖动）</button>
+        <div class="layui-btn-group">
+          <button id="" class="layui-btn">查看设备</button>
+          <button id="button-edit_site_pos_in_map" class="layui-btn">点击编辑当前站点位置（在地图中拖动）</button>
+          <button id="button-submit_site_pos_in_map" class="layui-btn layui-btn-normal hide">提交已编辑的站点位置（在地图中拖动）</button>
+        </div>
       </div>
     </blockquote>
     <table class="layui-table" lay-skin="line">
