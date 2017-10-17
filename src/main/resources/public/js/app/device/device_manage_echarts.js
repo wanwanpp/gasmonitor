@@ -681,7 +681,70 @@
 
             return option;
         }
+
+        var genOptionBattery = function (hardwareId, deviceName) {
+            var optionBattery = {
+                series: [{
+                    type: 'liquidFill',
+                    data: [],
+                    radius: '60%',
+                    outline: {
+                        show: false
+                    },
+                    backgroundStyle: {
+                        borderColor: '#156ACF',
+                        borderWidth: 1,
+                        shadowColor: 'rgba(0, 0, 0, 0.4)',
+                        shadowBlur: 20
+                    },
+                    // shape: 'path://M367.855,428.202c-3.674-1.385-7.452-1.966-11.146-1.794c0.659-2.922,0.844-5.85,0.58-8.719 c-0.937-10.407-7.663-19.864-18.063-23.834c-10.697-4.043-22.298-1.168-29.902,6.403c3.015,0.026,6.074,0.594,9.035,1.728 c13.626,5.151,20.465,20.379,15.32,34.004c-1.905,5.02-5.177,9.115-9.22,12.05c-6.951,4.992-16.19,6.536-24.777,3.271 c-13.625-5.137-20.471-20.371-15.32-34.004c0.673-1.768,1.523-3.423,2.526-4.992h-0.014c0,0,0,0,0,0.014 c4.386-6.853,8.145-14.279,11.146-22.187c23.294-61.505-7.689-130.278-69.215-153.579c-61.532-23.293-130.279,7.69-153.579,69.202 c-6.371,16.785-8.679,34.097-7.426,50.901c0.026,0.554,0.079,1.121,0.132,1.688c4.973,57.107,41.767,109.148,98.945,130.793 c58.162,22.008,121.303,6.529,162.839-34.465c7.103-6.893,17.826-9.444,27.679-5.719c11.858,4.491,18.565,16.6,16.719,28.643 c4.438-3.126,8.033-7.564,10.117-13.045C389.751,449.992,382.411,433.709,367.855,428.202z',
+                    shape: 'path://M680 104.8h-84c0-22.4-18.9-40.7-42-40.7h-84c-23.1 0-42 18.3-42 40.7h-84c-46.2 0-84 36.6-84 81.4v692.3c0 44.7 37.8 81.4 84 81.4h336c46.2 0 84-36.6 84-81.4V186.2c0-44.7-37.8-81.4-84-81.4z m-72.7 383.6L413.6 743.2l64.6-179.4h-72.1L478.2 352h139.7l-91.6 136.4h81z',
+                    label: {
+                        normal: {
+                            position: ['26.5%', '80%'],
+                            formatter: function (seriesObj) {
+                                debugger;
+                                var batteryVolt = (seriesObj.value || seriesObj.value === 0) ? seriesObj.value : '-';
+                                return '电池电压（V）： ' + batteryVolt;
+                            },
+                            textStyle: {
+                                fontSize: 12,
+                                color: '#D94854'
+                            }
+                        }
+                    }
+                }]
+            };
+            return optionBattery;
+        };
+
         // render function
+        function renderUpdatedData2ChartsBattery(myChartBattery, optionBattery, jDataHardwareId, jDataBattery, isNot2Render) {
+            console.info(['[renderUpdatedData2ChartsBattery] isNot2Render: ', isNot2Render].join(''));
+            debugger;
+            if (!myChartBattery || !optionBattery || !jDataHardwareId || (!jDataBattery && jDataBattery !== 0)) {
+                console.error('[renderUpdatedData2ChartsBattery] 参数检查有误：');
+                console.info(['[renderUpdatedData2ChartsBattery] myChartBattery: ', myChartBattery].join(''));
+                console.info(['[renderUpdatedData2ChartsBattery] optionBattery: ', optionBattery].join(''));
+                console.info(['[renderUpdatedData2ChartsBattery] jDataHardwareId: ', jDataHardwareId].join(''));
+                console.info(['[renderUpdatedData2ChartsBattery] jDataBattery: ', jDataBattery].join(''));
+                return;
+            }
+            //
+            /*var data0 = optionBattery.series[0].data;
+            data0 = [4.1];*/
+            //
+            console.log('[renderUpdatedData2ChartsBattery] isNot2Render: ' + isNot2Render);
+            if (!isNot2Render) {
+                myChartBattery.setOption({
+                    series: [
+                        {
+                            data: [220, jDataBattery || 4.1]
+                        }
+                    ]
+                });
+            }
+        }
         function renderUpdatedData2Charts(myChart2Render, myChart2RenderOption, jDataHardwareId, jDataFieldVal
                                           , jDataSummaryVal, jDataPointTimeVal, isNot2Render) {
             if(!myChart2Render || !myChart2RenderOption || !jDataHardwareId || (!jDataFieldVal && jDataFieldVal !== 0)
@@ -722,30 +785,6 @@
                     ]
                 });
             }
-
-            // var data1 = myChart2RenderOption.series[1].data;
-
-            /*var max = 10;
-
-            if(data0.length >= max) {
-                data0.shift();
-            }
-            // data0.push(Math.round(Math.random() * 1000));
-            data0.push(jDataFieldVal);
-
-            /!*if(data1.length >= 10) {
-                data1.shift();
-            }
-            // data1.push((Math.random() * 1000 + 5).toFixed(1) - 0);
-            data1.push(jDataSummaryVal);*!/
-
-            var xAxis0Data = myChart2RenderOption.xAxis[0].data;
-            if(xAxis0Data && xAxis0Data.length && xAxis0Data.length >= max) {
-                xAxis0Data.shift();
-            }
-            xAxis0Data.push(axisData);
-
-            myChart2Render.setOption(myChart2RenderOption);*/
         }
         // init function
         function renderInitData2Charts(myChart2Render, myChart2RenderOption) {
@@ -908,6 +947,7 @@
             var myChart1 = echarts.init(document.getElementById('echarts-1'));
             var myChart2 = echarts.init(document.getElementById('echarts-2'));
             var myChart3 = echarts.init(document.getElementById('echarts-3'));
+            var myChartBattery = echarts.init(document.getElementById('echarts-battery'));
 
             // Start: 检查 myChartsArr ，如果有元素且元素有 onClickCallbackFunc ，则都 off click
             if(myChartsArr && myChartsArr.length && myChartsArr.length > 0) {
@@ -938,6 +978,8 @@
             var option2 = genOption(hardwareId, 2, deviceName);
             var option3 = genOption(hardwareId, 3, deviceName);
             optionsArr = [option0, option1, option2, option3];
+            // Battery 电量百分比图配置项和数据
+            var optionBattery = genOptionBattery(hardwareId, deviceName);
 
             // 实际： 监听事件进行刷新
             $(function() {
@@ -945,6 +987,8 @@
                 renderInitData2Charts(myChartsArr[1], optionsArr[1]);
                 renderInitData2Charts(myChartsArr[2], optionsArr[2]);
                 renderInitData2Charts(myChartsArr[3], optionsArr[3]);
+                // Battery 的 render init data to charts
+                renderInitData2Charts(myChartBattery, optionBattery);
 
                 // var oneSocketEvent = oneSocket.EVENT;
                 /**
@@ -984,6 +1028,10 @@
                         , jDataGasEvent.summary, jDataGasEvent.pointtime, isNot2Render);
                     renderUpdatedData2Charts(myChartsArr[3], optionsArr[3], jDataGasEvent.hardwareId, jDataGasEvent.running
                         , jDataGasEvent.summary, jDataGasEvent.pointtime, isNot2Render);
+                    // Battery 数据更新
+                    debugger;
+                    renderUpdatedData2ChartsBattery(myChartBattery, optionBattery, jDataGasEvent.hardwareId
+                        , jDataGasEvent.battery, isNot2Render);
 
                     // 向 vue_deviceMonitorDatasListTable.monitorDataArr 中推送最新数据
                     jData.deviceName = deviceName;
@@ -1415,7 +1463,7 @@
         });
 
         // Start: [设备列表]中某设备被点击
-        $(document).on('click', '.device-table-tr', function() {
+        /*$(document).on('click', '.device-table-tr', function() {
             var thisTr = $(this);
             // 获取当前行的设备信息
             var deviceId = thisTr.data('id');
@@ -1440,7 +1488,7 @@
             // Start: 根据用户的点击，清空折线图，然后重新 setStationId
             refreshECharts(hardwareId, deviceName);
             // End  : 根据用户的点击，清空折线图，然后重新 setStationId
-        });
+        });*/
         // End  : [设备列表]中某设备被点击
 
         // Start: 绑定窗口的 resize 事件

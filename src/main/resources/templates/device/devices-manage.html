@@ -80,7 +80,8 @@
       <colgroup>
         <col width="110"></col>
       </colgroup>
-      <div class="layui-elem-quote layui-quote-nm" style="min-height: 820px; max-height: 820px; height: 100%; background-color: #CCFFCC;">
+      <div class="layui-elem-quote layui-quote-nm"
+           style="min-height: 1230px; max-height: 1230px; height: 100%; background-color: #fff;">
         <!--<div id="allmap"></div>-->
         <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
         <div id="device-echarts-container">
@@ -92,6 +93,9 @@
           <div class="row" style="margin-top: 15px;">
             <div id="echarts-2" class="sysNotice col" style="width: 49%; height:400px;"></div>
             <div id="echarts-3" class="sysNotice col" style="width: 49%; height:400px;"></div>
+          </div>
+          <div class="row" style="margin-top: 15px;">
+            <div id="echarts-battery" class="sysNotice col" style="width: 49%; height:400px;"></div>
           </div>
         </div>
       </div>
@@ -140,6 +144,7 @@
 <script type="text/javascript" src="/layui/layui.js"></script>
 <!-- Start: echarts -->
 <script src="/js/echarts.min.js"></script>
+<script src='/js/echarts-liquidfill.min.js'></script>
 <!-- End  : echarts -->
 <script type="text/javascript" src="/js/vue.min.js"></script>
 
