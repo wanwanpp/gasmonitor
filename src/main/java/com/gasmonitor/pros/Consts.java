@@ -31,10 +31,18 @@ public class Consts {
     public static final String CACHE_BASDEVICEUNIT = "c_basdeviceunit";  //设备缓存
 
     //警告状态
-    public static class WARNDEVICE_STATUS {
-        public static final int INIT = 1;
-        public static final int DOEN = 2;
-        public static final int IGNORE = 3;
-
+    public static class Device {
+        public static final int STATUS_KEYONG = 0;
+        public static final int STATUS_INIT = 1;
+        public static final int STATUS_GAOJING = 2;     //处于告警状态
+        public static final int STATUS_TINGYONG = 4;    //停用
     }
+
+    //告警时间的状态
+    public static class Event {
+        public static final int STATUS_INIT = 1;
+        public static final int STATUS_DOEN = 2;
+        public static final int STATUS_IGNORE = 3;
+    }
+
 }

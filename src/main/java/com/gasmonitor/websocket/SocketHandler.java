@@ -37,7 +37,6 @@ public class SocketHandler implements WebSocketHandler {
     @Override
     public void handleMessage(WebSocketSession arg0, WebSocketMessage<?> arg1)
             throws Exception {
-        // TODO Auto-generated method stub
     }
 
     @Override

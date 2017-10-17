@@ -1,12 +1,15 @@
 package com.gasmonitor.service.device;
 
 import com.gasmonitor.dao.DeviceRepository;
+import com.gasmonitor.dao.DeviceWarnEventRepository;
 import com.gasmonitor.entity.Device;
+import com.gasmonitor.entity.DeviceWarnEvent;
 import com.gasmonitor.entity.Tenant;
 import com.gasmonitor.exception.TipsException;
 import com.gasmonitor.pros.Consts;
 import com.gasmonitor.pros.HazelCastPros;
 import com.gasmonitor.service.tenant.TenantService;
+import com.gasmonitor.service.warn.WarnEventService;
 import com.gasmonitor.vo.AjaxResult;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
@@ -32,6 +35,8 @@ import java.util.List;
 public class DeviceService {
     private Logger log = LoggerFactory.getLogger(DeviceService.class);
 
+    @Autowired
+    private WarnEventService warnEventService;
     @Autowired
     private DeviceRepository deviceRepository;
 
@@ -89,12 +94,25 @@ public class DeviceService {
     }
 
 
-    //todo 处理成可用状态的时候，需要判断是否有预警已经处理完了，如果没有处理完，那么提示先把警告处理完成才能继续操作更新状态
+    /**
+     * 处理成可用状态的时候，需要判断是否有预警已经处理完了，如果没有处理完，那么提示先把警告处理完成才能继续操作更新状态
+     */
     public Device updateDeviceStatus(Long id, Integer status) {
+
+        //找到对应的设备
         Device d = deviceRepository.findOne(id);
         if (d == null) {
             throw new TipsException("没有找到对应的设备");
         }
+
+        //设置成可用之前，需要查询是否有告警存在没有处理
+        if (status == Consts.Device.STATUS_KEYONG) {
+            List<DeviceWarnEvent> events = warnEventService.findByDeviceId(id, Consts.Event.STATUS_INIT);
+            if (events != null && events.size() > 0) {
+                throw new TipsException("还有警告信息没有处理完成，不能修改为可用的状态");
+            }
+        }
+
         d.setStatus(status);
         d = deviceRepository.save(d);
         return d;

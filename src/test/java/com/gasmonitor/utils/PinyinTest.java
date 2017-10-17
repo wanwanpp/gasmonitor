@@ -26,7 +26,6 @@ public class PinyinTest {
      */
     @Test
     public void testGetPingYin() throws Exception {
-//TODO: Test goes here... 
     }
 
     /**
@@ -43,7 +42,6 @@ public class PinyinTest {
      */
     @Test
     public void testGetCnASCII() throws Exception {
-//TODO: Test goes here... 
     }
 
 
