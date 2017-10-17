@@ -74,12 +74,12 @@ public class WarnEventService {
     public void addWarn(MonitorData data, com.gasmonitor.entity.Device device) {
         log.info("有报警信息:monitorData:{}", data);
         //如果设备的状态已经处于非正常状态，那么就不需要存储报警的数据了
-        if (device.getStatus() == Consts.Device.STATUS_GAOJING) {
+        if (device.getStatus() == Consts.Device.STATUS_GUZHANG1) {
             return;
         }
 
         //初始化设备的状态
-        deviceService.updateDeviceStatus(device.getId(), Consts.Device.STATUS_GAOJING); //处于告警的状态
+        deviceService.updateDeviceStatus(device.getId(), Consts.Device.STATUS_GUZHANG1); //处于告警的状态
 
         DeviceWarnEvent event = new DeviceWarnEvent();
         event.setCreateTime(new Date());

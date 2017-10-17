@@ -35,10 +35,9 @@ public class Consts {
 
     //警告状态
     public static class Device {
-        public static final int STATUS_KEYONG = 0;
-        public static final int STATUS_INIT = 1;
-        public static final int STATUS_GAOJING = 2;     //处于告警状态
-        public static final int STATUS_TINGYONG = 4;    //停用
+        public static final int STATUS_KEYONG = 1;
+        public static final int STATUS_TINGYONG = 2;    //停用
+        public static final int STATUS_GUZHANG1 = 3;     //故障
     }
 
     //告警时间的状态

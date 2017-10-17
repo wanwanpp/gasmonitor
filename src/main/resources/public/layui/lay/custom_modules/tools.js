@@ -3,16 +3,25 @@
  * (c) 2017 Payne Pandaroid Wang
  * 封装对 socket 使用，处理跨父子页面共用 socket 的差异。接收分发协议、被调用发送协议。
  */
+
+//设备类型
 var DEVICE_TYPE_LOGIN = 1;
 var DEVICE_TYPE_WULI = 2;
 
+//仪器类型
 var DEVICE_TYPE_LIULIANG = 1;
 var DEVICE_TYPE_IC = 2;
 var DEVICE_TYPE_ICLIULIANG = 3;
 
+//设备状态
+var DEVICE_STATUS_ZHENGCAHNG = 1;
+var DEVICE_STATUS_TINGYONG = 2;
+var DEVICE_STATUS_GUZHANG = 3;
+
+//玩家状态
 var USER_STATUS_NORMAL = 1;
 
-
+//角色类型
 var ROLE_SYSTEM = "ROLE_SYSTEM";
 var ROLE_TENANTADMIN = "ROLE_TENANTADMIN";
 var ROLE_TENANT = "ROLE_TENANT";
@@ -176,6 +185,28 @@ layui.define(['jquery', 'layer', 'element'], function (exports) {
         }
     }
 
+    /**
+     *  设备的状态 转描述
+     * @param s
+     * @returns {*}
+     */
+    function deviceStatus2des(s) {
+        if (s == DEVICE_STATUS_ZHENGCAHNG) {
+            return "正常";
+        } else if (s == DEVICE_STATUS_GUZHANG) {
+            return "故障";
+        } else if (s == DEVICE_STATUS_TINGYONG) {
+            return "停用";
+        } else {
+            return "位置状态";
+        }
+    }
+
+    /**
+     * 设备的类型描述
+     * @param l
+     * @returns {*}
+     */
     function deviceType2des(l) {
         if (l == DEVICE_TYPE_LIULIANG) {
             return "流量计";
@@ -183,6 +214,8 @@ layui.define(['jquery', 'layer', 'element'], function (exports) {
             return "IC";
         } else if (l == DEVICE_TYPE_ICLIULIANG) {
             return "IC&流量计";
+        } else {
+            return "未知类型";
         }
     }
 
@@ -359,6 +392,7 @@ layui.define(['jquery', 'layer', 'element'], function (exports) {
         , jumpLeftNavTab: LeftNavTabManager.jumpLeftNavTab
         // End  : 左侧导航菜单和顶部 tab 相关
         , deviceid2des: deviceid2des
+        , deviceStatus2des: deviceStatus2des
         , renderSelectOption: renderSelectOption
         , timestampToString: timestampToString
         , serializeParams: serializeParams

@@ -30,7 +30,8 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
      * @return
      * @Cacheable(key = "'" + Consts.CACHE_DEVICE_LIST_SITE + "'+#p0")
      */
-    Page<Device> findBySiteId(Long siteId, Pageable pageable);
+    @Query("select a from Device as a where a.siteId = ?1 and ( a.hardwareId like ?2 or a.name like ?3)")
+    Page<Device> findBySiteId(Long siteId, String hardwareId, String name, Pageable pageable);
 
     /**
      * 通过硬件id找到对应的硬件
