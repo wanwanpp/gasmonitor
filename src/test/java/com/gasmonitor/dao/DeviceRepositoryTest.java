@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
@@ -30,23 +31,8 @@ public class DeviceRepositoryTest {
 
     @Test
     public void testFindByLastName() {
-
-        for (int i = 0; i < 10; i++) {
-            Device device = new Device();
-            device.setSiteId((long) 999);
-            device.setLogic(1);
-            device.setName("name");
-            device.setCreated(new Date());
-            device.setWatcher((long) 21);
-            device.setTokenId("tokendId");
-            device.setStatus(1);
-            deviceRepository.save(device);
-        }
-
-        deviceRepository.flush();
-        List<Device> devices = deviceRepository.findBySiteId((long) 999, PageUtils.p(1)).getContent();
-        logger.info("查询到的所有的device:{}", devices);
-//        assertThat(devices).extracting(device::getSiteId).containsOnly(device.getSiteId());
+        Page<Device> list = deviceRepository.findBySiteId(1L, "", "", PageUtils.p(1));
+        logger.info("得到的数据:{}", list.getContent());
     }
 
     @Test

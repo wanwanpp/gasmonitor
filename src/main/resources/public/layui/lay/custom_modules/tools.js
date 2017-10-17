@@ -3,19 +3,33 @@
  * (c) 2017 Payne Pandaroid Wang
  * 封装对 socket 使用，处理跨父子页面共用 socket 的差异。接收分发协议、被调用发送协议。
  */
+
+//设备类型
 var DEVICE_TYPE_LOGIN = 1;
 var DEVICE_TYPE_WULI = 2;
 
+//仪器类型
 var DEVICE_TYPE_LIULIANG = 1;
 var DEVICE_TYPE_IC = 2;
 var DEVICE_TYPE_ICLIULIANG = 3;
 
+//设备状态
+var DEVICE_STATUS_ZHENGCAHNG = 1;
+var DEVICE_STATUS_TINGYONG = 2;
+var DEVICE_STATUS_GUZHANG = 3;
+
+//玩家状态
 var USER_STATUS_NORMAL = 1;
 
-
+//角色类型
 var ROLE_SYSTEM = "ROLE_SYSTEM";
 var ROLE_TENANTADMIN = "ROLE_TENANTADMIN";
 var ROLE_TENANT = "ROLE_TENANT";
+
+//告警状态
+var GAOJING_INIT = 1;//未处理
+var GAOJING_DONE = 2;//已处理
+var GAOJING_IGNORE = 3;//忽略
 
 
 layui.define(['jquery', 'layer', 'element'], function (exports) {
@@ -171,6 +185,28 @@ layui.define(['jquery', 'layer', 'element'], function (exports) {
         }
     }
 
+    /**
+     *  设备的状态 转描述
+     * @param s
+     * @returns {*}
+     */
+    function deviceStatus2des(s) {
+        if (s == DEVICE_STATUS_ZHENGCAHNG) {
+            return "正常";
+        } else if (s == DEVICE_STATUS_GUZHANG) {
+            return "故障";
+        } else if (s == DEVICE_STATUS_TINGYONG) {
+            return "停用";
+        } else {
+            return "位置状态";
+        }
+    }
+
+    /**
+     * 设备的类型描述
+     * @param l
+     * @returns {*}
+     */
     function deviceType2des(l) {
         if (l == DEVICE_TYPE_LIULIANG) {
             return "流量计";
@@ -178,6 +214,8 @@ layui.define(['jquery', 'layer', 'element'], function (exports) {
             return "IC";
         } else if (l == DEVICE_TYPE_ICLIULIANG) {
             return "IC&流量计";
+        } else {
+            return "未知类型";
         }
     }
 
@@ -201,8 +239,32 @@ layui.define(['jquery', 'layer', 'element'], function (exports) {
         });
     }
 
+    function dateFtt(fmt, date) { //author: meizz
+        var o = {
+            "M+": date.getMonth() + 1,                 //月份
+            "d+": date.getDate(),                    //日
+            "h+": date.getHours(),                   //小时
+            "m+": date.getMinutes(),                 //分
+            "s+": date.getSeconds(),                 //秒
+            "q+": Math.floor((date.getMonth() + 3) / 3), //季度
+            "S": date.getMilliseconds()             //毫秒
+        };
+        if (/(y+)/.test(fmt))
+            fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt))
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
+
+    //时间戳 显示成时间
     function timestampToString(tm) {
-        return new Date(parseInt(tm)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ")
+        //如果是空的情况
+        if (tm == undefined || tm == null || tm == 0) {
+            return ""
+        }
+        var d = new Date(parseInt(tm));
+        return dateFtt("yyyy-MM-dd hh:mm:ss", d);
     }
 
     //转义user的status
@@ -222,6 +284,19 @@ layui.define(['jquery', 'layer', 'element'], function (exports) {
             return "操作员";
         } else if (s == ROLE_SYSTEM) {
             return "管理员";
+        }
+    }
+
+    //转移告警status
+    function gaojingStatusDes(s) {
+        if (s == GAOJING_INIT) {
+            return "未处理";
+        } else if (s == GAOJING_DONE) {
+            return "已处理";
+        } else if (s == GAOJING_IGNORE) {
+            return "已忽略";
+        } else {
+            return "未知状态";
         }
     }
 
@@ -317,6 +392,7 @@ layui.define(['jquery', 'layer', 'element'], function (exports) {
         , jumpLeftNavTab: LeftNavTabManager.jumpLeftNavTab
         // End  : 左侧导航菜单和顶部 tab 相关
         , deviceid2des: deviceid2des
+        , deviceStatus2des: deviceStatus2des
         , renderSelectOption: renderSelectOption
         , timestampToString: timestampToString
         , serializeParams: serializeParams
@@ -325,6 +401,7 @@ layui.define(['jquery', 'layer', 'element'], function (exports) {
         , todayStartEndDateTimeTool: todayStartEndDateTimeTool
         , userstatusDes: userstatusDes
         , roleDes: roleDes
+        , gaojingStatusDes: gaojingStatusDes
 
     });
 });

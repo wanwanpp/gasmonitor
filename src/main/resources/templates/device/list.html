@@ -42,7 +42,7 @@
     <table class="layui-table">
       <colgroup>
         <col width="5%"/>
-        <col width="10%"/>
+        <col width="15%"/>
         <col width="5%"/>
         <col width="10%"/>
         <col width="10%"/>
@@ -54,7 +54,7 @@
         <th><input type="checkbox" name="" lay-skin="primary" lay-filter="allChoose" id="allChoose"/></th>
         <th>设备名称</th>
         <th>硬件ID</th>
-        <th>站点信息</th>
+        <th>状态</th>
         <th>设备类型</th>
         <th>逻辑设备</th>
         <th>创建日期</th>
@@ -68,7 +68,7 @@
         <td>{{(index+1)+d.page*d.pageSize}}</td>
         <td>{{item.name}}</td>
         <td>{{item.hardwareId}}</td>
-        <td>{{item.siteId}}</td>
+        <td>{{layui.tools.deviceStatus2des(item.status)}}</td>
         <td>{{layui.tools.deviceType2des(item.dtype)}}</td>
         <td>{{layui.tools.deviceid2des(item.logic)}}</td>
         <td>{{layui.tools.timestampToString(item.created)}}</td>
@@ -356,37 +356,6 @@
         </div>
       </div>
     </div>
-
-    <!--电池都设置默认值-->
-    <!--<div class="layui-form-item ">-->
-    <!--<div class="layui-inline uiac220">-->
-    <!--<label class="layui-form-label">ac220</label>-->
-    <!--<div class="layui-input-inline">-->
-    <!--<select id="eidt_layer_uac220" name="uac220">-->
-    <!--<option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>-->
-    <!--</select>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--<div class="layui-inline uibattery">-->
-    <!--<label class="layui-form-label">电池单位</label>-->
-    <!--<div class="layui-input-inline">-->
-    <!--<select id="eidt_layer_ubattery" name="ubattery">-->
-    <!--<option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>-->
-    <!--</select>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-
-    <!--<div class="layui-form-item ">-->
-    <!--<div class="layui-inline uiac220">-->
-    <!--<label class="layui-form-label">太阳能</label>-->
-    <!--<div class="layui-input-inline">-->
-    <!--<select id="eidt_layer_usolar" name="usolar">-->
-    <!--<option th:each="prod,iterStat : ${units}" th:value="${prod.id}" th:text=${prod.unint}></option>-->
-    <!--</select>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
 
     <div class="layui-input-block">
       <button type="button" id="form_btn_submit" lay-submit lay-filter="device" style="display: none"></button>

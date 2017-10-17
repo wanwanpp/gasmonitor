@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1"/>
   <meta name="renderer" content="webkit"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
@@ -13,15 +13,28 @@
 
   <link rel="stylesheet" href="/layui/css/layui.css" media="all"/>
   <link rel="stylesheet" href="/css/main.css" media="all"/>
+  <link rel="stylesheet" href="/css/me.css" media="all"/>
   <!--
   <link rel="stylesheet" href="/css/me.css" media="all"/>-->
   <style>
-    body { margin: 10px; overflow-y: scroll; }
-    table tbody.hot_news tr td.align-right { text-align:right; }
+    body {
+      margin: 10px;
+      overflow-y: scroll;
+    }
+
+    table tbody.hot_news tr td.align-right {
+      text-align: right;
+    }
   </style>
   <!-- Start: 百度地图 css -->
   <style type="text/css">
-    body, html, #sites-show-map, #site-edit-map {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+    body, html, #sites-show-map, #site-edit-map {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
   </style>
   <!-- End  : 百度地图 css -->
   <!-- Start: layui search css -->
@@ -36,110 +49,154 @@
       font-size: 12px;
       border-radius: 0;
     }
-    .component { width: 260px; margin-top: 0; border-radius: 0; }
+
+    .component {
+      width: 260px;
+      margin-top: 0;
+      border-radius: 0;
+    }
   </style>
   <!-- End  : layui search css -->
   <!-- Start: sites list css -->
   <style>
-    .site-tr-selected { background-color: #FFFFCC; font-weight: bold; font-style: italic; color: #333; }
-    .site-tr-selected .layui-btn { font-weight: normal; font-style: normal; }
+    .site-tr-selected {
+      background-color: #FFFFCC;
+      font-weight: bold;
+      font-style: italic;
+      color: #333;
+    }
+
+    .site-tr-selected .layui-btn {
+      font-weight: normal;
+      font-style: normal;
+    }
   </style>
   <!-- End  : sites list css -->
   <!-- Start: UI edit sites css -->
   <style>
-    .pandaroid-layui_elem_quote_title-btn-container { position: absolute; right: 4px; top: 4px; }
+    .pandaroid-layui_elem_quote_title-btn-container {
+      position: absolute;
+      right: 4px;
+      top: 4px;
+    }
   </style>
   <!-- End  : UI edit sites css -->
   <!-- Start: site edit 站点编辑 css -->
   <style>
-    .layui-table td.site-edit-td { padding: 0; }
-    .site-edit-td .site-edit-inputs { display: none; }
-    .site-edit-td.site-editing .site-edit-inputs { padding-left: 15px; border-radius: 0; display: block; }
-    .site-edit-td .site-edit-labels { margin: 7px 15px -7px; }
-    .site-edit-td.site-editing .site-edit-labels { display: none; }
+    .layui-table td.site-edit-td {
+      padding: 0;
+    }
+
+    .site-edit-td .site-edit-inputs {
+      display: none;
+    }
+
+    .site-edit-td.site-editing .site-edit-inputs {
+      padding-left: 15px;
+      border-radius: 0;
+      display: block;
+    }
+
+    .site-edit-td .site-edit-labels {
+      margin: 7px 15px -7px;
+    }
+
+    .site-edit-td.site-editing .site-edit-labels {
+      display: none;
+    }
+
     /* 地图中的站点编辑 */
-    .hide { display: none; }
+    .hide {
+      display: none;
+    }
   </style>
   <!-- End  : site edit 站点编辑 css -->
 
 </head>
-  <body class="childrenBody">
-    <!-- Start: 顶部文字描述 -->
-    <!--<blockquote class="layui-elem-quote">
-      <ol>
-        <li>站点管理（站点设备管理）【点了站点管理以后：左边站点列表；右边上地图，右边下站点详细信息（不点击的时候右边地图显示全部；点击列表中某一个站点，地图只显示该站点，右边下部显示详情且可以编辑）】</li>
-        <li>（站点详情编辑）地图上拖动修改位置，只显示一个，站点列表搜索功能</li>
-        <li>列表中每个站点后面，有个“显示设备”按钮（点击以后跳转到【设备管理】，且就是当前点击站点作为搜索条件，该站点下的所有设备列表）</li>
-      </ol>
-    </blockquote>-->
-    <!-- End  : 顶部文字描述 -->
-    <!-- Start： 左右布局 -->
-    <div class="row left-right-layout">
-      <div class="sysNotice col left-list">
-        <blockquote class="layui-elem-quote title">站点列表</blockquote>
-        <!-- Start: 搜索 -->
-        <div class="layui-form component">
-          <select id="select-search_site" lay-search lay-filter="search-site">
-            <option value="-1">搜索站点</option>
-          </select>
-        </div>
-        <!-- End  : 搜索 -->
-        <div id="sitesListTableView"></div>
-      </div>
-      <div class="sysNotice col right-details">
-        <blockquote class="layui-elem-quote title">
-          站点地图<i class="iconfont icon-new1"></i>
-          <div class="pandaroid-layui_elem_quote_title-btn-container">
-            <button id="button-edit_site_pos_in_map" class="layui-btn">点击编辑当前站点位置（在地图中拖动）</button>
-            <button id="button-submit_site_pos_in_map" class="layui-btn layui-btn-normal hide">提交已编辑的站点位置（在地图中拖动）</button>
-          </div>
-        </blockquote>
-        <table class="layui-table" lay-skin="line">
-          <colgroup>
-            <col width="110"></col>
-          </colgroup>
-          <div class="layui-elem-quote layui-quote-nm" style="min-height: 400px; max-height: 400px; height: 100%;">
-            <div id="sites-show-map"></div>
-
-          </div>
-        </table>
-        <blockquote class="layui-elem-quote title">
-          站点详情
-          <div class="pandaroid-layui_elem_quote_title-btn-container">
-            <button id="click-2-edit-site-info-btn" class="layui-btn">编辑当前站点详情</button>
-            <div id="submit-or-cancel-edit-site-info-btn-container">
-              <button id="submit-edited-site-info-btn" class="layui-btn layui-btn-normal">提交站点详情编辑结果</button>
-              <button id="cancel-edited-site-info-btn" class="layui-btn layui-btn-warm">取消站点详情编辑结果</button>
-            </div>
-          </div>
-        </blockquote>
-        <table class="layui-table">
-          <colgroup>
-            <col width="150"></col>
-          </colgroup>
-          <tbody id="siteDetailInfo">
-          <tr>
-            <td>数据加载中，请稍候 。。。</td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
+<body class="childrenBody">
+<!-- Start: 顶部文字描述 -->
+<!--<blockquote class="layui-elem-quote">
+  <ol>
+    <li>站点管理（站点设备管理）【点了站点管理以后：左边站点列表；右边上地图，右边下站点详细信息（不点击的时候右边地图显示全部；点击列表中某一个站点，地图只显示该站点，右边下部显示详情且可以编辑）】</li>
+    <li>（站点详情编辑）地图上拖动修改位置，只显示一个，站点列表搜索功能</li>
+    <li>列表中每个站点后面，有个“显示设备”按钮（点击以后跳转到【设备管理】，且就是当前点击站点作为搜索条件，该站点下的所有设备列表）</li>
+  </ol>
+</blockquote>-->
+<!-- End  : 顶部文字描述 -->
+<!-- Start： 左右布局 -->
+<div class="row left-right-layout">
+  <div class="sysNotice col left-list">
+    <blockquote class="layui-elem-quote title">站点列表</blockquote>
+    <!-- Start: 搜索 -->
+    <div class="layui-form" style="margin: 4px;margin-top: 4px">
+      <select id="select-search_site" lay-search lay-filter="search-site">
+        <option value="-1">搜索站点</option>
+      </select>
     </div>
-    <!-- End  ： 左右布局 -->
-  </body>
+    <!-- End  : 搜索 -->
+    <div id="sitesListTableView"
+         style="border: 1px solid #e6e6e6; margin-left: 4px; margin-top: 2px;">
+    </div>
+  </div>
+
+  <div class="sysNotice col right-details">
+    <blockquote class="layui-elem-quote title">
+      站点地图<i class="iconfont icon-new1"></i>
+      <div class="pandaroid-layui_elem_quote_title-btn-container">
+        <div class="layui-btn-group">
+          <button id="" class="layui-btn">查看设备</button>
+          <button id="button-edit_site_pos_in_map" class="layui-btn">点击编辑当前站点位置（在地图中拖动）</button>
+          <button id="button-submit_site_pos_in_map" class="layui-btn layui-btn-normal hide">提交已编辑的站点位置（在地图中拖动）</button>
+        </div>
+      </div>
+    </blockquote>
+    <table class="layui-table" lay-skin="line">
+      <colgroup>
+        <col width="110"></col>
+      </colgroup>
+      <div class="layui-elem-quote layui-quote-nm" style="min-height: 400px; max-height: 400px; height: 100%;">
+        <div id="sites-show-map"></div>
+
+      </div>
+    </table>
+    <blockquote class="layui-elem-quote title">
+      站点详情
+      <div class="pandaroid-layui_elem_quote_title-btn-container">
+        <button id="click-2-edit-site-info-btn" class="layui-btn">编辑当前站点详情</button>
+        <div id="submit-or-cancel-edit-site-info-btn-container">
+          <button id="submit-edited-site-info-btn" class="layui-btn layui-btn-normal">提交站点详情编辑结果</button>
+          <button id="cancel-edited-site-info-btn" class="layui-btn layui-btn-warm">取消站点详情编辑结果</button>
+        </div>
+      </div>
+    </blockquote>
+    <table class="layui-table">
+      <colgroup>
+        <col width="150"></col>
+      </colgroup>
+      <tbody id="siteDetailInfo">
+      <tr>
+        <td>数据加载中，请稍候 。。。</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- End  ： 左右布局 -->
+</body>
 </html>
 <script type="text/javascript" src="/layui/layui.js"></script>
 <!-- Start: 百度地图 js -->
-<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&amp;ak=PWlgUxoilAgQ4zLjB6MIGMvAGKsG5G4X"></script>
+<script type="text/javascript"
+        src="http://api.map.baidu.com/api?v=2.0&amp;ak=PWlgUxoilAgQ4zLjB6MIGMvAGKsG5G4X"></script>
 <script type="text/javascript">
-//  <![data[
+  //  <![data[
 
 
   // 百度地图API功能
-  var map = new BMap.Map("sites-show-map", { enableMapClick: false });  // 创建Map实例
+  var map = new BMap.Map("sites-show-map", {enableMapClick: false});  // 创建Map实例
   // Start: SitesManageGlobal 中存储需要跨作用域使用的 map
-  if(!layui.SitesManageGlobal) {
-      layui.SitesManageGlobal = {};
+  if (!layui.SitesManageGlobal) {
+    layui.SitesManageGlobal = {};
   }
   layui.SitesManageGlobal['map'] = map;
   // End  : SitesManageGlobal 中存储需要跨作用域使用的 map
@@ -149,7 +206,7 @@
   map.enableScrollWheelZoom(true);  // 启用缩放
 
   // Start: 添加控件和比例尺
-  (function() {
+  (function () {
     var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_TOP_LEFT});// 左上角，添加比例尺
     var top_left_navigation = new BMap.NavigationControl();  //左上角，添加默认缩放平移控件
     // var top_right_navigation = new BMap.NavigationControl({anchor: BMAP_ANCHOR_TOP_RIGHT, type: BMAP_NAVIGATION_CONTROL_SMALL}); //右上角，仅包含平移和缩放按钮
@@ -157,7 +214,7 @@
      BMAP_NAVIGATION_CONTROL_SMALL：仅包含平移和缩放按钮；BMAP_NAVIGATION_CONTROL_PAN:仅包含平移按钮；BMAP_NAVIGATION_CONTROL_ZOOM：仅包含缩放按钮*/
 
     //添加控件和比例尺
-    function add_control(){
+    function add_control() {
       map.addControl(top_left_control);
       map.addControl(top_left_navigation);
       // map.addControl(top_right_navigation);
@@ -169,14 +226,14 @@
   // End  : 添加控件和比例尺
 
   // Start: 添加地图类型和缩略图
-  (function() {
+  (function () {
     // var mapType1 = new BMap.MapTypeControl({mapTypes: [BMAP_NORMAL_MAP,BMAP_HYBRID_MAP]});
     var mapType2 = new BMap.MapTypeControl({anchor: BMAP_ANCHOR_TOP_RIGHT});
 
     var overView = new BMap.OverviewMapControl();
-    var overViewOpen = new BMap.OverviewMapControl({isOpen:true, anchor: BMAP_ANCHOR_BOTTOM_RIGHT});
+    var overViewOpen = new BMap.OverviewMapControl({isOpen: true, anchor: BMAP_ANCHOR_BOTTOM_RIGHT});
     //添加地图类型和缩略图
-    function add_control(){
+    function add_control() {
       // map.addControl(mapType1);          //2D图，卫星图
       map.addControl(mapType2);          //左上角，默认地图控件
       map.setCurrentCity("成都");        //由于有3D图，需要设置城市哦
@@ -191,88 +248,88 @@
 
   // Start: 添加定位相关控件
   /*(function() {
-    // 添加带有定位的导航控件
-    var navigationControl = new BMap.NavigationControl({
-      // 靠左上角位置
-      anchor: BMAP_ANCHOR_TOP_LEFT,
-      // LARGE类型
-      type: BMAP_NAVIGATION_CONTROL_LARGE,
-      // 启用显示定位
-      enableGeolocation: true
-    });
-    map.addControl(navigationControl);
-    // 添加定位控件
-    var geolocationControl = new BMap.GeolocationControl();
-    geolocationControl.addEventListener("locationSuccess", function(e){
-      // 定位成功事件
-      var address = '';
-      address += e.addressComponent.province;
-      address += e.addressComponent.city;
-      address += e.addressComponent.district;
-      address += e.addressComponent.street;
-      address += e.addressComponent.streetNumber;
-      alert("当前定位地址为：" + address);
-    });
-    geolocationControl.addEventListener("locationError",function(e){
-      // 定位失败事件
-      alert(e.message);
-    });
-    map.addControl(geolocationControl);
-  })();*/
+   // 添加带有定位的导航控件
+   var navigationControl = new BMap.NavigationControl({
+   // 靠左上角位置
+   anchor: BMAP_ANCHOR_TOP_LEFT,
+   // LARGE类型
+   type: BMAP_NAVIGATION_CONTROL_LARGE,
+   // 启用显示定位
+   enableGeolocation: true
+   });
+   map.addControl(navigationControl);
+   // 添加定位控件
+   var geolocationControl = new BMap.GeolocationControl();
+   geolocationControl.addEventListener("locationSuccess", function(e){
+   // 定位成功事件
+   var address = '';
+   address += e.addressComponent.province;
+   address += e.addressComponent.city;
+   address += e.addressComponent.district;
+   address += e.addressComponent.street;
+   address += e.addressComponent.streetNumber;
+   alert("当前定位地址为：" + address);
+   });
+   geolocationControl.addEventListener("locationError",function(e){
+   // 定位失败事件
+   alert(e.message);
+   });
+   map.addControl(geolocationControl);
+   })();*/
   // End  : 添加定位相关控件
 
   // markers 数组
   var markersArr = [];
   // Start: 添加覆盖物 点
   /*(function() {
-    var myIcon = new BMap.Icon("/img/location36_32.png", new BMap.Size(32, 32));
-    var marker = new BMap.Marker(pointChengDu, {icon: myIcon});
-    map.addOverlay(marker);            //增加点
-    markersArr.push(marker);
-    marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
-    //
-    setTimeout(function() {
-      var pointChengDu2 = new BMap.Point(104.11, 30.71);
-      // var marker2 = new BMap.Marker(pointChengDu2);
-      var vectorMarker = new BMap.Marker(pointChengDu2, {
-        // 指定Marker的icon属性为Symbol
-        icon: new BMap.Symbol(BMap_Symbol_SHAPE_POINT, {
-          scale: 1,//图标缩放大小
-          fillColor: "#009999",//填充颜色
-          fillOpacity: 0.8//填充透明度
-        })
-      });
-      map.addOverlay(vectorMarker);            //增加点
-      markersArr.push(vectorMarker);
-      vectorMarker.setAnimation(BMAP_ANIMATION_DROP); //跳动的动画
-      setTimeout(function() {
-        vectorMarker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
-      }, 1000);
-    }, 1000);
-  })();*/
+   var myIcon = new BMap.Icon("/img/location36_32.png", new BMap.Size(32, 32));
+   var marker = new BMap.Marker(pointChengDu, {icon: myIcon});
+   map.addOverlay(marker);            //增加点
+   markersArr.push(marker);
+   marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+   //
+   setTimeout(function() {
+   var pointChengDu2 = new BMap.Point(104.11, 30.71);
+   // var marker2 = new BMap.Marker(pointChengDu2);
+   var vectorMarker = new BMap.Marker(pointChengDu2, {
+   // 指定Marker的icon属性为Symbol
+   icon: new BMap.Symbol(BMap_Symbol_SHAPE_POINT, {
+   scale: 1,//图标缩放大小
+   fillColor: "#009999",//填充颜色
+   fillOpacity: 0.8//填充透明度
+   })
+   });
+   map.addOverlay(vectorMarker);            //增加点
+   markersArr.push(vectorMarker);
+   vectorMarker.setAnimation(BMAP_ANIMATION_DROP); //跳动的动画
+   setTimeout(function() {
+   vectorMarker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+   }, 1000);
+   }, 1000);
+   })();*/
   // End  : 添加覆盖物 点
 
   // Start: 点的可拖拽和不可拖拽
   /*(function() {
-    var pointChengDu3 = new BMap.Point(104.04, 30.61);
-    var marker = new BMap.Marker(pointChengDu3);// 创建标注
-    map.addOverlay(marker);             // 将标注添加到地图中
-    markersArr.push(marker);
-    marker.disableDragging();           // 不可拖拽
-    marker.enableDragging();           // 可拖拽
-    // 拖拽后获取 marker 信息
-    marker.addEventListener("dragend", getAttr);
-    function getAttr(){
-      var p = marker.getPosition();       //获取marker的位置
-      alert("marker的位置是" + p.lng + "," + p.lat);
-    }
-  })();*/
+   var pointChengDu3 = new BMap.Point(104.04, 30.61);
+   var marker = new BMap.Marker(pointChengDu3);// 创建标注
+   map.addOverlay(marker);             // 将标注添加到地图中
+   markersArr.push(marker);
+   marker.disableDragging();           // 不可拖拽
+   marker.enableDragging();           // 可拖拽
+   // 拖拽后获取 marker 信息
+   marker.addEventListener("dragend", getAttr);
+   function getAttr(){
+   var p = marker.getPosition();       //获取marker的位置
+   alert("marker的位置是" + p.lng + "," + p.lat);
+   }
+   })();*/
   // End  : 点的可拖拽和不可拖拽
 
   // Start: 添加弹窗
-  (function() {
-    if(markersArr) {
-      markersArr.forEach(function(marker, markerIndex) {
+  (function () {
+    if (markersArr) {
+      markersArr.forEach(function (marker, markerIndex) {
         var content = ['marker ', markerIndex].join('');
         console.log(content);
         //
@@ -281,26 +338,29 @@
     }
     // functions
     var opts = {
-      width : 250,     // 信息窗口宽度
+      width: 250,     // 信息窗口宽度
       height: 80,     // 信息窗口高度
-      title : "信息窗口" , // 信息窗口标题
-      enableMessage:true//设置允许信息窗发送短息
+      title: "信息窗口", // 信息窗口标题
+      enableMessage: true//设置允许信息窗发送短息
     };
-    function addClickHandler(content, marker){
-      marker.addEventListener("click",function(e){
-        openInfo(content,e)}
+
+    function addClickHandler(content, marker) {
+      marker.addEventListener("click", function (e) {
+                openInfo(content, e)
+              }
       );
     }
-    function openInfo(content, e){
+
+    function openInfo(content, e) {
       var p = e.target;
       var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
-      var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象
-      map.openInfoWindow(infoWindow,point); //开启信息窗口
+      var infoWindow = new BMap.InfoWindow(content, opts);  // 创建信息窗口对象
+      map.openInfoWindow(infoWindow, point); //开启信息窗口
     }
   })();
   // End  : 添加弹窗
 
-//]]>
+  //]]>
 
 </script>
 <!-- End  : 百度地图 js -->
@@ -315,7 +375,9 @@
     </colgroup>
     <tbody class="hot_news">
     {{# layui.each(d, function(siteDataIndex, siteDataItem){ }}
-    <tr class="site-table-tr" data-id="{{siteDataItem.id}}" data-name="{{siteDataItem.name}}" data-longitude="{{siteDataItem.longitude}}" data-latitude="{{siteDataItem.latitude}}" data-parent="{{siteDataItem.parent}}">
+    <tr class="site-table-tr" data-id="{{siteDataItem.id}}" data-name="{{siteDataItem.name}}"
+        data-longitude="{{siteDataItem.longitude}}" data-latitude="{{siteDataItem.latitude}}"
+        data-parent="{{siteDataItem.parent}}">
       <td align="left">{{siteDataItem.name}}</td>
       <td class="align-right">
         <button class="layui-btn layui-btn-normal view-devices-by-site-id" data-id="{{siteDataItem.id}}">查看设备</button>
@@ -338,7 +400,8 @@
     <td class="site-edit-td">
       <div class="layui-input-block" style="margin-left: 0;">
         <div class="site-edit-labels">{{d.siteName}}</div>
-        <input type="text" id="siteName" name="siteName" autocomplete="off" placeholder="{{d.siteName}}" value="{{d.siteName}}" class="layui-input site-edit-inputs">
+        <input type="text" id="siteName" name="siteName" autocomplete="off" placeholder="{{d.siteName}}"
+               value="{{d.siteName}}" class="layui-input site-edit-inputs">
       </div>
     </td>
   </tr>
@@ -347,7 +410,8 @@
     <td class="site-edit-td">
       <div class="layui-input-block" style="margin-left: 0;">
         <div class="site-edit-labels">{{d.siteLongitude}}</div>
-        <input type="text" id="siteLongitude" name="siteLongitude" autocomplete="off" placeholder="{{d.siteLongitude}}" value="{{d.siteLongitude}}" class="layui-input site-edit-inputs">
+        <input type="text" id="siteLongitude" name="siteLongitude" autocomplete="off" placeholder="{{d.siteLongitude}}"
+               value="{{d.siteLongitude}}" class="layui-input site-edit-inputs">
       </div>
     </td>
   </tr>
@@ -356,7 +420,8 @@
     <td class="site-edit-td">
       <div class="layui-input-block" style="margin-left: 0;">
         <div class="site-edit-labels">{{d.siteLatitude}}</div>
-        <input type="text" id="siteLatitude" name="siteLatitude" autocomplete="off" placeholder="{{d.siteLatitude}}" value="{{d.siteLatitude}}" class="layui-input site-edit-inputs">
+        <input type="text" id="siteLatitude" name="siteLatitude" autocomplete="off" placeholder="{{d.siteLatitude}}"
+               value="{{d.siteLatitude}}" class="layui-input site-edit-inputs">
       </div>
     </td>
   </tr>

@@ -12,11 +12,21 @@
   <link rel="stylesheet" href="/layui/css/layui.css" media="all"/>
   <link rel="stylesheet" href="/layui/css/layui_optimise.css" media="all"/>
   <link rel="stylesheet" href="/css/main.css" media="all"/>
+  <link rel="stylesheet" href="/css/me.css" media="all"/>
+
   <!--
   <link rel="stylesheet" href="/css/me.css" media="all"/>-->
   <style>
-    body, html { width: 100%; height: 100%; overflow: hidden; margin:0; }
-    table tbody.hot_news tr td.align-right { text-align:right; }
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      margin: 0;
+    }
+
+    table tbody.hot_news tr td.align-right {
+      text-align: right;
+    }
   </style>
   <!-- Start: layui search css -->
   <style>
@@ -30,13 +40,27 @@
       font-size: 12px;
       border-radius: 0;
     }
-    .component { width: 260px; margin-top: 0; border-radius: 0; }
+
+    .component {
+      width: 260px;
+      margin-top: 0;
+      border-radius: 0;
+    }
   </style>
   <!-- End  : layui search css -->
   <!-- Start: sites list css -->
   <style>
-    .site-tr-selected { background-color: #FFFFCC; font-weight: bold; font-style: italic; color: #333; }
-    .site-tr-selected .layui-btn { font-weight: normal; font-style: normal; }
+    .site-tr-selected {
+      background-color: #FFFFCC;
+      font-weight: bold;
+      font-style: italic;
+      color: #333;
+    }
+
+    .site-tr-selected .layui-btn {
+      font-weight: normal;
+      font-style: normal;
+    }
   </style>
   <!-- End  : sites list css -->
   <!-- Start: 点击 eCharts 显示 compare layer 的点击区域 -->
@@ -52,28 +76,24 @@
   <!-- End  : 点击 eCharts 显示 compare layer 的点击区域 -->
 </head>
 <body class="childrenBody">
-<!-- Start: 顶部文字描述 -->
-<!--<p>租户 - 设备管理。右部，左侧设备列表（需先搜索选择以指定站点，设备列表才能列出该站点下所有设备）。</p>
-<p>右部右侧，1. 地图：设备 GIS ；2. 折线图：已勾选设备的折线图（根据服务器返回的数据）； 3. 列表：2 中折线图使用数据的列表展示形式。</p>
-<p>站点只有地图、详情；设备有地图、曲线图、数据列表</p>-->
-<!-- End  : 顶部文字描述 -->
 <!-- Start： 左右布局 -->
 <div class="row left-right-layout">
   <div class="sysNotice col left-list">
-    <blockquote class="layui-elem-quote title">设备列表</blockquote>
-    <!-- Start: 搜索 -->
-    <div class="layui-form component">
-      <select id="select-search_device" lay-search lay-filter="search-device">
-        <option value="-1">搜索设备</option>
-      </select>
-    </div>
-    <!-- End  : 搜索 -->
-    <div id="devicesListTableView">
-      <div style="display: inline-block; width: 100%; height: 100%; padding: 10px;">
+    <blockquote class="layui-elem-quote title">设备列表<i class="iconfont icon-new1"></i></blockquote>
+    <div class="layui-quote-nm" style="min-height: 100px">
+      <div class="layui-form" style="margin-top: 4px;margin-left: 4px;margin-right: 4px;">
+        <select id="select-search_device" lay-search lay-filter="search-device">
+          <option value="-1">搜索设备</option>
+        </select>
+      </div>
+
+      <div id="devicesListTableView">
         <ul id="devicesTreeList"></ul>
       </div>
+
     </div>
   </div>
+
   <div class="sysNotice col right-details">
     <blockquote class="layui-elem-quote title">设备曲线<i class="iconfont icon-new1"></i></blockquote>
     <table class="layui-table" lay-skin="line">
