@@ -43,9 +43,9 @@ public class Consts {
 
     //告警时间的状态
     public static class Event {
-        public static final int STATUS_INIT = 1;
-        public static final int STATUS_DOEN = 2;
-        public static final int STATUS_IGNORE = 3;
+        public static final int STATUS_INIT = 1;    //默认告警状态
+        public static final int STATUS_DOEN = 2;    //处理
+        public static final int STATUS_IGNORE = 3;  //忽略
     }
 
 }

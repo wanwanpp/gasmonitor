@@ -16,7 +16,7 @@ public interface DeviceWarnEventRepository extends JpaRepository<DeviceWarnEvent
 
     List<DeviceWarnEvent> findByDeviceIdAndStatus(Long deviceId, Integer status);
 
-    @Query("update DeviceWarnEvent set status = :status ,msg =:msg where id = :warnId")
+    @Query("update DeviceWarnEvent set status = :status ,msg =:msg ,doTime = now() where id = :warnId")
     @Modifying
     int updateStatus(@Param("status") Integer status, @Param("warnId") Long warnId, @Param("msg") String msg);
 

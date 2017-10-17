@@ -17,6 +17,11 @@ var ROLE_SYSTEM = "ROLE_SYSTEM";
 var ROLE_TENANTADMIN = "ROLE_TENANTADMIN";
 var ROLE_TENANT = "ROLE_TENANT";
 
+//告警状态
+var GAOJING_INIT = 1;//未处理
+var GAOJING_DONE = 2;//已处理
+var GAOJING_IGNORE = 3;//忽略
+
 
 layui.define(['jquery', 'layer', 'element'], function (exports) {
     var $ = layui.jquery;
@@ -249,6 +254,19 @@ layui.define(['jquery', 'layer', 'element'], function (exports) {
         }
     }
 
+    //转移告警status
+    function gaojingStatusDes(s) {
+        if (s == GAOJING_INIT) {
+            return "未处理";
+        } else if (s == GAOJING_DONE) {
+            return "已处理";
+        } else if (s == GAOJING_IGNORE) {
+            return "已忽略";
+        } else {
+            return "未知状态";
+        }
+    }
+
     /**
      * 将【参数对象：obj_params】序列化为"?param_a=value_a&param_b=value_b"的形式
      * @param obj_params    参数对象
@@ -349,6 +367,7 @@ layui.define(['jquery', 'layer', 'element'], function (exports) {
         , todayStartEndDateTimeTool: todayStartEndDateTimeTool
         , userstatusDes: userstatusDes
         , roleDes: roleDes
+        , gaojingStatusDes: gaojingStatusDes
 
     });
 });

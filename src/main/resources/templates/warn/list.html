@@ -35,24 +35,25 @@
   <div class="layui-form news_list">
     <table class="layui-table">
       <colgroup>
-        <col width="3%"/>
+        <col width="2%"/>
         <col width="10%"/>
+        <col width="14%"/>
+        <col width="14%"/>
         <col width="10%"/>
-        <col width="10%"/>
-        <col width="10%"/>
+        <!--<col width="8%"/>-->
         <col width="40%"/>
         <col width="5%"/>
       </colgroup>
       <thead>
       <tr>
-        <th><input type="checkbox" name="" lay-skin="primary" lay-filter="allChoose" id="allChoose"/></th>
-        <!--<th style="text-align:left;">设备id</th>-->
+        <th>序号</th>
         <th style="text-align:left;">硬件id</th>
         <th>创建时间</th>
         <th>处理时间</th>
         <th>当前状态</th>
-        <th></th>
+        <!--<th>关键值</th>-->
         <th>描述</th>
+        <th>操作</th>
       </tr>
       </thead>
 
@@ -60,16 +61,16 @@
       {{# layui.each(d.data, function(index, item){ }}
       <tr>
         <td>{{index}}</td>
-        <!--<td>{{item.deviceId}}</td>-->
         <td>{{item.hid}}</td>
         <td>{{layui.tools.timestampToString(item.createTime)}}</td>
         <td>{{layui.tools.timestampToString(item.doTime)}}</td>
-        <td>{{item.warnValue}}</td>
+        <td>{{layui.tools.gaojingStatusDes(item.status)}}</td>
+        <!--<td>{{item.warnValue}}</td>-->
         <td>{{item.des}}</td>
         <td>
           <span id="source{{item.id}}"
                 data-id="{{item.id}}"
-                data-deviceid="{{item.deviceId}}"
+                data-hid="{{item.hid}}"
                 data-createtime="{{item.createTime}}"
                 data-dotime="{{item.doTime}}"
                 data-warnvalue="{{item.warnValue}}"
@@ -137,7 +138,7 @@
                         , success: function (layero, index) {
                           //这里填充值
                           var src = $("#source" + sourceId);
-                          $("#eidt_layer_hardwareid").val(src.data("deviceid"));
+                          $("#eidt_layer_hardwareid").val(src.data("hid"));
                           $("#eidt_layer_createTime").val(layuitools.timestampToString(src.data("createtime")));
                           $("#eidt_layer_des").val(src.data("des"));
                         }
