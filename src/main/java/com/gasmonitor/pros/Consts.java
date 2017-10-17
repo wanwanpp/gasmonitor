@@ -4,6 +4,9 @@ package com.gasmonitor.pros;
  * Created by saplmm on 2017/8/13.
  */
 public class Consts {
+    public static class System {
+        public static final String DEFAULT_PASSWORD = "123";  //租户的缓存
+    }
 
     //缓存user
     public static final String CACHE_TENANT = "c_tenant";  //租户的缓存

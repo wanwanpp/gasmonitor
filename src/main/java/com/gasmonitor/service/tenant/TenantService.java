@@ -102,19 +102,18 @@ public class TenantService {
         //2
         User user = new User();
         user.setUsername(Pinyin.getPinYinHeadChar(t.getCompany()) + t.getId() + "admin");
-        user.setPassword("123");// FIXME: 2017/8/28  暂时处理成密码为123
+        user.setPassword(Consts.System.DEFAULT_PASSWORD);// FIXME: 2017/8/28  暂时处理成密码为123
         user.setRole(Role.ROLE_TENANTADMIN);//设置玩家角色
         user.setTenantId(t.getId());//关联tenantId
         userService.newUser(user);
         return t;
     }
 
-
-    //启动之后，初始化 map
-    /*
-        1,需要把所有的玩家和设备表对应起来
-        2,如果租户的数据过大，需要分页处理
-        3,如果租户和设备之间的关系所有边，也需要动态的做处理
+    /**
+     * 启动之后，初始化 map
+     * 1,需要把所有的玩家和设备表对应起来
+     * 2,如果租户的数据过大，需要分页处理
+     * 3,如果租户和设备之间的关系所有边，也需要动态的做处理
      */
     public void initTenantMap() {
         //得到map

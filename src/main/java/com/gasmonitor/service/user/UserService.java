@@ -5,6 +5,7 @@ import com.gasmonitor.entity.User;
 import com.gasmonitor.pros.Consts;
 import com.gasmonitor.pros.HazelCastPros;
 import com.gasmonitor.pros.Status;
+import com.gasmonitor.utils.EncryptUtil;
 import com.gasmonitor.vo.AjaxResult;
 import com.hazelcast.core.HazelcastInstance;
 import org.slf4j.Logger;
@@ -35,7 +36,27 @@ public class UserService {
     @Autowired
     private HazelCastPros hazelCastPros;
 
-    @Transactional
+
+    /**
+     * 修改用户的密码
+     *
+     * @param user
+     * @param newPassword
+     */
+
+    @Transactional(rollbackFor = Exception.class)
+    public void updatePassword(User user, String newPassword) {
+        user.setPassword(EncryptUtil.encrypt(newPassword));
+        userRepository.updatePassword(user.getPassword(), user.getId());
+    }
+
+    /**
+     * 更新usr
+     *
+     * @param newUser
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
     @CacheEvict(allEntries = true)  //清空所有的缓存
     public AjaxResult<User> updateUser(User newUser) {
         log.info("更新user的信息:{}", newUser);
@@ -62,12 +83,11 @@ public class UserService {
 
     //新增一个操作员
     @CacheEvict(key = "'" + Consts.CACHE_USER_TENANT + "'" + "+#p0")
-//    @CachePut(key = "'" + Consts.CACHE_USER_TENANT + "'" + "+#p0")
     public AjaxResult<User> newUser(User user) {
         //新增加一个操作员
         user.setCreatedate(new Date());
         if (StringUtils.isEmpty(user.getPassword())) {
-            user.setPassword("123");
+            user.setPassword(Consts.System.DEFAULT_PASSWORD);
         }
         user.setStatus(Status.User.STATUS_DEFAULT);
         user = userRepository.save(user);
@@ -76,7 +96,6 @@ public class UserService {
 
     //删除一个操作员
     @CacheEvict(key = "'" + Consts.CACHE_USER_TENANT + "'" + "+#p0")
-//    @CachePut(key = "'" + Consts.CACHE_USER_TENANT + "'" + "+#p0")
     public AjaxResult<User> remove(Long id) {
         userRepository.delete(id);
         return AjaxResult.SuccAjaxResult();

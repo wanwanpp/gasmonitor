@@ -34,11 +34,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AuthenticationProvider authenticationProvider;  //AuthenticationProvider提供登录验证处理逻辑，我们实现该接口编写自己的验证逻辑。
 
-
     @Autowired
     private AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails> authenticationDetailsSource;
-
-
+    
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
