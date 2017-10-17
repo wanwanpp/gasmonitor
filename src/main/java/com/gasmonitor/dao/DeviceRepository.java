@@ -16,15 +16,29 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 /**
- * Created by saplmm on 2017/6/26.
+ * @author saplmm
+ * @date 2017/6/26
  */
 @CacheConfig(cacheNames = Consts.CACHE_DEVICE)
 public interface DeviceRepository extends JpaRepository<Device, Long> {
 
-    //通过站点找到所有的设备
-//    @Cacheable(key = "'" + Consts.CACHE_DEVICE_LIST_SITE + "'+#p0")
+    /**
+     * 通过站点找到所有的设备
+     *
+     * @param siteId
+     * @param pageable
+     * @return
+     * @Cacheable(key = "'" + Consts.CACHE_DEVICE_LIST_SITE + "'+#p0")
+     */
     Page<Device> findBySiteId(Long siteId, Pageable pageable);
 
+    /**
+     * 通过硬件id找到对应的硬件
+     * 这里需要缓存的原因是，当有数据发送过来的时候，需要得到设备的信息，如果每次都从数据库中读取，mysql压力会很大
+     *
+     * @param hardwareId
+     * @return
+     */
     @Cacheable(key = "'" + Consts.CACHE_DEVICE_HARDWAREID + "'+#p0")
     Device findByHardwareId(String hardwareId);
 
@@ -36,17 +50,42 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
     @Query("select count(*) from Device as a where a.siteId in (select id from Site as s where s.tenantId = ?1)")
     Integer countByTenantId(Long tenantId);
 
-    //通过站点找到父节点的id 找到设备
+    /**
+     * 通过站点找到父节点的id 找到设备
+     *
+     * @param siteId
+     * @param parent
+     * @return
+     */
     List<Device> findBySiteIdAndParent(Long siteId, Long parent);
 
-    //    通过租户ID找到他所有的设备
+    /**
+     * 通过租户ID找到他所有的设备
+     *
+     * @param tenantId
+     * @return
+     */
     @Query("select a from Device as a where a.siteId in (select id from Site as s where s.tenantId = :tenantId)")
     List<Device> findByTenantId(@Param("tenantId") Long tenantId);
 
+    /**
+     * 更新设备的状态
+     *
+     * @param did
+     * @param s
+     * @return
+     */
     @Modifying
     @Query("update  Device set status = :s where id = :did")
     Integer setStatus(@Param("did") Long did, @Param("s") Integer s);
 
+
+    /**
+     * 保存
+     *
+     * @param device
+     * @return
+     */
     @Override
     @Caching(evict = {
             @CacheEvict(key = "'" + Consts.CACHE_DEVICE_LIST_SITE + "'" + "+#p0.siteId"),

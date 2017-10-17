@@ -1,13 +1,8 @@
 package com.gasmonitor.service.middleware;
 
 import com.gasmonitor.dao.DeviceRepository;
-import com.gasmonitor.dao.DeviceWarnEventRepository;
-import com.gasmonitor.dao.SiteRepository;
 import com.gasmonitor.entity.Device;
-import com.gasmonitor.entity.DeviceWarnEvent;
-import com.gasmonitor.entity.Site;
 import com.gasmonitor.entity.User;
-import com.gasmonitor.pros.Consts;
 import com.gasmonitor.service.site.SiteService;
 import com.gasmonitor.service.user.UserService;
 import com.gasmonitor.service.warn.WarnEventService;
@@ -19,7 +14,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 
 /**
