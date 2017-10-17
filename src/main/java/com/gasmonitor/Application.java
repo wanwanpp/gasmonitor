@@ -13,6 +13,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableConfigurationProperties({HazelCastPros.class})//增加配置文件
 @EnableAsync    //开启异步任务
 @EnableCaching  //开启缓存
+/**
+ * 应用入口
+ */
 public class Application {
     public static void main(String[] args) {
         SpringApplication application = new SpringApplication(Application.class);
