@@ -15,8 +15,16 @@
   <!--
   <link rel="stylesheet" href="/css/me.css" media="all"/>-->
   <style>
-    body, html { width: 100%; height: 100%; overflow: hidden; margin:0; }
-    table tbody.hot_news tr td.align-right { text-align:right; }
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      margin: 0;
+    }
+
+    table tbody.hot_news tr td.align-right {
+      text-align: right;
+    }
   </style>
   <!-- Start: layui search css -->
   <style>
@@ -30,13 +38,27 @@
       font-size: 12px;
       border-radius: 0;
     }
-    .component { width: 260px; margin-top: 0; border-radius: 0; }
+
+    .component {
+      width: 260px;
+      margin-top: 0;
+      border-radius: 0;
+    }
   </style>
   <!-- End  : layui search css -->
   <!-- Start: sites list css -->
   <style>
-    .site-tr-selected { background-color: #FFFFCC; font-weight: bold; font-style: italic; color: #333; }
-    .site-tr-selected .layui-btn { font-weight: normal; font-style: normal; }
+    .site-tr-selected {
+      background-color: #FFFFCC;
+      font-weight: bold;
+      font-style: italic;
+      color: #333;
+    }
+
+    .site-tr-selected .layui-btn {
+      font-weight: normal;
+      font-style: normal;
+    }
   </style>
   <!-- End  : sites list css -->
   <!-- Start: 点击 eCharts 显示 compare layer 的点击区域 -->
@@ -60,14 +82,12 @@
 <!-- Start： 左右布局 -->
 <div class="row left-right-layout">
   <div class="sysNotice col left-list">
-    <blockquote class="layui-elem-quote title">设备列表</blockquote>
-    <!-- Start: 搜索 -->
-    <div class="layui-form component">
+    <blockquote class="layui-elem-quote title">设备列表<i class="iconfont icon-new1"></i></blockquote>
+    <div class="layui-form" style="margin-top: 4px;margin-left: 4px">
       <select id="select-search_device" lay-search lay-filter="search-device">
         <option value="-1">搜索设备</option>
       </select>
     </div>
-    <!-- End  : 搜索 -->
     <div id="devicesListTableView">
       <div style="display: inline-block; width: 100%; height: 100%; padding: 10px;">
         <ul id="devicesTreeList"></ul>
@@ -80,7 +100,8 @@
       <colgroup>
         <col width="110"></col>
       </colgroup>
-      <div class="layui-elem-quote layui-quote-nm" style="min-height: 820px; max-height: 820px; height: 100%; background-color: #CCFFCC;">
+      <div class="layui-elem-quote layui-quote-nm"
+           style="min-height: 820px; max-height: 820px; height: 100%; background-color: #CCFFCC;">
         <!--<div id="allmap"></div>-->
         <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
         <div id="device-echarts-container">
@@ -197,7 +218,8 @@
       <div class="layui-inline">
         <label class="layui-form-label" style="width: 100px;">历史曲线日期：</label>
         <div class="layui-input-inline">
-          <input type="text" name="date_historyECharts" id="date-history_echarts" lay-verify="date" placeholder="yyyy-mm-dd" autocomplete="off" class="layui-input" onclick="layui.laydate({elem: this})">
+          <input type="text" name="date_historyECharts" id="date-history_echarts" lay-verify="date"
+                 placeholder="yyyy-mm-dd" autocomplete="off" class="layui-input" onclick="layui.laydate({elem: this})">
         </div>
       </div>
     </div>
