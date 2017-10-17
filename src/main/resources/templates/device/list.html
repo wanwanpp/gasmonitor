@@ -75,6 +75,7 @@
         <td>
           <span id="source{{item.id}}"
                 data-id="{{item.id}}"
+                data-status="{{item.status}}"
                 data-dtype="{{item.dtype}}"
                 data-name="{{item.name}}"
                 data-hardwareid="{{item.hardwareId}}"
@@ -493,12 +494,11 @@
       <div class="layui-input-inline">
         <select id="eidt_layer_status" name="status" lay-filter="devicestatus">
           <option value="1">正常</option>
-          <option value="2">故障</option>
-          <option value="3">停用</option>
+          <option value="2">停用</option>
+          <option value="3">故障</option>
         </select>
       </div>
     </div>
-
 
     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
       <legend>*备注</legend>
@@ -759,7 +759,7 @@
                       }
                     }
                   });
-                  layer.closeAll('loading');   //关闭所有的loading
+                  layer.closeAll();   //关闭所有的loading
                 });
               },
               "json"
