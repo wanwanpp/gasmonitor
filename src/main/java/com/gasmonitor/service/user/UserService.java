@@ -72,7 +72,7 @@ public class UserService {
             old.setMobile(newUser.getMobile());
             old.setAddress(newUser.getAddress());
             old.setUsername(newUser.getUsername());
-            old.setPassword(newUser.getPassword());
+            old.setPassword(EncryptUtil.encrypt(newUser.getPassword()));
             old = userRepository.save(old);
         }
         //更新缓存
