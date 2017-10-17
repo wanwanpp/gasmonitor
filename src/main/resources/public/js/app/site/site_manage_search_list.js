@@ -220,13 +220,22 @@
         /**
          * 【查看设备】按钮被点击
          */
-        $(document).on('click', '.view-devices-by-site-id', function() {
+        /*$(document).on('click', '.view-devices-by-site-id', function() {
             var thisBtn = $(this);
             var siteId = thisBtn.data('id')
                 , siteName = thisBtn.data('name');
             //
+            /!*showLayerContentTplInLayer(['根据站点查询设备【站点： ', siteName, '】'].join('')
+                , ['siteId: ', siteId].join(''))*!/
+            tools.jumpLeftNavTab(['/device/list?siteId=', siteId].join(''));
+        });*/
+        $(document).on('click', '#button-view_site_devices', function () {
+            var element_siteTrSelected = $('.site-table-tr.site-tr-selected');
+            var siteId = element_siteTrSelected.data('id')
+                , siteName = element_siteTrSelected.data('name');
+            //
             /*showLayerContentTplInLayer(['根据站点查询设备【站点： ', siteName, '】'].join('')
-                , ['siteId: ', siteId].join(''))*/
+                , ['siteId: ', siteId].join(''));*/
             tools.jumpLeftNavTab(['/device/list?siteId=', siteId].join(''));
         });
 

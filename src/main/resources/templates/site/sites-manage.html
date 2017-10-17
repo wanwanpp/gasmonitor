@@ -144,7 +144,7 @@
       站点地图<i class="iconfont icon-new1"></i>
       <div class="pandaroid-layui_elem_quote_title-btn-container">
         <div class="layui-btn-group">
-          <button id="" class="layui-btn">查看设备</button>
+          <button id="button-view_site_devices" class="layui-btn">查看设备</button>
           <button id="button-edit_site_pos_in_map" class="layui-btn">点击编辑当前站点位置（在地图中拖动）</button>
           <button id="button-submit_site_pos_in_map" class="layui-btn layui-btn-normal hide">提交已编辑的站点位置（在地图中拖动）</button>
         </div>
@@ -378,10 +378,11 @@
     <tr class="site-table-tr" data-id="{{siteDataItem.id}}" data-name="{{siteDataItem.name}}"
         data-longitude="{{siteDataItem.longitude}}" data-latitude="{{siteDataItem.latitude}}"
         data-parent="{{siteDataItem.parent}}">
-      <td align="left">{{siteDataItem.name}}</td>
+      <!--<td align="left">{{siteDataItem.name}}</td>
       <td class="align-right">
         <button class="layui-btn layui-btn-normal view-devices-by-site-id" data-id="{{siteDataItem.id}}">查看设备</button>
-      </td>
+      </td>-->
+      <td>{{siteDataItem.name}}</td>
     </tr>
     {{# }); }}
     </tbody>
