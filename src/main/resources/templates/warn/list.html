@@ -35,18 +35,18 @@
   <div class="layui-form news_list">
     <table class="layui-table">
       <colgroup>
+        <col width="3%"/>
         <col width="10%"/>
         <col width="10%"/>
         <col width="10%"/>
         <col width="10%"/>
-        <col width="10%"/>
-        <col width="15%"/>
-        <col width="15%"/>
+        <col width="40%"/>
+        <col width="5%"/>
       </colgroup>
       <thead>
       <tr>
         <th><input type="checkbox" name="" lay-skin="primary" lay-filter="allChoose" id="allChoose"/></th>
-        <th style="text-align:left;">设备id</th>
+        <!--<th style="text-align:left;">设备id</th>-->
         <th style="text-align:left;">硬件id</th>
         <th>创建时间</th>
         <th>处理时间</th>
@@ -60,7 +60,7 @@
       {{# layui.each(d.data, function(index, item){ }}
       <tr>
         <td>{{index}}</td>
-        <td>{{item.deviceId}}</td>
+        <!--<td>{{item.deviceId}}</td>-->
         <td>{{item.hid}}</td>
         <td>{{layui.tools.timestampToString(item.createTime)}}</td>
         <td>{{layui.tools.timestampToString(item.doTime)}}</td>

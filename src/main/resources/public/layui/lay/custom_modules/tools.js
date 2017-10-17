@@ -201,8 +201,32 @@ layui.define(['jquery', 'layer', 'element'], function (exports) {
         });
     }
 
+    function dateFtt(fmt, date) { //author: meizz
+        var o = {
+            "M+": date.getMonth() + 1,                 //月份
+            "d+": date.getDate(),                    //日
+            "h+": date.getHours(),                   //小时
+            "m+": date.getMinutes(),                 //分
+            "s+": date.getSeconds(),                 //秒
+            "q+": Math.floor((date.getMonth() + 3) / 3), //季度
+            "S": date.getMilliseconds()             //毫秒
+        };
+        if (/(y+)/.test(fmt))
+            fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt))
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
+
+    //时间戳 显示成时间
     function timestampToString(tm) {
-        return new Date(parseInt(tm)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ")
+        //如果是空的情况
+        if (tm == undefined || tm == null || tm == 0) {
+            return ""
+        }
+        var d = new Date(parseInt(tm));
+        return dateFtt("yyyy-MM-dd hh:mm:ss", d);
     }
 
     //转义user的status
