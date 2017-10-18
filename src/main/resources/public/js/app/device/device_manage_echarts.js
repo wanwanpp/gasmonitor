@@ -1168,7 +1168,8 @@
                         console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device siteId: ' + siteId);
                         console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device name: ' + name);
                         console.log('[device_manage_echarts.js createDevicesTreeListNodes createSiteChildrenDevices] item_device logic: ' + logic);
-                        var node_siteChildrenDevice = {name: ['[', hardwareId, ' : ', name, ']'].join(''), id: id
+                        var node_siteChildrenDevice = {
+                            name: name/*['[', hardwareId, ' : ', name, ']'].join('')*/, id: id
                             , hardwareId: hardwareId, alias: name, children: createSiteChildrenDevices(children)};
                         arr_siteChildrenDevices.push(node_siteChildrenDevice);
                         //
