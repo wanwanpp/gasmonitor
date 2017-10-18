@@ -41,7 +41,7 @@ public class MonitDataHanlder {
 
     //处理报警信息
     public void doGaoJjing(MonitorData data, Device device) {
-        log.info("开始判断是否有告警信息data:{},device:{}", data.getGasEvent().getPressure(), device);
+//        log.info("开始判断是否有告警信息data:{},device:{}", data.getGasEvent().getPressure(), device);
         StringBuffer sb = new StringBuffer();
         ///默认是正常情况
         data.setGaojing(false);
@@ -168,7 +168,7 @@ public class MonitDataHanlder {
         }
 
         data.setMsg(sb.toString());
-        log.info("判断告警的结果:{},{}", data.getGaojing(), data.getMsg());
+//        log.info("判断告警的结果:{},{}", data.getGaojing(), data.getMsg());
         //如果这里告警了，需要增加一条告警信息
         if (data.getGaojing()) {
             warnEventService.addWarn(data, device);
