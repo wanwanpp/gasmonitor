@@ -60,7 +60,6 @@
   <!-- Start: sites list css -->
   <style>
     .site-tr-selected {
-      background-color: #FFFFCC;
       font-weight: bold;
       font-style: italic;
       color: #333;
@@ -114,28 +113,19 @@
 
 </head>
 <body class="childrenBody">
-<!-- Start: 顶部文字描述 -->
-<!--<blockquote class="layui-elem-quote">
-  <ol>
-    <li>站点管理（站点设备管理）【点了站点管理以后：左边站点列表；右边上地图，右边下站点详细信息（不点击的时候右边地图显示全部；点击列表中某一个站点，地图只显示该站点，右边下部显示详情且可以编辑）】</li>
-    <li>（站点详情编辑）地图上拖动修改位置，只显示一个，站点列表搜索功能</li>
-    <li>列表中每个站点后面，有个“显示设备”按钮（点击以后跳转到【设备管理】，且就是当前点击站点作为搜索条件，该站点下的所有设备列表）</li>
-  </ol>
-</blockquote>-->
-<!-- End  : 顶部文字描述 -->
-<!-- Start： 左右布局 -->
+
 <div class="row left-right-layout">
   <div class="sysNotice col left-list">
     <blockquote class="layui-elem-quote title">站点列表</blockquote>
     <!-- Start: 搜索 -->
-    <div class="layui-form" style="margin: 4px;margin-top: 4px">
-      <select id="select-search_site" lay-search lay-filter="search-site">
-        <option value="-1">搜索站点</option>
-      </select>
-    </div>
-    <!-- End  : 搜索 -->
-    <div id="sitesListTableView"
-         style="border: 1px solid #e6e6e6; margin-left: 4px; margin-top: 2px;">
+    <div class="layui-quote-nm" style="min-height: 100px">
+      <div class="layui-form" style="margin: 4px;margin-top: 4px">
+        <select id="select-search_site" lay-search lay-filter="search-site">
+          <option value="-1">搜索站点</option>
+        </select>
+      </div>
+      <!-- End  : 搜索 -->
+      <div id="sitesListTableView"></div>
     </div>
   </div>
 
