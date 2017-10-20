@@ -1,1 +1,1 @@
-/*自己定义的css*/.childrenBody {    margin: 10px;}
+/*自己定义的css*/.childrenBody {    margin: 10px;}/* Start: 总表 */table#tree_table-sum.treetable tbody tr td,table#tree_table-sum.treetable thead tr th {    font-size: 12px;    padding: 0 2px;    word-break: keep-all;    white-space: nowrap;}/* End  : 总表 */
