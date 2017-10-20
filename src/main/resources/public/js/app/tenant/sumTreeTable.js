@@ -81,8 +81,8 @@
                         // 变化的部分都放在下面数据结构里，上面用 Vue_SumTreeTableDatasManager.genVueLabel4Laytpl 占位
                         Vue_SumTreeTableDatasManager.sumTreeTableDatasObj[data_site.id] = {
                             pointtime_timeStr: laydate.now(data_site.createdate, 'YYYY-MM-DD hh:mm:ss')
-                            , address: 'vue_地址_' + data_site.id
-                            , vender: 'vue_厂家_' + data_site.id
+                            , address: ''   // 'vue_地址_' + data_site.id
+                            , vender: ''    // 'vue_厂家_' + data_site.id
                         };
                         // vueRenderSumTable.sumTreeTableDatasArr.push(renderData_site);
                         laytpl(tpl_sumTreeTableTr.innerHTML).render(renderData_site, function(html_tpl_sumTreeTableTr) {
@@ -139,8 +139,8 @@
                                 };
                                 // 第一部分（Device）： 变化的部分都放在下面数据结构里，上面用 Vue_SumTreeTableDatasManager.genVueLabel4Laytpl 占位
                                 Vue_SumTreeTableDatasManager.sumTreeTableDatasObj[deviceId_treeTable] = {
-                                    address: 'vue_地址_' + deviceId_treeTable
-                                    , vender: 'vue_厂家_' + deviceId_treeTable
+                                    address: ''     // 'vue_地址_' + deviceId_treeTable
+                                    , vender: ''    // 'vue_厂家_' + deviceId_treeTable
                                 };
                                 //
                                 var latestMonitorData = data_device.latestMonitorData;
