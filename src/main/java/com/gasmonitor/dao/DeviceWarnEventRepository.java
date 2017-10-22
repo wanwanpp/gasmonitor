@@ -1,6 +1,8 @@
 package com.gasmonitor.dao;
 
 import com.gasmonitor.entity.DeviceWarnEvent;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,7 +14,7 @@ import java.util.List;
  * Created by saplmm on 2017/8/28.
  */
 public interface DeviceWarnEventRepository extends JpaRepository<DeviceWarnEvent, Long> {
-    List<DeviceWarnEvent> findByTenantIdAndStatus(Long tenantId, Integer status);
+    Page<DeviceWarnEvent> findByTenantIdAndStatus(Long tenantId, Integer status, Pageable pageable);
 
     List<DeviceWarnEvent> findByDeviceIdAndStatus(Long deviceId, Integer status);
 

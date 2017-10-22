@@ -7,11 +7,13 @@ import com.gasmonitor.entity.User;
 import com.gasmonitor.pros.Consts;
 import com.gasmonitor.service.device.DeviceService;
 import com.gasmonitor.service.site.SiteService;
+import com.gasmonitor.utils.PageUtils;
 import com.gasmonitor.utils.SessionUtils;
 import com.gasmonitor.vo.MonitorData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,9 +43,9 @@ public class WarnEventService {
     @Autowired
     private HttpSession session;
 
-    public List<DeviceWarnEvent> findByTenantId(Integer status) {
+    public Page<DeviceWarnEvent> findByTenantId(Integer status, Integer currPage) {
         User user = SessionUtils.getUser(session);
-        return deviceWarnEventRepository.findByTenantIdAndStatus(user.getTenantId(), status);
+        return deviceWarnEventRepository.findByTenantIdAndStatus(user.getTenantId(), status, PageUtils.p(currPage));
     }
 
     public DeviceWarnEvent findOne(Long id) {
