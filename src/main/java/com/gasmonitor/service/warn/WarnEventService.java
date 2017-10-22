@@ -60,26 +60,47 @@ public class WarnEventService {
     }
 
 
+    /**
+     * 更新告警时间的状态
+     *
+     * @param id
+     * @param type
+     * @param msg
+     * @param all
+     */
     @Transactional(rollbackFor = Exception.class)
-    public void updateWarn(Long id, Integer type, String msg) {
+    public void updateWarn(Long id, Integer type, String msg, boolean all) {
         try {
-            deviceWarnEventRepository.updateStatus(type, id, msg);
+            if (all) {
+                //更新此设备所有的告警事件
+                DeviceWarnEvent w = deviceWarnEventRepository.findOne(id);
+                deviceWarnEventRepository.updateStatusAll(type, w.getDeviceId(), msg);
+            } else {
+                //更新耽搁告警事件
+                deviceWarnEventRepository.updateStatus(type, id, msg);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    //增加一个告警信息
+
+    /**
+     * 增加一个告警信息
+     *
+     * @param data
+     * @param device
+     */
     @Async
     public void addWarn(MonitorData data, com.gasmonitor.entity.Device device) {
-        log.info("有报警信息:monitorData:{}", data);
+        log.info("有报警信息:monitorData:{},设备的状态:{}", data.getMsg(), device.getStatus());
         //如果设备的状态已经处于非正常状态，那么就不需要存储报警的数据了
-        if (device.getStatus() == Consts.Device.STATUS_GUZHANG1) {
-            return;
+        if (device.getStatus() == Consts.Device.STATUS_GUZHANG) {
+//            return;   //根据赖总的说法，都需要存储金数据库
         }
 
         //初始化设备的状态
-        deviceService.updateDeviceStatus(device.getId(), Consts.Device.STATUS_GUZHANG1); //处于告警的状态
+        deviceService.updateDeviceStatus(device.getId(), Consts.Device.STATUS_GUZHANG); //处于告警的状态
 
         DeviceWarnEvent event = new DeviceWarnEvent();
         event.setCreateTime(new Date());

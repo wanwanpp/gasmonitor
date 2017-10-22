@@ -68,10 +68,8 @@ public class WsClientPool {
     }
 
     public boolean sendMonitorData(GasHazelcast data) {
-        log.info("sendMonitorData-->GasHazelcast：{},tenantId:{}", data.toString(), data.getTenantId());
         MonitorData monitorData = new MonitorData();
         monitorData.setGasEvent(data.getGasEvent());
-        // this.sendMonitorData(new MonitorData());
         this.sendMonitorData(monitorData);
         return false;
     }

@@ -60,7 +60,6 @@ public class HazelCastClient implements CommandLineRunner {
             @Override
             public void onMessage(Message<GasHazelcast> message) {
                 GasHazelcast hazelcastEvent = (GasHazelcast) message.getMessageObject();
-                logger.info("接收到的数据信息:{}", hazelcastEvent);
                 wsClientPool.sendMonitorData(hazelcastEvent);
             }
         });
