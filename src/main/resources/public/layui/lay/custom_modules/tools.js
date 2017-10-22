@@ -198,7 +198,7 @@ layui.define(['jquery', 'layer', 'element'], function (exports) {
         } else if (s == DEVICE_STATUS_TINGYONG) {
             return "停用";
         } else {
-            return "位置状态";
+            return "未知";
         }
     }
 
