@@ -44,8 +44,8 @@
         <col width="5%"/>
         <col width="15%"/>
         <col width="5%"/>
-        <col width="10%"/>
-        <col width="10%"/>
+        <col width="5%"/>
+        <col width="8%"/>
         <col width="10%"/>
         <col width="20%"/>
       </colgroup>
@@ -518,375 +518,375 @@
 
 <script type="text/javascript" src="/layui/layui.js"></script>
 <script type="text/javascript">
-  layui.use(['laytpl', 'jquery', 'layer', 'laypage', 'form', 'tools'], function () {
-    console.log("开始执行渲染模板");
-    var laytpl = layui.laytpl;
-    var $ = layui.jquery;
-    var getUrl = "/device/ajax/list";
-    var addUrl = "/device/ajax/new"
-    var editUrl = '/device/ajax/update';
-    var editStatus = '/device/ajax/updateStatus';
-    var rmUrl = '/device/ajax/remove';
-    var optionUrl = '/device/ajax/listp';
-    var updateGaojing = '/device/ajax/gaojing/update'
-    var layer = layui.layer;
-    var laypage = layui.laypage;
-    var form = layui.form();
-    var newTenant = true;//是否新增
-    var mytools = layui.tools;
-    console.log("得到的第一个 站点的值:[[${sites[0].id}]]");
+    layui.use(['laytpl', 'jquery', 'layer', 'laypage', 'form', 'tools'], function () {
+        console.log("开始执行渲染模板");
+        var laytpl = layui.laytpl;
+        var $ = layui.jquery;
+        var getUrl = "/device/ajax/list";
+        var addUrl = "/device/ajax/new"
+        var editUrl = '/device/ajax/update';
+        var editStatus = '/device/ajax/updateStatus';
+        var rmUrl = '/device/ajax/remove';
+        var optionUrl = '/device/ajax/listp';
+        var updateGaojing = '/device/ajax/gaojing/update'
+        var layer = layui.layer;
+        var laypage = layui.laypage;
+        var form = layui.form();
+        var newTenant = true;//是否新增
+        var mytools = layui.tools;
+        console.log("得到的第一个 站点的值:[[${sites[0].id}]]");
 
-    //监测更新设备的状态
-    form.on('select(devicestatus)', function (data) {
-      console.log("修改设备的状态:" + data.value);
-      var id = $("#eidt_status_id").val();
-      layer.confirm('是否修改设备的状态?', {icon: 3, title: '提示'}, function (index) {
-        $.post(
-                editStatus
-                , {id: id, status: data.value}
-                , function (data) {
-                  console.log("保存数据结束：" + JSON.stringify(data));
-                  if (data.code != -1) {
-                    layer.msg("修改状态成功");
-                    searchList();
-                  } else {
-                    layer.msg(data.msg);
-                  }
-                }
-        );
-        layer.close(index);
-      });
-    });
-
-    form.on('select(devicetype)', function (data) {
-      initUnitInputShow(data.value);
-    });
-
-    //初始化显示
-    function initUnitInputShow(type) {
-      console.log("显示定制单位..." + type);
-      $(".unit").hide();
-      if (type == 1) {
-        //流量计
-        showBiaoKuang();
-      } else if (type == 2) {
-        //ic
-        showJianJie();
-      } else if (type == 3) {
-        //ic + 流量计
-        showic();
-      }
-    }
-
-    //具有温度、压力、工况、标况、累积、剩余流量和4个模拟量、4个开关量
-    function showBiaoKuang() {
-      $(".unit.uipressure").show();
-      $(".unit.uitemperature").show();
-      $(".unit.uistandard").show();
-      $(".unit.uirunning").show();
-      $(".unit.uisummary").show();    //累计流量计
-      $(".unit.uisurprplus").show();  //剩余流量
-
-    }
-
-    //简洁流量表  标况流量位置上传一个流量值，被称为瞬间流量，其他的还有：累积流量和温度。4个模拟量、4个开关量
-    function showJianJie() {
-//      $(".unit.uipressure").show();
-      $(".unit.uitemperature").show();
-      $(".unit.uistandard").show(); //这里叫做瞬间流量
-//      $(".unit.uirunning").show();
-      $(".unit.uisummary").show();
-    }
-
-    //有剩余流量、累积流量4个模拟量、4个开关量
-    function showic() {
-      $(".unit.uisummary").show();
-      $(".unit.uisurprplus").show();//剩余流量
-    }
-
-    form.on('select(siteid)', function (data) {
-      console.log("siteid-->select的选择事件" + data.value);
-      renderDeviceParentSelect(data.value);
-      form.render('select')
-    });
-
-    //监听提交
-    form.on('submit(device)', function (data) {
-      console.log("点击了提交按钮 field:" + JSON.stringify(data.field));
-      $.post(
-              newTenant ? addUrl : editUrl
-              , data.field
-              , function (data) {
-                console.log("保存数据结束：" + JSON.stringify(data));
-//                layer.close(index);
-                if (data.code != -1) {
-                  layer.alert("保存数据成功");
-                  searchList();
-                } else {
-                  layer.alert(data.msg);
-                }
-              }
-      );
-      return false;
-    });
-
-    //监听提交
-    form.on('submit(gaojing)', function (data) {
-      console.log("点击了提交按钮 field:" + JSON.stringify(data.field));
-      $.post(
-              updateGaojing
-              , data.field
-              , function (data) {
-                console.log("保存数据结束：" + JSON.stringify(data));
-                if (data.code) {
-                  layer.alert("保存数据成功");
-                  searchList();
-                }
-              }
-      );
-      return false;
-    });
-
-    //第一次加载数据
-    // Start: 如果有 urlSiteId ，则对 select 进行初始化
-    var urlSiteId = mytools.getQueryString('siteId');
-    if (urlSiteId) {
-      $("#search_select_site").val(urlSiteId);
-      form.render();
-    }
-    // End  : 如果有 urlSiteId ，则对 select 进行初始化
-    searchList();
-
-
-    //重新渲染select
-    function renderDeviceParentSelect(siteId) {
-      mytools.renderSelectOption(optionUrl, {"siteId": siteId}, "id", "name", $("#eidt_layer_parent"))
-    }
-
-    //添加一个租户
-    $(".newsAdd_btn").on('click', function () {
-      console.log("添加一个用户.弹出编辑框");
-      newTenant = true
-      showEditLayer();
-    });
-
-    $(".search_btn").on('click', function () {
-      console.log("点击了搜索按钮，开始搜索");
-      searchList();
-    })
-
-    function initClickEvent() {
-      $("#h").on('click', function () {
-        console.log("点击了提交...");
-      });
-      //为按钮设置事件
-      $(".tenant_edit").on('click', function () {
-        var that = this;
-        newTenant = false;
-        showEditLayer($(that).data("sourceid"));
-      });
-      // 详情按钮被点击
-      $(document).on('click', '.device-detail', function () {
-        var sourceId = $(this).data('sourceid');
-        //
-        var sourceIdSelector = "#source" + sourceId;
-        var hardwareId = $(sourceIdSelector).data("hardwareid");
-        //
-        // window.location.replace(['/device/devices-manage?hardwareId=', hardwareId].join(''));
-        mytools.jumpLeftNavTab(['/device/devices-manage?hardwareId=', hardwareId].join(''));
-      });
-
-      $(".device_status").on('click', function () {
-        var that = this;
-        showStatusEditLayer($(that).data("sourceid"));
-      })
-
-      $(".tenant_del").on('click', function () {
-        console.log("开始删除租户的信息");
-        var sourceId = $(this).data("sourceid");
-        layer.confirm('确定删除？', {
-          btn: ['确定', '取消'] //按钮
-        }, function () {
-          $.post(rmUrl
-                  , {
-                    "id": sourceId,
-                  }
-                  , function (data) {
-                    console.log("删除数据成功：" + JSON.stringify(data));
-                    if (data.code) {
-                      searchList();
-                      layer.msg('删除数据成功', {icon: 1, time: 1000,});
+        //监测更新设备的状态
+        form.on('select(devicestatus)', function (data) {
+            console.log("修改设备的状态:" + data.value);
+            var id = $("#eidt_status_id").val();
+            layer.confirm('是否修改设备的状态?', {icon: 3, title: '提示'}, function (index) {
+                $.post(
+                    editStatus
+                    , {id: id, status: data.value}
+                    , function (data) {
+                        console.log("保存数据结束：" + JSON.stringify(data));
+                        if (data.code != -1) {
+                            layer.msg("修改状态成功");
+                            searchList();
+                        } else {
+                            layer.msg(data.msg);
+                        }
                     }
-                  }
-          );
-        }, function () {
-
+                );
+                layer.close(index);
+            });
         });
-      });
 
-      //打开告警的编辑界面
-      $(".device_gaojing").on('click', function () {
-        var that = this;
-        showGaoJingEditLayer($(that).data("sourceid"));
-      });
-    }
+        form.on('select(devicetype)', function (data) {
+            initUnitInputShow(data.value);
+        });
 
-    //显示编辑弹出层
-    function searchList(currPage) {
-      console.log("开始查询租户list的信息...");
-      layer.load();   //loading
-      $.get(
-              getUrl
-              , {
-                "siteId": $("#search_select_site").val(),
-                "currPage": currPage || 1,
-                "searchKey": $(".search_input").val()
-              }
-              , function (data) {
-                console.log("查询到的玩家的list信息:" + JSON.stringify(data));
-                laytpl(slist.innerHTML).render(data, function (html) {
-                  tableview.innerHTML = html;
-                  initClickEvent();   //渲染之后才能初始化按钮的信息，不然没有作用
-                  //分页 组件
-                  laypage({
-                    cont: 'pageView'
-                    , pages: data.totalPage
-                    , skip: true
-                    , curr: currPage || 1 //当前页,
-                    , jump: function (obj, first) {
-                      if (!first) {
-                        searchList(obj.curr)
-                      }
-                    }
-                  });
-                  layer.closeAll();   //关闭所有的loading
-                });
-              },
-              "json"
-      );
-    }
-
-    //显示修改状态的界面
-    function showStatusEditLayer(sourceId) {
-      console.log("开始修改设备的状态" + sourceId);
-      layer.open({
-        type: 1
-        , title: "设置状态"
-        , area: ["800px", '80%']
-        , content: $("#layer_status_edit")
-        , success: function (layero, index) {
-          var sourceIdSelector = "#source" + sourceId;
-          $("#eidt_status_id").val($(sourceIdSelector).data("id"));
-          $("#eidt_layer_status").val($(sourceIdSelector).data("status"));
-          form.render('select');
+        //初始化显示
+        function initUnitInputShow(type) {
+            console.log("显示定制单位..." + type);
+            $(".unit").hide();
+            if (type == 1) {
+                //流量计
+                showBiaoKuang();
+            } else if (type == 2) {
+                //ic
+                showJianJie();
+            } else if (type == 3) {
+                //ic + 流量计
+                showic();
+            }
         }
-      });
-    }
 
-    //显示编辑弹出层
-    function showEditLayer(sourceId) {
-      console.log("开始编辑租户的信息:sourceId" + sourceId);
-      layer.open({
+        //具有温度、压力、工况、标况、累积、剩余流量和4个模拟量、4个开关量
+        function showBiaoKuang() {
+            $(".unit.uipressure").show();
+            $(".unit.uitemperature").show();
+            $(".unit.uistandard").show();
+            $(".unit.uirunning").show();
+            $(".unit.uisummary").show();    //累计流量计
+            $(".unit.uisurprplus").show();  //剩余流量
+
+        }
+
+        //简洁流量表  标况流量位置上传一个流量值，被称为瞬间流量，其他的还有：累积流量和温度。4个模拟量、4个开关量
+        function showJianJie() {
+//      $(".unit.uipressure").show();
+            $(".unit.uitemperature").show();
+            $(".unit.uistandard").show(); //这里叫做瞬间流量
+//      $(".unit.uirunning").show();
+            $(".unit.uisummary").show();
+        }
+
+        //有剩余流量、累积流量4个模拟量、4个开关量
+        function showic() {
+            $(".unit.uisummary").show();
+            $(".unit.uisurprplus").show();//剩余流量
+        }
+
+        form.on('select(siteid)', function (data) {
+            console.log("siteid-->select的选择事件" + data.value);
+            renderDeviceParentSelect(data.value);
+            form.render('select')
+        });
+
+        //监听提交
+        form.on('submit(device)', function (data) {
+            console.log("点击了提交按钮 field:" + JSON.stringify(data.field));
+            $.post(
+                newTenant ? addUrl : editUrl
+                , data.field
+                , function (data) {
+                    console.log("保存数据结束：" + JSON.stringify(data));
+//                layer.close(index);
+                    if (data.code != -1) {
+                        layer.alert("保存数据成功");
+                        searchList();
+                    } else {
+                        layer.alert(data.msg);
+                    }
+                }
+            );
+            return false;
+        });
+
+        //监听提交
+        form.on('submit(gaojing)', function (data) {
+            console.log("点击了提交按钮 field:" + JSON.stringify(data.field));
+            $.post(
+                updateGaojing
+                , data.field
+                , function (data) {
+                    console.log("保存数据结束：" + JSON.stringify(data));
+                    if (data.code) {
+                        layer.alert("保存数据成功");
+                        searchList();
+                    }
+                }
+            );
+            return false;
+        });
+
+        //第一次加载数据
+        // Start: 如果有 urlSiteId ，则对 select 进行初始化
+        var urlSiteId = mytools.getQueryString('siteId');
+        if (urlSiteId) {
+            $("#search_select_site").val(urlSiteId);
+            form.render();
+        }
+        // End  : 如果有 urlSiteId ，则对 select 进行初始化
+        searchList();
+
+
+        //重新渲染select
+        function renderDeviceParentSelect(siteId) {
+            mytools.renderSelectOption(optionUrl, {"siteId": siteId}, "id", "name", $("#eidt_layer_parent"))
+        }
+
+        //添加一个租户
+        $(".newsAdd_btn").on('click', function () {
+            console.log("添加一个用户.弹出编辑框");
+            newTenant = true
+            showEditLayer();
+        });
+
+        $(".search_btn").on('click', function () {
+            console.log("点击了搜索按钮，开始搜索");
+            searchList();
+        })
+
+        function initClickEvent() {
+            $("#h").on('click', function () {
+                console.log("点击了提交...");
+            });
+            //为按钮设置事件
+            $(".tenant_edit").on('click', function () {
+                var that = this;
+                newTenant = false;
+                showEditLayer($(that).data("sourceid"));
+            });
+            // 详情按钮被点击
+            $(document).on('click', '.device-detail', function () {
+                var sourceId = $(this).data('sourceid');
+                //
+                var sourceIdSelector = "#source" + sourceId;
+                var hardwareId = $(sourceIdSelector).data("hardwareid");
+                //
+                // window.location.replace(['/device/devices-manage?hardwareId=', hardwareId].join(''));
+                mytools.jumpLeftNavTab(['/device/devices-manage?hardwareId=', hardwareId].join(''));
+            });
+
+            $(".device_status").on('click', function () {
+                var that = this;
+                showStatusEditLayer($(that).data("sourceid"));
+            })
+
+            $(".tenant_del").on('click', function () {
+                console.log("开始删除租户的信息");
+                var sourceId = $(this).data("sourceid");
+                layer.confirm('确定删除？', {
+                    btn: ['确定', '取消'] //按钮
+                }, function () {
+                    $.post(rmUrl
+                        , {
+                            "id": sourceId,
+                        }
+                        , function (data) {
+                            console.log("删除数据成功：" + JSON.stringify(data));
+                            if (data.code) {
+                                searchList();
+                                layer.msg('删除数据成功', {icon: 1, time: 1000,});
+                            }
+                        }
+                    );
+                }, function () {
+
+                });
+            });
+
+            //打开告警的编辑界面
+            $(".device_gaojing").on('click', function () {
+                var that = this;
+                showGaoJingEditLayer($(that).data("sourceid"));
+            });
+        }
+
+        //显示编辑弹出层
+        function searchList(currPage) {
+            console.log("开始查询租户list的信息...");
+            layer.load();   //loading
+            $.get(
+                getUrl
+                , {
+                    "siteId": $("#search_select_site").val(),
+                    "currPage": currPage || 1,
+                    "searchKey": $(".search_input").val()
+                }
+                , function (data) {
+                    console.log("查询到的玩家的list信息:" + JSON.stringify(data));
+                    laytpl(slist.innerHTML).render(data, function (html) {
+                        tableview.innerHTML = html;
+                        initClickEvent();   //渲染之后才能初始化按钮的信息，不然没有作用
+                        //分页 组件
+                        laypage({
+                            cont: 'pageView'
+                            , pages: data.totalPage
+                            , skip: true
+                            , curr: currPage || 1 //当前页,
+                            , jump: function (obj, first) {
+                                if (!first) {
+                                    searchList(obj.curr)
+                                }
+                            }
+                        });
+                        layer.closeAll();   //关闭所有的loading
+                    });
+                },
+                "json"
+            );
+        }
+
+        //显示修改状态的界面
+        function showStatusEditLayer(sourceId) {
+            console.log("开始修改设备的状态" + sourceId);
+            layer.open({
                 type: 1
-                , title: '编辑租户'
-                , area: ['800px', '80%']
-                , shadeClose: true //开启遮罩关闭
-                , maxmin: true
-                , content: $('#layer_tenant_edit') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-                , btn: ['取消', '提交']
+                , title: "设置状态"
+                , area: ["800px", '80%']
+                , content: $("#layer_status_edit")
                 , success: function (layero, index) {
-                  console.log("打开编辑窗口成功，是否新增？" + newTenant);
-                  //隐藏所有的单位
-                  $(".unit").hide();
-                  if (newTenant) {
-                    //这里填充值
-                    initUnitInputShow($("#eidt_layer_dtype").val());
-                    renderDeviceParentSelect([[${sites[0].id}]]);
+                    var sourceIdSelector = "#source" + sourceId;
+                    $("#eidt_status_id").val($(sourceIdSelector).data("id"));
+                    $("#eidt_layer_status").val($(sourceIdSelector).data("status"));
                     form.render('select');
-                    $("#form_btn_reset").click();
-                    return;
-                  }
+                }
+            });
+        }
 
-                  //这里填充值
-                  var sourceIdSelector = "#source" + sourceId;
-                  var siteIdVal = $(sourceIdSelector).data("siteid");
-                  renderDeviceParentSelect(siteIdVal) //初始化父辈的select
-                  $("#eidt_layer_id").val($(sourceIdSelector).data("id"));
-                  $("#eidt_layer_dtype").val($(sourceIdSelector).data("dtype"));
-                  $("#eidt_layer_parent").val($(sourceIdSelector).data("parent"));
-                  $("#eidt_layer_name").val($(sourceIdSelector).data("name"));
-                  $("#eidt_layer_siteId").val(siteIdVal);
-                  $("#eidt_layer_hardwareId").val($(sourceIdSelector).data("hardwareid"));
-                  $("#eidt_layer_phone").val($(sourceIdSelector).data("phone"));
-                  $("#eidt_layer_utemperature").val($(sourceIdSelector).data("utemperature"));
-                  $("#eidt_layer_upressure").val($(sourceIdSelector).data("upressure"));
-                  $("#eidt_layer_ustandard").val($(sourceIdSelector).data("ustandard"));
-                  $("#eidt_layer_urunning").val($(sourceIdSelector).data("urunning"));
-                  $("#eidt_layer_usummary").val($(sourceIdSelector).data("usummary"));
-                  $("#eidt_layer_usurplus").val($(sourceIdSelector).data("usurplus"));
-                  $("#eidt_layer_uanalog1").val($(sourceIdSelector).data("uanalog1"));
-                  $("#eidt_layer_uanalog2").val($(sourceIdSelector).data("uanalog2"));
-                  $("#eidt_layer_uanalog3").val($(sourceIdSelector).data("uanalog3"));
-                  $("#eidt_layer_uanalog4").val($(sourceIdSelector).data("uanalog4"));
-                  $("#eidt_layer_uswitch1").val($(sourceIdSelector).data("uswitch1"));
-                  $("#eidt_layer_uswitch2").val($(sourceIdSelector).data("uswitch2"));
-                  $("#eidt_layer_uswitch3").val($(sourceIdSelector).data("uswitch3"));
-                  $("#eidt_layer_uswitch4").val($(sourceIdSelector).data("uswitch4"));
-                  $("#eidt_layer_uac220").val($(sourceIdSelector).data("uac220"));
-                  $("#eidt_layer_ubattery").val($(sourceIdSelector).data("ubattery"));
-                  $("#eidt_layer_usolar").val($(sourceIdSelector).data("usolar"));
+        //显示编辑弹出层
+        function showEditLayer(sourceId) {
+            console.log("开始编辑租户的信息:sourceId" + sourceId);
+            layer.open({
+                    type: 1
+                    , title: '编辑租户'
+                    , area: ['800px', '80%']
+                    , shadeClose: true //开启遮罩关闭
+                    , maxmin: true
+                    , content: $('#layer_tenant_edit') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                    , btn: ['取消', '提交']
+                    , success: function (layero, index) {
+                        console.log("打开编辑窗口成功，是否新增？" + newTenant);
+                        //隐藏所有的单位
+                        $(".unit").hide();
+                        if (newTenant) {
+                            //这里填充值
+                            initUnitInputShow($("#eidt_layer_dtype").val());
+                            renderDeviceParentSelect([[${sites[0].id}]]);
+                            form.render('select');
+                            $("#form_btn_reset").click();
+                            return;
+                        }
 
-                  //根据类型显示对应设备应该要选择的单位
-                  initUnitInputShow($(sourceIdSelector).data("dtype"))
-                  var inputNameLogicElements = $('input[name="logic"]');
-                  var logic = $(sourceIdSelector).data("logic");  // logic 数据
-                  inputNameLogicElements.filter(['[value=', logic, ']'].join('')).next('div.layui-unselect.layui-form-radio').click();  // 直接触发 click
-                  form.render('select');
-                }
-                , yes: function (index, layero) {
-                  console.log("点击了取消按钮");
-                  layer.close(index);
-                }
-                , btn2: function (index, layero) {
-                  console.log("点击了提交按钮");
-                  $("#form_btn_submit").click();
-                },
-              }
-      );
-    }
+                        //这里填充值
+                        var sourceIdSelector = "#source" + sourceId;
+                        var siteIdVal = $(sourceIdSelector).data("siteid");
+                        renderDeviceParentSelect(siteIdVal) //初始化父辈的select
+                        $("#eidt_layer_id").val($(sourceIdSelector).data("id"));
+                        $("#eidt_layer_dtype").val($(sourceIdSelector).data("dtype"));
+                        $("#eidt_layer_parent").val($(sourceIdSelector).data("parent"));
+                        $("#eidt_layer_name").val($(sourceIdSelector).data("name"));
+                        $("#eidt_layer_siteId").val(siteIdVal);
+                        $("#eidt_layer_hardwareId").val($(sourceIdSelector).data("hardwareid"));
+                        $("#eidt_layer_phone").val($(sourceIdSelector).data("phone"));
+                        $("#eidt_layer_utemperature").val($(sourceIdSelector).data("utemperature"));
+                        $("#eidt_layer_upressure").val($(sourceIdSelector).data("upressure"));
+                        $("#eidt_layer_ustandard").val($(sourceIdSelector).data("ustandard"));
+                        $("#eidt_layer_urunning").val($(sourceIdSelector).data("urunning"));
+                        $("#eidt_layer_usummary").val($(sourceIdSelector).data("usummary"));
+                        $("#eidt_layer_usurplus").val($(sourceIdSelector).data("usurplus"));
+                        $("#eidt_layer_uanalog1").val($(sourceIdSelector).data("uanalog1"));
+                        $("#eidt_layer_uanalog2").val($(sourceIdSelector).data("uanalog2"));
+                        $("#eidt_layer_uanalog3").val($(sourceIdSelector).data("uanalog3"));
+                        $("#eidt_layer_uanalog4").val($(sourceIdSelector).data("uanalog4"));
+                        $("#eidt_layer_uswitch1").val($(sourceIdSelector).data("uswitch1"));
+                        $("#eidt_layer_uswitch2").val($(sourceIdSelector).data("uswitch2"));
+                        $("#eidt_layer_uswitch3").val($(sourceIdSelector).data("uswitch3"));
+                        $("#eidt_layer_uswitch4").val($(sourceIdSelector).data("uswitch4"));
+                        $("#eidt_layer_uac220").val($(sourceIdSelector).data("uac220"));
+                        $("#eidt_layer_ubattery").val($(sourceIdSelector).data("ubattery"));
+                        $("#eidt_layer_usolar").val($(sourceIdSelector).data("usolar"));
 
-    //显示告警编辑框
-    function showGaoJingEditLayer(sourceId) {
-      console.log("开始设备的告警的信息:sourceId" + sourceId);
-      layer.open({
-                type: 1
-                , title: '编辑租户'
-                , area: ['800px', '400px']
-                , shadeClose: true //开启遮罩关闭
-                , maxmin: true
-                , content: $('#layer_gaojing_edit') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-                , btn: ['取消', '提交']
-                , success: function (layero, index) {
-                  //这里填充值
-                  var sourceIdSelector = "#source" + sourceId;
-                  $("#eidt_layer_gaojing_id").val($(sourceIdSelector).data("id"));
-                  $("#eidt_layer_standardFlowUpper").val($(sourceIdSelector).data("standardflowupper"));
-                  $("#eidt_layer_temperatureUpper").val($(sourceIdSelector).data("temperatureupper"));
-                  $("#eidt_layer_temperatureLow").val($(sourceIdSelector).data("temperaturelow"));
-                  $("#eidt_layer_pressureUpper").val($(sourceIdSelector).data("pressureupper"));
-                  $("#eidt_layer_pressureLow").val($(sourceIdSelector).data("pressurelow"));
+                        //根据类型显示对应设备应该要选择的单位
+                        initUnitInputShow($(sourceIdSelector).data("dtype"))
+                        var inputNameLogicElements = $('input[name="logic"]');
+                        var logic = $(sourceIdSelector).data("logic");  // logic 数据
+                        inputNameLogicElements.filter(['[value=', logic, ']'].join('')).next('div.layui-unselect.layui-form-radio').click();  // 直接触发 click
+                        form.render('select');
+                    }
+                    , yes: function (index, layero) {
+                        console.log("点击了取消按钮");
+                        layer.close(index);
+                    }
+                    , btn2: function (index, layero) {
+                        console.log("点击了提交按钮");
+                        $("#form_btn_submit").click();
+                    },
                 }
-                , yes: function (index, layero) {
-                  layer.close(index);
+            );
+        }
+
+        //显示告警编辑框
+        function showGaoJingEditLayer(sourceId) {
+            console.log("开始设备的告警的信息:sourceId" + sourceId);
+            layer.open({
+                    type: 1
+                    , title: '编辑租户'
+                    , area: ['800px', '400px']
+                    , shadeClose: true //开启遮罩关闭
+                    , maxmin: true
+                    , content: $('#layer_gaojing_edit') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                    , btn: ['取消', '提交']
+                    , success: function (layero, index) {
+                        //这里填充值
+                        var sourceIdSelector = "#source" + sourceId;
+                        $("#eidt_layer_gaojing_id").val($(sourceIdSelector).data("id"));
+                        $("#eidt_layer_standardFlowUpper").val($(sourceIdSelector).data("standardflowupper"));
+                        $("#eidt_layer_temperatureUpper").val($(sourceIdSelector).data("temperatureupper"));
+                        $("#eidt_layer_temperatureLow").val($(sourceIdSelector).data("temperaturelow"));
+                        $("#eidt_layer_pressureUpper").val($(sourceIdSelector).data("pressureupper"));
+                        $("#eidt_layer_pressureLow").val($(sourceIdSelector).data("pressurelow"));
+                    }
+                    , yes: function (index, layero) {
+                        layer.close(index);
+                    }
+                    , btn2: function (index, layero) {
+                        $("#form_btn_gaojing_submit").click();
+                        layer.close(index);
+                    },
                 }
-                , btn2: function (index, layero) {
-                  $("#form_btn_gaojing_submit").click();
-                  layer.close(index);
-                },
-              }
-      );
-    }
-  });
+            );
+        }
+    });
 
 </script>
 </html>
