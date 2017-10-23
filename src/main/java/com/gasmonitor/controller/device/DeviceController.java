@@ -69,9 +69,8 @@ public class DeviceController {
     @RequestMapping(value = "/ajax/list")
     @ResponseBody
     public AjaxResult<Device> ajaxList(@RequestParam(value = "siteId", defaultValue = "0") Long siteId,
-                                       @RequestParam(value = "searchKey", defaultValue = "") String searchKey,
-                                       Integer currPage) {
-
+                                       @RequestParam(value = "searchKey", defaultValue = "", required = false) String searchKey,
+                                       @RequestParam(value = "currPage", defaultValue = "1", required = false) Integer currPage) {
         Page<Device> devices = deviceRepository.findBySiteId(siteId, "%" + searchKey + "%", "%" + searchKey + "%", PageUtils.p(currPage));
         log.info("通过站点{},currpage:{}查询到的所有设备的信息{}", siteId, currPage, devices);
         return AjaxResult.NewAjaxResult(devices);
