@@ -2,8 +2,10 @@ package com.gasmonitor.service.device;
 
 import com.gasmonitor.dao.DeviceRepository;
 import com.gasmonitor.dao.DeviceWarnEventRepository;
+import com.gasmonitor.dao.SiteRepository;
 import com.gasmonitor.entity.Device;
 import com.gasmonitor.entity.DeviceWarnEvent;
+import com.gasmonitor.entity.Site;
 import com.gasmonitor.entity.Tenant;
 import com.gasmonitor.exception.TipsException;
 import com.gasmonitor.pros.Consts;
@@ -23,11 +25,14 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
  * Created by saplmm on 2017/7/10.
+ *
+ * @author saplmm
  */
 
 @Service
@@ -39,6 +44,9 @@ public class DeviceService {
     private WarnEventService warnEventService;
     @Autowired
     private DeviceRepository deviceRepository;
+
+    @Autowired
+    private SiteRepository siteRepository;
 
     @Autowired
     private TenantService tenantService;
@@ -58,12 +66,7 @@ public class DeviceService {
      * @param tenantId
      * @return
      */
-//    @CacheEvict(allEntries = true)
-//    @Caching(evict = {
-//            @CacheEvict(key = "'" + Consts.CACHE_DEVICE_LIST_SITE + "'+#device.siteId"),
-//            @CacheEvict(key = "'" + Consts.CACHE_DEVICE_HARDWAREID + "'+#device.hardwareId")
-//    })
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Device addDevice(Device device, Long tenantId, Long userId) {
         log.info("开始增加一个设备:{},tenantId:{}", device, tenantId);
         if (tenantId == null) {
@@ -158,7 +161,6 @@ public class DeviceService {
 
     public AjaxResult<Device> updateDeviceGaoJing(Device newDevice) {
         Device old = deviceRepository.findOne(newDevice.getId());
-//        old.setda(newDevice.getStandardFlowUpper());
         old.setTemperatureUpper(newDevice.getTemperatureUpper());
         old.setTemperatureLow(newDevice.getTemperatureLow());
         old.setPressureUpper(newDevice.getPressureUpper());
@@ -176,6 +178,27 @@ public class DeviceService {
             d.setChildren(deviceRepository.findBySiteIdAndParent(siteId, d.getId()));
         }
         return parent;
+    }
+
+    /**
+     * 找到所有的设备
+     *
+     * @param tenantId
+     * @return
+     */
+    public List<Device> findDeviceByTenantId(long tenantId) {
+        //1,找到所有的站点
+        List<Device> deviceList = new ArrayList<>();
+        List<Site> sites = siteRepository.findByTenantId(tenantId);
+        for (Site s : sites) {
+            s.setDevices(deviceRepository.findBySiteIdAndParent(s.getId(), (long) 0));
+            for (Device d : s.getDevices()) {
+                deviceList.addAll(deviceRepository.findBySiteIdAndParent(s.getId(), d.getId()));
+            }
+        }
+
+        //返回所有的设备
+        return deviceList;
     }
 
     //更新一个设备
@@ -196,13 +219,15 @@ public class DeviceService {
     }
 
     //设置设备的状态
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public boolean setDeviceStatus(Long deviceId, Integer status) {
         int ret = deviceRepository.setStatus(deviceId, status);
         if (ret == 1) {
-            return true;    //表示更新成功
+            //表示更新成功
+            return true;
         } else {
-            return false;   //表示更新失败
+            //表示更新失败
+            return false;
         }
     }
 

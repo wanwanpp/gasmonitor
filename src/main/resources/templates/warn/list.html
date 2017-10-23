@@ -60,7 +60,7 @@
       <tbody class="news_content">
       {{# layui.each(d.data, function(index, item){ }}
       <tr>
-        <td>{{index}}</td>
+        <td>{{index+1}}</td>
         <td>{{item.hid}}</td>
         <td>{{layui.tools.timestampToString(item.createTime)}}</td>
         <td>{{layui.tools.timestampToString(item.doTime)}}</td>
@@ -95,7 +95,7 @@
 
 <script type="text/javascript" src="/layui/layui.js"></script>
 <script type="text/javascript">
-  layui.use(['laytpl', 'jquery', 'layer', 'laypage', 'form', 'tools'], function () {
+    layui.use(['laytpl', 'jquery', 'layer', 'laypage', 'form', 'tools'], function () {
             console.log("开始执行渲染模板");
             var laytpl = layui.laytpl;
             var $ = layui.jquery;
@@ -107,27 +107,37 @@
             var layuitools = layui.tools;
             var HANDLER_TYPE_OK = 2;  //处理告警
             var HANDLER_TYPE_IGNORE = 3;//忽略告警
+            var checked_all = false;
+
 
             //第一次加载数据
             searchList();
 
             $(".search_btn").on('click', function () {
-              console.log("点击了搜索按钮，开始搜索");
-              searchList();
+                console.log("点击了搜索按钮，开始搜索");
+                searchList();
             })
 
+            form.on('checkbox(all)', function (data) {
+                console.log(data.elem); //得到checkbox原始DOM对象
+                console.log(data.elem.checked); //是否被选中，true或者false
+                console.log(data.value); //复选框value值，也可以通过data.elem.value得到
+                console.log(data.othis); //得到美化后的DOM对象
+                checked_all = data.elem.checked;
+            });
+
             function initClickEvent() {
-              //为按钮设置事件
-              $(".tenant_edit").on('click', function () {
-                var that = $(this);
-                showEditLayer(that.data("sourceid"));
-              });
+                //为按钮设置事件
+                $(".tenant_edit").on('click', function () {
+                    var that = $(this);
+                    showEditLayer(that.data("sourceid"));
+                });
             }
 
             //显示编辑弹出层
             function showEditLayer(sourceId) {
-              console.log("开始编辑租户的信息:sourceId" + sourceId);
-              layer.open({
+                console.log("开始编辑租户的信息:sourceId" + sourceId);
+                layer.open({
                         type: 1
                         , title: '编辑租户'
                         , area: ['800px', '450px']
@@ -136,74 +146,74 @@
                         , content: $('#layer_tenant_edit') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
                         , btn: ['确认告警', '忽略告警', '取消']
                         , success: function (layero, index) {
-                          //这里填充值
-                          var src = $("#source" + sourceId);
-                          $("#eidt_layer_hardwareid").val(src.data("hid"));
-                          $("#eidt_layer_createTime").val(layuitools.timestampToString(src.data("createtime")));
-                          $("#eidt_layer_des").val(src.data("des"));
+                            //这里填充值
+                            var src = $("#source" + sourceId);
+                            $("#eidt_layer_hardwareid").val(src.data("hid"));
+                            $("#eidt_layer_createTime").val(layuitools.timestampToString(src.data("createtime")));
+                            $("#eidt_layer_des").val(src.data("des"));
                         }
                         , yes: function (index, layero) {
-                          console.log("点击了确认警告");
-                          doWarn(HANDLER_TYPE_OK, sourceId, $("#eidt_layer_msg").val());
-                          layer.closeAll();
+                            console.log("点击了确认警告");
+                            doWarn(HANDLER_TYPE_OK, sourceId, $("#eidt_layer_msg").val());
+                            layer.closeAll();
                         }
                         , btn2: function (index, layero) {
-                          console.log("点击了忽略警告");
-                          doWarn(HANDLER_TYPE_IGNORE, sourceId, $("#eidt_layer_msg").val());
-                          layer.closeAll();
+                            console.log("点击了忽略警告");
+                            doWarn(HANDLER_TYPE_IGNORE, sourceId, $("#eidt_layer_msg").val());
+                            layer.closeAll();
                         }
-                      }
-              );
+                    }
+                );
             }
 
             function searchList(currPage) {
-              console.log("开始查询租户list的信息stats:" + $("#search_select_status").val());
-              layer.load();   //loading
-              $.get(
-                      getUrl
-                      , {
+                console.log("开始查询租户list的信息stats:" + $("#search_select_status").val());
+                layer.load();   //loading
+                $.get(
+                    getUrl
+                    , {
                         "currPage": currPage || 1,
                         "searchKey": $(".search_input").val(),
                         "s": $("#search_select_status").val()
-                      }
-                      , function (data) {
+                    }
+                    , function (data) {
                         console.log("查询到的玩家的list信息:" + JSON.stringify(data));
                         laytpl(slist.innerHTML).render(data, function (html) {
-                          tableview.innerHTML = html;
-                          initClickEvent();   //渲染之后才能初始化按钮的信息，不然没有作用
-                          //分页
-                          laypage({
-                            cont: 'pageView'
-                            , pages: data.totalPage
-                            , skip: true
-                            , curr: currPage || 1 //当前页,
-                            , jump: function (obj, first) {
-                              if (!first) {
-                                searchList(obj.curr)
-                              }
-                            }
-                          });
-                          layer.closeAll('loading');   //关闭所有的loading
+                            tableview.innerHTML = html;
+                            initClickEvent();   //渲染之后才能初始化按钮的信息，不然没有作用
+                            //分页
+                            laypage({
+                                cont: 'pageView'
+                                , pages: data.totalPage
+                                , skip: true
+                                , curr: currPage || 1 //当前页,
+                                , jump: function (obj, first) {
+                                    if (!first) {
+                                        searchList(obj.curr)
+                                    }
+                                }
+                            });
+                            layer.closeAll('loading');   //关闭所有的loading
                         });
-                      }
-                      , "json"
-              );
+                    }
+                    , "json"
+                );
             }
 
             //处理报警事件
             function doWarn(dotype, id, msg) {
-              $.post(
-                      doURL
-                      , {"handlerType": dotype, "warnId": id, "msg": msg}
-                      , function (data) {
+                $.post(
+                    doURL
+                    , {"handlerType": dotype, "warnId": id, "msg": msg, "all": checked_all}
+                    , function (data) {
                         console.log("处理报警事件完成");
                         searchList()
-                      }
-                      , "json"
-              );
+                    }
+                    , "json"
+                );
             }
-          }
-  );
+        }
+    );
 
 </script>
 </body>
@@ -224,6 +234,14 @@
         <input id="eidt_layer_createTime" type="text" readonly="readonly" lay-verify="title" class="layui-input"/>
       </div>
     </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">过滤</label>
+      <div class="layui-input-block">
+        <input id="eidt_layer_all" lay-filter="all" type="checkbox" name="all" title="处理此设备所有的告警事件">
+      </div>
+    </div>
+
 
     <div class="layui-form-item layui-form-text">
       <label class="layui-form-label">报警详情</label>

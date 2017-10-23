@@ -179,7 +179,7 @@ public class TestController {
 
     @RequestMapping("testsession")
     public Object testSession() {
-        return warnEventService.findByTenantId(0);
+        return warnEventService.findByTenantId(0, 1);
     }
 }
 

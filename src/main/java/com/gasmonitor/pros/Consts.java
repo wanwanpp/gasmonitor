@@ -37,7 +37,7 @@ public class Consts {
     public static class Device {
         public static final int STATUS_KEYONG = 1;
         public static final int STATUS_TINGYONG = 2;    //停用
-        public static final int STATUS_GUZHANG1 = 3;     //故障
+        public static final int STATUS_GUZHANG = 3;     //故障
     }
 
     //告警时间的状态
