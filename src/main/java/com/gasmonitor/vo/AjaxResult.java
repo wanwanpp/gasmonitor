@@ -2,7 +2,6 @@ package com.gasmonitor.vo;
 
 import org.springframework.data.domain.Page;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.List;
 
