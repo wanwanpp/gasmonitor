@@ -84,6 +84,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring().antMatchers("/img/**");
         web.ignoring().antMatchers("/js/**");
         web.ignoring().antMatchers("/layui/**");
+        web.ignoring().antMatchers("/framework7-2.0.6/**");
     }
 }
 
