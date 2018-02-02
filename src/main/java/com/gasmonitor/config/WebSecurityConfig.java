@@ -47,7 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.headers().frameOptions().sameOrigin()
                 .and().authorizeRequests().antMatchers("/test/**").permitAll()
                 .and().authorizeRequests().anyRequest().authenticated() //4
-                .and().formLogin().loginPage("/login").loginPage("/mlogin").failureUrl("/login?error").successHandler(loginSuccHandler).authenticationDetailsSource(authenticationDetailsSource).permitAll() //5
+                .and().formLogin()/*.loginPage("/mlogin")*/.loginPage("/login").failureUrl("/login?error").successHandler(loginSuccHandler).authenticationDetailsSource(authenticationDetailsSource).permitAll() //5
                 .and().logout().logoutUrl("/logout").logoutSuccessUrl("/login").permitAll();
     }
 
@@ -85,6 +85,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring().antMatchers("/js/**");
         web.ignoring().antMatchers("/layui/**");
         web.ignoring().antMatchers("/framework7-2.0.6/**");
+        web.ignoring().antMatchers("/mobile_pages/**");
     }
 }
 

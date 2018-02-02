@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!--
+  Customize this policy to fit your own app's needs. For more guidance, see:
+      https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+  Some notes:
+      * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+      * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+      * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+          * Enable inline JS: add 'unsafe-inline' to default-src
+  -->
+  <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap: content:">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#2196f3">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-tap-highlight" content="no">
+  <title>监控 - 登录</title>
+
+  <link rel="stylesheet" href="../framework7-2.0.6/dist/css/framework7.min.css">
+  <link rel="stylesheet" href="../framework7-2.0.6/dist/css/framework7.md.min.css">
+  <link rel="stylesheet" href="../css/mobile/gasmonitor-mobile-icons.css">
+  <link rel="stylesheet" href="../css/mobile/gasmonitor-mobile-app.css">
+</head>
+<body>
+<div id="app">
+  <!-- Status bar overlay for fullscreen mode-->
+  <!--<div class="statusbar"></div>
+  &lt;!&ndash; Left panel with cover effect&ndash;&gt;
+  <div class="panel panel-left panel-cover theme-dark">
+    <div class="view">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="title">Left Panel</div>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="block">Left panel content goes here</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  &lt;!&ndash; Right panel with reveal effect&ndash;&gt;
+  <div class="panel panel-right panel-reveal theme-dark">
+    <div class="view">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="title">Right Panel</div>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="block">Right panel content goes here</div>
+        </div>
+      </div>
+    </div>
+  </div>-->
+
+  <!-- Views/Tabs container -->
+  <div class="views tabs ios-edges">
+    <!-- Tabbar for switching views-tabs -->
+    <!--<div class="toolbar tabbar-labels toolbar-bottom-md">
+      <div class="toolbar-inner">
+        <a href="#view-home" class="tab-link tab-link-active">
+          <i class="icon f7-icons ios-only">home</i>
+          <i class="icon f7-icons ios-only icon-ios-fill">home_fill</i>
+          <i class="icon material-icons md-only">home</i>
+          <span class="tabbar-label">Home</span>
+        </a>
+        <a href="#view-catalog" class="tab-link">
+          <i class="icon f7-icons ios-only">list</i>
+          <i class="icon f7-icons ios-only icon-ios-fill">list_fill</i>
+          <i class="icon material-icons md-only">view_list</i>
+          <span class="tabbar-label">Catalog</span>
+        </a>
+        <a href="#view-settings" class="tab-link">
+          <i class="icon f7-icons ios-only">settings</i>
+          <i class="icon f7-icons ios-only icon-ios-fill">settings_fill</i>
+          <i class="icon material-icons md-only">settings</i>
+          <span class="tabbar-label">Settings</span>
+        </a>
+      </div>
+    </div>-->
+    <!-- Your main view/tab, should have "view-main" class. It also has "tab-active" class -->
+    <div id="view-login" class="view view-main tab tab-active">
+      <!-- Page, data-name contains page name which can be used in page callbacks -->
+      <div class="page no-toolbar no-navbar no-swipeback page-current">
+        <div class="page-content login-screen-content">
+          <div class="login-screen-title">监控平台用户登录</div>
+          <form class="">
+            <div class="list">
+              <ul>
+                <li class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">用户名</div>
+                    <div class="item-input-wrap">
+                      <input v-model="username" type="text" placeholder="您的登录用户名" id="demo-username-2" class="">
+                      <span class="input-clear-button"></span>
+                    </div>
+                  </div>
+                </li>
+                <li class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">密码</div>
+                    <div class="item-input-wrap">
+                      <input v-model="password" type="password" placeholder="您的登录密码" id="demo-password-2" class="">
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="list">
+              <ul>
+                <li><a @click="onClick_signIn()" href="#" class="item-link list-button">登录</a></li>
+              </ul>
+              <!--<div class="block-footer">Some text about login information.<br>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>-->
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Catalog View -->
+    <!--<div id="view-catalog" class="view tab">
+      &lt;!&ndash; Catalog page will be loaded here dynamically from /catalog/ route &ndash;&gt;
+    </div>
+
+    &lt;!&ndash; Settings View &ndash;&gt;
+    <div id="view-settings" class="view tab">
+      &lt;!&ndash; Settings page will be loaded here dynamically from /settings/ route &ndash;&gt;
+    </div>-->
+  </div>
+
+  <!-- Popup -->
+  <!--<div class="popup" id="my-popup">
+    <div class="view">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="title">Popup</div>
+            <div class="right">
+              <a href="#" class="link popup-close">Close</a>
+            </div>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="block">
+            <p>Popup content goes here.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>-->
+
+  <!-- Login Screen -->
+  <!--<div class="login-screen" id="my-login-screen">
+    <div class="view">
+      <div class="page">
+        <div class="page-content login-screen-content">
+          <div class="login-screen-title">Login</div>
+          <div class="list">
+            <ul>
+              <li class="item-content item-input">
+                <div class="item-inner">
+                  <div class="item-title item-label">Username</div>
+                  <div class="item-input-wrap">
+                    <input type="text" name="username" placeholder="Your username">
+                  </div>
+                </div>
+              </li>
+              <li class="item-content item-input">
+                <div class="item-inner">
+                  <div class="item-title item-label">Password</div>
+                  <div class="item-input-wrap">
+                    <input type="password" name="password" placeholder="Your password">
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="list">
+            <ul>
+              <li>
+                <a href="#" class="item-link list-button login-button">Sign In</a>
+              </li>
+            </ul>
+            <div class="block-footer">Some text about login information.<br>Click "Sign In" to close Login Screen</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>-->
+</div>
+<!-- Cordova -->
+<!--
+<script src="cordova.js"></script>
+-->
+
+<!-- Framework7 library -->
+<script src="../framework7-2.0.6/dist/js/framework7.js"></script>
+
+<!-- Vue.js -->
+<script src="../js/vue.min.js"></script>
+
+<!-- App routes -->
+<script src="../js/mobile/gasmonitor-mobile-routes.js"></script>
+
+<!-- Path to your custom app scripts -->
+<script src="../js/mobile/gasmonitor-mobile-app-login.js"></script>
+</body>
+</html>
