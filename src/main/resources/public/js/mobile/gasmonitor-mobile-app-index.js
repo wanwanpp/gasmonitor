@@ -4,8 +4,8 @@ var $$ = Dom7;
 // Framework7 App main instance
 var app  = new Framework7({
     root: '#app', // App root element
-    id: 'io.framework7.testapp', // App bundle ID
-    name: 'Framework7', // App name
+    id: 'com.gasmonitor.index', // App bundle ID
+    name: '监控平台', // App name
     theme: 'auto', // Automatic theme detection
     // App root data
     data: function () {
@@ -41,7 +41,7 @@ var app  = new Framework7({
         },
     },
     // App routes
-    routes: routes,
+    routes: routes_index
 });
 
 // Init/Create views
@@ -67,3 +67,20 @@ $$('#my-login-screen .login-button').on('click', function () {
     // Alert username and password
     app.dialog.alert('Username: ' + username + '<br>Password: ' + password);
 });
+
+// Start: vue_index
+var vue_panelLeft = new Vue({
+    el: '#gm-page-panel_left',
+    data: {},
+    methods: {
+        onClick_menuItemRoute: function(routePath) {
+            /*app.dialog.alert('[onClick_menuItemRoute] routePath: ' + routePath, '菜单路由', function() {
+                app.panel.left.close();
+                homeView.router.navigate(routePath);
+            });*/
+            app.panel.left.close();
+            homeView.router.navigate(routePath);
+        }
+    }
+});
+// End  : vue_index

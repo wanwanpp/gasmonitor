@@ -6,9 +6,7 @@ var app  = new Framework7({
     root: '#app', // App root element
     id: 'com.gasmonitor.login', // App bundle ID
     name: '监控平台用户登录', // App name
-    theme: 'auto', // Automatic theme detection
-    // App routes
-    routes: routes
+    theme: 'auto'
 });
 
 // Start: vue login

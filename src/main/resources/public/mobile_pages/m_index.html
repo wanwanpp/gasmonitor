@@ -32,7 +32,7 @@
   <!-- Left panel with cover effect-->
   <div class="panel panel-left panel-cover theme-dark">
     <div class="view">
-      <div class="page">
+      <div id="gm-page-panel_left" class="page">
         <div class="navbar">
           <div class="navbar-inner">
             <div class="title">菜单</div>
@@ -52,32 +52,31 @@
                   <div class="list">
                     <ul>
                       <li>
-                        <div class="item-content">
-                          <div class="item-media"> <i class="icon icon-f7"></i>
-                          </div>
+                        <a @click="onClick_menuItemRoute('/sys/setting')" href="#" class="item-link item-content">
+                          <div class="item-media"> <i class="icon icon-f7"></i></div>
                           <div class="item-inner">
                             <div class="item-title">系统概述</div>
+                            <div class="item-after"></div>
                           </div>
-                        </div>
+                        </a>
                       </li>
                       <li>
-                        <div class="item-content">
-                          <div class="item-media"> <i class="icon icon-f7"></i>
-                          </div>
+                        <a @click="onClick_menuItemRoute('/tenant/list')" href="#" class="item-link item-content">
+                          <div class="item-media"> <i class="icon icon-f7"></i></div>
                           <div class="item-inner">
                             <div class="item-title">租户管理</div>
+                            <div class="item-after"></div>
                           </div>
-                        </div>
+                        </a>
                       </li>
                       <li>
-                        <div class="item-content">
-                          <div class="item-media">
-                            <i class="icon icon-f7"></i>
-                          </div>
+                        <a href="#" class="item-link item-content">
+                          <div class="item-media"> <i class="icon icon-f7"></i></div>
                           <div class="item-inner">
                             <div class="item-title">人员管理</div>
+                            <div class="item-after"></div>
                           </div>
-                        </div>
+                        </a>
                       </li>
                     </ul>
                   </div>
@@ -93,32 +92,31 @@
                   <div class="list">
                     <ul>
                       <li>
-                        <div class="item-content">
-                          <div class="item-media"> <i class="icon icon-f7"></i>
-                          </div>
+                        <a href="#" class="item-link item-content">
+                          <div class="item-media"> <i class="icon icon-f7"></i></div>
                           <div class="item-inner">
                             <div class="item-title">设备类型</div>
+                            <div class="item-after"></div>
                           </div>
-                        </div>
+                        </a>
                       </li>
                       <li>
-                        <div class="item-content">
-                          <div class="item-media"> <i class="icon icon-f7"></i>
-                          </div>
+                        <a href="#" class="item-link item-content">
+                          <div class="item-media"> <i class="icon icon-f7"></i></div>
                           <div class="item-inner">
                             <div class="item-title">测点单位</div>
+                            <div class="item-after"></div>
                           </div>
-                        </div>
+                        </a>
                       </li>
                       <li>
-                        <div class="item-content">
-                          <div class="item-media">
-                            <i class="icon icon-f7"></i>
-                          </div>
+                        <a href="#" class="item-link item-content">
+                          <div class="item-media"> <i class="icon icon-f7"></i></div>
                           <div class="item-inner">
                             <div class="item-title">角色</div>
+                            <div class="item-after"></div>
                           </div>
-                        </div>
+                        </a>
                       </li>
                     </ul>
                   </div>
@@ -140,13 +138,13 @@
                   <div class="list">
                     <ul>
                       <li>
-                        <div class="item-content">
-                          <div class="item-media"> <i class="icon icon-f7"></i>
-                          </div>
+                        <a href="#" class="item-link item-content">
+                          <div class="item-media"> <i class="icon icon-f7"></i></div>
                           <div class="item-inner">
                             <div class="item-title">人员管理</div>
+                            <div class="item-after"></div>
                           </div>
-                        </div>
+                        </a>
                       </li>
                     </ul>
                   </div>
@@ -168,76 +166,76 @@
                   <div class="list">
                     <ul>
                       <li>
-                        <div class="item-content">
-                          <div class="item-media"> <i class="icon icon-f7"></i>
-                          </div>
+                        <a href="#" class="item-link item-content">
+                          <div class="item-media"> <i class="icon icon-f7"></i></div>
                           <div class="item-inner">
                             <div class="item-title">租户概览</div>
+                            <div class="item-after"></div>
                           </div>
-                        </div>
+                        </a>
                       </li>
                       <li>
-                        <div class="item-content">
-                          <div class="item-media"> <i class="icon icon-f7"></i>
-                          </div>
+                        <a href="#" class="item-link item-content">
+                          <div class="item-media"> <i class="icon icon-f7"></i></div>
                           <div class="item-inner">
                             <div class="item-title">总表</div>
+                            <div class="item-after"></div>
                           </div>
-                        </div>
+                        </a>
                       </li>
                       <li>
-                        <div class="item-content">
-                          <div class="item-media"> <i class="icon icon-f7"></i>
-                          </div>
+                        <a href="#" class="item-link item-content">
+                          <div class="item-media"> <i class="icon icon-f7"></i></div>
                           <div class="item-inner">
                             <div class="item-title">站点管理（列表）</div>
+                            <div class="item-after"></div>
                           </div>
-                        </div>
+                        </a>
                       </li>
                       <li>
-                        <div class="item-content">
-                          <div class="item-media"> <i class="icon icon-f7"></i>
-                          </div>
+                        <a href="#" class="item-link item-content">
+                          <div class="item-media"> <i class="icon icon-f7"></i></div>
                           <div class="item-inner">
                             <div class="item-title">站点管理（详情）</div>
+                            <div class="item-after"></div>
                           </div>
-                        </div>
+                        </a>
                       </li>
                       <li>
-                        <div class="item-content">
-                          <div class="item-media"> <i class="icon icon-f7"></i>
-                          </div>
+                        <a href="#" class="item-link item-content">
+                          <div class="item-media"> <i class="icon icon-f7"></i></div>
                           <div class="item-inner">
                             <div class="item-title">设备管理（列表）</div>
+                            <div class="item-after"></div>
                           </div>
-                        </div>
+                        </a>
                       </li>
                       <li>
-                        <div class="item-content">
-                          <div class="item-media"> <i class="icon icon-f7"></i>
-                          </div>
+                        <a href="#" class="item-link item-content">
+                          <div class="item-media"> <i class="icon icon-f7"></i></div>
                           <div class="item-inner">
                             <div class="item-title">设备管理（详情）</div>
+                            <div class="item-after"></div>
                           </div>
-                        </div>
+                        </a>
                       </li>
                       <li>
-                        <div class="item-content">
-                          <div class="item-media"> <i class="icon icon-f7"></i>
-                          </div>
+                        <a href="#" class="item-link item-content">
+                          <div class="item-media"> <i class="icon icon-f7"></i></div>
                           <div class="item-inner">
                             <div class="item-title">设置</div>
+                            <div class="item-after"></div>
                           </div>
-                        </div>
+                        </a>
                       </li>
                       <li>
-                        <div class="item-content">
-                          <div class="item-media"> <i class="icon icon-f7"></i>
-                          </div>
+                        <a href="#" class="item-link item-content">
+                          <div class="item-media"> <i class="icon icon-f7"></i></div>
                           <div class="item-inner">
                             <div class="item-title">告警事件处理</div>
+                            <div class="item-after"></div>
                           </div>
-                        </div>
+                        </a>
                       </li>
                     </ul>
                   </div>
@@ -275,7 +273,7 @@
           <i class="icon f7-icons ios-only">home</i>
           <i class="icon f7-icons ios-only icon-ios-fill">home_fill</i>
           <i class="icon material-icons md-only">home</i>
-          <span class="tabbar-label">Home</span>
+          <span class="tabbar-label">主页</span>
         </a>
         <a href="#view-catalog" class="tab-link">
           <i class="icon f7-icons ios-only">list</i>
@@ -304,7 +302,7 @@
                 <i class="icon material-icons md-only">menu</i>
               </a>
             </div>
-            <div class="title sliding">Home</div>
+            <div class="title sliding">监控平台主页</div>
             <div class="right">
               <a href="#" class="link icon-only panel-open" data-panel="right">
                 <i class="icon f7-icons ios-only">menu</i>
@@ -317,8 +315,7 @@
         <!-- Scrollable page content-->
         <div class="page-content">
           <div class="block block-strong">
-            <p>This is an example of tabs-layout application. The main point of such tabbed layout is that each tab contains independent view with its own routing and navigation.</p>
-            <p>Each tab/view may have different layout, different navbar type (dynamic, fixed or static) or without navbar like this tab.</p>
+            <p>请在左侧的菜单中选择要查看的项目。</p>
           </div>
 
           <div class="block-title">Navigation</div>
@@ -458,10 +455,13 @@
 <!-- Framework7 library -->
 <script src="../framework7-2.0.6/dist/js/framework7.js"></script>
 
+<!-- Vue.js -->
+<script src="../js/vue.min.js"></script>
+
 <!-- App routes -->
-<script src="../js/mobile/gasmonitor-mobile-routes.js"></script>
+<script src="../js/mobile/gasmonitor-mobile-routes-index.js"></script>
 
 <!-- Path to your custom app scripts -->
-<script src="../js/mobile/gasmonitor-mobile-app.js"></script>
+<script src="../js/mobile/gasmonitor-mobile-app-index.js"></script>
 </body>
 </html>
