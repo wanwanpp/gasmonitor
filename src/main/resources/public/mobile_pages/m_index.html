@@ -202,7 +202,7 @@
                         </a>
                       </li>
                       <li>
-                        <a href="#" class="item-link item-content">
+                        <a @click="onClick_menuItemRoute('/device/list')" href="#" class="item-link item-content">
                           <div class="item-media"> <i class="icon icon-f7"></i></div>
                           <div class="item-inner">
                             <div class="item-title">设备管理（列表）</div>
@@ -211,7 +211,7 @@
                         </a>
                       </li>
                       <li>
-                        <a href="#" class="item-link item-content">
+                        <a @click="onClick_menuItemRoute('/device/devices-manage')" href="#" class="item-link item-content">
                           <div class="item-media"> <i class="icon icon-f7"></i></div>
                           <div class="item-inner">
                             <div class="item-title">设备管理（详情）</div>
@@ -220,7 +220,7 @@
                         </a>
                       </li>
                       <li>
-                        <a href="#" class="item-link item-content">
+                        <a @click="onClick_menuItemRoute('/tenant/settings')" href="#" class="item-link item-content">
                           <div class="item-media"> <i class="icon icon-f7"></i></div>
                           <div class="item-inner">
                             <div class="item-title">设置</div>
@@ -229,7 +229,7 @@
                         </a>
                       </li>
                       <li>
-                        <a href="#" class="item-link item-content">
+                        <a @click="onClick_menuItemRoute('/warn/list')" href="#" class="item-link item-content">
                           <div class="item-media"> <i class="icon icon-f7"></i></div>
                           <div class="item-inner">
                             <div class="item-title">告警事件处理</div>
@@ -460,6 +460,9 @@
 
 <!-- 百度地图 api -->
 <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&amp;ak=PWlgUxoilAgQ4zLjB6MIGMvAGKsG5G4X"></script>
+
+<!-- 百度 eCharts -->
+<script src="../js/echarts.min.js"></script>
 
 <!-- App routes -->
 <script src="../js/mobile/gasmonitor-mobile-routes-index.js"></script>

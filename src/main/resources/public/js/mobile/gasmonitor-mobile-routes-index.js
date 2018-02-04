@@ -119,6 +119,22 @@ routes_index = [
       path: '/site/sites-manage',
         url: './pages/site/sites-manage.html'
     },
+    {
+      path: '/device/list',
+        url: './pages/device/list.html'
+    },
+    {
+      path: '/device/devices-manage',
+        url: './pages/device/devices-manage.html'
+    },
+    {
+      path: '/tenant/settings',
+        url: './pages/tenant/settings.html'
+    },
+    {
+      path: '/warn/list',
+        url: './pages/warn/list.html'
+    },
     // End  : 菜单里对应项目的 routes
     // Default route (404 page). MUST BE THE LAST
     {

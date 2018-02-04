@@ -94,5 +94,46 @@ $$(document).on('page:afterin', '.page[data-name="site_sites_manage"]', function
     // map.centerAndZoom("成都", 12);      // 初始化地图,用城市名设置地图中心点
     map.centerAndZoom(pointChengDu, 12);      // 初始化地图,用城市名设置地图中心点
     map.enableScrollWheelZoom(true);  // 启用缩放
+}).on('page:afterin', '.page[data-name="device_devices_manage"]', function (e) {
+    app.dialog.alert('page device_devices_manage afterin');
+    var myChart0 = echarts.init(document.getElementById('echarts-0'));
+    var option0 = {
+        tooltip : {
+            trigger: 'axis'
+        },
+        legend: {
+            data:['温度']
+        },
+        toolbox: {
+            show : true,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        xAxis : [
+            {
+                type : 'category',
+                boundaryGap : false,
+                data : ['8:00','12:00','16:00','20:00','24:00','4:00','8:00']
+            }
+        ],
+        yAxis : [
+            {
+                type : 'value'
+            }
+        ],
+        series : [
+            {
+                name:'温度',
+                type:'line',
+                stack: '总量',
+                data:[120, 132, 101, 134, 90, 230, 210]
+            }
+        ]
+    };
+    myChart0.setOption(option0);
 });
 // End  : 站点详情 - 地图
