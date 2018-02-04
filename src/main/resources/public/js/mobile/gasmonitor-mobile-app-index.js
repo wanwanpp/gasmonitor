@@ -84,3 +84,15 @@ var vue_panelLeft = new Vue({
     }
 });
 // End  : vue_index
+
+// Start: 站点详情 - 地图
+$$(document).on('page:afterin', '.page[data-name="site_sites_manage"]', function (e) {
+    // app.dialog.alert('page site_sites_manage afterin');
+    // 百度地图API功能
+    var map = new BMap.Map("sites-show-map", {enableMapClick: false});  // 创建Map实例
+    var pointChengDu = new BMap.Point(104.072, 30.663);
+    // map.centerAndZoom("成都", 12);      // 初始化地图,用城市名设置地图中心点
+    map.centerAndZoom(pointChengDu, 12);      // 初始化地图,用城市名设置地图中心点
+    map.enableScrollWheelZoom(true);  // 启用缩放
+});
+// End  : 站点详情 - 地图

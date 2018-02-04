@@ -103,6 +103,22 @@ routes_index = [
       path: '/bas/role/list',
         url: './pages/bas/role/list.html'
     },
+    {
+      path: '/tenant/info',
+        url: './pages/tenant/info.html'
+    },
+    {
+      path: '/tenant/sum-table',
+        url: './pages/tenant/sum-table.html'
+    },
+    {
+      path: '/site/list',
+        url: './pages/site/list.html'
+    },
+    {
+      path: '/site/sites-manage',
+        url: './pages/site/sites-manage.html'
+    },
     // End  : 菜单里对应项目的 routes
     // Default route (404 page). MUST BE THE LAST
     {

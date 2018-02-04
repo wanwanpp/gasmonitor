@@ -138,7 +138,7 @@
                   <div class="list">
                     <ul>
                       <li>
-                        <a href="#" class="item-link item-content">
+                        <a @click="onClick_menuItemRoute('/tenant/user/list')" href="#" class="item-link item-content">
                           <div class="item-media"> <i class="icon icon-f7"></i></div>
                           <div class="item-inner">
                             <div class="item-title">人员管理</div>
@@ -166,7 +166,7 @@
                   <div class="list">
                     <ul>
                       <li>
-                        <a href="#" class="item-link item-content">
+                        <a @click="onClick_menuItemRoute('/tenant/info')" href="#" class="item-link item-content">
                           <div class="item-media"> <i class="icon icon-f7"></i></div>
                           <div class="item-inner">
                             <div class="item-title">租户概览</div>
@@ -175,7 +175,7 @@
                         </a>
                       </li>
                       <li>
-                        <a href="#" class="item-link item-content">
+                        <a @click="onClick_menuItemRoute('/tenant/sum-table')" href="#" class="item-link item-content">
                           <div class="item-media"> <i class="icon icon-f7"></i></div>
                           <div class="item-inner">
                             <div class="item-title">总表</div>
@@ -184,7 +184,7 @@
                         </a>
                       </li>
                       <li>
-                        <a href="#" class="item-link item-content">
+                        <a @click="onClick_menuItemRoute('/site/list')" href="#" class="item-link item-content">
                           <div class="item-media"> <i class="icon icon-f7"></i></div>
                           <div class="item-inner">
                             <div class="item-title">站点管理（列表）</div>
@@ -193,7 +193,7 @@
                         </a>
                       </li>
                       <li>
-                        <a href="#" class="item-link item-content">
+                        <a @click="onClick_menuItemRoute('/site/sites-manage')" href="#" class="item-link item-content">
                           <div class="item-media"> <i class="icon icon-f7"></i></div>
                           <div class="item-inner">
                             <div class="item-title">站点管理（详情）</div>
@@ -457,6 +457,9 @@
 
 <!-- Vue.js -->
 <script src="../js/vue.min.js"></script>
+
+<!-- 百度地图 api -->
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&amp;ak=PWlgUxoilAgQ4zLjB6MIGMvAGKsG5G4X"></script>
 
 <!-- App routes -->
 <script src="../js/mobile/gasmonitor-mobile-routes-index.js"></script>
