@@ -91,6 +91,18 @@ routes_index = [
       path: '/tenant/user/list',
         url: './pages/tenant/user/list.html'
     },
+    {
+      path: '/bas/setting',
+        url: './pages/bas/setting.html'
+    },
+    {
+      path: '/bas/unit/list',
+        url: './pages/bas/unit/list.html'
+    },
+    {
+      path: '/bas/role/list',
+        url: './pages/bas/role/list.html'
+    },
     // End  : 菜单里对应项目的 routes
     // Default route (404 page). MUST BE THE LAST
     {
